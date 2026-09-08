@@ -22,11 +22,13 @@ import {
   ArrowDown,
   LayoutGrid,
   Sparkles,
+  Star,
+  Phone,
 } from "lucide-react";
-import { PageHero, CTASection } from "../components/sections";
+import { PageHero, GoogleRating } from "../components/sections";
 import Reveal from "../components/Reveal";
 import QuoteForm from "../components/QuoteForm";
-import { SPLIT_BRANDS, FORM_TRUST_STRIP } from "../lib/data";
+import { SPLIT_BRANDS, FORM_TRUST_STRIP, FEATURED_REVIEW, PHONE_TEL } from "../lib/data";
 import { DAIKIN_COMPACT_FEATURES, DAIKIN_STREAMER_FOOTNOTE } from "../lib/daikinCompactFeatures";
 
 const DAIKIN_ICON_MAP = {
@@ -80,7 +82,7 @@ const BrandPage = () => {
   const formKey = selected ? `${brand.slug}-${selected.rangeName}-${selected.kw}` : `${brand.slug}-default`;
   const submitLabel = selected
     ? `Book ${brand.brand} ${selected.rangeName} ${selected.kw}`
-    : `Get My ${brand.brand} Quote`;
+    : `Book ${brand.brand} Installation`;
 
   return (
     <>
@@ -220,6 +222,33 @@ const BrandPage = () => {
 
             <p className="mt-8 text-xs font-semibold uppercase tracking-[0.22em] text-[#6E6E73]">Supplied &amp; Installed</p>
             <div className="mt-3 overflow-hidden rounded-2xl border border-[#E5E5EA] bg-white soft-shadow-sm">
+              {ri === 0 && (
+                <div className="border-b border-[#E5E5EA] bg-white px-6 py-6 sm:px-7" data-testid="brand-price-proof">
+                  <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+                    <div>
+                      <GoogleRating />
+                      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-[#4E4E52]">
+                        <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Fully Licensed &amp; Insured</span>
+                        <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> SplitsPro Workmanship Guarantee</span>
+                        <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Minimum 5-Year Manufacturer Warranty</span>
+                      </div>
+                    </div>
+                    <figure className="rounded-xl bg-[#F7F7F8] p-5" data-testid="brand-google-review">
+                      <div className="flex items-center gap-1" aria-label="5 star Google review">
+                        {Array.from({ length: FEATURED_REVIEW.rating || 5 }).map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-[#FBBC04] text-[#FBBC04]" />
+                        ))}
+                      </div>
+                      <blockquote className="mt-3 text-sm leading-relaxed text-[#3A3A3C]">&ldquo;{FEATURED_REVIEW.text}&rdquo;</blockquote>
+                      <figcaption className="mt-3 text-xs font-semibold text-[#1D1D1F]">{FEATURED_REVIEW.name} <span className="font-normal text-[#6E6E73]">· Google Review</span></figcaption>
+                    </figure>
+                  </div>
+                  <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                    <a href="#book" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#F8F7F5] transition-all hover:border-[#C8A46A] hover:text-[#E4CFA6]">Book Installation <ArrowUpRight className="h-4 w-4" /></a>
+                    <a href={PHONE_TEL} className="inline-flex items-center justify-center gap-2 rounded-md border border-[#0B0B0B]/20 bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#0B0B0B] transition-colors hover:border-[#0B0B0B]">Call Now <Phone className="h-4 w-4" /></a>
+                  </div>
+                </div>
+              )}
               {range.prices.map((row, i) => (
                 <div
                   key={row.kw}
@@ -264,7 +293,7 @@ const BrandPage = () => {
               </p>
             )}
             <p className="mt-6 max-w-md leading-relaxed text-white/70">
-              Send us your details and we&apos;ll be in touch to confirm your booking and site details. No obligation.
+              Choose your system above, then send us your details to confirm the installation. Prefer to speak now? Call us directly.
             </p>
           </div>
           <Reveal delay={0.1}>
@@ -306,7 +335,18 @@ const BrandPage = () => {
         </div>
       </section>
 
-      <CTASection />
+      <section className="bg-[#0B0B0B] py-14" data-testid="brand-final-book-call">
+        <div className="sp-container flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C8A46A]">Ready to install?</p>
+            <p className="mt-2 font-serif text-2xl text-white">Book your {brand.brand} installation or call us now.</p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a href="#book" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-white">Book Installation <ArrowUpRight className="h-4 w-4" /></a>
+            <a href={PHONE_TEL} className="inline-flex items-center justify-center gap-2 rounded-md border border-white/30 px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] text-white">Call Now <Phone className="h-4 w-4" /></a>
+          </div>
+        </div>
+      </section>
     </>
   );
 };
