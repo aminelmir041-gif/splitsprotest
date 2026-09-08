@@ -19,53 +19,115 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v4
 
-      - name: Fetch live Google rating and review count
+      - name: Resolve exact SplitsPro listing and fetch live numbers
         env:
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
         run: |
-          if [ -z "$GOOGLE_PLACES_API_KEY" ]; then
+          set -u
+          if [ -z "${GOOGLE_PLACES_API_KEY:-}" ]; then
             echo "GOOGLE_PLACES_API_KEY secret is missing"
             exit 1
           fi
 
-          QUERIES=(
-            "Splitspro Bass Hill NSW"
-            "Splitspro air conditioning Bass Hill NSW"
-            "Splitspro 0414 698 435"
-          )
+          MAPS_URL='https://www.google.com/maps/place/SplitsPro/data=!4m2!3m1!1s0x0:0x2d8579a9583bef84?sa=X&ved=1t:2428&ictx=111'
+          PLACE_ID=''
+          COUNT=''
+          RATING=''
+          NAME=''
+          ADDRESS=''
+          PHONE=''
 
-          FOUND=0
-          for QUERY in "${QUERIES[@]}"; do
-            echo "Trying Google Places search: $QUERY"
-            BODY=$(jq -n --arg q "$QUERY" '{textQuery:$q, regionCode:"AU"}')
-            RESPONSE=$(curl -sS -X POST 'https://places.googleapis.com/v1/places:searchText' \
+          # Reuse the exact Place ID once it has been resolved successfully.
+          if [ -f .google-place-id ]; then
+            PLACE_ID=$(tr -d '\r\n ' < .google-place-id)
+            echo "Using saved Google Place ID: $PLACE_ID"
+          fi
+
+          # First-time resolution: use the exact Maps listing URL supplied by the owner.
+          if [ -z "$PLACE_ID" ]; then
+            echo "Resolving exact Google Maps listing..."
+            curl -LsS -A 'Mozilla/5.0' "$MAPS_URL" -o /tmp/maps.html || true
+            PLACE_ID=$(grep -oE 'ChIJ[A-Za-z0-9_-]{15,}' /tmp/maps.html 2>/dev/null | head -n 1 || true)
+            if [ -n "$PLACE_ID" ]; then
+              echo "Resolved Place ID from Maps listing: $PLACE_ID"
+            fi
+          fi
+
+          # If we have a Place ID, Places API (New) Place Details is the most precise lookup.
+          if [ -n "$PLACE_ID" ]; then
+            DETAILS=$(curl -sS \
+              -H "X-Goog-Api-Key: $GOOGLE_PLACES_API_KEY" \
+              -H 'X-Goog-FieldMask: id,displayName,rating,userRatingCount,formattedAddress,nationalPhoneNumber' \
+              "https://places.googleapis.com/v1/places/$PLACE_ID")
+            echo "$DETAILS" > /tmp/place-details.json
+            COUNT=$(jq -r '.userRatingCount // empty' /tmp/place-details.json)
+            RATING=$(jq -r '.rating // empty' /tmp/place-details.json)
+            NAME=$(jq -r '.displayName.text // empty' /tmp/place-details.json)
+            ADDRESS=$(jq -r '.formattedAddress // empty' /tmp/place-details.json)
+            PHONE=$(jq -r '.nationalPhoneNumber // empty' /tmp/place-details.json)
+          fi
+
+          # Fallback 1: legacy Google Places text search can sometimes find service-area businesses
+          # that Places API (New) Text Search omits.
+          if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
+            echo "Trying legacy Places text search fallback..."
+            LEGACY=$(curl -sS -G 'https://maps.googleapis.com/maps/api/place/textsearch/json' \
+              --data-urlencode 'query=SplitsPro Bass Hill NSW Australia' \
+              --data-urlencode "key=$GOOGLE_PLACES_API_KEY")
+            echo "$LEGACY" > /tmp/legacy.json
+            STATUS=$(jq -r '.status // empty' /tmp/legacy.json)
+            echo "Legacy Places status: ${STATUS:-unknown}"
+            if [ "$STATUS" = "OK" ]; then
+              PLACE_ID=$(jq -r '.results[0].place_id // empty' /tmp/legacy.json)
+              COUNT=$(jq -r '.results[0].user_ratings_total // empty' /tmp/legacy.json)
+              RATING=$(jq -r '.results[0].rating // empty' /tmp/legacy.json)
+              NAME=$(jq -r '.results[0].name // empty' /tmp/legacy.json)
+              ADDRESS=$(jq -r '.results[0].formatted_address // empty' /tmp/legacy.json)
+            else
+              jq -r '.error_message // empty' /tmp/legacy.json || true
+            fi
+          fi
+
+          # Fallback 2: Places API (New) Text Search.
+          if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
+            echo "Trying Places API (New) text search fallback..."
+            BODY=$(jq -n '{textQuery:"SplitsPro Bass Hill NSW Australia",regionCode:"AU"}')
+            NEW=$(curl -sS -X POST 'https://places.googleapis.com/v1/places:searchText' \
               -H 'Content-Type: application/json' \
               -H "X-Goog-Api-Key: $GOOGLE_PLACES_API_KEY" \
               -H 'X-Goog-FieldMask: places.id,places.displayName,places.rating,places.userRatingCount,places.formattedAddress,places.nationalPhoneNumber' \
               -d "$BODY")
+            echo "$NEW" > /tmp/new-search.json
+            COUNT=$(jq -r '.places[0].userRatingCount // empty' /tmp/new-search.json)
+            RATING=$(jq -r '.places[0].rating // empty' /tmp/new-search.json)
+            NAME=$(jq -r '.places[0].displayName.text // empty' /tmp/new-search.json)
+            ADDRESS=$(jq -r '.places[0].formattedAddress // empty' /tmp/new-search.json)
+            PHONE=$(jq -r '.places[0].nationalPhoneNumber // empty' /tmp/new-search.json)
+            PLACE_ID=$(jq -r '.places[0].id // empty' /tmp/new-search.json)
+          fi
 
-            echo "$RESPONSE" > /tmp/places.json
-            COUNT=$(jq -r '.places[0].userRatingCount // empty' /tmp/places.json)
-            RATING=$(jq -r '.places[0].rating // empty' /tmp/places.json)
-            NAME=$(jq -r '.places[0].displayName.text // empty' /tmp/places.json)
-            ADDRESS=$(jq -r '.places[0].formattedAddress // empty' /tmp/places.json)
-            PHONE=$(jq -r '.places[0].nationalPhoneNumber // empty' /tmp/places.json)
-            PLACE_ID=$(jq -r '.places[0].id // empty' /tmp/places.json)
-
-            if [ -n "$COUNT" ] && [ -n "$RATING" ]; then
-              echo "Found: $NAME — $RATING stars — $COUNT reviews — $ADDRESS — $PHONE"
-              echo "COUNT=$COUNT" >> "$GITHUB_ENV"
-              echo "RATING=$RATING" >> "$GITHUB_ENV"
-              echo "PLACE_ID=$PLACE_ID" >> "$GITHUB_ENV"
-              FOUND=1
-              break
-            fi
-          done
-
-          if [ "$FOUND" -ne 1 ]; then
-            echo "Google Places returned no matching Splitspro listing. Last response:"
-            cat /tmp/places.json
+          if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
+            echo "Could not retrieve live rating/count for the exact SplitsPro listing."
+            echo "Maps URL CID: 0x2d8579a9583bef84 (decimal 3280161671846031236)"
+            echo "Last Places API (New) response:"
+            cat /tmp/new-search.json 2>/dev/null || true
             exit 1
+          fi
+
+          case "${NAME,,}" in
+            *splitspro*|*splits\ pro*) ;;
+            *)
+              echo "Refusing to update from unexpected business: $NAME"
+              exit 1
+              ;;
+          esac
+
+          echo "Confirmed: $NAME — $RATING stars — $COUNT reviews — $ADDRESS — $PHONE"
+          echo "COUNT=$COUNT" >> "$GITHUB_ENV"
+          echo "RATING=$RATING" >> "$GITHUB_ENV"
+          echo "PLACE_ID=$PLACE_ID" >> "$GITHUB_ENV"
+          if [ -n "$PLACE_ID" ]; then
+            printf '%s\n' "$PLACE_ID" > .google-place-id
           fi
 
       - name: Update website text
@@ -87,18 +149,18 @@ jobs:
           )
           text = re.sub(r'\b\d+\s+verified reviews\b', f'{count} verified reviews', text)
           text = re.sub(r'\b\d(?:\.\d)? Google Rating\b', rating_text, text)
-
           path.write_text(text, encoding='utf-8')
           PY
 
       - name: Commit only when Google numbers changed
         run: |
-          if git diff --quiet -- index.html; then
-            echo "No review changes to publish"
+          if git diff --quiet -- index.html .google-place-id 2>/dev/null; then
+            echo "No Google review changes to publish"
             exit 0
           fi
           git config user.name "SplitsPro Reviews Bot"
           git config user.email "actions@users.noreply.github.com"
           git add index.html
+          [ -f .google-place-id ] && git add .google-place-id
           git commit -m "Update Google rating to ${RATING} and reviews to ${COUNT}"
           git push
