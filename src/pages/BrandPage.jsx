@@ -28,7 +28,7 @@ import {
 import { PageHero, GoogleRating } from "../components/sections";
 import Reveal from "../components/Reveal";
 import QuoteForm from "../components/QuoteForm";
-import { SPLIT_BRANDS, FORM_TRUST_STRIP, FEATURED_REVIEW, PHONE_TEL } from "../lib/data";
+import { SPLIT_BRANDS, FEATURED_REVIEW, PHONE_TEL } from "../lib/data";
 import { DAIKIN_COMPACT_FEATURES, DAIKIN_STREAMER_FOOTNOTE } from "../lib/daikinCompactFeatures";
 
 const DAIKIN_ICON_MAP = {
@@ -306,7 +306,13 @@ const BrandPage = () => {
                 submitLabel={submitLabel}
               />
               <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2 border-t border-white/10 pt-5">
-                {FORM_TRUST_STRIP.slice(0, 5).map((t) => (
+                {[
+                  "Minimum 5-Year Manufacturer Warranty",
+                  "SplitsPro Workmanship Guarantee",
+                  "Licensed & Insured",
+                  "Standard installation pricing shown above",
+                  "Any extras confirmed before work starts",
+                ].map((t) => (
                   <li key={t} className="flex items-center gap-1.5 text-xs font-medium text-white/70">
                     <Check className="h-3.5 w-3.5 text-[#C8A46A]" strokeWidth={2.5} /> {t}
                   </li>
