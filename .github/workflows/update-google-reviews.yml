@@ -2,6 +2,10 @@ name: Update Google Review Count
 
 on:
   workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - '.github/workflows/update-google-reviews.yml'
   schedule:
     - cron: '17 * * * *'
 
@@ -57,15 +61,12 @@ jobs:
           rating = os.environ['RATING']
           rating_text = f"{float(rating):.1f} Google Rating"
 
-          # Replace the current review-count link or any previous hard-coded count.
           text = re.sub(
               r'<a href="https://g\.page/r/CYTvO1ipeYUtEBM/"[^>]*>View latest Google reviews</a>',
               f'<span class="live-google-count">{count} verified reviews</span>',
               text,
           )
           text = re.sub(r'\b\d+\s+verified reviews\b', f'{count} verified reviews', text)
-
-          # Keep the displayed Google rating live as well.
           text = re.sub(r'\b\d(?:\.\d)? Google Rating\b', rating_text, text)
 
           path.write_text(text, encoding='utf-8')
