@@ -1,0 +1,49 @@
+name: Upgrade SplitsPro Brands and Gallery
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - '.github/scripts/upgrade_brands_gallery.py'
+      - '.github/workflows/upgrade-brands-gallery.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+
+      - name: Save reliable Daikin product images locally
+        run: |
+          set -e
+          mkdir -p public/products
+          curl -fL 'https://static.wixstatic.com/media/b0568f_90d4c154537d4f2498bd9c1a2c95834d~mv2.png' -o public/products/daikin-cora.png
+          curl -fL 'https://static.wixstatic.com/media/b0568f_c0a7c8cb3b6640c5b2b391d39890a9eb~mv2.jpg' -o public/products/daikin-zena.jpg || \
+          curl -fL 'https://static.wixstatic.com/media/b0568f_c0a7c8cb3b6640c5b2b391d39890a9eb~mv2.jpg/v1/fill/w_928,h_540,al_c,q_85/Daikin-Zena-Streamer.jpg' -o public/products/daikin-zena.jpg
+
+      - name: Apply loader, gallery and brand upgrades
+        run: python3 .github/scripts/upgrade_brands_gallery.py
+
+      - name: Commit website upgrades
+        run: |
+          git config user.name "SplitsPro Site Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            public/products \
+            src/lib/data.js \
+            src/components/PageLoader.jsx \
+            src/index.css \
+            src/pages/BrandPage.jsx \
+            src/pages/SplitSystems.jsx \
+            .github/workflows/publish-original-pages.yml
+          if git diff --cached --quiet; then
+            echo "Brand and gallery upgrades are already applied"
+            exit 0
+          fi
+          git commit -m "Add Daikin Zena Fujitsu Samsung and fix gallery loader"
+          git push
