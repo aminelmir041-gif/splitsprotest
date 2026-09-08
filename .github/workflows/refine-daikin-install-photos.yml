@@ -1,5 +1,6 @@
 name: Refine Daikin Install Photos
 
+# Corrected retry: blend installs into model content and keep gallery photos portrait.
 on:
   workflow_dispatch:
   push:
