@@ -112,36 +112,58 @@ jobs:
           echo "RATING=$RATING" >> "$GITHUB_ENV"
           printf '%s\n' "$PLACE_ID" > .google-place-id
 
-      - name: Update website text
+      - name: Update homepage and restored pages
         run: |
           python3 - <<'PY'
           import os, re
           from pathlib import Path
 
-          path = Path('index.html')
-          text = path.read_text(encoding='utf-8')
           count = os.environ['COUNT']
           rating = os.environ['RATING']
-          rating_text = f"{float(rating):.1f} Google Rating"
+          rating_one_decimal = f"{float(rating):.1f}"
+          rating_text = f"{rating_one_decimal} Google Rating"
 
+          # Static homepage.
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
           text = re.sub(
               r'<a href="https://g\.page/r/CYTvO1ipeYUtEBM/"[^>]*>View latest Google reviews</a>',
               f'<span class="live-google-count">{count} verified reviews</span>',
               text,
           )
-          text = re.sub(r'\b\d+\s+verified reviews\b', f'{count} verified reviews', text)
+          text = re.sub(r'\b\d+\s+verified reviews\b', f'{count} verified reviews', text, flags=re.I)
           text = re.sub(r'\b\d(?:\.\d)? Google Rating\b', rating_text, text)
           path.write_text(text, encoding='utf-8')
+
+          # Shared React data used by every restored desktop/mobile page.
+          data_path = Path('src/lib/data.js')
+          data = data_path.read_text(encoding='utf-8')
+          updated = re.sub(
+              r'export const GOOGLE_RATING = \{ score: "[^"]+", count: \d+ \};',
+              f'export const GOOGLE_RATING = {{ score: "{rating_one_decimal}", count: {count} }};',
+              data,
+          )
+          if updated == data:
+              raise SystemExit('Could not find GOOGLE_RATING in src/lib/data.js')
+          data_path.write_text(updated, encoding='utf-8')
+
+          # Structured Google rating in the React build template.
+          public_path = Path('public/index.html')
+          if public_path.exists():
+              public = public_path.read_text(encoding='utf-8')
+              public = re.sub(r'"ratingValue"\s*:\s*"[^"]+"', f'"ratingValue": "{rating_one_decimal}"', public)
+              public = re.sub(r'"reviewCount"\s*:\s*"\d+"', f'"reviewCount": "{count}"', public)
+              public_path.write_text(public, encoding='utf-8')
           PY
 
       - name: Commit only when Google numbers changed
         run: |
-          if git diff --quiet -- index.html .google-place-id 2>/dev/null; then
+          if git diff --quiet -- index.html src/lib/data.js public/index.html .google-place-id 2>/dev/null; then
             echo "No Google review changes to publish"
             exit 0
           fi
           git config user.name "SplitsPro Reviews Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add index.html .google-place-id
-          git commit -m "Update Google rating to ${RATING} and reviews to ${COUNT}"
+          git add index.html src/lib/data.js public/index.html .google-place-id
+          git commit -m "Update Google rating to ${RATING} and reviews to ${COUNT} everywhere"
           git push
