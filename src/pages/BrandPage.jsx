@@ -154,8 +154,11 @@ const BrandPage = () => {
             </div>
 
             {brand.installEditorial && (
-              <div className="relative mx-auto w-full max-w-[520px] pb-12 sm:pb-16" data-testid="brand-install-editorial">
-                <figure className="ml-auto w-[82%] overflow-hidden rounded-[24px]">
+              <div
+                className="mx-auto grid w-full max-w-[620px] grid-cols-2 gap-3 sm:relative sm:block sm:min-h-[520px]"
+                data-testid="brand-install-editorial"
+              >
+                <figure className="col-span-2 overflow-hidden rounded-[24px] sm:absolute sm:right-0 sm:top-0 sm:w-[72%] soft-shadow-sm">
                   <img
                     src={brand.installEditorial.primary.src}
                     alt={brand.installEditorial.primary.alt}
@@ -164,7 +167,8 @@ const BrandPage = () => {
                     className="aspect-[4/3] w-full object-cover"
                   />
                 </figure>
-                <figure className="absolute bottom-0 left-0 w-[38%] overflow-hidden rounded-[18px]">
+
+                <figure className="overflow-hidden rounded-[20px] sm:absolute sm:left-0 sm:top-[145px] sm:w-[34%] soft-shadow-sm">
                   <img
                     src={brand.installEditorial.secondary.src}
                     alt={brand.installEditorial.secondary.alt}
@@ -173,7 +177,20 @@ const BrandPage = () => {
                     className="aspect-[3/4] w-full object-cover"
                   />
                 </figure>
-                <p className="absolute bottom-2 right-0 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#77777B]">
+
+                {brand.installEditorial.tertiary && (
+                  <figure className="overflow-hidden rounded-[20px] sm:absolute sm:bottom-0 sm:left-[22%] sm:w-[44%] soft-shadow-sm">
+                    <img
+                      src={brand.installEditorial.tertiary.src}
+                      alt={brand.installEditorial.tertiary.alt}
+                      loading="lazy"
+                      data-no-fallback="true"
+                      className="aspect-[16/10] w-full object-cover"
+                    />
+                  </figure>
+                )}
+
+                <p className="col-span-2 mt-1 flex items-center justify-end gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#77777B] sm:absolute sm:bottom-1 sm:right-0 sm:mt-0">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#C8A46A]" /> Recent Daikin installs by SplitsPro
                 </p>
               </div>

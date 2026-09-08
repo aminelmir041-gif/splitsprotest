@@ -325,6 +325,10 @@ export const SPLIT_BRANDS = [
         src: IMAGES.installDaikinOutdoorBracket,
         alt: "Daikin outdoor unit installed neatly on a wall bracket by SplitsPro",
       },
+      tertiary: {
+        src: IMAGES.installDaikinIndoorCorner,
+        alt: "Daikin indoor split system installed neatly by SplitsPro",
+      },
     },
     ranges: [
       {
