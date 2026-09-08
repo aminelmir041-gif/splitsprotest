@@ -1,5 +1,6 @@
 name: Publish Original SplitsPro Pages
 
+# Rebuild trigger after logo and service-area map fixes.
 on:
   workflow_dispatch:
   push:
