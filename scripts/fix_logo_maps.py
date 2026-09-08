@@ -1,0 +1,153 @@
+from pathlib import Path
+
+# Fix React logo path so it works under /splitsprotest/ on desktop and mobile.
+data_path = Path('src/lib/data.js')
+data = data_path.read_text(encoding='utf-8')
+data = data.replace('export const LOGO = "/logo.png";', 'export const LOGO = `${process.env.PUBLIC_URL || ""}/logo.png`;')
+data_path.write_text(data, encoding='utf-8')
+
+# Replace the React service map with no-key OpenStreetMap + coverage circles.
+map_path = Path('src/components/ServiceAreasMap.jsx')
+map_path.write_text(r'''import { Link } from "react-router-dom";
+import { MapContainer, TileLayer, Circle, CircleMarker, Tooltip } from "react-leaflet";
+import { motion } from "framer-motion";
+import { ArrowUpRight, MapPin } from "lucide-react";
+import "leaflet/dist/leaflet.css";
+
+const GOLD = "#C8A46A";
+const BLACK = "#0B0B0B";
+const BASE = { name: "Bass Hill", pos: [-33.9018, 150.9905] };
+
+const SERVICE_ZONES = [
+  { name: "South Western Sydney", center: [-33.900, 150.985], radius: 17000 },
+  { name: "Liverpool & Macarthur", center: [-33.985, 150.850], radius: 23500 },
+  { name: "Western Sydney", center: [-33.805, 150.945], radius: 22000 },
+  { name: "Canterbury & Inner West", center: [-33.895, 151.105], radius: 15000 },
+  { name: "Sutherland & Southern Sydney", center: [-34.020, 151.055], radius: 19000 },
+];
+
+export const ServiceAreasMap = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 24 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-80px" }}
+    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+    data-testid="service-map-wrap"
+  >
+    <div className="overflow-hidden rounded-2xl border border-[#E5E5EA] shadow-[0_16px_50px_rgba(11,11,11,0.10)]">
+      <MapContainer
+        center={[-33.91, 150.96]}
+        zoom={9}
+        scrollWheelZoom={false}
+        className="h-[390px] w-full sm:h-[460px] md:h-[540px]"
+        data-testid="service-map"
+        style={{ background: "#F0EBE1" }}
+      >
+        <TileLayer
+          attribution='&copy; OpenStreetMap contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        {SERVICE_ZONES.map((zone, i) => (
+          <Circle
+            key={zone.name}
+            center={zone.center}
+            radius={zone.radius}
+            pathOptions={{
+              color: GOLD,
+              weight: i === 0 ? 3 : 2,
+              fillColor: GOLD,
+              fillOpacity: i === 0 ? 0.17 : 0.10,
+            }}
+          >
+            <Tooltip direction="top" opacity={1} sticky className="sp-map-tip">
+              <span className="block font-semibold">{zone.name}</span>
+              <span className="block text-[11px] opacity-70">SplitsPro service area</span>
+            </Tooltip>
+          </Circle>
+        ))}
+
+        <CircleMarker
+          center={BASE.pos}
+          radius={10}
+          pathOptions={{ color: GOLD, weight: 3, fillColor: BLACK, fillOpacity: 1 }}
+          data-testid="map-marker-base"
+        >
+          <Tooltip direction="top" offset={[0, -8]} opacity={1} permanent className="sp-map-tip sp-map-tip-hq">
+            <span className="block font-semibold">SplitsPro</span>
+            <span className="block text-[11px] opacity-80">Bass Hill base</span>
+          </Tooltip>
+        </CircleMarker>
+      </MapContainer>
+    </div>
+
+    <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-sm text-[#6E6E73]">
+        <MapPin className="mr-1 inline h-4 w-4 text-[#C8A46A]" />
+        Gold circles show our main service coverage. We regularly travel beyond these areas too.
+      </p>
+      <Link
+        to="/contact"
+        data-testid="check-suburb-btn"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#F8F7F5] border border-[#C8A46A]/50 transition-all duration-300 hover:border-[#C8A46A] hover:text-[#E4CFA6] hover:-translate-y-[2px] sm:w-auto"
+      >
+        Check Availability <ArrowUpRight className="h-4 w-4" />
+      </Link>
+    </div>
+  </motion.div>
+);
+
+export default ServiceAreasMap;
+''', encoding='utf-8')
+
+# Replace homepage Google iframe with no-key Leaflet/OpenStreetMap coverage circles.
+index_path = Path('index.html')
+html = index_path.read_text(encoding='utf-8')
+
+if 'leaflet@1.9.4/dist/leaflet.css' not in html:
+    html = html.replace(
+        '<link rel="icon" href="./logo.png">',
+        '<link rel="icon" href="./logo.png">\n<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">'
+    )
+
+html = html.replace(
+    '.map iframe{width:100%;height:100%;min-height:420px;border:0;filter:grayscale(.85)}',
+    '.map #home-service-map{width:100%;height:100%;min-height:420px}.leaflet-container{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}.home-map-tip{background:#fff!important;color:#0B0B0B!important;border:1px solid #E5E5EA!important;border-radius:8px!important;box-shadow:0 8px 24px rgba(11,11,11,.14)!important;padding:6px 9px!important}.home-map-tip:before{border-top-color:#fff!important}'
+)
+
+old_map = '<div class="map"><iframe title="SplitsPro service area" src="https://www.google.com/maps?q=Bass+Hill+NSW+Australia&z=10&output=embed" loading="lazy"></iframe></div>'
+new_map = '<div class="map"><div id="home-service-map" role="img" aria-label="SplitsPro service area map with coverage circles"></div></div>'
+html = html.replace(old_map, new_map)
+
+if 'id="home-service-map"' in html and 'homeServiceZones' not in html:
+    map_script = r'''
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  var el=document.getElementById('home-service-map');
+  if(!el || typeof L==='undefined') return;
+  var map=L.map(el,{scrollWheelZoom:false,zoomControl:true}).setView([-33.91,150.96],9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+  var gold='#C8A46A';
+  var homeServiceZones=[
+    ['South Western Sydney',[-33.900,150.985],17000],
+    ['Liverpool & Macarthur',[-33.985,150.850],23500],
+    ['Western Sydney',[-33.805,150.945],22000],
+    ['Canterbury & Inner West',[-33.895,151.105],15000],
+    ['Sutherland & Southern Sydney',[-34.020,151.055],19000]
+  ];
+  homeServiceZones.forEach(function(z,i){
+    L.circle(z[1],{radius:z[2],color:gold,weight:i===0?3:2,fillColor:gold,fillOpacity:i===0?.17:.10})
+      .addTo(map)
+      .bindTooltip('<strong>'+z[0]+'</strong><br><span style="font-size:11px">SplitsPro service area</span>',{sticky:true,className:'home-map-tip'});
+  });
+  L.circleMarker([-33.9018,150.9905],{radius:9,color:gold,weight:3,fillColor:'#0B0B0B',fillOpacity:1})
+    .addTo(map)
+    .bindTooltip('<strong>SplitsPro</strong><br><span style="font-size:11px">Bass Hill base</span>',{permanent:true,direction:'top',className:'home-map-tip'});
+  setTimeout(function(){map.invalidateSize();},250);
+})();
+</script>
+'''
+    html = html.replace('</body>', map_script + '\n</body>')
+
+index_path.write_text(html, encoding='utf-8')
