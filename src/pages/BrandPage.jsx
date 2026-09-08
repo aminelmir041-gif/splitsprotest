@@ -2,11 +2,50 @@ import { useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useLenis } from "lenis/react";
-import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Check,
+  Leaf,
+  Eye,
+  Wind,
+  Thermometer,
+  Filter,
+  Fan,
+  Zap,
+  Wifi,
+  ShieldCheck,
+  Droplets,
+  MoveHorizontal,
+  Minimize2,
+  Palette,
+  ArrowDown,
+  LayoutGrid,
+  Sparkles,
+} from "lucide-react";
 import { PageHero, CTASection } from "../components/sections";
 import Reveal from "../components/Reveal";
 import QuoteForm from "../components/QuoteForm";
 import { SPLIT_BRANDS, FORM_TRUST_STRIP } from "../lib/data";
+import { DAIKIN_COMPACT_FEATURES, DAIKIN_STREAMER_FOOTNOTE } from "../lib/daikinCompactFeatures";
+
+const DAIKIN_ICON_MAP = {
+  leaf: Leaf,
+  eye: Eye,
+  wind: Wind,
+  thermometer: Thermometer,
+  filter: Filter,
+  fan: Fan,
+  zap: Zap,
+  wifi: Wifi,
+  shield: ShieldCheck,
+  droplets: Droplets,
+  arrows: MoveHorizontal,
+  minimize: Minimize2,
+  palette: Palette,
+  arrowdown: ArrowDown,
+  grid: LayoutGrid,
+};
 
 const BrandPage = () => {
   const { slug } = useParams();
@@ -95,23 +134,53 @@ const BrandPage = () => {
                 {brand.brand} {range.name}
               </h2>
               <p className="mt-4 leading-relaxed text-[#6E6E73]">{range.blurb}</p>
-              {range.features && (
-                <p className="mt-4 text-sm text-[#0B0B0B]" data-testid={`features-${range.slug}`}>
-                  {range.features.join("  •  ")}
-                </p>
-              )}
-              {range.featureDetails && (
-                <div className="mt-7 grid gap-3 sm:grid-cols-2" data-testid={`feature-details-${range.slug}`}>
-                  {range.featureDetails.map((feature) => (
-                    <div key={feature.title} className="rounded-xl border border-[#E5E5EA] bg-white p-5 soft-shadow-sm">
-                      <h3 className="font-serif text-lg text-[#0B0B0B]">{feature.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-[#6E6E73]">{feature.desc}</p>
-                    </div>
-                  ))}
+
+              {brand.slug === "daikin" && DAIKIN_COMPACT_FEATURES[range.slug] ? (
+                <div className="mt-6" data-testid={`feature-details-${range.slug}`}>
+                  <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#008CCF]">Daikin key features</p>
+                  <div className="grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-3">
+                    {DAIKIN_COMPACT_FEATURES[range.slug].map((feature) => {
+                      const Icon = DAIKIN_ICON_MAP[feature.icon] || Sparkles;
+                      return (
+                        <div key={feature.title} className="flex min-w-0 items-start gap-2.5">
+                          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#009FE3]/10 text-[#008CCF]">
+                            <Icon className="h-4 w-4" strokeWidth={1.9} />
+                          </span>
+                          <div className="min-w-0">
+                            <h3 className="text-[12px] font-bold leading-4 text-[#0B0B0B]">{feature.title}</h3>
+                            <p className="mt-0.5 text-[11px] leading-[1.4] text-[#6E6E73]">{feature.desc}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {(range.slug === "alira-x" || range.slug === "zena") && (
+                    <p className="mt-4 max-w-2xl text-[10px] leading-[1.45] text-[#8A8A8E]">
+                      {DAIKIN_STREAMER_FOOTNOTE}
+                    </p>
+                  )}
                 </div>
-              )}
-              {range.note && (
-                <p className="mt-5 rounded-xl border border-[#C8A46A]/30 bg-[#F3E9D2]/50 px-4 py-3 text-xs leading-relaxed text-[#5F5140]">{range.note}</p>
+              ) : (
+                <>
+                  {range.features && (
+                    <p className="mt-4 text-sm text-[#0B0B0B]" data-testid={`features-${range.slug}`}>
+                      {range.features.join("  •  ")}
+                    </p>
+                  )}
+                  {range.featureDetails && (
+                    <div className="mt-7 grid gap-3 sm:grid-cols-2" data-testid={`feature-details-${range.slug}`}>
+                      {range.featureDetails.map((feature) => (
+                        <div key={feature.title} className="rounded-xl border border-[#E5E5EA] bg-white p-5 soft-shadow-sm">
+                          <h3 className="font-serif text-lg text-[#0B0B0B]">{feature.title}</h3>
+                          <p className="mt-2 text-sm leading-relaxed text-[#6E6E73]">{feature.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {range.note && (
+                    <p className="mt-5 rounded-xl border border-[#C8A46A]/30 bg-[#F3E9D2]/50 px-4 py-3 text-xs leading-relaxed text-[#5F5140]">{range.note}</p>
+                  )}
+                </>
               )}
             </div>
             {range.image && (
