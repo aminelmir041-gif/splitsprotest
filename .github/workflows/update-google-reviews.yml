@@ -19,7 +19,7 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v4
 
-      - name: Resolve exact SplitsPro listing and fetch live numbers
+      - name: Fetch live SplitsPro rating and review count
         env:
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
         run: |
@@ -29,115 +29,88 @@ jobs:
             exit 1
           fi
 
-          MAPS_URL='https://www.google.com/maps/place/SplitsPro/data=!4m2!3m1!1s0x0:0x2d8579a9583bef84?sa=X&ved=1t:2428&ictx=111'
           PLACE_ID=''
           COUNT=''
           RATING=''
           NAME=''
-          ADDRESS=''
           PHONE=''
+          MAP_URL=''
 
+          # Once resolved, reuse the exact Place ID on future hourly runs.
           if [ -f .google-place-id ]; then
             PLACE_ID=$(tr -d '\r\n ' < .google-place-id)
             echo "Using saved Google Place ID: $PLACE_ID"
           fi
 
-          if [ -z "$PLACE_ID" ]; then
-            echo "Resolving exact Google Maps listing..."
-            curl -LsS -A 'Mozilla/5.0' "$MAPS_URL" -o /tmp/maps.html || true
-            PLACE_ID=$(grep -oE 'ChIJ[A-Za-z0-9_-]{15,}' /tmp/maps.html 2>/dev/null | head -n 1 || true)
-          fi
-
+          # Precise Place Details lookup when we already know the ID.
           if [ -n "$PLACE_ID" ]; then
             DETAILS=$(curl -sS \
               -H "X-Goog-Api-Key: $GOOGLE_PLACES_API_KEY" \
-              -H 'X-Goog-FieldMask: id,displayName,rating,userRatingCount,formattedAddress,nationalPhoneNumber' \
+              -H 'X-Goog-FieldMask: id,displayName,rating,userRatingCount,nationalPhoneNumber,googleMapsUri,pureServiceAreaBusiness' \
               "https://places.googleapis.com/v1/places/$PLACE_ID")
             echo "$DETAILS" > /tmp/place-details.json
             COUNT=$(jq -r '.userRatingCount // empty' /tmp/place-details.json)
             RATING=$(jq -r '.rating // empty' /tmp/place-details.json)
             NAME=$(jq -r '.displayName.text // empty' /tmp/place-details.json)
-            ADDRESS=$(jq -r '.formattedAddress // empty' /tmp/place-details.json)
             PHONE=$(jq -r '.nationalPhoneNumber // empty' /tmp/place-details.json)
+            MAP_URL=$(jq -r '.googleMapsUri // empty' /tmp/place-details.json)
           fi
 
-          # Best fallback for this service-area business: exact phone number lookup.
+          # SplitsPro is a service-area business, so explicitly include businesses
+          # that do not expose a physical street address in Google Maps.
           if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
-            echo "Trying exact phone-number lookup..."
-            PHONE_LOOKUP=$(curl -sS -G 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json' \
-              --data-urlencode 'input=+61414698435' \
-              --data-urlencode 'inputtype=phonenumber' \
-              --data-urlencode 'fields=place_id,name,rating,user_ratings_total,formatted_address' \
-              --data-urlencode "key=$GOOGLE_PLACES_API_KEY")
-            echo "$PHONE_LOOKUP" > /tmp/phone-lookup.json
-            STATUS=$(jq -r '.status // empty' /tmp/phone-lookup.json)
-            echo "Phone lookup status: ${STATUS:-unknown}"
-            if [ "$STATUS" = "OK" ]; then
-              PLACE_ID=$(jq -r '.candidates[0].place_id // empty' /tmp/phone-lookup.json)
-              COUNT=$(jq -r '.candidates[0].user_ratings_total // empty' /tmp/phone-lookup.json)
-              RATING=$(jq -r '.candidates[0].rating // empty' /tmp/phone-lookup.json)
-              NAME=$(jq -r '.candidates[0].name // empty' /tmp/phone-lookup.json)
-              ADDRESS=$(jq -r '.candidates[0].formatted_address // empty' /tmp/phone-lookup.json)
-            else
-              jq -r '.error_message // empty' /tmp/phone-lookup.json || true
-            fi
+            QUERIES=(
+              "SplitsPro Bass Hill NSW Australia"
+              "SplitsPro Sydney Australia"
+              "SplitsPro 0414 698 435 Australia"
+            )
+
+            for QUERY in "${QUERIES[@]}"; do
+              echo "Searching Places API (New): $QUERY"
+              BODY=$(jq -n --arg q "$QUERY" '{textQuery:$q,regionCode:"AU",includePureServiceAreaBusinesses:true,pageSize:20}')
+              RESPONSE=$(curl -sS -X POST 'https://places.googleapis.com/v1/places:searchText' \
+                -H 'Content-Type: application/json' \
+                -H "X-Goog-Api-Key: $GOOGLE_PLACES_API_KEY" \
+                -H 'X-Goog-FieldMask: places.id,places.displayName,places.rating,places.userRatingCount,places.nationalPhoneNumber,places.googleMapsUri,places.pureServiceAreaBusiness' \
+                -d "$BODY")
+              echo "$RESPONSE" > /tmp/new-search.json
+
+              # Select the exact business name, not just the first search result.
+              MATCH=$(jq -c '[.places[]? | select(((.displayName.text // "") | ascii_downcase) == "splitspro")][0] // empty' /tmp/new-search.json)
+              if [ -n "$MATCH" ]; then
+                PLACE_ID=$(printf '%s' "$MATCH" | jq -r '.id // empty')
+                COUNT=$(printf '%s' "$MATCH" | jq -r '.userRatingCount // empty')
+                RATING=$(printf '%s' "$MATCH" | jq -r '.rating // empty')
+                NAME=$(printf '%s' "$MATCH" | jq -r '.displayName.text // empty')
+                PHONE=$(printf '%s' "$MATCH" | jq -r '.nationalPhoneNumber // empty')
+                MAP_URL=$(printf '%s' "$MATCH" | jq -r '.googleMapsUri // empty')
+              fi
+
+              if [ -n "$PLACE_ID" ] && [ -n "$COUNT" ] && [ -n "$RATING" ]; then
+                break
+              fi
+            done
           fi
 
-          # Secondary legacy text-search fallback.
-          if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
-            echo "Trying legacy Places text search fallback..."
-            LEGACY=$(curl -sS -G 'https://maps.googleapis.com/maps/api/place/textsearch/json' \
-              --data-urlencode 'query=SplitsPro Bass Hill NSW Australia' \
-              --data-urlencode "key=$GOOGLE_PLACES_API_KEY")
-            echo "$LEGACY" > /tmp/legacy.json
-            STATUS=$(jq -r '.status // empty' /tmp/legacy.json)
-            echo "Legacy Places status: ${STATUS:-unknown}"
-            if [ "$STATUS" = "OK" ]; then
-              PLACE_ID=$(jq -r '.results[0].place_id // empty' /tmp/legacy.json)
-              COUNT=$(jq -r '.results[0].user_ratings_total // empty' /tmp/legacy.json)
-              RATING=$(jq -r '.results[0].rating // empty' /tmp/legacy.json)
-              NAME=$(jq -r '.results[0].name // empty' /tmp/legacy.json)
-              ADDRESS=$(jq -r '.results[0].formatted_address // empty' /tmp/legacy.json)
-            else
-              jq -r '.error_message // empty' /tmp/legacy.json || true
-            fi
-          fi
-
-          if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
-            echo "Trying Places API (New) text search fallback..."
-            BODY=$(jq -n '{textQuery:"SplitsPro Bass Hill NSW Australia",regionCode:"AU"}')
-            NEW=$(curl -sS -X POST 'https://places.googleapis.com/v1/places:searchText' \
-              -H 'Content-Type: application/json' \
-              -H "X-Goog-Api-Key: $GOOGLE_PLACES_API_KEY" \
-              -H 'X-Goog-FieldMask: places.id,places.displayName,places.rating,places.userRatingCount,places.formattedAddress,places.nationalPhoneNumber' \
-              -d "$BODY")
-            echo "$NEW" > /tmp/new-search.json
-            COUNT=$(jq -r '.places[0].userRatingCount // empty' /tmp/new-search.json)
-            RATING=$(jq -r '.places[0].rating // empty' /tmp/new-search.json)
-            NAME=$(jq -r '.places[0].displayName.text // empty' /tmp/new-search.json)
-            ADDRESS=$(jq -r '.places[0].formattedAddress // empty' /tmp/new-search.json)
-            PHONE=$(jq -r '.places[0].nationalPhoneNumber // empty' /tmp/new-search.json)
-            PLACE_ID=$(jq -r '.places[0].id // empty' /tmp/new-search.json)
-          fi
-
-          if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
-            echo "Could not retrieve live rating/count for SplitsPro."
+          if [ -z "$PLACE_ID" ] || [ -z "$COUNT" ] || [ -z "$RATING" ]; then
+            echo "Could not retrieve the SplitsPro service-area listing from Places API (New)."
+            cat /tmp/new-search.json 2>/dev/null || true
             exit 1
           fi
 
           case "${NAME,,}" in
-            *splitspro*|*splits\ pro*) ;;
+            splitspro|splits\ pro) ;;
             *)
               echo "Refusing to update from unexpected business: $NAME"
               exit 1
               ;;
           esac
 
-          echo "Confirmed: $NAME — $RATING stars — $COUNT reviews — $ADDRESS — $PHONE"
+          echo "Confirmed: $NAME — $RATING stars — $COUNT reviews — $PHONE"
+          echo "Google Maps: $MAP_URL"
           echo "COUNT=$COUNT" >> "$GITHUB_ENV"
           echo "RATING=$RATING" >> "$GITHUB_ENV"
-          echo "PLACE_ID=$PLACE_ID" >> "$GITHUB_ENV"
-          [ -n "$PLACE_ID" ] && printf '%s\n' "$PLACE_ID" > .google-place-id
+          printf '%s\n' "$PLACE_ID" > .google-place-id
 
       - name: Update website text
         run: |
@@ -169,7 +142,6 @@ jobs:
           fi
           git config user.name "SplitsPro Reviews Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add index.html
-          [ -f .google-place-id ] && git add .google-place-id
+          git add index.html .google-place-id
           git commit -m "Update Google rating to ${RATING} and reviews to ${COUNT}"
           git push
