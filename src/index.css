@@ -314,3 +314,27 @@ img {
     border-radius: 16px;
   }
 }
+
+
+/* Seamless split-system product photography */
+.product-media-seamless,
+.product-thumb-seamless {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+.product-unit-image {
+  mix-blend-mode: multiply;
+  background: transparent !important;
+  filter: none;
+  transition: transform 240ms ease;
+}
+.product-media-seamless:hover .product-unit-image {
+  transform: scale(1.02);
+}
+@media (max-width: 640px) {
+  .product-unit-image {
+    max-width: 100%;
+  }
+}

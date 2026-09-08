@@ -185,22 +185,31 @@ const BrandPage = () => {
             </div>
             {range.image && (
               <div
-                className="mx-auto w-full max-w-xl lg:mx-0 lg:justify-self-end"
+                className="mx-auto w-full max-w-2xl lg:mx-0 lg:justify-self-end"
                 data-testid={`range-image-${range.slug}`}
               >
-                <div className="product-media flex min-h-[270px] items-center justify-center overflow-hidden rounded-2xl border border-[#E5E5EA] bg-white px-5 py-7 soft-shadow-sm sm:min-h-[330px] sm:px-7 lg:min-h-[380px]">
+                <div className="product-media-seamless flex min-h-[250px] items-center justify-center px-1 py-4 sm:min-h-[320px] lg:min-h-[380px]">
                   <img
                     src={range.image}
                     alt={`${brand.brand} ${range.name} split system air conditioner`}
                     loading="lazy"
-                    className="block max-h-[330px] w-full object-contain sm:max-h-[390px] lg:max-h-[440px]"
+                    data-no-fallback="true"
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                    className="product-unit-image block max-h-[340px] w-full object-contain sm:max-h-[410px] lg:max-h-[470px]"
                   />
                 </div>
                 {range.gallery?.length > 1 && (
-                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3" data-testid={`range-gallery-${range.slug}`}>
+                  <div className="mt-1 flex flex-wrap items-center justify-center gap-4 sm:gap-6" data-testid={`range-gallery-${range.slug}`}>
                     {range.gallery.slice(0, 3).map((item, idx) => (
-                      <div key={`${range.slug}-${idx}`} className="product-thumb flex h-24 items-center justify-center overflow-hidden rounded-xl border border-[#E5E5EA] bg-white p-2 sm:h-28">
-                        <img src={item.src} alt={item.alt} loading="lazy" className="h-full w-full object-contain" />
+                      <div key={`${range.slug}-${idx}`} className="product-thumb-seamless flex h-24 w-[44%] max-w-[190px] items-center justify-center sm:h-28 sm:w-[30%]">
+                        <img
+                          src={item.src}
+                          alt={item.alt}
+                          loading="lazy"
+                          data-no-fallback="true"
+                          onError={(e) => { e.currentTarget.style.display = "none"; }}
+                          className="product-unit-image h-full w-full object-contain"
+                        />
                       </div>
                     ))}
                   </div>

@@ -74,7 +74,7 @@ function App() {
   useEffect(() => {
     const handleImageError = (event) => {
       const img = event.target;
-      if (!(img instanceof HTMLImageElement) || img.dataset.fallbackApplied === "true") return;
+      if (!(img instanceof HTMLImageElement) || img.dataset.fallbackApplied === "true" || img.dataset.noFallback === "true") return;
       img.dataset.fallbackApplied = "true";
       img.src = LOGO;
       img.classList.add("site-image-fallback");
