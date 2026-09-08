@@ -1,6 +1,6 @@
 name: Publish Original SplitsPro Pages
 
-# Rebuild latest restored pages, brands, loader and gallery updates.
+# Rebuild all React routes together so every page references the same current asset bundle.
 on:
   workflow_dispatch:
   push:
