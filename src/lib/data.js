@@ -5,8 +5,6 @@ import {
 import coraUserImage from "./embedded/cora";
 import aliraXUserImage from "./embedded/aliraX";
 import aliraXAltUserImage from "./embedded/aliraXAlt";
-import zenaBlackUserImage from "./embedded/zenaBlack";
-import zenaStreamerUserImage from "./embedded/zenaStreamer";
 
 export const PHONE = "0414 698 435";
 export const PHONE_TEL = "tel:0414698435";
@@ -371,10 +369,10 @@ export const SPLIT_BRANDS = [
           { title: "Built-in Wi-Fi", desc: "Phone control is built into the indoor unit, so you can change temperature and operation without adding a bulky external Wi-Fi box." },
         ],
         note: "Zena is available in 2.5, 3.5, 5.0 and 6.0 kW reverse-cycle sizes. White models end in W; Black Wood models end in K.",
-        image: zenaBlackUserImage,
+        image: `${PUBLIC}/products/zena-black-uploaded.webp`,
         gallery: [
-          { src: zenaBlackUserImage, alt: "Daikin Zena Black Wood indoor unit" },
-          { src: zenaStreamerUserImage, alt: "Daikin Zena White Hair Line with Streamer" },
+          { src: `${PUBLIC}/products/zena-black-uploaded.webp`, alt: "Daikin Zena Black Wood indoor unit" },
+          { src: `${PUBLIC}/products/zena-white-uploaded.webp`, alt: "Daikin Zena White Hair Line with Streamer" },
         ],
         prices: [
           { kw: "2.5kW", model: "FTXJ25TVMAW / K", price: "$1,850" },
