@@ -37,23 +37,17 @@ jobs:
           ADDRESS=''
           PHONE=''
 
-          # Reuse the exact Place ID once it has been resolved successfully.
           if [ -f .google-place-id ]; then
             PLACE_ID=$(tr -d '\r\n ' < .google-place-id)
             echo "Using saved Google Place ID: $PLACE_ID"
           fi
 
-          # First-time resolution: use the exact Maps listing URL supplied by the owner.
           if [ -z "$PLACE_ID" ]; then
             echo "Resolving exact Google Maps listing..."
             curl -LsS -A 'Mozilla/5.0' "$MAPS_URL" -o /tmp/maps.html || true
             PLACE_ID=$(grep -oE 'ChIJ[A-Za-z0-9_-]{15,}' /tmp/maps.html 2>/dev/null | head -n 1 || true)
-            if [ -n "$PLACE_ID" ]; then
-              echo "Resolved Place ID from Maps listing: $PLACE_ID"
-            fi
           fi
 
-          # If we have a Place ID, Places API (New) Place Details is the most precise lookup.
           if [ -n "$PLACE_ID" ]; then
             DETAILS=$(curl -sS \
               -H "X-Goog-Api-Key: $GOOGLE_PLACES_API_KEY" \
@@ -67,8 +61,29 @@ jobs:
             PHONE=$(jq -r '.nationalPhoneNumber // empty' /tmp/place-details.json)
           fi
 
-          # Fallback 1: legacy Google Places text search can sometimes find service-area businesses
-          # that Places API (New) Text Search omits.
+          # Best fallback for this service-area business: exact phone number lookup.
+          if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
+            echo "Trying exact phone-number lookup..."
+            PHONE_LOOKUP=$(curl -sS -G 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json' \
+              --data-urlencode 'input=+61414698435' \
+              --data-urlencode 'inputtype=phonenumber' \
+              --data-urlencode 'fields=place_id,name,rating,user_ratings_total,formatted_address' \
+              --data-urlencode "key=$GOOGLE_PLACES_API_KEY")
+            echo "$PHONE_LOOKUP" > /tmp/phone-lookup.json
+            STATUS=$(jq -r '.status // empty' /tmp/phone-lookup.json)
+            echo "Phone lookup status: ${STATUS:-unknown}"
+            if [ "$STATUS" = "OK" ]; then
+              PLACE_ID=$(jq -r '.candidates[0].place_id // empty' /tmp/phone-lookup.json)
+              COUNT=$(jq -r '.candidates[0].user_ratings_total // empty' /tmp/phone-lookup.json)
+              RATING=$(jq -r '.candidates[0].rating // empty' /tmp/phone-lookup.json)
+              NAME=$(jq -r '.candidates[0].name // empty' /tmp/phone-lookup.json)
+              ADDRESS=$(jq -r '.candidates[0].formatted_address // empty' /tmp/phone-lookup.json)
+            else
+              jq -r '.error_message // empty' /tmp/phone-lookup.json || true
+            fi
+          fi
+
+          # Secondary legacy text-search fallback.
           if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
             echo "Trying legacy Places text search fallback..."
             LEGACY=$(curl -sS -G 'https://maps.googleapis.com/maps/api/place/textsearch/json' \
@@ -88,7 +103,6 @@ jobs:
             fi
           fi
 
-          # Fallback 2: Places API (New) Text Search.
           if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
             echo "Trying Places API (New) text search fallback..."
             BODY=$(jq -n '{textQuery:"SplitsPro Bass Hill NSW Australia",regionCode:"AU"}')
@@ -107,10 +121,7 @@ jobs:
           fi
 
           if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
-            echo "Could not retrieve live rating/count for the exact SplitsPro listing."
-            echo "Maps URL CID: 0x2d8579a9583bef84 (decimal 3280161671846031236)"
-            echo "Last Places API (New) response:"
-            cat /tmp/new-search.json 2>/dev/null || true
+            echo "Could not retrieve live rating/count for SplitsPro."
             exit 1
           fi
 
@@ -126,9 +137,7 @@ jobs:
           echo "COUNT=$COUNT" >> "$GITHUB_ENV"
           echo "RATING=$RATING" >> "$GITHUB_ENV"
           echo "PLACE_ID=$PLACE_ID" >> "$GITHUB_ENV"
-          if [ -n "$PLACE_ID" ]; then
-            printf '%s\n' "$PLACE_ID" > .google-place-id
-          fi
+          [ -n "$PLACE_ID" ] && printf '%s\n' "$PLACE_ID" > .google-place-id
 
       - name: Update website text
         run: |
