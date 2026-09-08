@@ -39,8 +39,7 @@ jobs:
             src/components/PageLoader.jsx \
             src/index.css \
             src/pages/BrandPage.jsx \
-            src/pages/SplitSystems.jsx \
-            .github/workflows/publish-original-pages.yml
+            src/pages/SplitSystems.jsx
           if git diff --cached --quiet; then
             echo "Brand and gallery upgrades are already applied"
             exit 0
