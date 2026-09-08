@@ -38,7 +38,6 @@ for slug, key, alt in [
     start = block.find(f'        slug: "{slug}",')
     if start < 0:
         raise SystemExit(f'Could not find Daikin range {slug}')
-    # next range or end of Daikin block
     next_pos = block.find('        slug: "', start + 10)
     if next_pos < 0:
         next_pos = len(block)
@@ -56,10 +55,20 @@ for title in [
     'Daikin Split — Indoor Installation',
     'Daikin Outdoor — R32 Installation',
 ]:
-    pattern = re.compile(r'(\{ src: [^\n]+, title: "' + re.escape(title) + r'", tag: "[^"]+")([^\n]*\})')
-    data, n = pattern.subn(lambda m: m.group(1) + ', portrait: true' + m.group(2), data, count=1)
-    if n != 1 and f'title: "{title}"' in data and 'portrait: true' not in data[data.find(f'title: "{title}"'):data.find(f'title: "{title}"')+180]:
-        raise SystemExit(f'Could not mark portrait for {title}')
+    pos = data.find(f'title: "{title}"')
+    if pos < 0:
+        raise SystemExit(f'Could not find gallery item {title}')
+    line_start = data.rfind('\n', 0, pos) + 1
+    line_end = data.find('\n', pos)
+    line = data[line_start:line_end]
+    if 'portrait: true' not in line:
+        if line.rstrip().endswith('},'):
+            line = line.rstrip()[:-2] + ', portrait: true },'
+        elif line.rstrip().endswith('}'):
+            line = line.rstrip()[:-1] + ', portrait: true }'
+        else:
+            raise SystemExit(f'Unexpected gallery item format for {title}')
+        data = data[:line_start] + line + data[line_end:]
 
 data_path.write_text(data, encoding='utf-8')
 
@@ -67,7 +76,7 @@ data_path.write_text(data, encoding='utf-8')
 brand_path = Path('src/pages/BrandPage.jsx')
 brand = brand_path.read_text(encoding='utf-8')
 
-# Remove the standalone install-proof block.
+# Remove the standalone install-proof block from the intro.
 brand = re.sub(
     r'\n          \{brand\.installProof\?\.length > 0 && \(\n(?:.*\n)*?          \)\}\n(?=        </div>\n      </section>)',
     '\n',
@@ -75,21 +84,13 @@ brand = re.sub(
     count=1,
 )
 
-# Insert a tiny, seamless real-install photo inside each model media column.
+# Blend one real installation photo directly into each model's copy area.
 if 'data-testid={`range-install-photo-${range.slug}`}' not in brand:
-    # For Zena showcase: append photo after two-finish grid.
-    zena_anchor = '''                  </div>\n                ) : (\n'''
-    zena_add = '''                  </div>\n                  {range.installPhoto && (\n                    <figure className="mt-5 flex flex-col items-center" data-testid={`range-install-photo-${range.slug}`}>\n                      <img\n                        src={range.installPhoto.src}\n                        alt={range.installPhoto.alt}\n                        loading="lazy"\n                        data-no-fallback="true"\n                        className="max-h-[260px] w-auto max-w-full rounded-lg object-contain sm:max-h-[300px]"\n                      />\n                      <figcaption className="mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8A8E]">Recent SplitsPro Daikin install</figcaption>\n                    </figure>\n                  )}\n                ) : (\n'''
-    if zena_anchor not in brand:
-        raise SystemExit('Could not find Zena media anchor')
-    brand = brand.replace(zena_anchor, zena_add, 1)
-
-    # Non-Zena: append photo beneath product/gallery imagery, inside same media column.
-    nonz_anchor = '''                  </>\n                )}\n              </div>\n            )}\n'''
-    nonz_add = '''                  </>\n                )}\n                {range.installPhoto && (\n                  <figure className="mt-4 flex flex-col items-center" data-testid={`range-install-photo-${range.slug}`}>\n                    <img\n                      src={range.installPhoto.src}\n                      alt={range.installPhoto.alt}\n                      loading="lazy"\n                      data-no-fallback="true"\n                      className="max-h-[250px] w-auto max-w-full rounded-lg object-contain sm:max-h-[290px]"\n                    />\n                    <figcaption className="mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8A8E]">Recent SplitsPro Daikin install</figcaption>\n                  </figure>\n                )}\n              </div>\n            )}\n'''
-    if nonz_anchor not in brand:
-        raise SystemExit('Could not find non-Zena media anchor')
-    brand = brand.replace(nonz_anchor, nonz_add, 1)
+    anchor = '''              )}\n            </div>\n            {range.image && (\n'''
+    insert = '''              )}\n              {range.installPhoto && (\n                <figure className="mt-6 max-w-md" data-testid={`range-install-photo-${range.slug}`}>\n                  <img\n                    src={range.installPhoto.src}\n                    alt={range.installPhoto.alt}\n                    loading="lazy"\n                    data-no-fallback="true"\n                    className="max-h-[280px] w-auto max-w-full rounded-lg object-contain sm:max-h-[320px]"\n                  />\n                  <figcaption className="mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8A8E]">Recent SplitsPro Daikin install</figcaption>\n                </figure>\n              )}\n            </div>\n            {range.image && (\n'''
+    if anchor not in brand:
+        raise SystemExit('Could not find model-copy anchor in BrandPage.jsx')
+    brand = brand.replace(anchor, insert, 1)
 
 brand_path.write_text(brand, encoding='utf-8')
 
@@ -105,4 +106,4 @@ if ') : g.portrait ? (' not in gallery:
     gallery = gallery.replace(anchor, insert, 1)
 
 gallery_path.write_text(gallery, encoding='utf-8')
-print('Removed standalone Daikin proof section, blended install photos into model media, and fixed portrait gallery presentation')
+print('Removed standalone Daikin proof section, blended install photos into model copy, and fixed portrait gallery presentation')
