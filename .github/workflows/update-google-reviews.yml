@@ -28,26 +28,45 @@ jobs:
             exit 1
           fi
 
-          RESPONSE=$(curl -sS -X POST 'https://places.googleapis.com/v1/places:searchText' \
-            -H 'Content-Type: application/json' \
-            -H "X-Goog-Api-Key: $GOOGLE_PLACES_API_KEY" \
-            -H 'X-Goog-FieldMask: places.displayName,places.rating,places.userRatingCount,places.formattedAddress' \
-            -d '{"textQuery":"SplitsPro 0414 698 435 Bass Hill NSW Australia"}')
+          QUERIES=(
+            "Splitspro Bass Hill NSW"
+            "Splitspro air conditioning Bass Hill NSW"
+            "Splitspro 0414 698 435"
+          )
 
-          echo "$RESPONSE" > /tmp/places.json
-          COUNT=$(jq -r '.places[0].userRatingCount // empty' /tmp/places.json)
-          RATING=$(jq -r '.places[0].rating // empty' /tmp/places.json)
-          NAME=$(jq -r '.places[0].displayName.text // empty' /tmp/places.json)
+          FOUND=0
+          for QUERY in "${QUERIES[@]}"; do
+            echo "Trying Google Places search: $QUERY"
+            BODY=$(jq -n --arg q "$QUERY" '{textQuery:$q, regionCode:"AU"}')
+            RESPONSE=$(curl -sS -X POST 'https://places.googleapis.com/v1/places:searchText' \
+              -H 'Content-Type: application/json' \
+              -H "X-Goog-Api-Key: $GOOGLE_PLACES_API_KEY" \
+              -H 'X-Goog-FieldMask: places.id,places.displayName,places.rating,places.userRatingCount,places.formattedAddress,places.nationalPhoneNumber' \
+              -d "$BODY")
 
-          if [ -z "$COUNT" ] || [ -z "$RATING" ]; then
-            echo "Could not read rating/count from Google response"
+            echo "$RESPONSE" > /tmp/places.json
+            COUNT=$(jq -r '.places[0].userRatingCount // empty' /tmp/places.json)
+            RATING=$(jq -r '.places[0].rating // empty' /tmp/places.json)
+            NAME=$(jq -r '.places[0].displayName.text // empty' /tmp/places.json)
+            ADDRESS=$(jq -r '.places[0].formattedAddress // empty' /tmp/places.json)
+            PHONE=$(jq -r '.places[0].nationalPhoneNumber // empty' /tmp/places.json)
+            PLACE_ID=$(jq -r '.places[0].id // empty' /tmp/places.json)
+
+            if [ -n "$COUNT" ] && [ -n "$RATING" ]; then
+              echo "Found: $NAME — $RATING stars — $COUNT reviews — $ADDRESS — $PHONE"
+              echo "COUNT=$COUNT" >> "$GITHUB_ENV"
+              echo "RATING=$RATING" >> "$GITHUB_ENV"
+              echo "PLACE_ID=$PLACE_ID" >> "$GITHUB_ENV"
+              FOUND=1
+              break
+            fi
+          done
+
+          if [ "$FOUND" -ne 1 ]; then
+            echo "Google Places returned no matching Splitspro listing. Last response:"
             cat /tmp/places.json
             exit 1
           fi
-
-          echo "Found: $NAME — $RATING stars — $COUNT reviews"
-          echo "COUNT=$COUNT" >> "$GITHUB_ENV"
-          echo "RATING=$RATING" >> "$GITHUB_ENV"
 
       - name: Update website text
         run: |
