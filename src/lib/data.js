@@ -5,6 +5,11 @@ import {
 import coraUserImage from "./embedded/cora";
 import aliraXUserImage from "./embedded/aliraX";
 import aliraXAltUserImage from "./embedded/aliraXAlt";
+import daikinInstallIndoorCorner from "./embedded/daikinInstallIndoorCorner";
+import daikinInstallOutdoorBracket from "./embedded/daikinInstallOutdoorBracket";
+import daikinInstallIndoorLabel from "./embedded/daikinInstallIndoorLabel";
+import daikinInstallOutdoorClose from "./embedded/daikinInstallOutdoorClose";
+import daikinInstallIndoorStraight from "./embedded/daikinInstallIndoorStraight";
 
 export const PHONE = "0414 698 435";
 export const PHONE_TEL = "tel:0414698435";
@@ -62,6 +67,11 @@ export const IMAGES = {
   installRinnaiWall: A + "a2zwvxp5_20260808_150102.webp",
   installDaikinOutdoor2: A + "q9r7krqk_20260810_162548.webp",
   installDaikinGarage: A + "smto7cvr_IMG-20260811-WA0065.webp",
+  installDaikinIndoorCorner: daikinInstallIndoorCorner,
+  installDaikinOutdoorBracket: daikinInstallOutdoorBracket,
+  installDaikinIndoorLabel: daikinInstallIndoorLabel,
+  installDaikinOutdoorClose: daikinInstallOutdoorClose,
+  installDaikinIndoorStraight: daikinInstallIndoorStraight,
 };
 
 export const FEATURED_SERVICES = [
@@ -150,6 +160,11 @@ export const GALLERY = [
   { src: IMAGES.installRinnaiWall, title: "Rinnai Split — Living Area", tag: "Split System", rotate: true },
   { src: IMAGES.installDaikinOutdoor2, title: "Daikin Outdoor — Bracket Mount", tag: "Outdoor", rotate: true },
   { src: IMAGES.installDaikinGarage, title: "Daikin Split — Utility Room", tag: "Split System", rotate: true },
+  { src: IMAGES.installDaikinIndoorStraight, title: "Daikin Split — Clean Wall Finish", tag: "Daikin Install" },
+  { src: IMAGES.installDaikinOutdoorBracket, title: "Daikin Outdoor — Wall Bracket", tag: "Daikin Install" },
+  { src: IMAGES.installDaikinIndoorCorner, title: "Daikin Split — Corner Installation", tag: "Daikin Install" },
+  { src: IMAGES.installDaikinIndoorLabel, title: "Daikin Split — Indoor Installation", tag: "Daikin Install" },
+  { src: IMAGES.installDaikinOutdoorClose, title: "Daikin Outdoor — R32 Installation", tag: "Daikin Install" },
 ];
 
 export const FAQS = [
@@ -301,6 +316,11 @@ export const SPLIT_BRANDS = [
     metaDesc: "Compare Daikin Cora, Alira X and Zena split systems. See easy-to-understand features, model sizes and supplied & installed prices from SplitsPro.",
     body: "Daikin gives you three clear choices: Cora for dependable everyday comfort, Alira X for advanced air quality and smart features, and Zena when you want premium technology in a very slim designer indoor unit. Below we explain what the features actually do in plain English.",
     image: IMAGES.splitBedroom,
+    installProof: [
+      { src: IMAGES.installDaikinIndoorStraight, alt: "Real Daikin indoor split system installed by SplitsPro", label: "Clean indoor finish" },
+      { src: IMAGES.installDaikinOutdoorBracket, alt: "Real Daikin outdoor condenser installed on a wall bracket by SplitsPro", label: "Outdoor wall-bracket installation" },
+      { src: IMAGES.installDaikinIndoorCorner, alt: "Real Daikin indoor unit installed neatly near a ceiling corner by SplitsPro", label: "Neat high-wall installation" },
+    ],
     ranges: [
       {
         slug: "cora",
