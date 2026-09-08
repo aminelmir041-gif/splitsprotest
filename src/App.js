@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ReactLenis, useLenis } from "lenis/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { HelmetProvider } from "react-helmet-async";
@@ -52,6 +52,8 @@ const AnimatedRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/split-systems" element={<SplitSystems />} />
+          <Route path="/split-systems/mitsubishi-electric" element={<Navigate to="/split-systems/mitsubishi" replace />} />
+          <Route path="/split-systems/mitsubishi-heavy-industries" element={<Navigate to="/split-systems/mitsubishi" replace />} />
           <Route path="/split-systems/:slug" element={<BrandPage />} />
           <Route path="/ducted" element={<Ducted />} />
           <Route path="/cleaning" element={<Cleaning />} />

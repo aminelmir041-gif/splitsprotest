@@ -57,8 +57,8 @@ const BrandPage = () => {
 
   if (!brand) return <Navigate to="/split-systems" replace />;
 
-  const handleBook = (rangeName, priceRow) => {
-    const sel = { rangeName, kw: priceRow.kw, price: priceRow.price };
+  const handleBook = (range, priceRow) => {
+    const sel = { rangeName: range.name, displayName: range.displayName || `${brand.brand} ${range.name}`, kw: priceRow.kw, price: priceRow.price };
     setSelected(sel);
     setTimeout(() => {
       const el = document.getElementById("book");
@@ -76,12 +76,12 @@ const BrandPage = () => {
   };
 
   const selectionMessage = selected
-    ? `I'd like to book installation for ${brand.brand} ${selected.rangeName} ${selected.kw} — advertised at ${selected.price} supplied & installed.`
+    ? `I'd like to book installation for ${selected.displayName} ${selected.kw} — advertised at ${selected.price} supplied & installed.`
     : "";
 
-  const formKey = selected ? `${brand.slug}-${selected.rangeName}-${selected.kw}` : `${brand.slug}-default`;
+  const formKey = selected ? `${brand.slug}-${selected.displayName}-${selected.kw}` : `${brand.slug}-default`;
   const submitLabel = selected
-    ? `Book ${brand.brand} ${selected.rangeName} ${selected.kw}`
+    ? `Book ${selected.displayName} ${selected.kw}`
     : `Book ${brand.brand} Installation`;
 
   return (
@@ -144,7 +144,7 @@ const BrandPage = () => {
               {brand.ranges.map((r) => (
                 <button key={r.slug} onClick={() => jumpToRange(r.slug)} data-testid={`range-tab-${r.slug}`}
                   className="rounded-full border border-[#0B0B0B]/15 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-[#0B0B0B] transition-all hover:border-[#C8A46A] hover:text-[#C8A46A]">
-                  {r.name}
+                  {r.tabLabel || r.name}
                 </button>
               ))}
             </div>
@@ -163,9 +163,9 @@ const BrandPage = () => {
           <div className="sp-container">
           <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center lg:gap-12">
             <div className="max-w-3xl">
-              <span className="overline text-[#C8A46A]">{brand.brand}</span>
+              <span className="overline text-[#C8A46A]">{range.manufacturer || brand.brand}</span>
               <h2 className="mt-3 font-serif text-3xl font-medium leading-tight tracking-tight text-[#0B0B0B] md:text-4xl text-balance">
-                {brand.brand} {range.name}
+                {range.displayName || `${brand.brand} ${range.name}`}
               </h2>
               <p className="mt-4 leading-relaxed text-[#6E6E73]">{range.blurb}</p>
 
@@ -307,7 +307,7 @@ const BrandPage = () => {
                   </span>
                   <span className="font-serif text-xl text-[#0B0B0B] sm:text-2xl">{row.price}</span>
                   <button
-                    onClick={() => handleBook(range.name, row)}
+                    onClick={() => handleBook(range, row)}
                     data-testid={`book-btn-${range.slug}-${row.kw.replace(/[^0-9a-z]/gi, "")}`}
                     className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#F8F7F5] transition-all hover:border-[#C8A46A] hover:text-[#E4CFA6] hover:-translate-y-[2px]"
                   >
@@ -330,7 +330,7 @@ const BrandPage = () => {
             <span className="overline text-[#C8A46A]">Book Installation</span>
             <h2 className="mt-5 font-serif text-4xl font-medium leading-tight tracking-tight text-white md:text-5xl text-balance">
               {selected
-                ? `Book your ${brand.brand} ${selected.rangeName} ${selected.kw}`
+                ? `Book your ${selected.displayName} ${selected.kw}`
                 : `Book your ${brand.brand} installation`}
             </h2>
             {selected && (

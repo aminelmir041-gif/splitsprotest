@@ -35,8 +35,7 @@ const BrandNav = ({ heading = "View split system prices", overline = "Split Syst
 const SHORT_BRAND = {
   daikin: "Daikin",
   rinnai: "Rinnai",
-  "mitsubishi-electric": "Mitsubishi Electric",
-  "mitsubishi-heavy-industries": "Mitsubishi Heavy",
+  mitsubishi: "Mitsubishi",
   fujitsu: "Fujitsu",
   samsung: "Samsung",
 };
@@ -153,7 +152,7 @@ const SplitSystemsSeo = () => (
     {/* Professional installation */}
     <section className="bg-white py-24 sm:py-32" data-testid="pro-install">
       <div className="sp-container">
-        <SectionHeading overline="Installation" title="Professional split system installation" sub="Real installs by SplitsPro across Western Sydney — Daikin, Rinnai, Mitsubishi Electric, Mitsubishi Heavy Industries, Fujitsu and Samsung." />
+        <SectionHeading overline="Installation" title="Professional split system installation" sub="Real installs by SplitsPro across Western Sydney — Daikin, Rinnai, Mitsubishi, Fujitsu and Samsung." />
         <div className="mt-14 grid gap-8 lg:grid-cols-[1fr_1.25fr] lg:gap-14">
           <ul className="grid gap-4">
             {[
@@ -214,7 +213,7 @@ const SplitSystemsSeo = () => (
           </Reveal>
           <Reveal delay={0.1}>
             <p className="mt-6 leading-relaxed text-[#6E6E73]">
-              We regularly assess and replace older wall-mounted split systems with a new Daikin, Rinnai, Mitsubishi Electric, Mitsubishi Heavy Industries, Fujitsu or Samsung unit — reusing existing wall penetrations wherever possible for a neat finish.
+              We regularly assess and replace older wall-mounted split systems with a new Daikin, Rinnai, Mitsubishi, Fujitsu or Samsung unit — reusing existing wall penetrations wherever possible for a neat finish.
             </p>
           </Reveal>
           <Reveal delay={0.15}>
@@ -232,10 +231,10 @@ const SplitSystemsSeo = () => (
 const helmet = (
   <Helmet>
     <title>Split System Air Conditioning Supply & Installation | SplitsPro</title>
-    <meta name="description" content="Compare split system air conditioners from Daikin, Rinnai, Mitsubishi Electric, Mitsubishi Heavy Industries, Fujitsu and Samsung. View supplied & installed prices, get free sizing advice and book your installation with SplitsPro." />
+    <meta name="description" content="Compare split system air conditioners from Daikin, Rinnai, Mitsubishi, Fujitsu and Samsung. View supplied & installed prices, get free sizing advice and book your installation with SplitsPro." />
     <link rel="canonical" href={CANONICAL} />
     <meta property="og:title" content="Split System Air Conditioning Supply & Installation | SplitsPro" />
-    <meta property="og:description" content="Compare Daikin, Rinnai, Mitsubishi Electric, Mitsubishi Heavy Industries, Fujitsu and Samsung split systems. Supplied and installed by SplitsPro across Western Sydney." />
+    <meta property="og:description" content="Compare Daikin, Rinnai, Mitsubishi, Fujitsu and Samsung split systems. Supplied and installed by SplitsPro across Western Sydney." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={IMAGES.splitLiving} />
   </Helmet>
