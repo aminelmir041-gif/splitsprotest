@@ -6,6 +6,7 @@ on:
     branches: ["main"]
     paths:
       - '.github/workflows/brand-social-proof.yml'
+      - 'scripts/brand_social_proof_patch.py'
 
 permissions:
   contents: write
@@ -63,5 +64,5 @@ jobs:
             echo "No brand page changes to publish"
             exit 0
           fi
-          git commit -m "Add social proof to split-system brand pricing"
+          git commit -m "Refine social proof on split-system brand pricing"
           git push
