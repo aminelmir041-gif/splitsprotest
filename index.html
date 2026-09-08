@@ -1,101 +1,23 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0B0B0B" />
-  <meta name="description" content="SplitsPro — premium air conditioning installation, cleaning, maintenance and repairs across Sydney. Call 0414 698 435." />
-  <title>SplitsPro | Crafted Comfort For Every Home</title>
-  <link rel="icon" href="./logo.png" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="./site.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: ['class'],
-      theme: { extend: {
-        borderRadius: { lg:'var(--radius)', md:'calc(var(--radius) - 2px)', sm:'calc(var(--radius) - 4px)' },
-        colors: {
-          background:'hsl(var(--background))', foreground:'hsl(var(--foreground))',
-          card:{DEFAULT:'hsl(var(--card))',foreground:'hsl(var(--card-foreground))'},
-          popover:{DEFAULT:'hsl(var(--popover))',foreground:'hsl(var(--popover-foreground))'},
-          primary:{DEFAULT:'hsl(var(--primary))',foreground:'hsl(var(--primary-foreground))'},
-          secondary:{DEFAULT:'hsl(var(--secondary))',foreground:'hsl(var(--secondary-foreground))'},
-          muted:{DEFAULT:'hsl(var(--muted))',foreground:'hsl(var(--muted-foreground))'},
-          accent:{DEFAULT:'hsl(var(--accent))',foreground:'hsl(var(--accent-foreground))'},
-          destructive:{DEFAULT:'hsl(var(--destructive))',foreground:'hsl(var(--destructive-foreground))'},
-          border:'hsl(var(--border))', input:'hsl(var(--input))', ring:'hsl(var(--ring))'
-        },
-        keyframes:{
-          'accordion-down':{from:{height:'0'},to:{height:'var(--radix-accordion-content-height)'}},
-          'accordion-up':{from:{height:'var(--radix-accordion-content-height)'},to:{height:'0'}}
-        },
-        animation:{'accordion-down':'accordion-down .2s ease-out','accordion-up':'accordion-up .2s ease-out'}
-      }}
-    }
-  </script>
-  <script type="importmap">
-  {
-    "imports": {
-      "react": "https://esm.sh/react@19.0.0",
-      "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
-      "react-dom": "https://esm.sh/react-dom@19.0.0?external=react",
-      "react-dom/client": "https://esm.sh/react-dom@19.0.0/client?external=react",
-      "react-router-dom": "https://esm.sh/react-router-dom?external=react,react-dom",
-      "@tanstack/react-query": "https://esm.sh/@tanstack/react-query?external=react",
-      "react-helmet-async": "https://esm.sh/react-helmet-async?external=react,react-dom",
-      "framer-motion": "https://esm.sh/framer-motion?external=react,react-dom",
-      "lenis/react": "https://esm.sh/lenis/react?external=react",
-      "lucide-react": "https://esm.sh/lucide-react?external=react",
-      "react-leaflet": "https://esm.sh/react-leaflet?external=react,react-dom,leaflet",
-      "leaflet": "https://esm.sh/leaflet",
-      "sonner": "https://esm.sh/sonner?external=react,react-dom",
-      "axios": "https://esm.sh/axios",
-      "clsx": "https://esm.sh/clsx",
-      "tailwind-merge": "https://esm.sh/tailwind-merge",
-      "@radix-ui/react-accordion": "https://esm.sh/@radix-ui/react-accordion?external=react,react-dom",
-      "@radix-ui/react-select": "https://esm.sh/@radix-ui/react-select?external=react,react-dom",
-      "@radix-ui/react-alert-dialog": "https://esm.sh/@radix-ui/react-alert-dialog?external=react,react-dom",
-      "@radix-ui/react-aspect-ratio": "https://esm.sh/@radix-ui/react-aspect-ratio?external=react,react-dom",
-      "@radix-ui/react-avatar": "https://esm.sh/@radix-ui/react-avatar?external=react,react-dom",
-      "@radix-ui/react-checkbox": "https://esm.sh/@radix-ui/react-checkbox?external=react,react-dom",
-      "@radix-ui/react-collapsible": "https://esm.sh/@radix-ui/react-collapsible?external=react,react-dom",
-      "@radix-ui/react-context-menu": "https://esm.sh/@radix-ui/react-context-menu?external=react,react-dom",
-      "@radix-ui/react-dialog": "https://esm.sh/@radix-ui/react-dialog?external=react,react-dom",
-      "@radix-ui/react-dropdown-menu": "https://esm.sh/@radix-ui/react-dropdown-menu?external=react,react-dom",
-      "@radix-ui/react-hover-card": "https://esm.sh/@radix-ui/react-hover-card?external=react,react-dom",
-      "@radix-ui/react-label": "https://esm.sh/@radix-ui/react-label?external=react,react-dom",
-      "@radix-ui/react-menubar": "https://esm.sh/@radix-ui/react-menubar?external=react,react-dom",
-      "@radix-ui/react-navigation-menu": "https://esm.sh/@radix-ui/react-navigation-menu?external=react,react-dom",
-      "@radix-ui/react-popover": "https://esm.sh/@radix-ui/react-popover?external=react,react-dom",
-      "@radix-ui/react-progress": "https://esm.sh/@radix-ui/react-progress?external=react,react-dom",
-      "@radix-ui/react-radio-group": "https://esm.sh/@radix-ui/react-radio-group?external=react,react-dom",
-      "@radix-ui/react-scroll-area": "https://esm.sh/@radix-ui/react-scroll-area?external=react,react-dom",
-      "@radix-ui/react-separator": "https://esm.sh/@radix-ui/react-separator?external=react,react-dom",
-      "@radix-ui/react-slider": "https://esm.sh/@radix-ui/react-slider?external=react,react-dom",
-      "@radix-ui/react-slot": "https://esm.sh/@radix-ui/react-slot?external=react,react-dom",
-      "@radix-ui/react-switch": "https://esm.sh/@radix-ui/react-switch?external=react,react-dom",
-      "@radix-ui/react-tabs": "https://esm.sh/@radix-ui/react-tabs?external=react,react-dom",
-      "@radix-ui/react-toast": "https://esm.sh/@radix-ui/react-toast?external=react,react-dom",
-      "@radix-ui/react-toggle": "https://esm.sh/@radix-ui/react-toggle?external=react,react-dom",
-      "@radix-ui/react-toggle-group": "https://esm.sh/@radix-ui/react-toggle-group?external=react,react-dom",
-      "@radix-ui/react-tooltip": "https://esm.sh/@radix-ui/react-tooltip?external=react,react-dom",
-      "class-variance-authority": "https://esm.sh/class-variance-authority",
-      "cmdk": "https://esm.sh/cmdk?external=react,react-dom",
-      "embla-carousel-react": "https://esm.sh/embla-carousel-react?external=react",
-      "input-otp": "https://esm.sh/input-otp?external=react,react-dom",
-      "next-themes": "https://esm.sh/next-themes?external=react,react-dom",
-      "react-day-picker": "https://esm.sh/react-day-picker?external=react,react-dom",
-      "react-hook-form": "https://esm.sh/react-hook-form?external=react",
-      "react-resizable-panels": "https://esm.sh/react-resizable-panels?external=react,react-dom",
-      "vaul": "https://esm.sh/vaul?external=react,react-dom"
-    }
-  }
-  </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SplitsPro | Crafted Comfort For Every Home</title>
+<meta name="description" content="SplitsPro air conditioning installation, ducted systems, cleaning and repairs across Western Sydney. Call 0414 698 435.">
+<style>
+:root{--gold:#c8a46a;--ink:#171717;--muted:#6f6f73;--soft:#f6f5f2;--line:#e7e3dc}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#fff}a{text-decoration:none;color:inherit}.wrap{max-width:1180px;margin:auto;padding:0 24px}.nav{position:absolute;z-index:20;top:0;left:0;right:0;padding:22px 0;color:#fff}.navin{display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;letter-spacing:.06em;font-size:25px}.brand span{color:#d9b577}.links{display:flex;gap:25px;font-size:14px}.phone{border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:12px 18px}.hero{min-height:760px;height:100vh;display:flex;align-items:center;position:relative;color:#fff;background:linear-gradient(90deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.55) 46%,rgba(0,0,0,.15) 75%),url('https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/q03928px_hero1.png') center/cover}.hero .content{max-width:790px;padding-top:80px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:700;color:#d9b577}.hero h1{font-family:Georgia,serif;font-size:clamp(54px,7vw,92px);line-height:.98;margin:22px 0 24px;font-weight:500}.hero p{font-size:20px;line-height:1.6;max-width:700px;color:rgba(255,255,255,.88)}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 22px;border-radius:999px;font-weight:700;font-size:14px}.btn.gold{background:var(--gold);color:#111}.btn.ghost{border:1px solid rgba(255,255,255,.55);color:#fff;background:rgba(0,0,0,.16)}.rating{margin-top:28px;font-size:14px}.stars{color:#f7bd2d;letter-spacing:3px}.section{padding:95px 0}.soft{background:var(--soft)}h2{font-family:Georgia,serif;font-size:clamp(38px,4.8vw,58px);line-height:1.08;font-weight:500;margin:12px 0 18px}.lead{font-size:18px;line-height:1.7;color:var(--muted);max-width:760px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.05)}.card img{width:100%;height:250px;object-fit:cover;display:block}.card .pad{padding:25px}.card h3{font-family:Georgia,serif;font-size:26px;margin:0 0 10px}.card p{color:var(--muted);line-height:1.6;margin:0}.why{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:42px}.why div{padding:26px;border:1px solid var(--line);border-radius:18px}.why strong{display:block;font-size:17px;margin-bottom:8px}.why span{color:var(--muted);font-size:14px;line-height:1.5}.quote{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}.form{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px}.form input,.form select,.form textarea{width:100%;padding:14px 15px;margin:7px 0;border:1px solid #d9d4cc;border-radius:12px;font:inherit}.form textarea{min-height:115px;resize:vertical}.form button{border:0;width:100%;margin-top:8px;cursor:pointer}.small{font-size:13px;color:var(--muted);line-height:1.5}.footer{background:#121212;color:#fff;padding:50px 0 34px}.footerin{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}.footer p{color:#aaa;line-height:1.6}.fixed{position:fixed;right:18px;bottom:18px;z-index:30;background:var(--gold);color:#111;border-radius:999px;padding:14px 18px;font-weight:800;box-shadow:0 8px 30px rgba(0,0,0,.25)}@media(max-width:850px){.links{display:none}.hero{min-height:700px}.hero p{font-size:17px}.grid3{grid-template-columns:1fr}.why{grid-template-columns:1fr 1fr}.quote{grid-template-columns:1fr}.card img{height:230px}}@media(max-width:520px){.wrap{padding:0 18px}.hero h1{font-size:54px}.section{padding:72px 0}.why{grid-template-columns:1fr}.phone{display:none}}
+</style>
 </head>
 <body>
-  <noscript>This website requires JavaScript.</noscript>
-  <div id="root"></div>
-  <script type="module" src="./static/src/index.js"></script>
+<header class="nav"><div class="wrap navin"><div class="brand">SPLITS<span>PRO</span></div><nav class="links"><a href="#services">Services</a><a href="#why">Why Us</a><a href="#quote">Free Quote</a><a href="#areas">Service Areas</a></nav><a class="phone" href="tel:0414698435">0414 698 435</a></div></header>
+<section class="hero"><div class="wrap"><div class="content"><div class="eyebrow">Premium Residential Air Conditioning · Western Sydney</div><h1>Crafted Comfort<br>For Every Home</h1><p>We take the time to understand your home, recommend the right air conditioning system and install it with precision and care.</p><div class="actions"><a class="btn gold" href="#quote">Free Quote &amp; Plan →</a><a class="btn ghost" href="tel:0414698435">Call 0414 698 435</a></div><div class="rating"><span class="stars">★★★★★</span> &nbsp; 5 Star Google Rated Service</div></div></div></section>
+<section class="section soft" id="services"><div class="wrap"><div class="eyebrow">What We Do</div><h2>Considered services, precisely delivered</h2><p class="lead">From a single-room split system to whole-home ducted air conditioning, SplitsPro provides neat, reliable installations and straightforward advice.</p><div class="grid3"><article class="card"><img src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/4gx7zwbm_Daikin-Zena-Split-System-sq.jpg" alt="Split system air conditioner"><div class="pad"><h3>Split System Installation</h3><p>Quiet, energy-efficient systems correctly sized for the room and professionally installed.</p></div></article><article class="card"><img src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/micwrs4g_AdobeStock_709351486_Editorial_Use_Only.webp" alt="Ducted air conditioning controller"><div class="pad"><h3>Ducted Air Conditioning</h3><p>Discreet whole-home comfort with zoning options designed around the way you live.</p></div></article><article class="card"><img src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/lf1angzr_AdobeStock_2014887759.webp" alt="Air conditioning cleaning"><div class="pad"><h3>Cleaning &amp; Maintenance</h3><p>Keep your system clean, efficient and performing properly through every Sydney season.</p></div></article></div></div></section>
+<section class="section" id="why"><div class="wrap"><div class="eyebrow">Why SplitsPro</div><h2>Trust earned through craftsmanship</h2><p class="lead">No rushed installations and no confusing sales talk. Just practical recommendations, quality workmanship and clear communication.</p><div class="why"><div><strong>Fully Licensed &amp; Insured</strong><span>Professional work completed with care and attention to detail.</span></div><div><strong>Neat &amp; Tidy</strong><span>We treat your home with respect and aim for a clean finished installation.</span></div><div><strong>Quality Brands</strong><span>Daikin, Rinnai, Mitsubishi Electric and other trusted systems.</span></div><div><strong>Local Service</strong><span>Servicing Western Sydney and surrounding Sydney suburbs.</span></div></div></div></section>
+<section class="section soft" id="quote"><div class="wrap quote"><div><div class="eyebrow">Free Quote &amp; Plan</div><h2>Tell us what you need</h2><p class="lead">Call us directly or send a quick enquiry. We’ll help you choose the right system for your home and budget.</p><p><strong>Phone:</strong> <a href="tel:0414698435">0414 698 435</a></p><p><strong>ABN:</strong> 62 137 127 557</p><p class="small">For the fastest response, call or message us with your suburb, room size and the type of system you’re considering.</p></div><form class="form" onsubmit="sendEnquiry(event)"><input id="name" required placeholder="Name"><input id="phone" required placeholder="Phone"><input id="suburb" required placeholder="Suburb"><select id="service"><option>Split System Installation</option><option>Ducted Air Conditioning</option><option>Cleaning & Maintenance</option><option>Repairs / Fault Finding</option></select><textarea id="message" placeholder="Tell us what you need"></textarea><button class="btn gold" type="submit">Send Enquiry</button><p class="small">This opens your SMS app with the details filled in.</p></form></div></section>
+<section class="section" id="areas"><div class="wrap"><div class="eyebrow">Service Areas</div><h2>Air conditioning across Western Sydney</h2><p class="lead">Bankstown, Liverpool, Fairfield, Parramatta, Blacktown, Penrith, Campbelltown and surrounding Sydney suburbs.</p></div></section>
+<footer class="footer"><div class="wrap footerin"><div><div class="brand">SPLITS<span>PRO</span></div><p>Professional air conditioning solutions.<br>Quality work. Cool results.</p></div><div><strong>Contact</strong><p><a href="tel:0414698435">0414 698 435</a><br>Western Sydney, NSW<br>ABN 62 137 127 557</p></div></div></footer>
+<a class="fixed" href="tel:0414698435">Call Now</a>
+<script>function sendEnquiry(e){e.preventDefault();const n=document.getElementById('name').value,p=document.getElementById('phone').value,s=document.getElementById('suburb').value,v=document.getElementById('service').value,m=document.getElementById('message').value;const body=`Hi SplitsPro, I'd like a quote.%0AName: ${encodeURIComponent(n)}%0APhone: ${encodeURIComponent(p)}%0ASuburb: ${encodeURIComponent(s)}%0AService: ${encodeURIComponent(v)}%0AMessage: ${encodeURIComponent(m)}`;location.href='sms:0414698435?&body='+body}</script>
 </body>
 </html>
