@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import CustomCursor from "@/components/CustomCursor";
 import PageLoader from "@/components/PageLoader";
+import { LOGO } from "@/lib/data";
 
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -69,6 +70,18 @@ const AnimatedRoutes = () => {
 
 function App() {
   const basename = window.location.hostname.endsWith("github.io") ? "/splitsprotest" : "/";
+
+  useEffect(() => {
+    const handleImageError = (event) => {
+      const img = event.target;
+      if (!(img instanceof HTMLImageElement) || img.dataset.fallbackApplied === "true") return;
+      img.dataset.fallbackApplied = "true";
+      img.src = LOGO;
+      img.classList.add("site-image-fallback");
+    };
+    document.addEventListener("error", handleImageError, true);
+    return () => document.removeEventListener("error", handleImageError, true);
+  }, []);
 
   return (
     <HelmetProvider>

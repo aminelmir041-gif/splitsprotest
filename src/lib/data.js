@@ -2,6 +2,11 @@ import {
   Snowflake, Wind, Wrench, Sparkles, ShieldCheck, HeartHandshake,
   BadgeCheck, Home as HomeIcon, Brush, MessageSquareQuote,
 } from "lucide-react";
+import coraUserImage from "./embedded/cora";
+import aliraXUserImage from "./embedded/aliraX";
+import aliraXAltUserImage from "./embedded/aliraXAlt";
+import zenaBlackUserImage from "./embedded/zenaBlack";
+import zenaStreamerUserImage from "./embedded/zenaStreamer";
 
 export const PHONE = "0414 698 435";
 export const PHONE_TEL = "tel:0414698435";
@@ -312,7 +317,10 @@ export const SPLIT_BRANDS = [
           { title: "Quiet fan design", desc: "A large cross-flow fan and efficient motor move more air with less noise — useful for bedrooms and living rooms." },
           { title: "R32 refrigerant", desc: "R32 is the modern refrigerant used by this range. It has a lower global-warming impact than older R410A systems and helps support efficient operation." },
         ],
-        image: `${PUBLIC}/products/daikin-cora.png`,
+        image: coraUserImage,
+        gallery: [
+          { src: coraUserImage, alt: "Daikin Cora indoor unit" },
+        ],
         prices: [
           { kw: "2.5kW", model: "FTKM25WVMA", price: "$1,600" },
           { kw: "3.5kW", model: "FTKM35WVMA", price: "$1,750" },
@@ -334,7 +342,11 @@ export const SPLIT_BRANDS = [
           { title: "Built-in Wi-Fi", desc: "Control temperature, mode and schedules from your phone through Daikin's supported mobile control system." },
         ],
         note: "Streamer coronavirus figures come from Daikin laboratory testing of a test Streamer generator, not a claim that the installed air conditioner prevents infection.",
-        image: "https://www.daikin.co.nz/cdn/shop/files/Alira_FTXM46WVMA_IDU_28c296f1-f9a4-434f-bcb4-b90d51c02a1c.png?v=1703027226",
+        image: aliraXUserImage,
+        gallery: [
+          { src: aliraXUserImage, alt: "Daikin Alira X indoor unit" },
+          { src: aliraXAltUserImage, alt: "Daikin Alira X front view" },
+        ],
         prices: [
           { kw: "2.5kW", price: "$1,950" },
           { kw: "3.5kW", price: "$2,400" },
@@ -359,7 +371,12 @@ export const SPLIT_BRANDS = [
           { title: "Built-in Wi-Fi", desc: "Phone control is built into the indoor unit, so you can change temperature and operation without adding a bulky external Wi-Fi box." },
         ],
         note: "Zena is available in 2.5, 3.5, 5.0 and 6.0 kW reverse-cycle sizes. White models end in W; Black Wood models end in K.",
-        image: `${PUBLIC}/products/daikin-zena.jpg`,
+        image: zenaBlackUserImage,
+        gallery: [
+          { src: zenaBlackUserImage, alt: "Daikin Zena Black Wood indoor unit" },
+          { src: zenaStreamerUserImage, alt: "Daikin Zena White Hair Line with Streamer" },
+          { src: IMAGES.splitBedroom, alt: "Daikin Zena installed in a room" },
+        ],
         prices: [
           { kw: "2.5kW", model: "FTXJ25TVMAW / K", price: "$1,850" },
           { kw: "3.5kW", model: "FTXJ35TVMAW / K", price: "$2,050" },

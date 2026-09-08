@@ -75,4 +75,16 @@ function sendEnquiry(e){e.preventDefault();const n=document.getElementById('name
 })();
 </script>
 
+
+<script id="splitspro-image-fallback">
+document.addEventListener('error', function(event) {
+  var img = event.target;
+  if (!img || img.tagName !== 'IMG' || img.dataset.fallbackApplied === 'true') return;
+  img.dataset.fallbackApplied = 'true';
+  var base = location.hostname.endsWith('github.io') ? '/splitsprotest' : '';
+  img.src = base + '/logo.png';
+  img.style.objectFit = 'contain';
+  img.style.background = '#fff';
+}, true);
+</script>
 </body></html>
