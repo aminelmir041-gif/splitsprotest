@@ -74,7 +74,7 @@ function App() {
         <PageLoader />
         <CustomCursor />
         <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
-          <BrowserRouter basename={process.env.PUBLIC_URL}>
+          <BrowserRouter>
             <ScrollToTop />
             <Navbar />
             <main>
