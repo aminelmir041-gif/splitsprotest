@@ -53,6 +53,8 @@ jobs:
             "split-systems/rinnai"
             "split-systems/mitsubishi-electric"
             "split-systems/mitsubishi-heavy-industries"
+            "split-systems/fujitsu"
+            "split-systems/samsung"
             "ducted"
             "cleaning"
             "repairs"
