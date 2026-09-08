@@ -100,6 +100,19 @@ const BrandPage = () => {
                   {range.features.join("  •  ")}
                 </p>
               )}
+              {range.featureDetails && (
+                <div className="mt-7 grid gap-3 sm:grid-cols-2" data-testid={`feature-details-${range.slug}`}>
+                  {range.featureDetails.map((feature) => (
+                    <div key={feature.title} className="rounded-xl border border-[#E5E5EA] bg-white p-5 soft-shadow-sm">
+                      <h3 className="font-serif text-lg text-[#0B0B0B]">{feature.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-[#6E6E73]">{feature.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {range.note && (
+                <p className="mt-5 rounded-xl border border-[#C8A46A]/30 bg-[#F3E9D2]/50 px-4 py-3 text-xs leading-relaxed text-[#5F5140]">{range.note}</p>
+              )}
             </div>
             {range.image && (
               <div
@@ -127,7 +140,10 @@ const BrandPage = () => {
                   data-testid={`price-row-${range.slug}-${row.kw.replace(/[^0-9a-z]/gi, "")}`}
                   className={`grid gap-3 px-6 py-5 sm:grid-cols-[1fr_1fr_auto] sm:items-center sm:gap-8 ${i > 0 ? "border-t border-[#E5E5EA]" : ""}`}
                 >
-                  <span className="font-serif text-xl text-[#0B0B0B] sm:text-2xl">{row.kw}</span>
+                  <span>
+                    <span className="block font-serif text-xl text-[#0B0B0B] sm:text-2xl">{row.kw}</span>
+                    {row.model && <span className="mt-1 block text-xs font-medium text-[#6E6E73]">Model {row.model}</span>}
+                  </span>
                   <span className="font-serif text-xl text-[#0B0B0B] sm:text-2xl">{row.price}</span>
                   <button
                     onClick={() => handleBook(range.name, row)}

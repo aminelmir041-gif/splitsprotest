@@ -284,3 +284,7 @@ html.lenis, html.lenis body { height: auto; }
         max-width: 100%;
     }
 }
+
+/* Preserve portrait-photo rotation while hover zooming. Without this, hover replaced rotate(90deg) with scale(). */
+.img-zoom.rotate-90 { transform: rotate(90deg); }
+.group:hover .img-zoom.rotate-90 { transform: rotate(90deg) scale(1.05); }

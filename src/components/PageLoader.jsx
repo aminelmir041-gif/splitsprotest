@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LOGO } from "../lib/data";
 
 export const PageLoader = () => {
   const [done, setDone] = useState(false);
@@ -17,17 +18,17 @@ export const PageLoader = () => {
           exit={{ y: "-100%" }}
           transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
         >
-          <div className="text-center">
+          <div className="rounded-2xl border border-[#C8A46A]/40 bg-white px-8 py-7 text-center shadow-2xl sm:px-12">
             <motion.img
-              src="/logo.png"
+              src={LOGO}
               alt="SplitsPro"
-              className="mx-auto h-20 w-auto [filter:brightness(0)_invert(1)]"
+              className="mx-auto h-20 w-auto object-contain sm:h-24"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             />
-            <motion.div className="mx-auto mt-6 h-px w-40 overflow-hidden bg-white/15">
-              <motion.div className="h-full bg-white" initial={{ x: "-100%" }} animate={{ x: "0%" }} transition={{ duration: 1, ease: "easeInOut" }} />
+            <motion.div className="mx-auto mt-6 h-px w-40 overflow-hidden bg-[#C8A46A]/25">
+              <motion.div className="h-full bg-[#C8A46A]" initial={{ x: "-100%" }} animate={{ x: "0%" }} transition={{ duration: 1, ease: "easeInOut" }} />
             </motion.div>
           </div>
         </motion.div>
