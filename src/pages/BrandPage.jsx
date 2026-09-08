@@ -98,6 +98,38 @@ const BrandPage = () => {
 
       <PageHero overline={brand.brand} title={brand.h1} sub={brand.tagline} image={brand.image} />
 
+      <section className="border-b border-[#E8E6E1] bg-[#FBFAF8] py-5 sm:py-6" data-testid="brand-top-proof">
+        <div className="sp-container">
+          <div className="grid gap-5 lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8">
+            <div>
+              <GoogleRating />
+              <p className="mt-2 text-[11px] font-medium text-[#6E6E73]">Verified customer feedback from SplitsPro&apos;s Google Business Profile.</p>
+            </div>
+            <div className="min-w-0 border-[#E5E5EA] lg:border-x lg:px-8">
+              <div className="flex items-center gap-1">
+                {Array.from({ length: FEATURED_REVIEW.rating || 5 }).map((_, i) => (
+                  <Star key={i} className="h-3.5 w-3.5 fill-[#FBBC04] text-[#FBBC04]" />
+                ))}
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-[#3A3A3C]">
+                &ldquo;They were professional from the initial quote through to installation... The workmanship was clean, efficient and we couldn&apos;t be happier.&rdquo;
+                <span className="ml-2 whitespace-nowrap text-xs font-semibold text-[#6E6E73]">— {FEATURED_REVIEW.name}, Google Review</span>
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+              <a href="#book" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all hover:border-[#C8A46A]">Book Installation <ArrowUpRight className="h-4 w-4" /></a>
+              <a href={PHONE_TEL} className="inline-flex items-center justify-center gap-2 rounded-md border border-[#0B0B0B]/15 bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#0B0B0B]">Call Now <Phone className="h-4 w-4" /></a>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-[#E8E6E1] pt-4 text-xs font-semibold text-[#4E4E52]">
+            <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Fully Licensed &amp; Insured</span>
+            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> SplitsPro Workmanship Guarantee</span>
+            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Minimum 5-Year Manufacturer Warranty</span>
+            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Extras confirmed before work starts</span>
+          </div>
+        </div>
+      </section>
+
       {/* Compact intro + range jump tabs (price-focused, no trust badges chrome) */}
       <section className="bg-white py-14 sm:py-20" data-testid="brand-intro">
         <div className="sp-container">
@@ -187,68 +219,82 @@ const BrandPage = () => {
             </div>
             {range.image && (
               <div
-                className="mx-auto w-full max-w-2xl lg:mx-0 lg:justify-self-end"
+                className={`${range.slug === "zena" ? "w-full lg:col-span-2" : "mx-auto w-full max-w-2xl lg:mx-0 lg:justify-self-end"}`}
                 data-testid={`range-image-${range.slug}`}
               >
-                <div className="product-media-seamless flex min-h-[250px] items-center justify-center px-1 py-4 sm:min-h-[320px] lg:min-h-[380px]">
-                  <img
-                    src={range.image}
-                    alt={`${brand.brand} ${range.name} split system air conditioner`}
-                    loading="lazy"
-                    data-no-fallback="true"
-                    onError={(e) => { e.currentTarget.style.display = "none"; }}
-                    className="product-unit-image block max-h-[340px] w-full object-contain sm:max-h-[410px] lg:max-h-[470px]"
-                  />
-                </div>
-                {range.gallery?.length > 1 && (
-                  <div className="mt-1 flex flex-wrap items-center justify-center gap-4 sm:gap-6" data-testid={`range-gallery-${range.slug}`}>
-                    {range.gallery.slice(0, 3).map((item, idx) => (
-                      <div key={`${range.slug}-${idx}`} className="product-thumb-seamless flex h-24 w-[44%] max-w-[190px] items-center justify-center sm:h-28 sm:w-[30%]">
+                {range.slug === "zena" && range.gallery?.length >= 2 ? (
+                  <div className="mt-2 grid gap-8 sm:grid-cols-2 sm:gap-10" data-testid="zena-two-finish-showcase">
+                    {range.gallery.slice(0, 2).map((item, idx) => (
+                      <figure key={`${range.slug}-large-${idx}`} className="m-0 flex min-h-[260px] flex-col items-center justify-center sm:min-h-[320px] lg:min-h-[360px]">
                         <img
                           src={item.src}
                           alt={item.alt}
-                          loading="lazy"
+                          loading="eager"
                           data-no-fallback="true"
                           onError={(e) => { e.currentTarget.style.display = "none"; }}
-                          className="product-unit-image h-full w-full object-contain"
+                          className="zena-showcase-image block w-full object-contain"
                         />
-                      </div>
+                        <figcaption className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#6E6E73]">{idx === 0 ? "Black Wood" : "White Hair Line"}</figcaption>
+                      </figure>
                     ))}
                   </div>
+                ) : (
+                  <>
+                    <div className="product-media-seamless flex min-h-[250px] items-center justify-center px-1 py-4 sm:min-h-[320px] lg:min-h-[380px]">
+                      <img
+                        src={range.image}
+                        alt={`${brand.brand} ${range.name} split system air conditioner`}
+                        loading="lazy"
+                        data-no-fallback="true"
+                        onError={(e) => { e.currentTarget.style.display = "none"; }}
+                        className="product-unit-image block max-h-[340px] w-full object-contain sm:max-h-[410px] lg:max-h-[470px]"
+                      />
+                    </div>
+                    {range.gallery?.length > 1 && (
+                      <div className="mt-1 flex flex-wrap items-center justify-center gap-4 sm:gap-6" data-testid={`range-gallery-${range.slug}`}>
+                        {range.gallery.slice(0, 3).map((item, idx) => (
+                          <div key={`${range.slug}-${idx}`} className="product-thumb-seamless flex h-24 w-[44%] max-w-[190px] items-center justify-center sm:h-28 sm:w-[30%]">
+                            <img
+                              src={item.src}
+                              alt={item.alt}
+                              loading="lazy"
+                              data-no-fallback="true"
+                              onError={(e) => { e.currentTarget.style.display = "none"; }}
+                              className="product-unit-image h-full w-full object-contain"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
           </div>
 
-            <p className="mt-8 text-xs font-semibold uppercase tracking-[0.22em] text-[#6E6E73]">Supplied &amp; Installed</p>
-            <div className="mt-3 overflow-hidden rounded-2xl border border-[#E5E5EA] bg-white soft-shadow-sm">
-              {ri === 0 && (
-                <div className="border-b border-[#E5E5EA] bg-white px-6 py-6 sm:px-7" data-testid="brand-price-proof">
-                  <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-                    <div>
-                      <GoogleRating />
-                      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-[#4E4E52]">
-                        <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Fully Licensed &amp; Insured</span>
-                        <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> SplitsPro Workmanship Guarantee</span>
-                        <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Minimum 5-Year Manufacturer Warranty</span>
-                      </div>
-                    </div>
-                    <figure className="rounded-xl bg-[#F7F7F8] p-5" data-testid="brand-google-review">
-                      <div className="flex items-center gap-1" aria-label="5 star Google review">
-                        {Array.from({ length: FEATURED_REVIEW.rating || 5 }).map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-[#FBBC04] text-[#FBBC04]" />
-                        ))}
-                      </div>
-                      <blockquote className="mt-3 text-sm leading-relaxed text-[#3A3A3C]">&ldquo;{FEATURED_REVIEW.text}&rdquo;</blockquote>
-                      <figcaption className="mt-3 text-xs font-semibold text-[#1D1D1F]">{FEATURED_REVIEW.name} <span className="font-normal text-[#6E6E73]">· Google Review</span></figcaption>
-                    </figure>
-                  </div>
-                  <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                    <a href="#book" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#F8F7F5] transition-all hover:border-[#C8A46A] hover:text-[#E4CFA6]">Book Installation <ArrowUpRight className="h-4 w-4" /></a>
-                    <a href={PHONE_TEL} className="inline-flex items-center justify-center gap-2 rounded-md border border-[#0B0B0B]/20 bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#0B0B0B] transition-colors hover:border-[#0B0B0B]">Call Now <Phone className="h-4 w-4" /></a>
-                  </div>
-                </div>
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-[#E5E5EA] py-3 text-xs text-[#5F5F63]" data-testid={`range-proof-${range.slug}`}>
+              {ri % 3 === 0 && (
+                <>
+                  <span className="flex items-center gap-2 font-semibold"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Licensed &amp; insured installation</span>
+                  <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Workmanship guarantee included</span>
+                </>
               )}
+              {ri % 3 === 1 && (
+                <>
+                  <span className="flex items-center gap-2 font-semibold"><Star className="h-4 w-4 fill-[#FBBC04] text-[#FBBC04]" /> 5-star customer feedback</span>
+                  <span>&ldquo;Clean, efficient workmanship and a high standard of installation.&rdquo; — Google review</span>
+                </>
+              )}
+              {ri % 3 === 2 && (
+                <>
+                  <span className="flex items-center gap-2 font-semibold"><Check className="h-4 w-4 text-[#C8A46A]" /> Minimum 5-year manufacturer warranty</span>
+                  <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Any extras confirmed before work starts</span>
+                </>
+              )}
+            </div>
+
+            <p className="mt-7 text-xs font-semibold uppercase tracking-[0.22em] text-[#6E6E73]">Supplied &amp; Installed</p>
+            <div className="mt-3 overflow-hidden rounded-2xl border border-[#E5E5EA] bg-white soft-shadow-sm">
               {range.prices.map((row, i) => (
                 <div
                   key={row.kw}

@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/splitsprotest/static/css/main.061b8956.css",
-    "main.js": "/splitsprotest/static/js/main.f07dfe60.js",
+    "main.css": "/splitsprotest/static/css/main.ea7a8b1e.css",
+    "main.js": "/splitsprotest/static/js/main.bbabfd97.js",
     "index.html": "/splitsprotest/index.html",
-    "main.061b8956.css.map": "/splitsprotest/static/css/main.061b8956.css.map",
-    "main.f07dfe60.js.map": "/splitsprotest/static/js/main.f07dfe60.js.map"
+    "main.ea7a8b1e.css.map": "/splitsprotest/static/css/main.ea7a8b1e.css.map",
+    "main.bbabfd97.js.map": "/splitsprotest/static/js/main.bbabfd97.js.map"
   },
   "entrypoints": [
-    "static/css/main.061b8956.css",
-    "static/js/main.f07dfe60.js"
+    "static/css/main.ea7a8b1e.css",
+    "static/js/main.bbabfd97.js"
   ]
 }
