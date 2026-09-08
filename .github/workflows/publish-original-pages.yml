@@ -1,6 +1,6 @@
 name: Publish Original SplitsPro Pages
 
-# Rebuild trigger after logo and service-area map fixes.
+# Rebuild latest restored pages, brands, loader and gallery updates.
 on:
   workflow_dispatch:
   push:
