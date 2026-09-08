@@ -1,0 +1,78 @@
+name: Split System Sales Funnel Upgrade
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - '.github/workflows/split-sales-funnel.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade-split-funnel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+
+      - name: Apply split-system funnel changes
+        run: python3 .github/scripts/split_sales_funnel.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          npm install --legacy-peer-deps --no-save ajv@8.17.1 ajv-keywords@5.1.0
+
+      - name: Build React pages
+        env:
+          CI: 'false'
+        run: npm run build
+
+      - name: Publish all restored routes
+        run: |
+          set -e
+          rm -rf static
+          cp -R build/static static
+          ROUTES=(
+            "about"
+            "split-systems"
+            "split-systems/daikin"
+            "split-systems/rinnai"
+            "split-systems/mitsubishi-electric"
+            "split-systems/mitsubishi-heavy-industries"
+            "split-systems/fujitsu"
+            "split-systems/samsung"
+            "ducted"
+            "cleaning"
+            "repairs"
+            "servicing"
+            "gallery"
+            "reviews"
+            "service-areas"
+            "faq"
+            "contact"
+          )
+          for route in "${ROUTES[@]}"; do
+            mkdir -p "$route"
+            cp build/index.html "$route/index.html"
+          done
+          cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
+
+      - name: Commit sales funnel update
+        run: |
+          git config user.name "SplitsPro Funnel Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src static asset-manifest.json split-systems
+          if git diff --cached --quiet; then
+            echo "No changes to publish"
+            exit 0
+          fi
+          git commit -m "Make split-system pricing pages sales first"
+          git push
