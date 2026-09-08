@@ -20,6 +20,9 @@ jobs:
       - name: Apply image integration fixes
         run: python3 .github/scripts/finish_image_upgrade.py
 
+      - name: Add uploaded Zena lifestyle image
+        run: python3 .github/scripts/add_zena_room.py
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
