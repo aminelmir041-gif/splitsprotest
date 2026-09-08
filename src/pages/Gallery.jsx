@@ -46,6 +46,21 @@ const Gallery = () => (
                   <span className="text-xs uppercase tracking-wider text-white/80">{g.tag}</span>
                 </figcaption>
               </>
+            ) : g.portrait ? (
+              <>
+                <div className="relative aspect-[3/4] w-full overflow-hidden">
+                  <img
+                    src={g.src}
+                    alt={g.title}
+                    loading="lazy"
+                    className="img-zoom h-full w-full object-cover"
+                  />
+                </div>
+                <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/70 to-transparent p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <span className="font-serif text-lg text-white">{g.title}</span>
+                  <span className="text-xs uppercase tracking-wider text-white/80">{g.tag}</span>
+                </figcaption>
+              </>
             ) : (
               <>
                 <img src={g.src} alt={g.title} loading="lazy" className="img-zoom w-full object-cover" />

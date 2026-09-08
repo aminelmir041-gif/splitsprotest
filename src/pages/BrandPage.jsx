@@ -149,35 +149,6 @@ const BrandPage = () => {
               ))}
             </div>
           )}
-          {brand.installProof?.length > 0 && (
-            <div className="mt-10" data-testid="brand-install-proof">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Real SplitsPro Installations</span>
-                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#6E6E73]">
-                    Actual Daikin systems installed by SplitsPro — clean indoor positioning, tidy outdoor mounting and a finished result you can see before you book.
-                  </p>
-                </div>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8A8A8E]">Our work, not stock photos</span>
-              </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                {brand.installProof.map((photo, i) => (
-                  <figure key={photo.src} className="min-w-0">
-                    <div className="overflow-hidden rounded-xl bg-[#F5F5F7]">
-                      <img
-                        src={photo.src}
-                        alt={photo.alt}
-                        loading={i === 0 ? "eager" : "lazy"}
-                        data-no-fallback="true"
-                        className="h-56 w-full object-cover sm:h-48 lg:h-56"
-                      />
-                    </div>
-                    <figcaption className="mt-2 text-[11px] font-medium text-[#6E6E73]">{photo.label}</figcaption>
-                  </figure>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
@@ -244,6 +215,18 @@ const BrandPage = () => {
                     <p className="mt-5 rounded-xl border border-[#C8A46A]/30 bg-[#F3E9D2]/50 px-4 py-3 text-xs leading-relaxed text-[#5F5140]">{range.note}</p>
                   )}
                 </>
+              )}
+              {range.installPhoto && (
+                <figure className="mt-6 max-w-md" data-testid={`range-install-photo-${range.slug}`}>
+                  <img
+                    src={range.installPhoto.src}
+                    alt={range.installPhoto.alt}
+                    loading="lazy"
+                    data-no-fallback="true"
+                    className="max-h-[280px] w-auto max-w-full rounded-lg object-contain sm:max-h-[320px]"
+                  />
+                  <figcaption className="mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8A8E]">Recent SplitsPro Daikin install</figcaption>
+                </figure>
               )}
             </div>
             {range.image && (

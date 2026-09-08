@@ -160,11 +160,11 @@ export const GALLERY = [
   { src: IMAGES.installRinnaiWall, title: "Rinnai Split — Living Area", tag: "Split System", rotate: true },
   { src: IMAGES.installDaikinOutdoor2, title: "Daikin Outdoor — Bracket Mount", tag: "Outdoor", rotate: true },
   { src: IMAGES.installDaikinGarage, title: "Daikin Split — Utility Room", tag: "Split System", rotate: true },
-  { src: IMAGES.installDaikinIndoorStraight, title: "Daikin Split — Clean Wall Finish", tag: "Daikin Install" },
-  { src: IMAGES.installDaikinOutdoorBracket, title: "Daikin Outdoor — Wall Bracket", tag: "Daikin Install" },
-  { src: IMAGES.installDaikinIndoorCorner, title: "Daikin Split — Corner Installation", tag: "Daikin Install" },
-  { src: IMAGES.installDaikinIndoorLabel, title: "Daikin Split — Indoor Installation", tag: "Daikin Install" },
-  { src: IMAGES.installDaikinOutdoorClose, title: "Daikin Outdoor — R32 Installation", tag: "Daikin Install" },
+  { src: IMAGES.installDaikinIndoorStraight, title: "Daikin Split — Clean Wall Finish", tag: "Daikin Install" , portrait: true },
+  { src: IMAGES.installDaikinOutdoorBracket, title: "Daikin Outdoor — Wall Bracket", tag: "Daikin Install" , portrait: true },
+  { src: IMAGES.installDaikinIndoorCorner, title: "Daikin Split — Corner Installation", tag: "Daikin Install" , portrait: true },
+  { src: IMAGES.installDaikinIndoorLabel, title: "Daikin Split — Indoor Installation", tag: "Daikin Install" , portrait: true },
+  { src: IMAGES.installDaikinOutdoorClose, title: "Daikin Outdoor — R32 Installation", tag: "Daikin Install" , portrait: true },
 ];
 
 export const FAQS = [
@@ -316,11 +316,6 @@ export const SPLIT_BRANDS = [
     metaDesc: "Compare Daikin Cora, Alira X and Zena split systems. See easy-to-understand features, model sizes and supplied & installed prices from SplitsPro.",
     body: "Daikin gives you three clear choices: Cora for dependable everyday comfort, Alira X for advanced air quality and smart features, and Zena when you want premium technology in a very slim designer indoor unit. Below we explain what the features actually do in plain English.",
     image: IMAGES.splitBedroom,
-    installProof: [
-      { src: IMAGES.installDaikinIndoorStraight, alt: "Real Daikin indoor split system installed by SplitsPro", label: "Clean indoor finish" },
-      { src: IMAGES.installDaikinOutdoorBracket, alt: "Real Daikin outdoor condenser installed on a wall bracket by SplitsPro", label: "Outdoor wall-bracket installation" },
-      { src: IMAGES.installDaikinIndoorCorner, alt: "Real Daikin indoor unit installed neatly near a ceiling corner by SplitsPro", label: "Neat high-wall installation" },
-    ],
     ranges: [
       {
         slug: "cora",
@@ -336,6 +331,7 @@ export const SPLIT_BRANDS = [
           { title: "R32 refrigerant", desc: "R32 is the modern refrigerant used by this range. It has a lower global-warming impact than older R410A systems and helps support efficient operation." },
         ],
         image: coraUserImage,
+        installPhoto: { src: IMAGES.installDaikinIndoorStraight, alt: "Recent Daikin indoor split system installation by SplitsPro" },
         gallery: [
           { src: coraUserImage, alt: "Daikin Cora indoor unit" },
         ],
@@ -361,6 +357,7 @@ export const SPLIT_BRANDS = [
         ],
         note: "Streamer coronavirus figures come from Daikin laboratory testing of a test Streamer generator, not a claim that the installed air conditioner prevents infection.",
         image: aliraXUserImage,
+        installPhoto: { src: IMAGES.installDaikinOutdoorBracket, alt: "Recent Daikin outdoor unit wall bracket installation by SplitsPro" },
         gallery: [
           { src: aliraXUserImage, alt: "Daikin Alira X indoor unit" },
           { src: aliraXAltUserImage, alt: "Daikin Alira X front view" },
@@ -390,6 +387,7 @@ export const SPLIT_BRANDS = [
         ],
         note: "Zena is available in 2.5, 3.5, 5.0 and 6.0 kW reverse-cycle sizes. White models end in W; Black Wood models end in K.",
         image: `${PUBLIC}/products/zena-black-uploaded.webp`,
+        installPhoto: { src: IMAGES.installDaikinIndoorCorner, alt: "Recent Daikin indoor split system installation by SplitsPro" },
         gallery: [
           { src: `${PUBLIC}/products/zena-black-uploaded.webp`, alt: "Daikin Zena Black Wood indoor unit" },
           { src: `${PUBLIC}/products/zena-white-uploaded.webp`, alt: "Daikin Zena White Hair Line with Streamer" },
