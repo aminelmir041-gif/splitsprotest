@@ -1,0 +1,82 @@
+name: Refine Daikin Install Photos
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - '.github/workflows/refine-daikin-install-photos.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+
+      - name: Apply Daikin photo refinement
+        run: python3 scripts/refine_daikin_install_photos.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          npm install --legacy-peer-deps --no-save ajv@8.17.1 ajv-keywords@5.1.0
+
+      - name: Build React site
+        env:
+          CI: 'false'
+        run: npm run build
+
+      - name: Publish all React routes together
+        run: |
+          set -e
+          rm -rf static
+          cp -R build/static static
+
+          ROUTES=(
+            "about"
+            "split-systems"
+            "split-systems/daikin"
+            "split-systems/rinnai"
+            "split-systems/mitsubishi"
+            "split-systems/mitsubishi-electric"
+            "split-systems/mitsubishi-heavy-industries"
+            "split-systems/fujitsu"
+            "split-systems/samsung"
+            "ducted"
+            "cleaning"
+            "repairs"
+            "servicing"
+            "gallery"
+            "reviews"
+            "service-areas"
+            "faq"
+            "contact"
+          )
+
+          for route in "${ROUTES[@]}"; do
+            mkdir -p "$route"
+            cp build/index.html "$route/index.html"
+          done
+
+          cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
+
+      - name: Commit refinement
+        run: |
+          git config user.name "SplitsPro Pages Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src static asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          if git diff --cached --quiet; then
+            echo "No changes to publish"
+            exit 0
+          fi
+          git commit -m "Blend Daikin install photos into model sections"
+          git push
