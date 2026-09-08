@@ -6,7 +6,7 @@ import {
 export const PHONE = "0414 698 435";
 export const PHONE_TEL = "tel:0414698435";
 export const ABN = "62 137 127 557";
-export const LOGO = "/logo.png";
+export const LOGO = `${process.env.PUBLIC_URL || ""}/logo.png`;
 
 const A = "https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/";
 
