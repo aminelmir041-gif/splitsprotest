@@ -6,6 +6,11 @@ on:
     branches: ["main"]
     paths:
       - '.github/workflows/seamless-product-images.yml'
+      - '.github/scripts/seamless_product_images.py'
+      - 'public/products/zena-white-uploaded.webp'
+      - 'public/products/zena-black-uploaded.webp'
+      - 'products/zena-white-uploaded.webp'
+      - 'products/zena-black-uploaded.webp'
 
 permissions:
   contents: write
@@ -17,7 +22,7 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v4
 
-      - name: Apply seamless product image patch
+      - name: Apply exact Zena image paths
         run: python3 .github/scripts/seamless_product_images.py
 
       - name: Set up Node
@@ -65,7 +70,7 @@ jobs:
           done
           cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
 
-      - name: Commit seamless image update
+      - name: Commit Zena image update
         run: |
           git config user.name "SplitsPro Images Bot"
           git config user.email "actions@users.noreply.github.com"
@@ -74,5 +79,5 @@ jobs:
             echo "No changes to publish"
             exit 0
           fi
-          git commit -m "Make split-system product images seamless"
+          git commit -m "Use exact uploaded Zena product images"
           git push
