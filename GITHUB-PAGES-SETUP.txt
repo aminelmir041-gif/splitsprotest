@@ -1,0 +1,9 @@
+SPLITSPRO GITHUB PAGES READY
+
+This project has already been configured for:
+https://aminelmir041-gif.github.io/splitsprotest/
+
+GitHub Pages setting required:
+Settings > Pages > Build and deployment > Source > GitHub Actions
+
+Upload the CONTENTS of this folder to the repository root (do not upload the ZIP itself as a single file).
