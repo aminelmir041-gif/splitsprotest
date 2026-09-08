@@ -1,6 +1,6 @@
 name: Publish Original SplitsPro Pages
 
-# Rebuild all React routes together so every page references the same current asset bundle. Full republish retry.
+# Rebuild all React routes together so every page references the same current asset bundle.
 on:
   workflow_dispatch:
   push:
@@ -51,6 +51,7 @@ jobs:
             "split-systems"
             "split-systems/daikin"
             "split-systems/rinnai"
+            "split-systems/mitsubishi"
             "split-systems/mitsubishi-electric"
             "split-systems/mitsubishi-heavy-industries"
             "split-systems/fujitsu"
