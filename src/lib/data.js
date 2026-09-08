@@ -7,6 +7,7 @@ import aliraXUserImage from "./embedded/aliraX";
 import aliraXAltUserImage from "./embedded/aliraXAlt";
 import zenaBlackUserImage from "./embedded/zenaBlack";
 import zenaStreamerUserImage from "./embedded/zenaStreamer";
+import zenaRoomUserImage from "./embedded/zenaRoom";
 
 export const PHONE = "0414 698 435";
 export const PHONE_TEL = "tel:0414698435";
@@ -375,7 +376,7 @@ export const SPLIT_BRANDS = [
         gallery: [
           { src: zenaBlackUserImage, alt: "Daikin Zena Black Wood indoor unit" },
           { src: zenaStreamerUserImage, alt: "Daikin Zena White Hair Line with Streamer" },
-          { src: IMAGES.splitBedroom, alt: "Daikin Zena installed in a room" },
+          { src: zenaRoomUserImage, alt: "Daikin Zena Black Wood installed in a modern room" },
         ],
         prices: [
           { kw: "2.5kW", model: "FTXJ25TVMAW / K", price: "$1,850" },
