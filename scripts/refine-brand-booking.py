@@ -18,5 +18,4 @@ new = '''            <p className="mt-6 max-w-lg text-lg leading-relaxed text-wh
 if old not in text:
     raise SystemExit('Booking reassurance paragraph not found')
 text = text.replace(old, new, 1)
-text = text.replace('                  "Licensed & Insured",\n', '', 1)
 b.write_text(text, encoding='utf-8')
