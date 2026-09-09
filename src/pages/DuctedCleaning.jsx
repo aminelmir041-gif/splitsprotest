@@ -4,31 +4,37 @@ import CleaningDetailPage from "./CleaningDetailPage";
 const BENEFITS = [
   {
     icon: Bug,
+    kicker: "Start at the return",
     title: "Cleaner return air",
     desc: "Clean the return-air filter and grille where household dust is constantly drawn in.",
   },
   {
     icon: Fan,
+    kicker: "Keep it moving",
     title: "Whole-home airflow",
     desc: "Help maintain more consistent airflow through the system and across your outlets.",
   },
   {
     icon: Sparkles,
+    kicker: "Less dust traffic",
     title: "Less built-up dust",
     desc: "Remove visible dust from filters, grilles and accessible air-distribution surfaces.",
   },
   {
     icon: Gauge,
+    kicker: "Let the system breathe",
     title: "Efficient operation",
     desc: "Clean filters reduce airflow restriction and help the ducted system breathe properly.",
   },
   {
     icon: Wind,
+    kicker: "Clean where you see it",
     title: "Cleaner outlets",
     desc: "Detailed outlet and grille cleaning keeps the visible parts of the system fresh and tidy.",
   },
   {
     icon: Home,
+    kicker: "One system, whole home",
     title: "Whole-home system care",
     desc: "A considered clean and inspection helps spot maintenance issues before peak season.",
   },
