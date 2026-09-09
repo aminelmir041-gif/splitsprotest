@@ -7,7 +7,10 @@ on:
       - 'src/components/DaikinIntroEditorial.jsx'
       - 'src/components/DuctedPricingSelector.jsx'
       - 'src/components/QuoteForm.jsx'
+      - 'src/components/ServiceAreasMap.jsx'
       - 'src/pages/Ducted.jsx'
+      - 'src/pages/Gallery.jsx'
+      - 'src/pages/Reviews.jsx'
   workflow_dispatch:
 
 permissions:
@@ -126,10 +129,10 @@ jobs:
         run: |
           git config user.name "SplitsPro Site Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/pages/BrandPage.jsx src/components/DaikinIntroEditorial.jsx src/components/DuctedPricingSelector.jsx src/lib/data.js src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx src/pages/Ducted.jsx static products installs asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/pages/BrandPage.jsx src/components/DaikinIntroEditorial.jsx src/components/DuctedPricingSelector.jsx src/components/ServiceAreasMap.jsx src/lib/data.js src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx src/pages/Ducted.jsx src/pages/Gallery.jsx src/pages/Reviews.jsx static products installs asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Deploy ducted pricing selector"
+            git commit -m "Deploy site updates"
             git push
           fi
