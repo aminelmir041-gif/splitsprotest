@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/refresh-official-brand-pages.yml'
+      - 'src/components/DaikinIntroEditorial.jsx'
   workflow_dispatch:
 
 permissions:
@@ -61,11 +62,6 @@ jobs:
                   '''  const installs = brand.installEditorial;\n  const review = installs?.review || (brand.slug === "daikin"\n    ? { text: "Best in the business, amazing work.", author: "Mat 134" }\n    : null);\n''',
                   1,
               )
-
-          old_review = '''              <blockquote className="absolute bottom-[2%] left-[2%] z-10 max-w-[315px] sm:left-[4%] lg:left-[6%]">\n                <div className="text-[14px] tracking-[0.10em] text-[#FBBC04]">★★★★★</div>\n                <p className="mt-2 font-serif text-[20px] italic leading-[1.35] text-[#343842] sm:text-[22px]">\n                  “Best in the business, amazing work.”\n                </p>\n                <footer className="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7A7D83]">\n                  Mat 134 · Google Review\n                </footer>\n              </blockquote>\n'''
-          new_review = '''              {review && (\n                <blockquote className="absolute bottom-[2%] left-[2%] z-10 max-w-[315px] sm:left-[4%] lg:left-[6%]">\n                  <div className="text-[14px] tracking-[0.10em] text-[#FBBC04]">★★★★★</div>\n                  <p className="mt-2 font-serif text-[20px] italic leading-[1.35] text-[#343842] sm:text-[22px]">\n                    “{review.text}”\n                  </p>\n                  <footer className="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7A7D83]">\n                    {review.author} · Google Review\n                  </footer>\n                </blockquote>\n              )}\n'''
-          if old_review in text:
-              text = text.replace(old_review, new_review, 1)
           p.write_text(text, encoding="utf-8")
           PY
 
@@ -116,6 +112,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Use uploaded Rinnai installs and Gill review"
+            git commit -m "Deploy responsive install review layout"
             git push
           fi
