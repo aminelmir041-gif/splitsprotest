@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { GOOGLE_RATING } from "../lib/data";
 
 export default function DaikinIntroEditorial({ brand, jumpToRange }) {
   const installs = brand.installEditorial;
@@ -64,20 +63,20 @@ export default function DaikinIntroEditorial({ brand, jumpToRange }) {
                 />
               </figure>
 
-              <div className="absolute left-[2%] top-[55%] z-30 w-[45%] sm:left-[4%] sm:top-[57%] lg:left-[6%] lg:top-[58%]">
+              <div className="absolute left-[2%] top-[51%] z-30 w-[46%] sm:left-[4%] sm:top-[53%] lg:left-[6%] lg:top-[54%]">
                 <p className="font-serif text-[22px] italic leading-[1.05] text-[#4E5158] sm:text-[28px] lg:text-[31px]">
                   Real installs<br />by SplitsPro
                 </p>
-                <svg viewBox="0 0 220 90" className="mt-1 h-[74px] w-[190px] overflow-visible text-[#C8A46A] sm:w-[220px]" aria-hidden="true">
+                <svg viewBox="0 0 300 120" className="-mt-1 h-[92px] w-[250px] overflow-visible text-[#C8A46A] sm:w-[285px]" aria-hidden="true">
                   <path
-                    d="M8 18 C48 58, 112 78, 184 38"
+                    d="M10 18 C68 72, 154 98, 255 48"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2.2"
                     strokeLinecap="round"
                   />
                   <path
-                    d="M171 29 L188 37 L179 53"
+                    d="M240 35 L261 47 L251 68"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2.2"
@@ -87,13 +86,15 @@ export default function DaikinIntroEditorial({ brand, jumpToRange }) {
                 </svg>
               </div>
 
-              <div className="absolute bottom-[3%] left-[2%] z-10 max-w-[270px] rounded-[22px] border border-[#E6E1D8] bg-white/95 px-5 py-4 shadow-[0_12px_32px_rgba(11,11,11,0.05)] backdrop-blur-sm sm:left-[4%] sm:px-6 sm:py-5">
-                <div className="flex items-center gap-2">
-                  <span className="text-[#FBBC04]">★★★★★</span>
-                  <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#343842]">Google {GOOGLE_RATING.score}</span>
-                </div>
-                <p className="mt-2 text-[12px] leading-relaxed text-[#6A6D73]">{GOOGLE_RATING.count} verified reviews</p>
-              </div>
+              <blockquote className="absolute bottom-[2%] left-[2%] z-10 max-w-[315px] sm:left-[4%] lg:left-[6%]">
+                <div className="text-[14px] tracking-[0.10em] text-[#FBBC04]">★★★★★</div>
+                <p className="mt-2 font-serif text-[20px] italic leading-[1.35] text-[#343842] sm:text-[22px]">
+                  “Best in the business, amazing work.”
+                </p>
+                <footer className="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7A7D83]">
+                  Mat 134 · Google Review
+                </footer>
+              </blockquote>
             </div>
           )}
         </div>
