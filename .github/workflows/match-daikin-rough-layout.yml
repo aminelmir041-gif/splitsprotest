@@ -1,0 +1,59 @@
+name: Match Daikin Rough Layout
+
+on:
+  push:
+    paths:
+      - 'scripts/match_daikin_rough_layout.py'
+      - '.github/workflows/match-daikin-rough-layout.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply Daikin rough layout
+        run: python3 scripts/match_daikin_rough_layout.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          npm install --no-save --legacy-peer-deps ajv@8.17.1 ajv-keywords@5.1.0
+      - name: Build React site
+        run: npm run build
+      - name: Publish all React routes together
+        run: |
+          rm -rf static
+          cp -R build/static ./static
+          for route in \
+            about \
+            split-systems \
+            split-systems/daikin \
+            split-systems/rinnai \
+            split-systems/mitsubishi \
+            split-systems/mitsubishi-electric \
+            split-systems/mitsubishi-heavy-industries \
+            split-systems/fujitsu \
+            split-systems/samsung \
+            ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          do
+            mkdir -p "$route"
+            cp build/index.html "$route/index.html"
+          done
+      - name: Commit matched layout
+        run: |
+          git config user.name "SplitsPro Pages Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/pages/BrandPage.jsx static \
+            about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Match Daikin intro to rough layout"
+            git push
+          fi
