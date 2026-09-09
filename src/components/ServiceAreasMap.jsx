@@ -7,14 +7,11 @@ import "leaflet/dist/leaflet.css";
 const GOLD = "#C8A46A";
 const BLACK = "#0B0B0B";
 const BASE = { name: "Bass Hill", pos: [-33.9018, 150.9905] };
-
-const SERVICE_ZONES = [
-  { name: "South Western Sydney", center: [-33.900, 150.985], radius: 17000 },
-  { name: "Liverpool & Macarthur", center: [-33.985, 150.850], radius: 23500 },
-  { name: "Western Sydney", center: [-33.805, 150.945], radius: 22000 },
-  { name: "Canterbury & Inner West", center: [-33.895, 151.105], radius: 15000 },
-  { name: "Sutherland & Southern Sydney", center: [-34.020, 151.055], radius: 19000 },
-];
+const SERVICE_AREA = {
+  name: "Sydney Metropolitan Service Area",
+  center: [-33.91, 150.99],
+  radius: 48000,
+};
 
 export const ServiceAreasMap = () => (
   <motion.div
@@ -26,7 +23,7 @@ export const ServiceAreasMap = () => (
   >
     <div className="overflow-hidden rounded-2xl border border-[#E5E5EA] shadow-[0_16px_50px_rgba(11,11,11,0.10)]">
       <MapContainer
-        center={[-33.91, 150.96]}
+        center={[-33.91, 150.99]}
         zoom={9}
         scrollWheelZoom={false}
         className="h-[390px] w-full sm:h-[460px] md:h-[540px]"
@@ -38,24 +35,22 @@ export const ServiceAreasMap = () => (
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {SERVICE_ZONES.map((zone, i) => (
-          <Circle
-            key={zone.name}
-            center={zone.center}
-            radius={zone.radius}
-            pathOptions={{
-              color: GOLD,
-              weight: i === 0 ? 3 : 2,
-              fillColor: GOLD,
-              fillOpacity: i === 0 ? 0.17 : 0.10,
-            }}
-          >
-            <Tooltip direction="top" opacity={1} sticky className="sp-map-tip">
-              <span className="block font-semibold">{zone.name}</span>
-              <span className="block text-[11px] opacity-70">SplitsPro service area</span>
-            </Tooltip>
-          </Circle>
-        ))}
+        <Circle
+          center={SERVICE_AREA.center}
+          radius={SERVICE_AREA.radius}
+          pathOptions={{
+            color: GOLD,
+            weight: 3,
+            fillColor: GOLD,
+            fillOpacity: 0.12,
+          }}
+          data-testid="map-service-area"
+        >
+          <Tooltip direction="top" opacity={1} sticky className="sp-map-tip">
+            <span className="block font-semibold">{SERVICE_AREA.name}</span>
+            <span className="block text-[11px] opacity-70">Approximate SplitsPro coverage</span>
+          </Tooltip>
+        </Circle>
 
         <CircleMarker
           center={BASE.pos}
@@ -74,7 +69,7 @@ export const ServiceAreasMap = () => (
     <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
       <p className="text-sm text-[#6E6E73]">
         <MapPin className="mr-1 inline h-4 w-4 text-[#C8A46A]" />
-        Gold circles show our main service coverage. We regularly travel beyond these areas too.
+        One gold area shows our approximate Sydney service coverage. We regularly travel beyond it too.
       </p>
       <Link
         to="/contact"
