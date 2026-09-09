@@ -59,6 +59,8 @@ jobs:
             "split-systems/samsung"
             "ducted"
             "cleaning"
+            "split-system-cleaning"
+            "ducted-cleaning"
             "repairs"
             "servicing"
             "gallery"
@@ -79,7 +81,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Pages Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          git add static asset-manifest.json about split-systems ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
 
           if git diff --cached --quiet; then
             echo "Original pages are already published"
