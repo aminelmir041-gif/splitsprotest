@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import { BadgeCheck, ExternalLink, ShieldCheck, Star, Wrench } from "lucide-react";
+import { BadgeCheck, ShieldCheck, Star, Wrench } from "lucide-react";
 import HomeComfortPage from "./HomeComfortPage";
 import DuctedPricingSelector from "../components/DuctedPricingSelector";
 import { getReviews } from "../lib/api";
 import { FEATURED_REVIEW, GOOGLE_RATING, IMAGES } from "../lib/data";
-
-const GOOGLE_MAPS_URL = "https://g.page/r/CYTvO1ipeYUtEBM/";
 
 const FALLBACK_GOOGLE_REVIEWS = [
   FEATURED_REVIEW,
@@ -64,19 +62,9 @@ const DuctedTopTrust = () => {
         </div>
 
         <div className="mt-6">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C8A46A]">Google Reviews</p>
-              <h2 className="mt-1.5 font-serif text-2xl font-medium leading-tight text-[#1D1D1F] sm:text-3xl">Trusted by local homeowners</h2>
-            </div>
-            <a
-              href={GOOGLE_MAPS_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6E6E73] transition-colors hover:text-[#C8A46A]"
-            >
-              View on Google <ExternalLink className="h-3.5 w-3.5" />
-            </a>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C8A46A]">Google Reviews</p>
+            <h2 className="mt-1.5 font-serif text-2xl font-medium leading-tight text-[#1D1D1F] sm:text-3xl">Trusted by local homeowners</h2>
           </div>
 
           <div className="mt-4 grid gap-3 md:grid-cols-3">
