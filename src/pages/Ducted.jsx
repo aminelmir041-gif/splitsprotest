@@ -27,26 +27,10 @@ const FALLBACK_GOOGLE_REVIEWS = [
 ];
 
 const TRUST_FACTORS = [
-  {
-    icon: Star,
-    value: `${GOOGLE_RATING.score}★`,
-    label: `${GOOGLE_RATING.count} Google Reviews`,
-  },
-  {
-    icon: ShieldCheck,
-    value: "Licensed",
-    label: "& Insured",
-  },
-  {
-    icon: BadgeCheck,
-    value: "5+ Years",
-    label: "Manufacturer Warranty",
-  },
-  {
-    icon: Wrench,
-    value: "Backed",
-    label: "Workmanship Guarantee",
-  },
+  { icon: Star, value: `${GOOGLE_RATING.score}★`, label: `${GOOGLE_RATING.count} Google Reviews` },
+  { icon: ShieldCheck, value: "Licensed", label: "& Insured" },
+  { icon: BadgeCheck, value: "5+ Years", label: "Manufacturer Warranty" },
+  { icon: Wrench, value: "Backed", label: "Workmanship Guarantee" },
 ];
 
 const DuctedTopTrust = () => {
@@ -56,78 +40,72 @@ const DuctedTopTrust = () => {
     getReviews()
       .then((items) => {
         if (!Array.isArray(items) || !items.length) return;
-
         const valid = items.filter((r) => r?.text && (Number(r.rating) || 0) >= 4);
         const ducted = valid.filter((r) => r.category === "ducted");
         const other = valid.filter((r) => r.category !== "ducted");
         const picked = [...ducted, ...other].slice(0, 3);
-
-        if (picked.length) setReviews(picked);
+        if (picked.length === 3) setReviews(picked);
       })
       .catch(() => {});
   }, []);
 
   return (
-    <section className="border-b border-[#E7E3DC] bg-white py-10 sm:py-14" data-testid="ducted-top-trust">
+    <section className="border-b border-[#E5E5EA] bg-white py-7 sm:py-9" data-testid="ducted-top-trust">
       <div className="sp-container">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-[#ECEAE6] py-3.5 sm:justify-between">
           {TRUST_FACTORS.map((factor) => (
-            <div key={factor.label} className="flex items-center gap-4 rounded-2xl border border-[#E5E5EA] bg-[#FAFAFA] p-5">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F3E9D2] text-[#C8A46A]">
-                <factor.icon className="h-5 w-5" strokeWidth={2} />
-              </span>
-              <span>
-                <span className="block font-serif text-xl font-medium text-[#1D1D1F]">{factor.value}</span>
-                <span className="mt-0.5 block text-xs font-semibold uppercase tracking-[0.08em] text-[#6E6E73]">{factor.label}</span>
-              </span>
+            <div key={factor.label} className="flex items-center gap-2.5">
+              <factor.icon className="h-4 w-4 shrink-0 text-[#C8A46A]" strokeWidth={2} />
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-sm font-semibold text-[#1D1D1F]">{factor.value}</span>
+                <span className="text-xs text-[#6E6E73]">{factor.label}</span>
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-8 grid overflow-hidden rounded-3xl border border-[#E5E5EA] bg-[#F7F5F1] lg:grid-cols-[0.9fr_1.1fr]">
-          <figure className="relative min-h-[310px] overflow-hidden sm:min-h-[390px] lg:min-h-full">
+        <div className="mt-6 grid items-center gap-6 lg:grid-cols-[0.72fr_1.28fr]">
+          <figure className="relative overflow-hidden rounded-xl bg-[#F5F5F7]">
             <img
               src={PREMIUM_VERTICAL_VENT}
-              alt="Premium home interior with discreet vertical ducted air conditioning vent"
+              alt="Premium home interior with a discreet ducted air conditioning vent"
               loading="eager"
-              className="absolute inset-0 h-full w-full object-cover"
+              className="aspect-[16/9] w-full object-cover"
             />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-6 pt-20 text-white sm:p-8">
-              <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Ducted Design Inspiration</span>
-              <span className="mt-2 block font-serif text-2xl">Discreet airflow for premium interiors</span>
-              <span className="mt-2 block text-xs text-white/75">Design inspiration · not a SplitsPro installation</span>
+            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-4 pb-3 pt-10 text-white">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90">Premium ducted design inspiration</span>
             </figcaption>
           </figure>
 
-          <div className="p-6 sm:p-8 lg:p-10">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">Google Customer Reviews</p>
-                <h2 className="mt-2 font-serif text-3xl font-medium leading-tight text-[#1D1D1F] sm:text-4xl">Trusted before we enter your home</h2>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C8A46A]">Google Reviews</p>
+                <h2 className="mt-1.5 font-serif text-2xl font-medium leading-tight text-[#1D1D1F] sm:text-3xl">Trusted by local homeowners</h2>
               </div>
               <a
                 href={GOOGLE_MAPS_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex shrink-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[#1D1D1F] transition-colors hover:text-[#C8A46A]"
+                className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6E6E73] transition-colors hover:text-[#C8A46A]"
               >
-                View on Google <ExternalLink className="h-4 w-4" />
+                View on Google <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>
 
-            <div className="mt-7 grid gap-4">
-              {reviews.map((review, i) => {
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {reviews.slice(0, 3).map((review, i) => {
                 const stars = Math.max(1, Math.min(5, Number(review.rating) || 5));
                 return (
-                  <figure key={review.id || `${review.name}-${i}`} className="rounded-2xl border border-[#E2DED6] bg-white p-5 soft-shadow-sm sm:p-6">
-                    <div className="flex items-center gap-1" aria-label={`${stars} star Google review`}>
+                  <figure key={review.id || `${review.name}-${i}`} className="border-t border-[#E5E5EA] pt-3 md:border-l md:border-t-0 md:pl-4 md:pt-0 first:md:border-l-0 first:md:pl-0">
+                    <div className="flex items-center gap-0.5" aria-label={`${stars} star Google review`}>
                       {Array.from({ length: stars }).map((_, star) => (
-                        <Star key={star} className="h-4 w-4 fill-[#FBBC04] text-[#FBBC04]" />
+                        <Star key={star} className="h-3.5 w-3.5 fill-[#FBBC04] text-[#FBBC04]" />
                       ))}
                     </div>
-                    <blockquote className="mt-3 font-serif text-lg leading-relaxed text-[#1D1D1F] sm:text-xl">&ldquo;{review.text}&rdquo;</blockquote>
-                    <figcaption className="mt-4 text-xs font-semibold uppercase tracking-[0.08em] text-[#6E6E73]">
-                      {review.name} · Verified Google Review
+                    <blockquote className="mt-2 text-sm leading-relaxed text-[#1D1D1F]">&ldquo;{review.text}&rdquo;</blockquote>
+                    <figcaption className="mt-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#6E6E73]">
+                      {review.name} · Google Review
                     </figcaption>
                   </figure>
                 );
