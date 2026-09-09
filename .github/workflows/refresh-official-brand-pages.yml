@@ -1,0 +1,64 @@
+name: Refresh Official Brand Pages
+
+on:
+  push:
+    paths:
+      - '.github/workflows/refresh-official-brand-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply official brand page updates
+        run: python3 scripts/refresh-official-brand-pages.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          npm install --legacy-peer-deps --no-save ajv@8.17.1 ajv-keywords@5.1.0
+
+      - name: Build site
+        env:
+          CI: 'false'
+        run: npm run build
+
+      - name: Publish all React routes
+        run: |
+          set -e
+          rm -rf static
+          cp -R build/static static
+          ROUTES=(
+            "about" "split-systems" "split-systems/daikin" "split-systems/rinnai"
+            "split-systems/mitsubishi" "split-systems/mitsubishi-electric"
+            "split-systems/mitsubishi-heavy-industries" "split-systems/fujitsu"
+            "split-systems/samsung" "ducted" "cleaning" "repairs" "servicing"
+            "gallery" "reviews" "service-areas" "faq" "contact"
+          )
+          for route in "${ROUTES[@]}"; do
+            mkdir -p "$route"
+            cp build/index.html "$route/index.html"
+          done
+          cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
+
+      - name: Commit refreshed site
+        run: |
+          git config user.name "SplitsPro Site Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/pages/BrandPage.jsx src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx static asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Refresh official brand pages and booking flow"
+            git push
+          fi
