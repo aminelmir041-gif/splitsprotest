@@ -19,6 +19,18 @@ jobs:
         run: |
           python3 scripts/refresh-official-brand-pages.py
           python3 scripts/fix-split-booking-copy.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("src/pages/BrandPage.jsx")
+          text = p.read_text(encoding="utf-8")
+          samsung = '  "geo-windfree": "https://images.samsung.com/is/image/samsung/p6pim/au/ar09dxeanwknsa/gallery/au-ar9500tar10dyeabwknst-ar09dxeanwknsa-554025806?%241164_776_PNG%24=",\n'
+          if samsung not in text:
+              marker = '  "heavy-ciara": "https://www.mhiaa.com.au/wp-content/uploads/2024/01/MHIAA_Ciara_WebHeroImage_588x330px_06.26-1.jpg",\n'
+              if marker not in text:
+                  raise SystemExit("Samsung image insertion point not found")
+              text = text.replace(marker, marker + samsung, 1)
+          p.write_text(text, encoding="utf-8")
+          PY
 
       - name: Set up Node
         uses: actions/setup-node@v4
