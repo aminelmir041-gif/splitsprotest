@@ -109,7 +109,6 @@ const Ducted = () => (
     overline="Ducted Air Conditioning"
     title="Whole-home comfort, elegantly hidden"
     sub="Zoned ducted air conditioning concealed within your ceiling — seamless comfort with discreet vents and intelligent control."
-    image={IMAGES.controller}
     introImage={IMAGES.controller}
     imgPos="object-center"
     afterHero={(
