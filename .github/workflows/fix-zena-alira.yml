@@ -1,0 +1,58 @@
+name: Fix Zena Black and Alira X Images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-zena-alira.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fix Daikin product images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('src/lib/data.js')
+          text = path.read_text(encoding='utf-8')
+
+          official_black = 'https://static.wixstatic.com/media/b0568f_bc1882d899314d2ab094cfee5b57b869~mv2.png'
+
+          # Replace the broken uploaded Black Wood Zena asset everywhere in the Zena range.
+          text = text.replace('`${PUBLIC}/products/zena-black-uploaded.webp`', f'"{official_black}"')
+
+          # Alira X should show one clean main image only; remove the extra gallery thumbnail.
+          pattern = re.compile(
+              r'(slug: "alira-x",.*?gallery:\s*\[)\s*'
+              r'\{ src: aliraXUserImage, alt: "Daikin Alira X indoor unit" \},\s*'
+              r'\{ src: aliraXAltUserImage, alt: "Daikin Alira X front view" \},\s*'
+              r'(\],)',
+              re.S,
+          )
+          replacement = r'\1\n          { src: aliraXUserImage, alt: "Daikin Alira X indoor unit" },\n        \2'
+          updated, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit('Could not find Alira X gallery block to simplify')
+
+          path.write_text(updated, encoding='utf-8')
+          PY
+
+      - name: Commit fixes
+        run: |
+          git config user.name "SplitsPro Site Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/lib/data.js
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Fix Zena Black Wood image and Alira X thumbnail"
+            git push
+          fi
