@@ -322,8 +322,8 @@ export const SPLIT_BRANDS = [
         alt: "Clean Daikin split system installation completed by SplitsPro",
       },
       secondary: {
-        src: IMAGES.installDaikinOutdoorBracket,
-        alt: "Daikin outdoor unit installed neatly on a wall bracket by SplitsPro",
+        src: IMAGES.installDaikinOutdoorClose,
+        alt: "Daytime Daikin R32 outdoor unit installation completed by SplitsPro",
       },
       tertiary: {
         src: IMAGES.installDaikinIndoorCorner,
