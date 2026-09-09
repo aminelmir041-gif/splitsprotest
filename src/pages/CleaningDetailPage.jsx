@@ -5,93 +5,106 @@ import { PageHero, TrustBadges } from "../components/sections";
 import QuoteForm from "../components/QuoteForm";
 import Reveal from "../components/Reveal";
 
-const benefitLayout = [
-  "lg:col-span-2 lg:min-h-[285px]",
-  "lg:col-span-1 lg:min-h-[285px]",
-  "lg:col-span-1 lg:min-h-[250px]",
-  "lg:col-span-2 lg:min-h-[250px]",
-  "lg:col-span-2 lg:min-h-[250px]",
-  "lg:col-span-1 lg:min-h-[250px]",
+const firstLayouts = [
+  "lg:col-span-7 lg:col-start-1",
+  "lg:col-span-4 lg:col-start-9 lg:mt-20",
+  "lg:col-span-5 lg:col-start-2 lg:mt-10",
 ];
 
-const BenefitGrid = ({ benefits }) => (
-  <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:auto-rows-auto">
-    {benefits.map((benefit, index) => {
-      const Icon = benefit.icon;
-      const feature = index === 0 || index === 3;
+const secondLayouts = [
+  "lg:col-span-6 lg:col-start-7",
+  "lg:col-span-5 lg:col-start-1 lg:mt-20",
+  "lg:col-span-5 lg:col-start-8 lg:mt-8",
+];
 
-      return (
-        <Reveal key={benefit.title} delay={index * 0.05}>
-          <article
-            className={`group relative h-full overflow-hidden rounded-[28px] border p-6 transition-transform duration-300 hover:-translate-y-1 sm:p-8 ${
-              feature
-                ? "border-[#1D1D1F] bg-[#111214] text-white"
-                : "border-[#E7E2D9] bg-[#FAF9F7] text-[#1D1D1F]"
-            } ${benefitLayout[index] || ""}`}
-          >
-            <Icon
+const BenefitMoment = ({ benefit, index, layout }) => {
+  const Icon = benefit.icon;
+  const reverse = index === 1 || index === 4;
+  const large = index === 0 || index === 3;
+
+  return (
+    <Reveal delay={index * 0.05}>
+      <article className={`${layout} relative ${large ? "py-5 sm:py-8" : "py-3 sm:py-5"}`}>
+        <div className={`flex items-start gap-5 sm:gap-7 ${reverse ? "lg:flex-row-reverse lg:text-right" : ""}`}>
+          <div className="relative shrink-0">
+            <div
               aria-hidden
-              className={`pointer-events-none absolute -bottom-8 -right-6 h-36 w-36 rotate-[-8deg] transition-transform duration-500 group-hover:rotate-0 group-hover:scale-105 sm:h-44 sm:w-44 ${
-                feature ? "text-[#C8A46A]/12" : "text-[#C8A46A]/10"
-              }`}
-              strokeWidth={1.15}
+              className={`absolute inset-0 rounded-full bg-[#C8A46A]/10 blur-xl ${large ? "scale-125" : "scale-110"}`}
             />
-
-            <div className="relative z-10 flex h-full flex-col">
-              <div
-                className={`flex h-16 w-16 items-center justify-center rounded-2xl sm:h-[72px] sm:w-[72px] ${
-                  feature ? "bg-[#C8A46A] text-[#111214]" : "bg-[#F3E9D2] text-[#A97E3F]"
-                }`}
-              >
-                <Icon className="h-8 w-8 sm:h-9 sm:w-9" strokeWidth={1.65} />
-              </div>
-
-              <div className="mt-auto pt-10 sm:pt-12">
-                <p className={`text-[10px] font-bold uppercase tracking-[0.2em] ${feature ? "text-[#C8A46A]" : "text-[#A97E3F]"}`}>
-                  {benefit.kicker || "Cleaner comfort"}
-                </p>
-                <h3 className={`mt-2 font-serif text-2xl font-medium leading-tight sm:text-[28px] ${feature ? "text-white" : "text-[#1D1D1F]"}`}>
-                  {benefit.title}
-                </h3>
-                <p className={`mt-3 max-w-md text-sm leading-relaxed ${feature ? "text-white/68" : "text-[#6E6E73]"}`}>
-                  {benefit.desc}
-                </p>
-              </div>
+            <div className={`relative flex items-center justify-center rounded-full bg-[#F3E9D2] text-[#A97E3F] ${large ? "h-24 w-24 sm:h-28 sm:w-28" : "h-20 w-20 sm:h-24 sm:w-24"}`}>
+              <Icon className={large ? "h-12 w-12 sm:h-14 sm:w-14" : "h-10 w-10 sm:h-12 sm:w-12"} strokeWidth={1.45} />
             </div>
-          </article>
-        </Reveal>
-      );
-    })}
-  </div>
+          </div>
+
+          <div className={`min-w-0 pt-1 ${reverse ? "lg:flex lg:flex-col lg:items-end" : ""}`}>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#B68C4E]">
+              {benefit.kicker || "Feel the difference"}
+            </p>
+            <h3 className={`mt-2 font-serif font-medium leading-[1.03] tracking-tight text-[#1D1D1F] ${large ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"}`}>
+              {benefit.title}
+            </h3>
+            <p className={`mt-3 text-sm leading-relaxed text-[#6E6E73] sm:text-base ${large ? "max-w-xl" : "max-w-md"}`}>
+              {benefit.desc}
+            </p>
+          </div>
+        </div>
+      </article>
+    </Reveal>
+  );
+};
+
+const BenefitStory = ({ benefits, dreamLine, dreamSub }) => (
+  <>
+    <div className="mt-12 grid gap-y-10 lg:grid-cols-12 lg:gap-x-8 lg:gap-y-2">
+      {benefits.slice(0, 3).map((benefit, index) => (
+        <BenefitMoment key={benefit.title} benefit={benefit} index={index} layout={firstLayouts[index]} />
+      ))}
+    </div>
+
+    <Reveal delay={0.08}>
+      <div className="my-16 border-y border-[#E8E3DA] py-12 sm:my-20 sm:py-16">
+        <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+          <p className="max-w-4xl font-serif text-4xl font-medium leading-[1.02] tracking-tight text-[#1D1D1F] sm:text-5xl lg:text-6xl">
+            {dreamLine}
+          </p>
+          <p className="max-w-lg text-sm leading-relaxed text-[#6E6E73] sm:text-base">{dreamSub}</p>
+        </div>
+      </div>
+    </Reveal>
+
+    <div className="grid gap-y-10 lg:grid-cols-12 lg:gap-x-8 lg:gap-y-2">
+      {benefits.slice(3).map((benefit, offset) => {
+        const index = offset + 3;
+        return (
+          <BenefitMoment key={benefit.title} benefit={benefit} index={index} layout={secondLayouts[offset]} />
+        );
+      })}
+    </div>
+  </>
 );
 
-const PricingCard = ({ plan, selected, onSelect }) => (
+const PlanPill = ({ plan, selected, onSelect }) => (
   <button
     type="button"
     onClick={() => onSelect(plan)}
-    className={`relative flex w-full items-center justify-between gap-4 rounded-xl border px-4 py-4 text-left transition-all sm:px-5 ${
+    className={`inline-flex min-w-[190px] items-center justify-between gap-4 rounded-full border px-4 py-3 text-left transition-all sm:min-w-[220px] ${
       selected
-        ? "border-[#C8A46A] bg-white shadow-[0_8px_22px_rgba(11,11,11,0.07)] ring-1 ring-[#C8A46A]/20"
-        : "border-[#DEDAD3] bg-white/75 hover:border-[#C8A46A]/70 hover:bg-white"
+        ? "border-[#C8A46A] bg-[#1D1D1F] text-white shadow-[0_8px_22px_rgba(11,11,11,0.08)]"
+        : "border-[#DDD8CF] bg-white text-[#1D1D1F] hover:border-[#C8A46A]"
     }`}
   >
     <div className="min-w-0">
-      <div className="flex flex-wrap items-center gap-2">
-        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#C8A46A]">{plan.name}</p>
-        {plan.popular && (
-          <span className="rounded-full bg-[#1D1D1F] px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.1em] text-white">
-            Popular
-          </span>
-        )}
+      <div className="flex items-center gap-2">
+        <span className={`text-[9px] font-bold uppercase tracking-[0.12em] ${selected ? "text-[#C8A46A]" : "text-[#6E6E73]"}`}>
+          {plan.name}
+        </span>
+        {plan.popular && <span className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#C8A46A]">Popular</span>}
       </div>
-      <p className="mt-1 truncate text-xs text-[#6E6E73]">{plan.note}</p>
+      <p className={`mt-0.5 truncate text-[10px] ${selected ? "text-white/60" : "text-[#8A8A8E]"}`}>{plan.note}</p>
     </div>
-
-    <div className="shrink-0 text-right">
-      <div className="font-serif text-2xl font-medium text-[#1D1D1F] sm:text-[28px]">{plan.price}</div>
-      <span className={`mt-1 inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.1em] ${selected ? "text-[#A97E3F]" : "text-[#6E6E73]"}`}>
-        {selected ? "Selected" : "Choose"} <ArrowUpRight className="h-3 w-3" />
-      </span>
+    <div className="flex shrink-0 items-center gap-1.5">
+      <span className="font-serif text-xl font-medium">{plan.price}</span>
+      {selected && <Check className="h-3.5 w-3.5 text-[#C8A46A]" strokeWidth={2.2} />}
     </div>
   </button>
 );
@@ -103,6 +116,8 @@ const CleaningDetailPage = ({
   benefitsTitle,
   benefitsIntro,
   benefits,
+  dreamLine,
+  dreamSub,
   plans,
   typeLabel,
   siblingHref,
@@ -135,11 +150,13 @@ const CleaningDetailPage = ({
       </section>
 
       <section className="relative overflow-hidden bg-white py-16 sm:py-24">
-        <div aria-hidden className="absolute left-[-8%] top-24 h-72 w-72 rounded-full bg-[#C8A46A]/[0.07] blur-3xl" />
+        <div aria-hidden className="absolute left-[-10%] top-[18%] h-80 w-80 rounded-full bg-[#C8A46A]/[0.055] blur-3xl" />
+        <div aria-hidden className="absolute right-[-12%] top-[55%] h-96 w-96 rounded-full bg-[#C8A46A]/[0.045] blur-3xl" />
+
         <div className="sp-container relative">
           <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Why clean it?</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Why you&apos;ll feel the difference</p>
               <h2 className="mt-3 font-serif text-3xl font-medium leading-tight tracking-tight text-[#1D1D1F] sm:text-4xl md:text-5xl">
                 {benefitsTitle}
               </h2>
@@ -147,66 +164,56 @@ const CleaningDetailPage = ({
             <p className="max-w-2xl text-base leading-relaxed text-[#6E6E73] sm:text-lg">{benefitsIntro}</p>
           </div>
 
-          <BenefitGrid benefits={benefits} />
-        </div>
-      </section>
+          <BenefitStory benefits={benefits} dreamLine={dreamLine} dreamSub={dreamSub} />
 
-      <section className="bg-[#F5F5F7] py-14 sm:py-20">
-        <div className="sp-container">
-          <div className="grid gap-8 lg:grid-cols-[0.68fr_1.32fr] lg:items-start lg:gap-12">
-            <div className="lg:sticky lg:top-24">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Pick your clean</p>
-              <h2 className="mt-3 font-serif text-3xl font-medium leading-tight tracking-tight text-[#1D1D1F] sm:text-4xl">
-                Small choice. Big difference.
-              </h2>
-              <p className="mt-4 text-sm leading-relaxed text-[#6E6E73]">
-                Choose the clean that matches the condition of your system. Your selection carries straight into the booking form.
+          <div className="mt-20 border-t border-[#E8E3DA] pt-12 sm:mt-24 sm:pt-14">
+            <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Choose your clean</p>
+                <h2 className="mt-3 font-serif text-3xl font-medium leading-tight tracking-tight text-[#1D1D1F] sm:text-4xl">
+                  Pick the feeling you want back.
+                </h2>
+              </div>
+              <p className="max-w-xl text-sm leading-relaxed text-[#6E6E73] sm:text-base">
+                A quick refresh for a well-kept system, or the deeper reset when it has been a while.
               </p>
-
-              <div className="mt-6 space-y-3">
-                {plans.map((plan) => (
-                  <PricingCard key={plan.id} plan={plan} selected={selectedPlan.id === plan.id} onSelect={choosePlan} />
-                ))}
-              </div>
             </div>
 
-            <div id="cleaning-booking" className="scroll-mt-24 overflow-hidden rounded-[28px] border border-[#DEDAD3] bg-white shadow-[0_16px_44px_rgba(11,11,11,0.06)]">
-              <div className="border-b border-[#ECE9E2] bg-[#111214] p-6 text-white sm:p-8">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">Your selected clean</p>
-                    <h3 className="mt-2 font-serif text-3xl font-medium">{selectedPlan.name}</h3>
-                    <p className="mt-1 text-sm text-white/60">{selectedPlan.note}</p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              {plans.map((plan) => (
+                <PlanPill key={plan.id} plan={plan} selected={selectedPlan.id === plan.id} onSelect={choosePlan} />
+              ))}
+            </div>
+
+            <div id="cleaning-booking" className="mt-12 scroll-mt-24 border-y border-[#E8E3DA] py-10 sm:py-12">
+              <div className="grid gap-8 lg:grid-cols-[0.58fr_1.42fr] lg:items-start lg:gap-12">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">Ready when you are</p>
+                  <h3 className="mt-2 font-serif text-3xl font-medium leading-tight text-[#1D1D1F]">
+                    Bring back that just-cleaned feeling.
+                  </h3>
+                  <div className="mt-5 flex items-end gap-3">
+                    <span className="font-serif text-3xl font-medium text-[#1D1D1F]">{selectedPlan.price}</span>
+                    <span className="pb-1 text-xs font-semibold uppercase tracking-[0.1em] text-[#6E6E73]">{selectedPlan.name}</span>
                   </div>
-                  <div className="font-serif text-4xl font-medium text-[#C8A46A]">{selectedPlan.price}</div>
                 </div>
 
-                <div className="mt-6 grid gap-2 border-t border-white/10 pt-5 sm:grid-cols-2">
-                  {selectedPlan.items.map((item) => (
-                    <div key={item} className="flex items-start gap-2 text-xs leading-relaxed text-white/76">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#C8A46A]" strokeWidth={2.2} />
-                      <span>{item}</span>
-                    </div>
-                  ))}
+                <div className="max-w-3xl">
+                  <QuoteForm
+                    key={`${typeLabel}-${selectedPlan.id}`}
+                    defaultService={`Air Conditioner Cleaning | ${typeLabel} | ${selectedPlan.name} | ${selectedPlan.price}`}
+                    submitLabel="Book Cleaning"
+                    compact
+                    hideMessage
+                    hidePhoto
+                    tight
+                  />
                 </div>
-              </div>
-
-              <div className="p-5 sm:p-8">
-                <div className="mb-5">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#C8A46A]">Book {typeLabel} Cleaning</p>
-                  <p className="mt-1 text-xs text-[#6E6E73]">Message is optional — save it for access details or special instructions.</p>
-                </div>
-                <QuoteForm
-                  key={`${typeLabel}-${selectedPlan.id}`}
-                  defaultService={`Air Conditioner Cleaning | ${typeLabel} | ${selectedPlan.name} | ${selectedPlan.price}`}
-                  submitLabel="Book Cleaning"
-                  compact
-                />
               </div>
             </div>
-          </div>
 
-          <p className="mt-6 text-[11px] leading-relaxed text-[#7A7A7E]">{finePrint}</p>
+            <p className="mt-5 max-w-4xl text-[11px] leading-relaxed text-[#7A7A7E]">{finePrint}</p>
+          </div>
         </div>
       </section>
     </>
