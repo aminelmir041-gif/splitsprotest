@@ -4,31 +4,37 @@ import CleaningDetailPage from "./CleaningDetailPage";
 const BENEFITS = [
   {
     icon: Bug,
+    kicker: "Goodbye grime",
     title: "Bacteria & mould build-up",
     desc: "Remove built-up grime and contamination from accessible internal surfaces.",
   },
   {
     icon: Sparkles,
+    kicker: "Less floating around",
     title: "Dust & allergens",
     desc: "Clean filters and internal surfaces where dust collects and recirculates.",
   },
   {
     icon: Wind,
+    kicker: "Let it breathe",
     title: "Stronger airflow",
     desc: "Reduce dirt restriction through the filters, coil and fan area.",
   },
   {
     icon: Gauge,
+    kicker: "Work smarter",
     title: "Better efficiency",
     desc: "A cleaner system can move air more freely and work with less restriction.",
   },
   {
     icon: Droplets,
+    kicker: "Fresh beats funky",
     title: "Fresher smell",
     desc: "Remove damp dust and grime that can contribute to stale air-con odours.",
   },
   {
     icon: ShieldCheck,
+    kicker: "Look after the unit",
     title: "System care",
     desc: "Regular cleaning helps reduce unnecessary strain caused by heavy dirt build-up.",
   },
