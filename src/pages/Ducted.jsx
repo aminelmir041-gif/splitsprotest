@@ -6,7 +6,6 @@ import { getReviews } from "../lib/api";
 import { FEATURED_REVIEW, GOOGLE_RATING, IMAGES } from "../lib/data";
 
 const GOOGLE_MAPS_URL = "https://g.page/r/CYTvO1ipeYUtEBM/";
-const PREMIUM_VERTICAL_VENT = `${process.env.PUBLIC_URL || ""}/images/ducted-linear-vent.webp`;
 
 const FALLBACK_GOOGLE_REVIEWS = [
   FEATURED_REVIEW,
@@ -64,53 +63,39 @@ const DuctedTopTrust = () => {
           ))}
         </div>
 
-        <div className="mt-6 grid items-center gap-6 lg:grid-cols-[0.72fr_1.28fr]">
-          <figure className="relative overflow-hidden rounded-xl bg-[#F5F5F7]">
-            <img
-              src={PREMIUM_VERTICAL_VENT}
-              alt="Premium home interior with a discreet ducted air conditioning vent"
-              loading="eager"
-              className="aspect-[16/9] w-full object-cover"
-            />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-4 pb-3 pt-10 text-white">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90">Premium ducted design inspiration</span>
-            </figcaption>
-          </figure>
-
-          <div>
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C8A46A]">Google Reviews</p>
-                <h2 className="mt-1.5 font-serif text-2xl font-medium leading-tight text-[#1D1D1F] sm:text-3xl">Trusted by local homeowners</h2>
-              </div>
-              <a
-                href={GOOGLE_MAPS_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6E6E73] transition-colors hover:text-[#C8A46A]"
-              >
-                View on Google <ExternalLink className="h-3.5 w-3.5" />
-              </a>
+        <div className="mt-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C8A46A]">Google Reviews</p>
+              <h2 className="mt-1.5 font-serif text-2xl font-medium leading-tight text-[#1D1D1F] sm:text-3xl">Trusted by local homeowners</h2>
             </div>
+            <a
+              href={GOOGLE_MAPS_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6E6E73] transition-colors hover:text-[#C8A46A]"
+            >
+              View on Google <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
 
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
-              {reviews.slice(0, 3).map((review, i) => {
-                const stars = Math.max(1, Math.min(5, Number(review.rating) || 5));
-                return (
-                  <figure key={review.id || `${review.name}-${i}`} className="border-t border-[#E5E5EA] pt-3 md:border-l md:border-t-0 md:pl-4 md:pt-0 first:md:border-l-0 first:md:pl-0">
-                    <div className="flex items-center gap-0.5" aria-label={`${stars} star Google review`}>
-                      {Array.from({ length: stars }).map((_, star) => (
-                        <Star key={star} className="h-3.5 w-3.5 fill-[#FBBC04] text-[#FBBC04]" />
-                      ))}
-                    </div>
-                    <blockquote className="mt-2 text-sm leading-relaxed text-[#1D1D1F]">&ldquo;{review.text}&rdquo;</blockquote>
-                    <figcaption className="mt-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#6E6E73]">
-                      {review.name} · Google Review
-                    </figcaption>
-                  </figure>
-                );
-              })}
-            </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {reviews.slice(0, 3).map((review, i) => {
+              const stars = Math.max(1, Math.min(5, Number(review.rating) || 5));
+              return (
+                <figure key={review.id || `${review.name}-${i}`} className="border-t border-[#E5E5EA] pt-3 md:border-l md:border-t-0 md:pl-4 md:pt-0 first:md:border-l-0 first:md:pl-0">
+                  <div className="flex items-center gap-0.5" aria-label={`${stars} star Google review`}>
+                    {Array.from({ length: stars }).map((_, star) => (
+                      <Star key={star} className="h-3.5 w-3.5 fill-[#FBBC04] text-[#FBBC04]" />
+                    ))}
+                  </div>
+                  <blockquote className="mt-2 text-sm leading-relaxed text-[#1D1D1F]">&ldquo;{review.text}&rdquo;</blockquote>
+                  <figcaption className="mt-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#6E6E73]">
+                    {review.name} · Google Review
+                  </figcaption>
+                </figure>
+              );
+            })}
           </div>
         </div>
       </div>
