@@ -40,24 +40,19 @@ jobs:
           )
           p.write_text(text, encoding="utf-8")
 
-          # Add Rinnai real-install photography to its brand data.
+          # Rinnai: use the two exact customer install photos uploaded in chat,
+          # plus Gill McPhee's supplied Google review.
           p = Path("src/lib/data.js")
           text = p.read_text(encoding="utf-8")
-          rinnai_install = '''    installEditorial: {\n      primary: {\n        src: IMAGES.outdoorRinnai2,\n        alt: "Rinnai outdoor split system installation by SplitsPro",\n      },\n      secondary: {\n        src: IMAGES.installRinnaiWall,\n        alt: "Rinnai indoor split system installation by SplitsPro",\n      },\n    },\n'''
-          if rinnai_install not in text:
-              rinnai_start = text.find('    slug: "rinnai",')
-              if rinnai_start == -1:
-                  raise SystemExit("Rinnai brand block not found")
-              image_line = '    image: IMAGES.outdoorRinnai,\n'
-              image_pos = text.find(image_line, rinnai_start)
-              if image_pos == -1:
-                  raise SystemExit("Rinnai image line not found")
-              image_end = image_pos + len(image_line)
-              text = text[:image_end] + rinnai_install + text[image_end:]
+          old = '''    installEditorial: {\n      primary: {\n        src: IMAGES.outdoorRinnai2,\n        alt: "Rinnai outdoor split system installation by SplitsPro",\n      },\n      secondary: {\n        src: IMAGES.installRinnaiWall,\n        alt: "Rinnai indoor split system installation by SplitsPro",\n      },\n    },\n'''
+          new = '''    installEditorial: {\n      primary: {\n        src: `${PUBLIC}/installs/rinnai-outdoor.webp`,\n        alt: "Rinnai outdoor split system installation completed by SplitsPro",\n      },\n      secondary: {\n        src: `${PUBLIC}/installs/rinnai-indoor.webp`,\n        alt: "Rinnai indoor split system installation completed by SplitsPro",\n      },\n      review: {\n        text: "Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy.",\n        author: "Gill McPhee",\n      },\n    },\n'''
+          if old in text:
+              text = text.replace(old, new, 1)
+          elif new not in text:
+              raise SystemExit("Existing Rinnai install editorial block not found")
           p.write_text(text, encoding="utf-8")
 
-          # Make the editorial review brand-specific. Daikin keeps its existing
-          # review; Rinnai stays photo-only until its exact review is supplied.
+          # Make the editorial review brand-specific. Daikin keeps its existing review.
           p = Path("src/components/DaikinIntroEditorial.jsx")
           text = p.read_text(encoding="utf-8")
           if 'const review = installs?.review' not in text:
@@ -92,10 +87,13 @@ jobs:
       - name: Publish all React routes
         run: |
           set -e
-          rm -rf static products
+          rm -rf static products installs
           cp -R build/static static
           if [ -d build/products ]; then
             cp -R build/products products
+          fi
+          if [ -d build/installs ]; then
+            cp -R build/installs installs
           fi
           ROUTES=(
             "about" "split-systems" "split-systems/daikin" "split-systems/rinnai"
@@ -114,10 +112,10 @@ jobs:
         run: |
           git config user.name "SplitsPro Site Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/pages/BrandPage.jsx src/components/DaikinIntroEditorial.jsx src/lib/data.js src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx static products asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/pages/BrandPage.jsx src/components/DaikinIntroEditorial.jsx src/lib/data.js src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx static products installs asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Add Rinnai real install editorial"
+            git commit -m "Use uploaded Rinnai installs and Gill review"
             git push
           fi
