@@ -45,11 +45,11 @@ const PRICING = {
       { kw: "14.0kW", price: "$8,790" },
     ],
     daikin: [
-      { kw: "7.1kW", price: "$4,590" },
-      { kw: "8.5kW", price: "$5,290" },
-      { kw: "10.0kW", price: "$6,090" },
-      { kw: "12.5kW", price: "$7,990" },
-      { kw: "14.0kW", price: "$8,790" },
+      { kw: "7.1kW", price: "$5,590" },
+      { kw: "8.5kW", price: "$6,290" },
+      { kw: "10.0kW", price: "$7,090" },
+      { kw: "12.5kW", price: "$8,990" },
+      { kw: "14.0kW", price: "$9,790" },
     ],
     mhi: [
       { kw: "7.1kW", price: "$5,390" },
@@ -66,11 +66,11 @@ const PRICING = {
       { kw: "14.0kW", price: "$8,290" },
     ],
     rinnai: [
-      { kw: "7.3kW", price: "$3,590" },
-      { kw: "9.0kW", price: "$4,290" },
-      { kw: "10.5kW", price: "$5,090" },
-      { kw: "12.5kW", price: "$6,990" },
-      { kw: "14.0kW", price: "$7,790" },
+      { kw: "7.3kW", price: "$4,590" },
+      { kw: "9.0kW", price: "$5,290" },
+      { kw: "10.5kW", price: "$6,090" },
+      { kw: "12.5kW", price: "$7,990" },
+      { kw: "14.0kW", price: "$8,790" },
     ],
   },
   comfort: {
@@ -81,10 +81,10 @@ const PRICING = {
       { kw: "15.5kW", price: "$9,390" },
     ],
     daikin: [
-      { kw: "10.0kW", price: "$8,490" },
-      { kw: "12.5kW", price: "$9,390" },
-      { kw: "14.0kW", price: "$10,290" },
-      { kw: "16.0kW", price: "$11,090" },
+      { kw: "10.0kW", price: "$9,490" },
+      { kw: "12.5kW", price: "$10,390" },
+      { kw: "14.0kW", price: "$11,290" },
+      { kw: "16.0kW", price: "$12,090" },
     ],
     mhi: [
       { kw: "10.0kW", price: "$8,790" },
@@ -100,10 +100,10 @@ const PRICING = {
       { kw: "15.5kW", price: "$10,190" },
     ],
     rinnai: [
-      { kw: "10.5kW", price: "$7,490" },
-      { kw: "12.5kW", price: "$8,390" },
-      { kw: "14.0kW", price: "$9,290" },
-      { kw: "17.0kW", price: "$10,090" },
+      { kw: "10.5kW", price: "$8,490" },
+      { kw: "12.5kW", price: "$9,390" },
+      { kw: "14.0kW", price: "$10,290" },
+      { kw: "17.0kW", price: "$11,090" },
     ],
   },
   premium: {
@@ -113,9 +113,9 @@ const PRICING = {
       { kw: "15.5kW", price: "$10,990" },
     ],
     daikin: [
-      { kw: "12.5kW", price: "$10,390" },
-      { kw: "14.0kW", price: "$11,290" },
-      { kw: "16.0kW", price: "$11,990" },
+      { kw: "12.5kW", price: "$11,390" },
+      { kw: "14.0kW", price: "$12,290" },
+      { kw: "16.0kW", price: "$12,990" },
     ],
     mhi: [
       { kw: "12.5kW", price: "$10,390" },
@@ -128,9 +128,9 @@ const PRICING = {
       { kw: "15.5kW", price: "$11,490" },
     ],
     rinnai: [
-      { kw: "12.5kW", price: "$9,390" },
-      { kw: "14.0kW", price: "$10,290" },
-      { kw: "17.0kW", price: "$10,990" },
+      { kw: "12.5kW", price: "$10,390" },
+      { kw: "14.0kW", price: "$11,290" },
+      { kw: "17.0kW", price: "$11,990" },
     ],
   },
 };
