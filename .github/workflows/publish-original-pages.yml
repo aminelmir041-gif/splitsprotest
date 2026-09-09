@@ -1,6 +1,7 @@
 name: Publish Original SplitsPro Pages
 
 # Rebuild all React routes together so every page references the same current asset bundle.
+# Triggered to publish the latest Daikin Zena and Alira X image fixes.
 on:
   workflow_dispatch:
   push:
