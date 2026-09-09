@@ -10,48 +10,64 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Find official product image URLs
+      - name: Extract official product asset URLs
         run: |
           python3 - <<'PY'
-          import requests, re, json, html
-          H={'User-Agent':'Mozilla/5.0 SplitsPro/1.0'}
+          import requests, re, html, urllib.parse
+          H={'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/150 Safari/537.36'}
 
-          def show_wp(label, base, query):
-              print('\n###',label)
-              u=f'{base}/wp-json/wp/v2/media'
-              r=requests.get(u,params={'search':query,'per_page':100},headers=H,timeout=30)
-              print('status',r.status_code,'url',r.url)
-              if not r.ok: return
-              for m in r.json():
-                  alt=(m.get('alt_text') or '').strip()
-                  title=((m.get('title') or {}).get('rendered') or '').strip()
-                  src=m.get('source_url','')
-                  print(json.dumps({'alt':alt,'title':title,'src':src},ensure_ascii=False))
+          def anchors(url, wanted):
+              print('\n###', wanted)
+              r=requests.get(url,headers=H,timeout=30)
+              print('status',r.status_code,'len',len(r.text),'url',r.url)
+              for m in re.finditer(r'<a\b([^>]*)>(.*?)</a>',r.text,re.I|re.S):
+                  attrs, inner=m.groups()
+                  txt=html.unescape(re.sub('<[^>]+>',' ',inner))
+                  txt=' '.join(txt.split())
+                  if wanted.lower() in txt.lower():
+                      hm=re.search(r'href=["\']([^"\']+)',attrs,re.I)
+                      if hm:
+                          print('MATCH',txt,'=>',urllib.parse.urljoin(r.url,html.unescape(hm.group(1))))
 
-          show_wp('RINNAI PB','https://www.rinnai.com.au','PB Series Inverter Split Air Conditioner')
-          show_wp('RINNAI PX','https://www.rinnai.com.au','PX Series Inverter Split Air Conditioner')
-          show_wp('MHI CIARA','https://www.mhiaa.com.au','Ciara')
+          anchors('https://www.rinnai.com.au/online/air-conditioning/inverter-split-systems/rinnai-pb-series-inverter-split-systems/2-6kw-pb-series-reverse-cycle-split-system/','Rinnai PB Series Inverter Split Air Conditioner (front)')
+          anchors('https://www.rinnai.com.au/online/air-conditioning/inverter-split-systems/rinnai-px-series/px-3-5kw/','Rinnai PX Series Inverter Split Air Conditioner (front)')
 
           print('\n### MITSUBISHI ELECTRIC AP')
           print('https://www.mitsubishielectric.com.au/wp-content/uploads/2022/02/AP_70-80HP_front-1920x1440-1-1200x900.png')
 
-          def page_images(label,url,needles):
-              print('\n###',label)
-              r=requests.get(url,headers=H,timeout=30)
-              print('status',r.status_code,'url',r.url,'len',len(r.text))
-              text=r.text
-              seen=set()
-              for tag in re.findall(r'<img\b[^>]*>',text,re.I|re.S):
-                  attrs=dict((k.lower(),html.unescape(v)) for k,v in re.findall(r'''([\w:-]+)\s*=\s*["']([^"']*)["']''',tag,re.I|re.S))
-                  src=attrs.get('src') or attrs.get('data-src') or attrs.get('data-lazy-src') or ''
-                  alt=attrs.get('alt','')
-                  hay=(src+' '+alt).lower()
-                  if src and any(n.lower() in hay for n in needles) and src not in seen:
-                      seen.add(src); print(json.dumps({'alt':alt,'src':src},ensure_ascii=False))
-              for m in re.finditer(r'''<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)["']''',text,re.I|re.S):
-                  print('META',html.unescape(m.group(1)))
+          print('\n### MHI CIARA page assets')
+          u='https://www.mhiaa.com.au/products/series/split-system-air-conditioners-ciara-series/'
+          r=requests.get(u,headers=H,timeout=30)
+          urls=[]
+          for raw in re.findall(r'https?[^"\'<> )]+',html.unescape(r.text)):
+              raw=raw.replace('\\/','/')
+              if 'mhiaa.com.au/wp-content/uploads/' in raw and ('ciara' in raw.lower() or 'dxk' in raw.lower()):
+                  if raw not in urls: urls.append(raw)
+          for x in urls[:80]: print(x)
 
-          page_images('FUJITSU SHOP','https://shop.fujitsugeneral.com.au/search?text=ASTG09KMTC',['astg09','kmtc','lifestyle'])
-          page_images('FUJITSU ASSIST','https://assist.fujitsugeneral.com.au/support/solutions/articles/6000285700-product-information-astg09kmtc-set-astg09kmtc-',['astg09','kmtc','lifestyle'])
-          page_images('SAMSUNG GEO','https://www.samsung.com/au/business/air-conditioners/wall-mount/ar9500t-ar10dyeabwknst-wind-free-ar09dxeanwknsa/',['ar09','air-conditioner','air_conditioner','windfree'])
+          print('\n### FUJITSU ASSIST product/pdf links')
+          u='https://assist.fujitsugeneral.com.au/support/solutions/articles/6000285700-product-information-astg09kmtc-set-astg09kmtc-'
+          r=requests.get(u,headers=H,timeout=30)
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',r.text,re.I):
+              x=html.unescape(m.group(1))
+              if any(k in x.lower() for k in ['pdf','kmtc','lifestyle']): print(urllib.parse.urljoin(r.url,x))
+          for x in sorted(set(re.findall(r'https?[^"\'<> ]+',html.unescape(r.text)))):
+              if any(k in x.lower() for k in ['pdf','kmtc','lifestyle']): print('RAW',x[:1000])
+
+          print('\n### SAMSUNG product CDN candidates')
+          u='https://www.samsung.com/au/air-conditioners/wall-mount/ar9500t-ar10dyeabwknst-wind-free-ar09dxeanwknsa/'
+          r=requests.get(u,headers=H,timeout=30)
+          text=html.unescape(r.text).replace('\\/','/')
+          candidates=[]
+          patterns=[
+              r'https://images\.samsung\.com/[^"\'<> ]+',
+              r'//images\.samsung\.com/[^"\'<> ]+',
+          ]
+          for pat in patterns:
+              for x in re.findall(pat,text,re.I):
+                  if 'ar09dxean' in x.lower() or 'ar9500' in x.lower() or 'air-condition' in x.lower():
+                      if x.startswith('//'): x='https:'+x
+                      x=x.rstrip('\\,')
+                      if x not in candidates: candidates.append(x)
+          for x in candidates[:120]: print(x)
           PY
