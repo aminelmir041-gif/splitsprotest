@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import { Loader2, Check, Phone, Upload, X } from "lucide-react";
 import { Input } from "./ui/input";
@@ -23,6 +23,22 @@ export const QuoteForm = ({ onDark = false, defaultService = "", defaultMessage 
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState("");
   const fileRef = useRef(null);
+
+  useEffect(() => {
+    const handleQuotePreset = (event) => {
+      const detail = event?.detail || {};
+      if (!detail.message && !detail.service) return;
+      setForm((current) => ({
+        ...current,
+        service: detail.service || current.service || defaultService,
+        message: detail.message || current.message,
+      }));
+      setDone(false);
+    };
+
+    window.addEventListener("splitspro:quote-preset", handleQuotePreset);
+    return () => window.removeEventListener("splitspro:quote-preset", handleQuotePreset);
+  }, [defaultService]);
 
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
