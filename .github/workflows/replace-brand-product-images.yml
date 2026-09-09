@@ -1,0 +1,199 @@
+name: Replace Brand Product Images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/replace-brand-product-images.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download clean official indoor-unit product images
+        run: |
+          python3 -m pip install --quiet pillow requests
+          python3 - <<'PY'
+          from pathlib import Path
+          from io import BytesIO
+          import requests
+          from PIL import Image, ImageChops
+
+          OUT = Path('public/products')
+          OUT.mkdir(parents=True, exist_ok=True)
+          H = {'User-Agent': 'Mozilla/5.0 SplitsPro Product Asset Sync'}
+
+          assets = {
+            'rinnai-pb-indoor.webp': 'https://www.rinnai.com.au/wp-content/uploads/AC-Split-PB-Series-Indoor-front-IMA.jpg',
+            'rinnai-px-indoor.webp': 'https://www.rinnai.com.au/wp-content/uploads/AC-Split-PX-Series-Indoor-IMA.jpg',
+            'mitsubishi-electric-ap-indoor.webp': 'https://www.mitsubishielectric.com.au/wp-content/uploads/2022/02/AP_70-80HP_front-1920x1440-1-1200x900.png',
+            'mitsubishi-heavy-ciara-indoor.webp': 'https://www.mhiaa.com.au/wp-content/uploads/2024/01/MHIAA_Ciara_WebHeroImage_588x330px_06.26-1.jpg',
+            'fujitsu-kmtc-indoor.webp': 'https://assets.generalairstage.com.au/assets-au/images/default-source/shared-album/product-tiles/astg09kmtc673304b5-2f59-46d2-aef2-838e2e37218a.jpg?sfvrsn=cf2505f_7',
+            'samsung-geo-windfree-indoor.webp': 'https://images.samsung.com/is/image/samsung/p6pim/au/ar09dxeanwknsa/gallery/au-ar9500tar10dyeabwknst-ar09dxeanwknsa-554025806?$1164_776_PNG$',
+          }
+
+          def trim_white(im, pad=24):
+              im = im.convert('RGB')
+              bg = Image.new('RGB', im.size, (255,255,255))
+              diff = ImageChops.difference(im, bg).convert('L')
+              # Ignore tiny JPEG noise in near-white backgrounds.
+              diff = diff.point(lambda p: 255 if p > 12 else 0)
+              box = diff.getbbox()
+              if not box:
+                  return im
+              l,t,r,b = box
+              l=max(0,l-pad); t=max(0,t-pad); r=min(im.width,r+pad); b=min(im.height,b+pad)
+              return im.crop((l,t,r,b))
+
+          for name, url in assets.items():
+              r = requests.get(url, headers=H, timeout=45)
+              print(name, r.status_code, r.headers.get('content-type'), len(r.content))
+              r.raise_for_status()
+              im = Image.open(BytesIO(r.content))
+              im.load()
+
+              # MHI official image includes a Wi-Fi badge on the right; crop to indoor unit only.
+              if name == 'mitsubishi-heavy-ciara-indoor.webp':
+                  im = im.convert('RGB')
+                  im = im.crop((0, 15, int(im.width * 0.76), im.height - 15))
+
+              im = trim_white(im)
+              # Keep a white canvas so white units retain their clean edges and blend into the site.
+              max_w = 1500
+              if im.width > max_w:
+                  h = round(im.height * max_w / im.width)
+                  im = im.resize((max_w, h), Image.Resampling.LANCZOS)
+              im.save(OUT / name, 'WEBP', quality=92, method=6)
+              print('saved', name, Image.open(OUT / name).size)
+          PY
+
+      - name: Update brand ranges to clean product images and Rinnai PX
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('src/lib/data.js')
+          text = p.read_text(encoding='utf-8')
+
+          marker = 'const PUBLIC = process.env.PUBLIC_URL || "";\n'
+          product_block = '''const PRODUCT_IMAGES = {\n  rinnaiPb: `${PUBLIC}/products/rinnai-pb-indoor.webp`,\n  rinnaiPx: `${PUBLIC}/products/rinnai-px-indoor.webp`,\n  mitsubishiAp: `${PUBLIC}/products/mitsubishi-electric-ap-indoor.webp`,\n  mhiCiara: `${PUBLIC}/products/mitsubishi-heavy-ciara-indoor.webp`,\n  fujitsuKmtc: `${PUBLIC}/products/fujitsu-kmtc-indoor.webp`,\n  samsungGeo: `${PUBLIC}/products/samsung-geo-windfree-indoor.webp`,\n};\n'''
+          if 'const PRODUCT_IMAGES = {' not in text:
+              if marker not in text: raise SystemExit('PUBLIC marker not found')
+              text = text.replace(marker, marker + product_block, 1)
+
+          # Rinnai: correct the range name and use official clean PB/PX indoor-unit images.
+          text = text.replace('Rinnai reverse cycle split systems — PB Series and T Series.', 'Rinnai reverse cycle split systems — PB Series and PX Series.')
+          text = text.replace('Compare Rinnai PB Series and Rinnai T Series supplied & installed prices from SplitsPro.', 'Compare Rinnai PB Series and Rinnai PX Series supplied & installed prices from SplitsPro.')
+          text = text.replace('The Rinnai PB Series and T Series are dependable reverse cycle split systems', 'The Rinnai PB Series and PX Series are dependable reverse cycle split systems')
+
+          # Restrict image substitutions to the range blocks rather than mobile hero images.
+          text = text.replace('''        slug: "pb-series",\n        name: "PB Series",''', '''        slug: "pb-series",\n        name: "PB Series",''', 1)
+          pb_start = text.find('        slug: "pb-series",')
+          px_old_start = text.find('        slug: "t-series",', pb_start)
+          if pb_start < 0 or px_old_start < 0: raise SystemExit('Rinnai range blocks not found')
+          pb_chunk = text[pb_start:px_old_start]
+          pb_chunk = re.sub(r'        image: [^\n]+,', '        image: PRODUCT_IMAGES.rinnaiPb,', pb_chunk, count=1)
+          text = text[:pb_start] + pb_chunk + text[px_old_start:]
+
+          # Locate renamed second Rinnai range through current T block.
+          text = text.replace('        slug: "t-series",\n        name: "T Series",', '        slug: "px-series",\n        name: "PX Series",', 1)
+          text = text.replace('The Rinnai T Series includes Wi-Fi and voice control, Turbo heating and cooling, dehumidifying mode, Sleep Mode and a high-density air filter.', 'The Rinnai PX Series adds Wi-Fi and voice control, a human presence sensor, 3D airflow, humidity control and high-grade filtration for smarter everyday comfort.', 1)
+          text = text.replace('["Wi-Fi + Voice Control", "Turbo Mode", "Sleep Mode", "High-Density Filter"]', '["Wi-Fi + Voice Control", "Human Sensor", "3D Airflow", "Humidity Control"]', 1)
+          px_start = text.find('        slug: "px-series",')
+          mitsu_start = text.find('    slug: "mitsubishi",', px_start)
+          if px_start < 0 or mitsu_start < 0: raise SystemExit('PX/Mitsubishi anchors not found')
+          px_chunk = text[px_start:mitsu_start]
+          px_chunk = re.sub(r'        image: [^\n]+,', '        image: PRODUCT_IMAGES.rinnaiPx,', px_chunk, count=1)
+          text = text[:px_start] + px_chunk + text[mitsu_start:]
+
+          # Mitsubishi Electric AP and Mitsubishi Heavy Ciara.
+          ap_start = text.find('        slug: "electric-ap",')
+          heavy_start = text.find('        slug: "heavy-ciara",', ap_start)
+          fujitsu_brand = text.find('    slug: "fujitsu",', heavy_start)
+          if min(ap_start, heavy_start, fujitsu_brand) < 0: raise SystemExit('Mitsubishi blocks not found')
+          ap_chunk = re.sub(r'        image: [^\n]+,', '        image: PRODUCT_IMAGES.mitsubishiAp,', text[ap_start:heavy_start], count=1)
+          heavy_chunk = re.sub(r'        image: [^\n]+,', '        image: PRODUCT_IMAGES.mhiCiara,', text[heavy_start:fujitsu_brand], count=1)
+          text = text[:ap_start] + ap_chunk + heavy_chunk + text[fujitsu_brand:]
+
+          # Fujitsu Lifestyle KMTC: add/replace the range image.
+          fujitsu_range = text.find('        slug: "lifestyle-kmtc",')
+          samsung_brand = text.find('    slug: "samsung",', fujitsu_range)
+          if fujitsu_range < 0 or samsung_brand < 0: raise SystemExit('Fujitsu block not found')
+          fj_chunk = text[fujitsu_range:samsung_brand]
+          if re.search(r'        image: [^\n]+,', fj_chunk):
+              fj_chunk = re.sub(r'        image: [^\n]+,', '        image: PRODUCT_IMAGES.fujitsuKmtc,', fj_chunk, count=1)
+          else:
+              fj_chunk = fj_chunk.replace('        features: [', '        image: PRODUCT_IMAGES.fujitsuKmtc,\n        features: [', 1)
+          text = text[:fujitsu_range] + fj_chunk + text[samsung_brand:]
+
+          # Samsung GEO WindFree: add/replace the clean official front product image.
+          samsung_range = text.find('        slug: "geo-windfree",')
+          if samsung_range < 0: raise SystemExit('Samsung range not found')
+          tail = text[samsung_range:]
+          if re.search(r'        image: [^\n]+,', tail):
+              tail = re.sub(r'        image: [^\n]+,', '        image: PRODUCT_IMAGES.samsungGeo,', tail, count=1)
+          else:
+              tail = tail.replace('        features: [', '        image: PRODUCT_IMAGES.samsungGeo,\n        features: [', 1)
+          text = text[:samsung_range] + tail
+
+          p.write_text(text, encoding='utf-8')
+
+          # Booking trust strip: user's explicit instruction is to KEEP Licensed & Insured.
+          b = Path('src/pages/BrandPage.jsx')
+          bt = b.read_text(encoding='utf-8')
+          trust_anchor = '                  "SplitsPro Workmanship Guarantee",\n'
+          if '                  "Licensed & Insured",' not in bt and trust_anchor in bt:
+              bt = bt.replace(trust_anchor, trust_anchor + '                  "Licensed & Insured",\n', 1)
+          b.write_text(bt, encoding='utf-8')
+          PY
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          npm install --legacy-peer-deps --no-save ajv@8.17.1 ajv-keywords@5.1.0
+
+      - name: Build site
+        env:
+          CI: 'false'
+        run: npm run build
+
+      - name: Publish all React routes together
+        run: |
+          set -e
+          rm -rf static
+          cp -R build/static static
+          ROUTES=(
+            "about" "split-systems" "split-systems/daikin" "split-systems/rinnai"
+            "split-systems/mitsubishi" "split-systems/mitsubishi-electric"
+            "split-systems/mitsubishi-heavy-industries" "split-systems/fujitsu"
+            "split-systems/samsung" "ducted" "cleaning" "repairs" "servicing"
+            "gallery" "reviews" "service-areas" "faq" "contact"
+          )
+          for route in "${ROUTES[@]}"; do
+            mkdir -p "$route"
+            cp build/index.html "$route/index.html"
+          done
+          cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
+
+      - name: Commit source, product assets and published pages
+        run: |
+          git config user.name "SplitsPro Site Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/products src/lib/data.js src/pages/BrandPage.jsx static asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Use clean official product images across split brands"
+            git push
+          fi
