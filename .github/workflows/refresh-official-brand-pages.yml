@@ -38,8 +38,11 @@ jobs:
       - name: Publish all React routes
         run: |
           set -e
-          rm -rf static
+          rm -rf static products
           cp -R build/static static
+          if [ -d build/products ]; then
+            cp -R build/products products
+          fi
           ROUTES=(
             "about" "split-systems" "split-systems/daikin" "split-systems/rinnai"
             "split-systems/mitsubishi" "split-systems/mitsubishi-electric"
@@ -57,7 +60,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Site Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/pages/BrandPage.jsx src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx static asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/pages/BrandPage.jsx src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx static products asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
           if git diff --cached --quiet; then
             echo "No changes"
           else
