@@ -10,22 +10,20 @@ const BenefitMoment = ({ benefit, index }) => {
   const feature = index === 0 || index === 3;
 
   return (
-    <Reveal delay={index * 0.05}>
-      <article
-        className={`relative ${feature ? "lg:col-span-2" : "lg:col-span-1"} ${index === 1 ? "lg:mt-16" : ""} ${index === 4 ? "lg:-mt-8" : ""}`}
-      >
-        <div className="relative pl-20 sm:pl-24">
-          <div className="absolute left-0 top-0 flex h-14 w-14 items-center justify-center rounded-full border border-[#C8A46A]/45 bg-[#C8A46A]/10 text-[#DAB66E] shadow-[0_0_45px_rgba(200,164,106,0.10)] sm:h-16 sm:w-16">
+    <Reveal delay={index * 0.04}>
+      <article className={`relative ${feature ? "lg:col-span-2" : "lg:col-span-1"}`}>
+        <div className="relative pl-[76px] sm:pl-[88px]">
+          <div className="absolute left-0 top-0 flex h-14 w-14 items-center justify-center rounded-full border border-[#C8A46A]/45 bg-[#C8A46A]/10 text-[#DAB66E] shadow-[0_0_36px_rgba(200,164,106,0.10)] sm:h-16 sm:w-16">
             <Icon className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={1.45} />
           </div>
 
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">
             {benefit.kicker || "Feel the difference"}
           </p>
-          <h3 className={`mt-2 font-serif font-medium leading-[1.02] tracking-tight text-white ${feature ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"}`}>
+          <h3 className={`mt-2 max-w-xl font-serif font-medium leading-[1.05] tracking-tight text-white ${feature ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
             {benefit.title}
           </h3>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/62 sm:text-base">
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/62 sm:text-[15px]">
             {benefit.desc}
           </p>
         </div>
@@ -91,13 +89,12 @@ const CleaningDetailPage = ({
       <PageHero overline={overline} title={title} sub={sub} />
       <TrustBadges />
 
-      <section className="relative overflow-hidden bg-[#0B0B0B] py-14 text-white sm:py-20">
-        <div aria-hidden className="absolute left-[-12%] top-0 h-[480px] w-[480px] rounded-full bg-[#C8A46A]/[0.10] blur-[120px]" />
-        <div aria-hidden className="absolute right-[-10%] top-[36%] h-[420px] w-[420px] rounded-full bg-[#8C6A34]/[0.08] blur-[120px]" />
-        <div aria-hidden className="absolute inset-x-0 top-[38%] h-px bg-gradient-to-r from-transparent via-[#C8A46A]/30 to-transparent" />
+      <section className="relative overflow-hidden bg-[#0B0B0B] py-10 text-white sm:py-14">
+        <div aria-hidden className="absolute left-[-12%] top-0 h-[420px] w-[420px] rounded-full bg-[#C8A46A]/[0.10] blur-[120px]" />
+        <div aria-hidden className="absolute right-[-10%] top-[38%] h-[360px] w-[360px] rounded-full bg-[#8C6A34]/[0.08] blur-[120px]" />
 
         <div className="sp-container relative">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-5 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4 text-xs">
             <Link to="/cleaning" className="font-semibold text-white/55 transition-colors hover:text-[#C8A46A]">
               ← All cleaning services
             </Link>
@@ -106,54 +103,52 @@ const CleaningDetailPage = ({
             </Link>
           </div>
 
-          <div className="mt-12 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C8A46A]">More than just a clean</p>
-              <h2 className="mt-3 max-w-3xl font-serif text-4xl font-medium leading-[0.98] tracking-tight text-white sm:text-5xl lg:text-6xl">
-                {benefitsTitle}
-              </h2>
-            </div>
-            <p className="max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg">{benefitsIntro}</p>
+          <div className="mt-9 max-w-5xl">
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C8A46A]">More than just a clean</p>
+            <h2 className="mt-3 max-w-4xl font-serif text-4xl font-medium leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-[54px]">
+              {benefitsTitle}
+            </h2>
+            <p className="mt-5 max-w-3xl text-base leading-relaxed text-white/60 sm:text-lg">{benefitsIntro}</p>
           </div>
 
-          <div className="mt-16 grid gap-x-10 gap-y-14 lg:grid-cols-3 lg:gap-y-16">
+          <div className="mt-11 grid gap-x-10 gap-y-11 lg:grid-cols-3 lg:gap-y-12">
             {benefits.map((benefit, index) => (
               <BenefitMoment key={benefit.title} benefit={benefit} index={index} />
             ))}
           </div>
 
           <Reveal delay={0.08}>
-            <div className="relative my-16 overflow-hidden border-y border-white/10 py-12 sm:my-20 sm:py-16">
-              <div aria-hidden className="absolute -right-16 top-1/2 h-44 w-44 -translate-y-1/2 rounded-full border border-[#C8A46A]/15" />
-              <div aria-hidden className="absolute -right-4 top-1/2 h-28 w-28 -translate-y-1/2 rounded-full border border-[#C8A46A]/25" />
-              <div className="relative grid gap-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
-                <p className="max-w-4xl font-serif text-4xl font-medium leading-[0.98] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <div className="relative my-12 overflow-hidden border-y border-white/10 py-9 sm:my-14 sm:py-11">
+              <div aria-hidden className="absolute -right-16 top-1/2 h-40 w-40 -translate-y-1/2 rounded-full border border-[#C8A46A]/15" />
+              <div aria-hidden className="absolute -right-4 top-1/2 h-24 w-24 -translate-y-1/2 rounded-full border border-[#C8A46A]/25" />
+              <div className="relative max-w-5xl">
+                <p className="max-w-4xl font-serif text-3xl font-medium leading-[1.02] tracking-tight text-white sm:text-4xl lg:text-5xl">
                   {dreamLine}
                 </p>
-                <p className="max-w-lg text-sm leading-relaxed text-white/58 sm:text-base">{dreamSub}</p>
+                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/58 sm:text-base">{dreamSub}</p>
               </div>
             </div>
           </Reveal>
 
-          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+          <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C8A46A]">Simple. Affordable. Worth it.</p>
-              <h2 className="mt-3 font-serif text-3xl font-medium leading-tight text-white sm:text-4xl">
+              <h2 className="mt-2 font-serif text-3xl font-medium leading-tight text-white sm:text-4xl">
                 Pick your clean.
               </h2>
               <p className="mt-3 max-w-md text-sm leading-relaxed text-white/52">
                 Choose the level that suits your system and book in a few seconds.
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
+              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
                 {plans.map((plan) => (
                   <PlanPill key={plan.id} plan={plan} selected={selectedPlan.id === plan.id} onSelect={choosePlan} />
                 ))}
               </div>
             </div>
 
-            <div id="cleaning-booking" className="scroll-mt-24 border-l border-[#C8A46A]/30 pl-0 lg:pl-8">
-              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div id="cleaning-booking" className="scroll-mt-24 lg:border-l lg:border-[#C8A46A]/30 lg:pl-8">
+              <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">Book your cleaning</p>
                   <h3 className="mt-1 font-serif text-2xl font-medium text-white">{selectedPlan.name}</h3>
@@ -161,7 +156,7 @@ const CleaningDetailPage = ({
                 <div className="font-serif text-3xl font-medium text-[#DAB66E]">{selectedPlan.price}</div>
               </div>
 
-              <div className="rounded-2xl bg-white p-4 shadow-[0_16px_40px_rgba(0,0,0,0.20)] sm:p-5">
+              <div className="max-w-2xl rounded-xl bg-white p-4 shadow-[0_16px_40px_rgba(0,0,0,0.20)]">
                 <QuoteForm
                   key={`${typeLabel}-${selectedPlan.id}`}
                   defaultService={`Air Conditioner Cleaning | ${typeLabel} | ${selectedPlan.name} | ${selectedPlan.price}`}
@@ -175,7 +170,7 @@ const CleaningDetailPage = ({
             </div>
           </div>
 
-          <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
+          <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5">
             <p className="max-w-4xl text-[11px] leading-relaxed text-white/35">{finePrint}</p>
             <p className="font-serif text-xl italic text-[#C8A46A]">Fresh air. Happier days.</p>
           </div>
