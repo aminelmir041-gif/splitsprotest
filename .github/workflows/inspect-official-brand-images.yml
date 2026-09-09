@@ -1,0 +1,61 @@
+name: Inspect Official Brand Images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/inspect-official-brand-images.yml'
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find official product image URLs
+        run: |
+          python3 - <<'PY'
+          import requests, re, json
+          from bs4 import BeautifulSoup
+          H={'User-Agent':'Mozilla/5.0 SplitsPro/1.0'}
+
+          def show_wp(label, base, query):
+              print('\n###',label)
+              u=f'{base}/wp-json/wp/v2/media'
+              r=requests.get(u,params={'search':query,'per_page':100},headers=H,timeout=30)
+              print('status',r.status_code,'url',r.url)
+              if not r.ok: return
+              for m in r.json():
+                  alt=(m.get('alt_text') or '').strip()
+                  title=((m.get('title') or {}).get('rendered') or '').strip()
+                  src=m.get('source_url','')
+                  if any(k.lower() in (alt+' '+title+' '+src).lower() for k in query.split()):
+                      print(json.dumps({'alt':alt,'title':title,'src':src},ensure_ascii=False))
+
+          show_wp('RINNAI PB','https://www.rinnai.com.au','PB Series Inverter Split Air Conditioner front')
+          show_wp('RINNAI PX','https://www.rinnai.com.au','PX Series Inverter Split Air Conditioner front')
+          show_wp('MHI CIARA','https://www.mhiaa.com.au','Ciara')
+
+          print('\n### MITSUBISHI ELECTRIC AP')
+          print('https://www.mitsubishielectric.com.au/wp-content/uploads/2022/02/AP_70-80HP_front-1920x1440-1-1200x900.png')
+
+          def page_images(label,url,needles):
+              print('\n###',label)
+              r=requests.get(url,headers=H,timeout=30)
+              print('status',r.status_code,'url',r.url)
+              print('len',len(r.text))
+              soup=BeautifulSoup(r.text,'html.parser')
+              seen=set()
+              for img in soup.find_all('img'):
+                  src=img.get('src') or img.get('data-src') or img.get('data-lazy-src') or ''
+                  alt=img.get('alt') or ''
+                  txt=(src+' '+alt).lower()
+                  if src and (not needles or any(n.lower() in txt for n in needles)) and src not in seen:
+                      seen.add(src); print(json.dumps({'alt':alt,'src':src},ensure_ascii=False))
+              for meta in soup.find_all('meta'):
+                  prop=(meta.get('property') or meta.get('name') or '').lower()
+                  if prop in ('og:image','twitter:image'):
+                      print('META',prop,meta.get('content'))
+
+          page_images('FUJITSU SHOP','https://shop.fujitsugeneral.com.au/search?text=ASTG09KMTC',['astg09','kmtc','lifestyle'])
+          page_images('FUJITSU ASSIST','https://assist.fujitsugeneral.com.au/support/solutions/articles/6000285700-product-information-astg09kmtc-set-astg09kmtc-',['astg09','kmtc','lifestyle'])
+          page_images('SAMSUNG GEO','https://www.samsung.com/au/business/air-conditioners/wall-mount/ar9500t-ar10dyeabwknst-wind-free-ar09dxeanwknsa/',['ar09','air-conditioner','air_conditioner','windfree'])
+          PY
