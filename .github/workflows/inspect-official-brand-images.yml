@@ -13,8 +13,7 @@ jobs:
       - name: Find official product image URLs
         run: |
           python3 - <<'PY'
-          import requests, re, json
-          from bs4 import BeautifulSoup
+          import requests, re, json, html
           H={'User-Agent':'Mozilla/5.0 SplitsPro/1.0'}
 
           def show_wp(label, base, query):
@@ -27,11 +26,10 @@ jobs:
                   alt=(m.get('alt_text') or '').strip()
                   title=((m.get('title') or {}).get('rendered') or '').strip()
                   src=m.get('source_url','')
-                  if any(k.lower() in (alt+' '+title+' '+src).lower() for k in query.split()):
-                      print(json.dumps({'alt':alt,'title':title,'src':src},ensure_ascii=False))
+                  print(json.dumps({'alt':alt,'title':title,'src':src},ensure_ascii=False))
 
-          show_wp('RINNAI PB','https://www.rinnai.com.au','PB Series Inverter Split Air Conditioner front')
-          show_wp('RINNAI PX','https://www.rinnai.com.au','PX Series Inverter Split Air Conditioner front')
+          show_wp('RINNAI PB','https://www.rinnai.com.au','PB Series Inverter Split Air Conditioner')
+          show_wp('RINNAI PX','https://www.rinnai.com.au','PX Series Inverter Split Air Conditioner')
           show_wp('MHI CIARA','https://www.mhiaa.com.au','Ciara')
 
           print('\n### MITSUBISHI ELECTRIC AP')
@@ -40,20 +38,18 @@ jobs:
           def page_images(label,url,needles):
               print('\n###',label)
               r=requests.get(url,headers=H,timeout=30)
-              print('status',r.status_code,'url',r.url)
-              print('len',len(r.text))
-              soup=BeautifulSoup(r.text,'html.parser')
+              print('status',r.status_code,'url',r.url,'len',len(r.text))
+              text=r.text
               seen=set()
-              for img in soup.find_all('img'):
-                  src=img.get('src') or img.get('data-src') or img.get('data-lazy-src') or ''
-                  alt=img.get('alt') or ''
-                  txt=(src+' '+alt).lower()
-                  if src and (not needles or any(n.lower() in txt for n in needles)) and src not in seen:
+              for tag in re.findall(r'<img\b[^>]*>',text,re.I|re.S):
+                  attrs=dict((k.lower(),html.unescape(v)) for k,v in re.findall(r'''([\w:-]+)\s*=\s*["']([^"']*)["']''',tag,re.I|re.S))
+                  src=attrs.get('src') or attrs.get('data-src') or attrs.get('data-lazy-src') or ''
+                  alt=attrs.get('alt','')
+                  hay=(src+' '+alt).lower()
+                  if src and any(n.lower() in hay for n in needles) and src not in seen:
                       seen.add(src); print(json.dumps({'alt':alt,'src':src},ensure_ascii=False))
-              for meta in soup.find_all('meta'):
-                  prop=(meta.get('property') or meta.get('name') or '').lower()
-                  if prop in ('og:image','twitter:image'):
-                      print('META',prop,meta.get('content'))
+              for m in re.finditer(r'''<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)["']''',text,re.I|re.S):
+                  print('META',html.unescape(m.group(1)))
 
           page_images('FUJITSU SHOP','https://shop.fujitsugeneral.com.au/search?text=ASTG09KMTC',['astg09','kmtc','lifestyle'])
           page_images('FUJITSU ASSIST','https://assist.fujitsugeneral.com.au/support/solutions/articles/6000285700-product-information-astg09kmtc-set-astg09kmtc-',['astg09','kmtc','lifestyle'])
