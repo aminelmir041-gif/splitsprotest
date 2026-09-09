@@ -82,7 +82,7 @@ const HomeComfortPage = ({ slug, overline, title, sub, image, introImage, intro,
             )}
             <Reveal delay={0.25}>
               <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-                {["Complimentary — normally valued over $200", "Fixed written quote", "Licensed & insured", "No pressure, no obligation"].map((t) => (
+                {(bookingForm ? ["Free booking request", "Final price confirmed before work", "Licensed & insured", "No pressure, no obligation"] : ["Complimentary — normally valued over $200", "Fixed written quote", "Licensed & insured", "No pressure, no obligation"]).map((t) => (
                   <li key={t} className="flex items-start gap-3 text-[#1D1D1F]">
                     <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" strokeWidth={2} /> <span>{t}</span>
                   </li>

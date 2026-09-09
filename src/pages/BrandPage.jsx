@@ -411,7 +411,14 @@ const BrandPage = () => {
                               alt={item.alt}
                               loading="lazy"
                               data-no-fallback="true"
-                              onError={(e) => { e.currentTarget.style.display = "none"; }}
+                              onError={(e) => {
+                          if (OFFICIAL_PRODUCT_IMAGES[range.slug] && e.currentTarget.dataset.officialFallback !== "true") {
+                            e.currentTarget.dataset.officialFallback = "true";
+                            e.currentTarget.src = range.image;
+                          } else {
+                            e.currentTarget.style.display = "none";
+                          }
+                        }}
                               className="product-unit-image h-full w-full object-contain"
                             />
                           </div>
