@@ -16,6 +16,14 @@ export const PHONE_TEL = "tel:0414698435";
 export const ABN = "62 137 127 557";
 export const LOGO = `${process.env.PUBLIC_URL || ""}/logo.png`;
 const PUBLIC = process.env.PUBLIC_URL || "";
+const PRODUCT_IMAGES = {
+  rinnaiPb: `${PUBLIC}/products/rinnai-pb-indoor.webp`,
+  rinnaiPx: `${PUBLIC}/products/rinnai-px-indoor.webp`,
+  mitsubishiAp: `${PUBLIC}/products/mitsubishi-electric-ap-indoor.webp`,
+  mhiCiara: `${PUBLIC}/products/mitsubishi-heavy-ciara-indoor.webp`,
+  fujitsuKmtc: `${PUBLIC}/products/fujitsu-kmtc-indoor.webp`,
+  samsungGeo: `${PUBLIC}/products/samsung-geo-windfree-indoor.webp`,
+};
 
 const A = "https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/";
 
@@ -415,11 +423,11 @@ export const SPLIT_BRANDS = [
     slug: "rinnai",
     brand: "Rinnai",
     label: "Rinnai",
-    tagline: "Rinnai reverse cycle split systems — PB Series and T Series.",
+    tagline: "Rinnai reverse cycle split systems — PB Series and PX Series.",
     metaTitle: "Rinnai Split System Prices & Installation | SplitsPro",
     h1: "Rinnai Split System Air Conditioning",
-    metaDesc: "Compare Rinnai PB Series and Rinnai T Series supplied & installed prices from SplitsPro. Book your Rinnai split system installation online.",
-    body: "The Rinnai PB Series and T Series are dependable reverse cycle split systems — a great value choice for bedrooms, living rooms, home offices and granny flats.",
+    metaDesc: "Compare Rinnai PB Series and Rinnai PX Series supplied & installed prices from SplitsPro. Book your Rinnai split system installation online.",
+    body: "The Rinnai PB Series and PX Series are dependable reverse cycle split systems — a great value choice for bedrooms, living rooms, home offices and granny flats.",
     image: IMAGES.outdoorRinnai,
     ranges: [
       {
@@ -427,7 +435,7 @@ export const SPLIT_BRANDS = [
         name: "PB Series",
         blurb: "Smart, reliable heating and cooling designed for Australian conditions. The PB Series includes Wi-Fi control, quiet inverter operation, self-cleaning, 3D airflow, dehumidifying and sleep functions for comfortable everyday use.",
         features: ["Wi-Fi Control", "Self-Cleaning", "3D Airflow", "Quiet Operation"],
-        image: IMAGES.outdoorRinnai,
+        image: PRODUCT_IMAGES.rinnaiPb,
         prices: [
           { kw: "2.5kW", price: "$1,450" },
           { kw: "3.5kW", price: "$1,550" },
@@ -436,11 +444,11 @@ export const SPLIT_BRANDS = [
         ],
       },
       {
-        slug: "t-series",
-        name: "T Series",
-        blurb: "Affordable smart comfort with modern controls. The Rinnai T Series includes Wi-Fi and voice control, Turbo heating and cooling, dehumidifying mode, Sleep Mode and a high-density air filter.",
-        features: ["Wi-Fi + Voice Control", "Turbo Mode", "Sleep Mode", "High-Density Filter"],
-        image: IMAGES.outdoorRinnai2,
+        slug: "px-series",
+        name: "PX Series",
+        blurb: "Affordable smart comfort with modern controls. The Rinnai PX Series adds Wi-Fi and voice control, a human presence sensor, 3D airflow, humidity control and high-grade filtration for smarter everyday comfort.",
+        features: ["Wi-Fi + Voice Control", "Human Sensor", "3D Airflow", "Humidity Control"],
+        image: PRODUCT_IMAGES.rinnaiPx,
         prices: [
           { kw: "2.5kW", price: "$1,450" },
           { kw: "3.5kW", price: "$1,550" },
@@ -469,7 +477,7 @@ export const SPLIT_BRANDS = [
         tabLabel: "Electric AP",
         blurb: "Premium Mitsubishi Electric comfort designed around exceptionally quiet operation. The AP Series combines Quiet Mode, Night Mode, built-in Wi-Fi on current applicable models and Dual Barrier Coating to help reduce dust and greasy dirt building up inside the unit.",
         features: ["Ultra-Quiet", "Night Mode", "Wi-Fi Control", "Dual Barrier Coating"],
-        image: "https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/gam9w14y_Screenshot_20260817_152036_ChatGPT.jpg",
+        image: PRODUCT_IMAGES.mitsubishiAp,
         prices: [
           { kw: "2.5kW", price: "$1,799" },
           { kw: "3.5kW", price: "$1,999" },
@@ -485,7 +493,7 @@ export const SPLIT_BRANDS = [
         tabLabel: "Heavy Ciara",
         blurb: "A compact premium split system with smart control and strong clean-air features. Ciara includes built-in Wi-Fi, voice control compatibility, Allergen Clear filtration, Self-Clean Operation, quiet operation and advanced 3D airflow.",
         features: ["Built-In Wi-Fi", "Voice Control", "Allergen Clear", "Self-Cleaning"],
-        image: "https://wholesaleaircon.com.au/cdn/shop/files/ciara-indoor_9a2bc94f-50b5-48a5-a76f-dd227a9ce584_1200x.png?v=1719892493",
+        image: PRODUCT_IMAGES.mhiCiara,
         prices: [
           { kw: "2.0kW", price: "$1,450" },
           { kw: "2.5kW", price: "$1,590" },
@@ -512,6 +520,7 @@ export const SPLIT_BRANDS = [
         slug: "lifestyle-kmtc",
         name: "Lifestyle KMTC",
         blurb: "A practical premium range for bedrooms through to large living rooms. The smaller 2.5kW model can run as low as 19 dBA in quiet cooling, while the range adds energy-management and air-cleaning features.",
+        image: PRODUCT_IMAGES.fujitsuKmtc,
         features: ["Human Sensor", "Economy Mode", "Super Quiet", "Powerful Mode", "Apple-Catechin Filter", "Blue Fin"],
         featureDetails: [
           { title: "Human Sensor", desc: "The indoor unit can detect movement in the room. This helps the system avoid wasting energy when the space is not being used." },
@@ -548,6 +557,7 @@ export const SPLIT_BRANDS = [
         slug: "geo-windfree",
         name: "GEO WindFree AI Smart",
         blurb: "Samsung's current WindFree range combines quiet micro-hole airflow with AI Auto Cooling, built-in Wi-Fi, SmartThings, air-cleaning filters and automatic coil-cleaning functions.",
+        image: PRODUCT_IMAGES.samsungGeo,
         features: ["WindFree Cooling", "AI Auto Cooling", "SmartThings Wi-Fi", "Quad-Care Filter", "Freeze Wash", "Good Sleep"],
         featureDetails: [
           { title: "WindFree Cooling", desc: "The unit cools the room quickly, then can close the main blade and maintain comfort through thousands of tiny holes. That means much less of the cold draught feeling on your face or body." },
