@@ -64,6 +64,23 @@ jobs:
                   1,
               )
           p.write_text(text, encoding="utf-8")
+
+          # Ducted pricing: make Rinnai the value option and reduce Daikin by $1,000.
+          # Exact block replacements keep all other brands unchanged and are idempotent.
+          p = Path("src/components/DuctedPricingSelector.jsx")
+          text = p.read_text(encoding="utf-8")
+          replacements = [
+              ('''    daikin: [\n      { kw: "7.1kW", price: "$5,590" },\n      { kw: "8.5kW", price: "$6,290" },\n      { kw: "10.0kW", price: "$7,090" },\n      { kw: "12.5kW", price: "$8,990" },\n      { kw: "14.0kW", price: "$9,790" },\n    ],''', '''    daikin: [\n      { kw: "7.1kW", price: "$4,590" },\n      { kw: "8.5kW", price: "$5,290" },\n      { kw: "10.0kW", price: "$6,090" },\n      { kw: "12.5kW", price: "$7,990" },\n      { kw: "14.0kW", price: "$8,790" },\n    ],'''),
+              ('''    daikin: [\n      { kw: "10.0kW", price: "$9,490" },\n      { kw: "12.5kW", price: "$10,390" },\n      { kw: "14.0kW", price: "$11,290" },\n      { kw: "16.0kW", price: "$12,090" },\n    ],''', '''    daikin: [\n      { kw: "10.0kW", price: "$8,490" },\n      { kw: "12.5kW", price: "$9,390" },\n      { kw: "14.0kW", price: "$10,290" },\n      { kw: "16.0kW", price: "$11,090" },\n    ],'''),
+              ('''    daikin: [\n      { kw: "12.5kW", price: "$11,390" },\n      { kw: "14.0kW", price: "$12,290" },\n      { kw: "16.0kW", price: "$12,990" },\n    ],''', '''    daikin: [\n      { kw: "12.5kW", price: "$10,390" },\n      { kw: "14.0kW", price: "$11,290" },\n      { kw: "16.0kW", price: "$11,990" },\n    ],'''),
+              ('''    rinnai: [\n      { kw: "7.3kW", price: "$7,390" },\n      { kw: "9.0kW", price: "$7,890" },\n      { kw: "10.5kW", price: "$8,490" },\n      { kw: "12.5kW", price: "$8,990" },\n      { kw: "14.0kW", price: "$9,490" },\n    ],''', '''    rinnai: [\n      { kw: "7.3kW", price: "$4,490" },\n      { kw: "9.0kW", price: "$5,290" },\n      { kw: "10.5kW", price: "$6,090" },\n      { kw: "12.5kW", price: "$7,490" },\n      { kw: "14.0kW", price: "$7,990" },\n    ],'''),
+              ('''    rinnai: [\n      { kw: "10.5kW", price: "$9,590" },\n      { kw: "12.5kW", price: "$10,190" },\n      { kw: "14.0kW", price: "$10,790" },\n      { kw: "17.0kW", price: "$11,990" },\n    ],''', '''    rinnai: [\n      { kw: "10.5kW", price: "$6,990" },\n      { kw: "12.5kW", price: "$7,990" },\n      { kw: "14.0kW", price: "$8,590" },\n      { kw: "17.0kW", price: "$9,990" },\n    ],'''),
+              ('''    rinnai: [\n      { kw: "12.5kW", price: "$11,190" },\n      { kw: "14.0kW", price: "$11,790" },\n      { kw: "17.0kW", price: "$12,990" },\n    ],''', '''    rinnai: [\n      { kw: "12.5kW", price: "$8,990" },\n      { kw: "14.0kW", price: "$9,590" },\n      { kw: "17.0kW", price: "$10,990" },\n    ],'''),
+          ]
+          for old_block, new_block in replacements:
+              if old_block in text:
+                  text = text.replace(old_block, new_block, 1)
+          p.write_text(text, encoding="utf-8")
           PY
 
       - name: Set up Node
