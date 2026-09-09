@@ -65,14 +65,17 @@ jobs:
               )
           p.write_text(text, encoding="utf-8")
 
-          # Ducted pricing: keep current Daikin pricing and make Rinnai exactly
-          # $1,000 cheaper than the closest Daikin capacity in each package.
+          # Ducted pricing: restore Daikin's original prices and keep Rinnai
+          # exactly $1,000 cheaper than the nearest Daikin capacity.
           p = Path("src/components/DuctedPricingSelector.jsx")
           text = p.read_text(encoding="utf-8")
           replacements = [
-              ('''    rinnai: [\n      { kw: "7.3kW", price: "$4,490" },\n      { kw: "9.0kW", price: "$5,290" },\n      { kw: "10.5kW", price: "$6,090" },\n      { kw: "12.5kW", price: "$7,490" },\n      { kw: "14.0kW", price: "$7,990" },\n    ],''', '''    rinnai: [\n      { kw: "7.3kW", price: "$3,590" },\n      { kw: "9.0kW", price: "$4,290" },\n      { kw: "10.5kW", price: "$5,090" },\n      { kw: "12.5kW", price: "$6,990" },\n      { kw: "14.0kW", price: "$7,790" },\n    ],'''),
-              ('''    rinnai: [\n      { kw: "10.5kW", price: "$6,990" },\n      { kw: "12.5kW", price: "$7,990" },\n      { kw: "14.0kW", price: "$8,590" },\n      { kw: "17.0kW", price: "$9,990" },\n    ],''', '''    rinnai: [\n      { kw: "10.5kW", price: "$7,490" },\n      { kw: "12.5kW", price: "$8,390" },\n      { kw: "14.0kW", price: "$9,290" },\n      { kw: "17.0kW", price: "$10,090" },\n    ],'''),
-              ('''    rinnai: [\n      { kw: "12.5kW", price: "$8,990" },\n      { kw: "14.0kW", price: "$9,590" },\n      { kw: "17.0kW", price: "$10,990" },\n    ],''', '''    rinnai: [\n      { kw: "12.5kW", price: "$9,390" },\n      { kw: "14.0kW", price: "$10,290" },\n      { kw: "17.0kW", price: "$10,990" },\n    ],'''),
+              ('''    daikin: [\n      { kw: "7.1kW", price: "$4,590" },\n      { kw: "8.5kW", price: "$5,290" },\n      { kw: "10.0kW", price: "$6,090" },\n      { kw: "12.5kW", price: "$7,990" },\n      { kw: "14.0kW", price: "$8,790" },\n    ],''', '''    daikin: [\n      { kw: "7.1kW", price: "$5,590" },\n      { kw: "8.5kW", price: "$6,290" },\n      { kw: "10.0kW", price: "$7,090" },\n      { kw: "12.5kW", price: "$8,990" },\n      { kw: "14.0kW", price: "$9,790" },\n    ],'''),
+              ('''    daikin: [\n      { kw: "10.0kW", price: "$8,490" },\n      { kw: "12.5kW", price: "$9,390" },\n      { kw: "14.0kW", price: "$10,290" },\n      { kw: "16.0kW", price: "$11,090" },\n    ],''', '''    daikin: [\n      { kw: "10.0kW", price: "$9,490" },\n      { kw: "12.5kW", price: "$10,390" },\n      { kw: "14.0kW", price: "$11,290" },\n      { kw: "16.0kW", price: "$12,090" },\n    ],'''),
+              ('''    daikin: [\n      { kw: "12.5kW", price: "$10,390" },\n      { kw: "14.0kW", price: "$11,290" },\n      { kw: "16.0kW", price: "$11,990" },\n    ],''', '''    daikin: [\n      { kw: "12.5kW", price: "$11,390" },\n      { kw: "14.0kW", price: "$12,290" },\n      { kw: "16.0kW", price: "$12,990" },\n    ],'''),
+              ('''    rinnai: [\n      { kw: "7.3kW", price: "$3,590" },\n      { kw: "9.0kW", price: "$4,290" },\n      { kw: "10.5kW", price: "$5,090" },\n      { kw: "12.5kW", price: "$6,990" },\n      { kw: "14.0kW", price: "$7,790" },\n    ],''', '''    rinnai: [\n      { kw: "7.3kW", price: "$4,590" },\n      { kw: "9.0kW", price: "$5,290" },\n      { kw: "10.5kW", price: "$6,090" },\n      { kw: "12.5kW", price: "$7,990" },\n      { kw: "14.0kW", price: "$8,790" },\n    ],'''),
+              ('''    rinnai: [\n      { kw: "10.5kW", price: "$7,490" },\n      { kw: "12.5kW", price: "$8,390" },\n      { kw: "14.0kW", price: "$9,290" },\n      { kw: "17.0kW", price: "$10,090" },\n    ],''', '''    rinnai: [\n      { kw: "10.5kW", price: "$8,490" },\n      { kw: "12.5kW", price: "$9,390" },\n      { kw: "14.0kW", price: "$10,290" },\n      { kw: "17.0kW", price: "$11,090" },\n    ],'''),
+              ('''    rinnai: [\n      { kw: "12.5kW", price: "$9,390" },\n      { kw: "14.0kW", price: "$10,290" },\n      { kw: "17.0kW", price: "$10,990" },\n    ],''', '''    rinnai: [\n      { kw: "12.5kW", price: "$10,390" },\n      { kw: "14.0kW", price: "$11,290" },\n      { kw: "17.0kW", price: "$11,990" },\n    ],'''),
           ]
           for old_block, new_block in replacements:
               if old_block in text:
