@@ -379,6 +379,7 @@ const BrandPage = () => {
                 {[
                   "Minimum 5-Year Manufacturer Warranty",
                   "SplitsPro Workmanship Guarantee",
+                  "Licensed & Insured",
                   "Standard installation pricing shown above",
                   "Any extras confirmed before work starts",
                 ].map((t) => (
