@@ -1,13 +1,17 @@
 from pathlib import Path
+import re
 
 # Keep the compact brand form lean, but restore optional email.
 q = Path('src/components/QuoteForm.jsx')
 text = q.read_text(encoding='utf-8')
-old = '''      {compact ? (\n        <div>\n          <label htmlFor="q-suburb" className={labelClass}>Suburb</label>\n          <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}\n            onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />\n        </div>\n      ) : ('''
-new = '''      {compact ? (\n        <div className="grid gap-5 sm:grid-cols-2">\n          <div>\n            <label htmlFor="q-email" className={labelClass}>Email (optional)</label>\n            <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}\n              onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />\n          </div>\n          <div>\n            <label htmlFor="q-suburb" className={labelClass}>Suburb</label>\n            <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}\n              onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />\n          </div>\n        </div>\n      ) : ('''
-if old not in text:
-    raise SystemExit('Compact form block not found')
-text = text.replace(old, new, 1)
+pattern = re.compile(
+    r'''      \{compact \? \(\n        <div>\n          <label htmlFor="q-suburb".*?        </div>\n      \) : \(''',
+    re.S,
+)
+replacement = '''      {compact ? (\n        <div className="grid gap-5 sm:grid-cols-2">\n          <div>\n            <label htmlFor="q-email" className={labelClass}>Email (optional)</label>\n            <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}\n              onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />\n          </div>\n          <div>\n            <label htmlFor="q-suburb" className={labelClass}>Suburb</label>\n            <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}\n              onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />\n          </div>\n        </div>\n      ) : ('''
+text, count = pattern.subn(replacement, text, count=1)
+if count != 1:
+    raise SystemExit(f'Compact form block not found: {count}')
 q.write_text(text, encoding='utf-8')
 
 # Replace generic booking copy with practical friction-removal reassurance.
