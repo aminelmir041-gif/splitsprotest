@@ -4,39 +4,39 @@ import CleaningDetailPage from "./CleaningDetailPage";
 const BENEFITS = [
   {
     icon: Bug,
-    kicker: "Start at the return",
-    title: "Cleaner return air",
-    desc: "Clean the return-air filter and grille where household dust is constantly drawn in.",
+    kicker: "Fresh from the start",
+    title: "Cleaner air starts at the return",
+    desc: "The return is where the whole home breathes back into the system. Keep that starting point fresh and the whole experience feels better.",
   },
   {
     icon: Fan,
-    kicker: "Keep it moving",
-    title: "Whole-home airflow",
-    desc: "Help maintain more consistent airflow through the system and across your outlets.",
+    kicker: "Room to room",
+    title: "Smooth airflow through the whole home",
+    desc: "The best ducted comfort is the kind you barely notice — even airflow, room to room, without one area feeling forgotten.",
   },
   {
     icon: Sparkles,
-    kicker: "Less dust traffic",
-    title: "Less built-up dust",
-    desc: "Remove visible dust from filters, grilles and accessible air-distribution surfaces.",
+    kicker: "A fresher home",
+    title: "Less dust traffic",
+    desc: "Keep the parts you see and the air path you rely on feeling cleaner, tidier and more cared for across the house.",
   },
   {
     icon: Gauge,
-    kicker: "Let the system breathe",
-    title: "Efficient operation",
-    desc: "Clean filters reduce airflow restriction and help the ducted system breathe properly.",
+    kicker: "Effortless comfort",
+    title: "Let the system breathe easy",
+    desc: "When airflow is less restricted, the whole system can feel smoother and more effortless when the weather turns hot.",
   },
   {
     icon: Wind,
-    kicker: "Clean where you see it",
-    title: "Cleaner outlets",
-    desc: "Detailed outlet and grille cleaning keeps the visible parts of the system fresh and tidy.",
+    kicker: "Clean lines, clean feel",
+    title: "Vents that match the rest of the home",
+    desc: "Fresh-looking outlets and grilles help the whole system disappear back into the ceiling where good ducted air should be.",
   },
   {
     icon: Home,
-    kicker: "One system, whole home",
-    title: "Whole-home system care",
-    desc: "A considered clean and inspection helps spot maintenance issues before peak season.",
+    kicker: "Whole-home comfort",
+    title: "One clean. Every room feels it.",
+    desc: "Ducted air is about the whole house feeling comfortable together — bedrooms, living spaces and everything in between.",
   },
 ];
 
@@ -45,7 +45,7 @@ const PLANS = [
     id: "standard",
     name: "Standard Ducted Clean",
     price: "From $299",
-    note: "Routine whole-home maintenance",
+    note: "For a well-kept system that needs a refresh",
     items: [
       "Return-air filter clean",
       "Return grille clean",
@@ -60,7 +60,7 @@ const PLANS = [
     name: "Deep Ducted Clean",
     price: "From $399",
     popular: true,
-    note: "For heavier dust and overdue systems",
+    note: "For the fuller whole-home reset",
     items: [
       "Detailed return-air clean",
       "Filter and grille deep clean",
@@ -75,16 +75,18 @@ const PLANS = [
 const DuctedCleaning = () => (
   <CleaningDetailPage
     overline="Ducted Air Conditioning Cleaning"
-    title="One system. The whole house breathing through it."
-    sub="A tidy return grille is only the beginning. We clean the accessible parts that keep your ducted system moving air around the home properly."
-    benefitsTitle="Give the whole system a proper reset."
-    benefitsIntro="Ducted air conditioning pulls household air back through the return, filter and indoor unit before sending it around the home again. Keeping those areas clean helps airflow stay consistent and the system work with less restriction."
+    title="Make the whole home feel lighter."
+    sub="Fresh return air. Smoother airflow. Cleaner-looking vents. Give your ducted system the reset that every room gets to enjoy."
+    benefitsTitle="One system. A fresher feeling everywhere."
+    benefitsIntro="Ducted comfort should feel invisible — the whole home simply feels right. Cleaner, smoother airflow helps bring back that effortless feeling from room to room."
     benefits={BENEFITS}
+    dreamLine="Walk from room to room and the comfort just follows you."
+    dreamSub="No fuss. No stale feeling. Just a home that feels cool, fresh and settled from the moment the system comes on."
     plans={PLANS}
     typeLabel="Ducted"
     siblingHref="/split-system-cleaning"
     siblingLabel="split system cleaning"
-    finePrint="Ducted prices are starting prices. Final price depends on system size, safe ceiling access, filter type, number of outlets and the level of build-up found during inspection."
+    finePrint="Ducted pricing starts from the amounts shown and varies with system size and access. We’ll confirm any difference before booking the work."
   />
 );
 
