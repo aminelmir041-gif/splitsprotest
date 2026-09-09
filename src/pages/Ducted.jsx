@@ -1,4 +1,5 @@
 import HomeComfortPage from "./HomeComfortPage";
+import DuctedPricingSelector from "../components/DuctedPricingSelector";
 import { IMAGES } from "../lib/data";
 
 const Ducted = () => (
@@ -10,6 +11,7 @@ const Ducted = () => (
     image={IMAGES.controller}
     introImage={IMAGES.controller}
     imgPos="object-center"
+    afterHero={<DuctedPricingSelector />}
     intro={{
       heading: "Designed around your home, not the other way around",
       body: "Ducted systems reward careful planning. We map zones to how you live, plan ceiling access to minimise disruption and integrate discreet vents and intuitive controls throughout your home. The result is even, effortless comfort at the touch of a controller.",
