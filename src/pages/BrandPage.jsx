@@ -133,8 +133,8 @@ const BrandPage = () => {
       {/* Compact intro + range jump tabs (price-focused, no trust badges chrome) */}
       <section className="bg-white py-14 sm:py-20" data-testid="brand-intro">
         <div className="sp-container">
-          <div className={brand.installEditorial ? "grid gap-10 lg:grid-cols-[1.05fr_.95fr] lg:items-start lg:gap-14" : ""}>
-            <div>
+          <div className={brand.installEditorial ? "grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:items-start lg:gap-16" : ""}>
+            <div className="lg:pt-20">
               <Link to="/split-systems" data-testid="brand-back" className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#C8A46A] link-line">
                 <ArrowLeft className="h-4 w-4" /> Split System Air Conditioning
               </Link>
@@ -151,33 +151,21 @@ const BrandPage = () => {
                   ))}
                 </div>
               )}
-
-              {brand.installEditorial?.tertiary && (
-                <figure className="mt-8 w-full max-w-[360px] overflow-hidden rounded-[18px]" data-testid="brand-install-tertiary">
-                  <img
-                    src={brand.installEditorial.tertiary.src}
-                    alt={brand.installEditorial.tertiary.alt}
-                    loading="lazy"
-                    data-no-fallback="true"
-                    className="aspect-[16/9] w-full object-cover"
-                  />
-                </figure>
-              )}
             </div>
 
             {brand.installEditorial && (
-              <div className="relative mx-auto w-full max-w-[560px] pb-16 pt-1 sm:min-h-[430px]" data-testid="brand-install-editorial">
-                <figure className="ml-auto w-[82%] overflow-hidden rounded-[22px]">
+              <div className="mx-auto grid w-full max-w-[650px] grid-cols-[0.95fr_1.05fr] items-start gap-5 sm:gap-8 lg:-mt-3" data-testid="brand-install-editorial">
+                <figure className="mt-3 overflow-hidden rounded-[18px]">
                   <img
                     src={brand.installEditorial.primary.src}
                     alt={brand.installEditorial.primary.alt}
                     loading="eager"
                     data-no-fallback="true"
-                    className="aspect-[4/3] w-full object-cover"
+                    className="aspect-[16/10] w-full object-cover"
                   />
                 </figure>
 
-                <figure className="absolute bottom-[44px] left-0 w-[38%] overflow-hidden rounded-[18px]">
+                <figure className="overflow-hidden rounded-[22px]">
                   <img
                     src={brand.installEditorial.secondary.src}
                     alt={brand.installEditorial.secondary.alt}
@@ -186,10 +174,6 @@ const BrandPage = () => {
                     className="aspect-[3/4] w-full object-cover"
                   />
                 </figure>
-
-                <p className="absolute bottom-2 right-0 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#77777B]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#C8A46A]" /> Recent Daikin installs by SplitsPro
-                </p>
               </div>
             )}
           </div>
