@@ -429,6 +429,16 @@ export const SPLIT_BRANDS = [
     metaDesc: "Compare Rinnai PB Series and Rinnai PX Series supplied & installed prices from SplitsPro. Book your Rinnai split system installation online.",
     body: "The Rinnai PB Series and PX Series are dependable reverse cycle split systems — a great value choice for bedrooms, living rooms, home offices and granny flats.",
     image: IMAGES.outdoorRinnai,
+    installEditorial: {
+      primary: {
+        src: IMAGES.outdoorRinnai2,
+        alt: "Rinnai outdoor split system installation by SplitsPro",
+      },
+      secondary: {
+        src: IMAGES.installRinnaiWall,
+        alt: "Rinnai indoor split system installation by SplitsPro",
+      },
+    },
     ranges: [
       {
         slug: "pb-series",

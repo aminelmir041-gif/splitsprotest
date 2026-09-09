@@ -258,7 +258,7 @@ const BrandPage = () => {
       <BrandSelectionBanner currentSlug={brand.slug} />
 
       {/* Brand intro */}
-      {brand.slug === "daikin" ? (
+      {brand.installEditorial ? (
         <DaikinIntroEditorial brand={brand} jumpToRange={jumpToRange} />
       ) : (
         <section className="bg-white py-14 sm:py-20" data-testid="brand-intro">

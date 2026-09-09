@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 
 export default function DaikinIntroEditorial({ brand, jumpToRange }) {
   const installs = brand.installEditorial;
+  const review = installs?.review || (brand.slug === "daikin"
+    ? { text: "Best in the business, amazing work.", author: "Mat 134" }
+    : null);
 
   return (
     <section className="overflow-hidden bg-white pb-10 pt-4 sm:pb-14 sm:pt-5 lg:pb-16 lg:pt-6" data-testid="brand-intro">
@@ -86,15 +89,17 @@ export default function DaikinIntroEditorial({ brand, jumpToRange }) {
                 </svg>
               </div>
 
-              <blockquote className="absolute bottom-[2%] left-[2%] z-10 max-w-[315px] sm:left-[4%] lg:left-[6%]">
-                <div className="text-[14px] tracking-[0.10em] text-[#FBBC04]">★★★★★</div>
-                <p className="mt-2 font-serif text-[20px] italic leading-[1.35] text-[#343842] sm:text-[22px]">
-                  “Best in the business, amazing work.”
-                </p>
-                <footer className="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7A7D83]">
-                  Mat 134 · Google Review
-                </footer>
-              </blockquote>
+              {review && (
+                <blockquote className="absolute bottom-[2%] left-[2%] z-10 max-w-[315px] sm:left-[4%] lg:left-[6%]">
+                  <div className="text-[14px] tracking-[0.10em] text-[#FBBC04]">★★★★★</div>
+                  <p className="mt-2 font-serif text-[20px] italic leading-[1.35] text-[#343842] sm:text-[22px]">
+                    “{review.text}”
+                  </p>
+                  <footer className="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7A7D83]">
+                    {review.author} · Google Review
+                  </footer>
+                </blockquote>
+              )}
             </div>
           )}
         </div>
