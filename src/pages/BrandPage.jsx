@@ -133,19 +133,19 @@ const BrandPage = () => {
       {/* Compact intro + range jump tabs (price-focused, no trust badges chrome) */}
       <section className="bg-white py-14 sm:py-20" data-testid="brand-intro">
         <div className="sp-container">
-          <div className={brand.installEditorial ? "grid gap-12 lg:grid-cols-[1fr_1.08fr] lg:items-center lg:gap-16" : ""}>
+          <div className={brand.installEditorial ? "grid gap-12 lg:grid-cols-[0.98fr_1.08fr] lg:items-center lg:gap-16" : ""}>
             <div>
               <Link to="/split-systems" data-testid="brand-back" className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#C8A46A] link-line">
                 <ArrowLeft className="h-4 w-4" /> Split System Air Conditioning
               </Link>
-              <div className="mt-5 max-w-3xl">
-                <p className="leading-relaxed text-[#6E6E73]">{brand.body}</p>
+              <div className="mt-7 max-w-[620px]">
+                <p className="text-[17px] leading-[1.65] text-[#5F6065] sm:text-[19px] lg:text-[20px] lg:leading-[1.72]">{brand.body}</p>
               </div>
               {brand.ranges.length > 1 && (
-                <div className="mt-8 flex flex-wrap items-center gap-2" data-testid="range-tabs">
+                <div className="mt-10 flex flex-wrap items-center gap-3" data-testid="range-tabs">
                   {brand.ranges.map((r) => (
                     <button key={r.slug} onClick={() => jumpToRange(r.slug)} data-testid={`range-tab-${r.slug}`}
-                      className="rounded-full border border-[#0B0B0B]/15 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-[#0B0B0B] transition-all hover:border-[#C8A46A] hover:text-[#C8A46A]">
+                      className="rounded-full border border-[#0B0B0B]/18 bg-white px-6 py-2.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0B0B0B] transition-all hover:border-[#C8A46A] hover:text-[#C8A46A] sm:px-7 sm:py-3 sm:text-[13px]">
                       {r.tabLabel || r.name}
                     </button>
                   ))}
@@ -168,14 +168,14 @@ const BrandPage = () => {
                   />
                 </figure>
 
-                <div className="col-span-1 flex items-end px-2 pb-3 lg:absolute lg:left-[7%] lg:top-[325px] lg:w-[34%] lg:px-0 lg:pb-0">
+                <div className="col-span-1 flex items-end px-2 pb-3 lg:absolute lg:left-[7%] lg:top-[335px] lg:w-[34%] lg:px-0 lg:pb-0">
                   <div className="max-w-[190px]">
                     <p className="font-serif text-xl italic leading-tight text-[#5F6065] sm:text-2xl">Real installs<br />by SplitsPro</p>
                     <div className="mt-3 h-px w-16 bg-[#C8A46A]" />
                   </div>
                 </div>
 
-                <figure className="col-span-1 overflow-hidden rounded-[24px] lg:absolute lg:right-[2%] lg:top-[165px] lg:w-[50%]">
+                <figure className="col-span-1 overflow-hidden rounded-[24px] lg:absolute lg:right-0 lg:top-[175px] lg:w-[50%]">
                   <img
                     src={brand.installEditorial.secondary.src}
                     alt={brand.installEditorial.secondary.alt}
