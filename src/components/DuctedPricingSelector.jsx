@@ -66,11 +66,11 @@ const PRICING = {
       { kw: "14.0kW", price: "$8,290" },
     ],
     rinnai: [
-      { kw: "7.3kW", price: "$4,490" },
-      { kw: "9.0kW", price: "$5,290" },
-      { kw: "10.5kW", price: "$6,090" },
-      { kw: "12.5kW", price: "$7,490" },
-      { kw: "14.0kW", price: "$7,990" },
+      { kw: "7.3kW", price: "$3,590" },
+      { kw: "9.0kW", price: "$4,290" },
+      { kw: "10.5kW", price: "$5,090" },
+      { kw: "12.5kW", price: "$6,990" },
+      { kw: "14.0kW", price: "$7,790" },
     ],
   },
   comfort: {
@@ -100,10 +100,10 @@ const PRICING = {
       { kw: "15.5kW", price: "$10,190" },
     ],
     rinnai: [
-      { kw: "10.5kW", price: "$6,990" },
-      { kw: "12.5kW", price: "$7,990" },
-      { kw: "14.0kW", price: "$8,590" },
-      { kw: "17.0kW", price: "$9,990" },
+      { kw: "10.5kW", price: "$7,490" },
+      { kw: "12.5kW", price: "$8,390" },
+      { kw: "14.0kW", price: "$9,290" },
+      { kw: "17.0kW", price: "$10,090" },
     ],
   },
   premium: {
@@ -128,8 +128,8 @@ const PRICING = {
       { kw: "15.5kW", price: "$11,490" },
     ],
     rinnai: [
-      { kw: "12.5kW", price: "$8,990" },
-      { kw: "14.0kW", price: "$9,590" },
+      { kw: "12.5kW", price: "$9,390" },
+      { kw: "14.0kW", price: "$10,290" },
       { kw: "17.0kW", price: "$10,990" },
     ],
   },
