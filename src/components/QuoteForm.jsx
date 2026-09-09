@@ -9,9 +9,33 @@ import {
 import { SERVICE_OPTIONS, PHONE_TEL } from "../lib/data";
 import { submitQuote, uploadPhoto } from "../lib/api";
 
-const buildInitial = (defaultService = "", defaultMessage = "") => ({
-  name: "", phone: "", email: "", suburb: "", service: defaultService, message: defaultMessage,
-});
+const buildInitial = (defaultService = "", defaultMessage = "") => {
+  if (defaultService === "Ducted Air Conditioning" && defaultMessage) {
+    const selection = defaultMessage
+      .split("\n")
+      .slice(1)
+      .filter(Boolean)
+      .join(" | ");
+
+    return {
+      name: "",
+      phone: "",
+      email: "",
+      suburb: "",
+      service: selection ? `${defaultService} | ${selection}` : defaultService,
+      message: "",
+    };
+  }
+
+  return {
+    name: "",
+    phone: "",
+    email: "",
+    suburb: "",
+    service: defaultService,
+    message: defaultMessage,
+  };
+};
 
 const fieldClass =
   "h-12 rounded-sm border-0 border-b border-[#E5E5EA] bg-transparent px-0 text-[#1D1D1F] shadow-none focus-visible:border-[#C8A46A] focus-visible:ring-0 placeholder:text-[#6E6E73]/60";
@@ -142,7 +166,7 @@ export const QuoteForm = ({ onDark = false, defaultService = "", defaultMessage 
           <div>
             <label htmlFor="q-message" className={labelClass}>Message (optional)</label>
             <Textarea id="q-message" data-testid="quote-message-input" value={form.message}
-              onChange={(e) => update("message", e.target.value)} placeholder="Tell us what you want, the room size, preferred unit or any access details…"
+              onChange={(e) => update("message", e.target.value)} placeholder="Special instructions, access details or anything else we should know…"
               className="min-h-20 rounded-sm border-0 border-b border-[#E5E5EA] bg-transparent px-0 text-[#1D1D1F] shadow-none focus-visible:border-[#C8A46A] focus-visible:ring-0 placeholder:text-[#6E6E73]/60" />
           </div>
         </div>
