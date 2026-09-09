@@ -50,6 +50,129 @@ const DAIKIN_ICON_MAP = {
   grid: LayoutGrid,
 };
 
+
+// Official manufacturer media used where the public manufacturer site exposes a
+// stable direct asset URL. Existing local product renders remain the fallback.
+const OFFICIAL_PRODUCT_IMAGES = {
+  "electric-ap": "https://www.mitsubishielectric.com.au/wp-content/uploads/2022/02/18OCT_MTBS_AP_AUS_image_03_0079_m-1920x1440-1-1200x900.png",
+  "heavy-ciara": "https://www.mhiaa.com.au/wp-content/uploads/2024/01/MHIAA_Ciara_WebHeroImage_588x330px_06.26-1.jpg",
+};
+
+const NON_DAIKIN_FEATURES = {
+  "pb-series": [
+    {
+      title: "Wi-Fi Control",
+      desc: "Control the system remotely with Rinnai's supported NetHome Plus app.",
+      icon: "https://www.rinnai.com.au/wp-content/uploads/ICO-logo-wifi-IMA.png",
+      fallback: Wifi,
+    },
+    { title: "Quiet Operation", desc: "Low-noise operation designed to suit bedrooms and living spaces.", fallback: Fan },
+    { title: "3D Airflow", desc: "Horizontal and vertical swing helps distribute air more evenly around the room.", fallback: Wind },
+    { title: "Dehumidifying", desc: "Dry mode helps manage room humidity during hot, humid weather.", fallback: Droplets },
+  ],
+  "px-series": [
+    {
+      title: "Wi-Fi + Voice",
+      desc: "App control plus Google Home and Amazon Alexa compatibility.",
+      icon: "https://www.rinnai.com.au/wp-content/uploads/ICO-logo-wifi-IMA.png",
+      fallback: Wifi,
+    },
+    { title: "Human Sensor", desc: "Detects when the room is empty and can reduce unnecessary energy use.", fallback: Eye },
+    { title: "3D Airflow", desc: "Horizontal and vertical swing helps balance room temperature and comfort.", fallback: Wind },
+    { title: "Humidity Control", desc: "Set and manage room humidity through Dry Mode on supported PX systems.", fallback: Droplets },
+  ],
+  "electric-ap": [
+    {
+      title: "Quiet Operation",
+      desc: "Very low indoor sound levels make AP a strong choice for bedrooms and quiet spaces.",
+      icon: "https://www.mitsubishielectric.com.au/wp-content/uploads/2025/08/quiet_operation.svg",
+      fallback: Fan,
+    },
+    {
+      title: "Night Mode",
+      desc: "Reduces operating sound and dims indicator brightness for more comfortable night use.",
+      icon: "https://www.mitsubishielectric.com.au/wp-content/uploads/2025/08/night_mode.svg",
+      fallback: Star,
+    },
+    {
+      title: "Built-In Wi-Fi",
+      desc: "Compatible models include Wi-Fi control for remote operation and scheduling.",
+      icon: "https://www.mitsubishielectric.com.au/wp-content/uploads/2025/07/built-in-wi-fi-control.svg",
+      fallback: Wifi,
+    },
+    {
+      title: "Dual Barrier Coating",
+      desc: "A coating on key internal parts helps reduce dust and greasy dirt build-up.",
+      icon: "https://www.mitsubishielectric.com.au/wp-content/uploads/2025/08/dual-barrier-coating-v1.svg",
+      fallback: ShieldCheck,
+    },
+  ],
+  "heavy-ciara": [
+    {
+      title: "Built-In Wi-Fi",
+      desc: "Control Ciara from the supported app, with compatible voice-control options.",
+      icon: "https://www.mhiaa.com.au/wp-content/uploads/2024/02/Feature-Icons_Built-in_Wi-Fi.svg",
+      fallback: Wifi,
+    },
+    {
+      title: "Allergen Clear Filter",
+      desc: "MHI's filtration system is designed to capture and manage airborne contaminants on the filter.",
+      icon: "https://www.mhiaa.com.au/wp-content/uploads/2024/02/Feature-Icons_RAC-Allergen-Clear-Filter.svg",
+      fallback: Filter,
+    },
+    {
+      title: "3D Auto Airflow",
+      desc: "Automatically combines vertical and horizontal airflow for wider room coverage.",
+      icon: "https://www.mhiaa.com.au/wp-content/uploads/2024/02/Feature-Icons_RAC-3d-Auto.svg",
+      fallback: Wind,
+    },
+    {
+      title: "Silent Operation",
+      desc: "A dedicated quiet setting reduces sound for bedrooms and low-noise spaces.",
+      icon: "https://www.mhiaa.com.au/wp-content/uploads/2024/02/Feature-Icons_Silent-Operation.svg",
+      fallback: Fan,
+    },
+  ],
+  "lifestyle-kmtc": [
+    { title: "Human Sensor", desc: "Detects movement and can reduce output when the room is unoccupied.", fallback: Eye },
+    { title: "Economy Mode", desc: "Limits peak power demand when full output is not required.", fallback: Leaf },
+    { title: "Super Quiet", desc: "Reduces indoor fan speed for quieter operation in bedrooms and living areas.", fallback: Fan },
+    { title: "Powerful Mode", desc: "Temporarily boosts output to bring the room toward set temperature faster.", fallback: Zap },
+    { title: "Apple-Catechin Filter", desc: "Helps capture fine dust and microorganisms on the treated filter surface.", fallback: Filter },
+    { title: "Blue Fin", desc: "A corrosion-resistant treatment helps protect the outdoor heat exchanger.", fallback: ShieldCheck },
+  ],
+  "geo-windfree": [
+    { title: "WindFree Cooling", desc: "Maintains comfort by dispersing cool air through thousands of micro air holes.", fallback: Wind },
+    { title: "AI Auto Cooling", desc: "Uses room conditions and usage patterns to help select a suitable operating mode.", fallback: Sparkles },
+    { title: "SmartThings Wi-Fi", desc: "Built-in Wi-Fi connects the system to Samsung SmartThings for remote control.", fallback: Wifi },
+    { title: "Quad-Care Filter", desc: "A multi-stage filter designed to capture fine airborne particles on the filter.", fallback: Filter },
+    { title: "Freeze Wash", desc: "Freezes and defrosts the heat exchanger, then dries it as an automated cleaning cycle.", fallback: Droplets },
+    { title: "Good Sleep", desc: "Adjusts temperature and airflow overnight with gentler WindFree operation.", fallback: Star },
+  ],
+};
+
+const BrandSelectionBanner = ({ currentSlug }) => (
+  <nav aria-label="Choose split system brand" data-testid="brand-selection-banner" className="border-b border-[#E5E5EA] bg-white">
+    <div className="sp-container">
+      <div className="-mx-6 flex snap-x snap-mandatory items-center gap-3 overflow-x-auto whitespace-nowrap px-6 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0">
+        <span className="mr-1 shrink-0 text-[10px] font-bold uppercase tracking-[0.18em] text-[#6E6E73]">Choose brand</span>
+        {SPLIT_BRANDS.map((item) => {
+          const active = item.slug === currentSlug;
+          return active ? (
+            <span key={item.slug} aria-current="page" className="snap-start shrink-0 rounded-full border border-[#C8A46A] bg-[#F3E9D2] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0B0B0B]">
+              {item.brand}
+            </span>
+          ) : (
+            <Link key={item.slug} to={`/split-systems/${item.slug}`} data-testid={`brand-banner-${item.slug}`} className="group snap-start flex shrink-0 items-center gap-2 rounded-full border border-[#E5E5EA] bg-white px-5 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0B0B0B] transition-all hover:border-[#C8A46A] hover:-translate-y-[1px]">
+              {item.brand}<ArrowUpRight className="h-3.5 w-3.5 text-[#C8A46A]" />
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  </nav>
+);
+
 const BrandPage = () => {
   const { slug } = useParams();
   const brand = SPLIT_BRANDS.find((b) => b.slug === slug);
@@ -131,6 +254,8 @@ const BrandPage = () => {
         </div>
       </section>
 
+      <BrandSelectionBanner currentSlug={brand.slug} />
+
       {/* Brand intro */}
       {brand.slug === "daikin" ? (
         <DaikinIntroEditorial brand={brand} jumpToRange={jumpToRange} />
@@ -200,26 +325,41 @@ const BrandPage = () => {
                   )}
                 </div>
               ) : (
-                <>
-                  {range.features && (
-                    <p className="mt-4 text-sm text-[#0B0B0B]" data-testid={`features-${range.slug}`}>
-                      {range.features.join("  •  ")}
-                    </p>
-                  )}
-                  {range.featureDetails && (
-                    <div className="mt-7 grid gap-3 sm:grid-cols-2" data-testid={`feature-details-${range.slug}`}>
-                      {range.featureDetails.map((feature) => (
-                        <div key={feature.title} className="rounded-xl border border-[#E5E5EA] bg-white p-5 soft-shadow-sm">
-                          <h3 className="font-serif text-lg text-[#0B0B0B]">{feature.title}</h3>
-                          <p className="mt-2 text-sm leading-relaxed text-[#6E6E73]">{feature.desc}</p>
+                <div className="mt-6" data-testid={`feature-details-${range.slug}`}>
+                  <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#6E6E73]">Key features</p>
+                  <div className="grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-3">
+                    {(NON_DAIKIN_FEATURES[range.slug] || []).map((feature) => {
+                      const Icon = feature.fallback || Sparkles;
+                      return (
+                        <div key={feature.title} className="flex min-w-0 items-start gap-2.5">
+                          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E5EA] bg-white text-[#C8A46A]">
+                            {feature.icon && (
+                              <img
+                                src={feature.icon}
+                                alt=""
+                                aria-hidden="true"
+                                loading="lazy"
+                                className="h-5 w-5 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = "none";
+                                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                                }}
+                              />
+                            )}
+                            <Icon className={`h-4 w-4 ${feature.icon ? "hidden" : ""}`} strokeWidth={1.9} />
+                          </span>
+                          <div className="min-w-0">
+                            <h3 className="text-[12px] font-bold leading-4 text-[#0B0B0B]">{feature.title}</h3>
+                            <p className="mt-0.5 text-[11px] leading-[1.4] text-[#6E6E73]">{feature.desc}</p>
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                      );
+                    })}
+                  </div>
                   {range.note && (
-                    <p className="mt-5 rounded-xl border border-[#C8A46A]/30 bg-[#F3E9D2]/50 px-4 py-3 text-xs leading-relaxed text-[#5F5140]">{range.note}</p>
+                    <p className="mt-4 max-w-2xl text-[10px] leading-[1.45] text-[#8A8A8E]">{range.note}</p>
                   )}
-                </>
+                </div>
               )}
             </div>
             {range.image && (
@@ -247,11 +387,18 @@ const BrandPage = () => {
                   <>
                     <div className="product-media-seamless flex min-h-[250px] items-center justify-center px-1 py-4 sm:min-h-[320px] lg:min-h-[380px]">
                       <img
-                        src={range.image}
+                        src={OFFICIAL_PRODUCT_IMAGES[range.slug] || range.image}
                         alt={`${brand.brand} ${range.name} split system air conditioner`}
                         loading="lazy"
                         data-no-fallback="true"
-                        onError={(e) => { e.currentTarget.style.display = "none"; }}
+                        onError={(e) => {
+                          if (OFFICIAL_PRODUCT_IMAGES[range.slug] && e.currentTarget.dataset.officialFallback !== "true") {
+                            e.currentTarget.dataset.officialFallback = "true";
+                            e.currentTarget.src = range.image;
+                          } else {
+                            e.currentTarget.style.display = "none";
+                          }
+                        }}
                         className="product-unit-image block max-h-[340px] w-full object-contain sm:max-h-[410px] lg:max-h-[470px]"
                       />
                     </div>

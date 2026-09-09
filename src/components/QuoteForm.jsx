@@ -110,16 +110,24 @@ export const QuoteForm = ({ onDark = false, defaultService = "", defaultMessage 
       </div>
 
       {compact ? (
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div>
-            <label htmlFor="q-email" className={labelClass}>Email (optional)</label>
-            <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}
-              onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />
+        <div className="space-y-5">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label htmlFor="q-email" className={labelClass}>Email (optional)</label>
+              <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}
+                onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />
+            </div>
+            <div>
+              <label htmlFor="q-suburb" className={labelClass}>Suburb</label>
+              <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}
+                onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />
+            </div>
           </div>
           <div>
-            <label htmlFor="q-suburb" className={labelClass}>Suburb</label>
-            <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}
-              onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />
+            <label htmlFor="q-message" className={labelClass}>Message (optional)</label>
+            <Textarea id="q-message" data-testid="quote-message-input" value={form.message}
+              onChange={(e) => update("message", e.target.value)} placeholder="Tell us what you want, the room size, preferred unit or any access details…"
+              className="min-h-20 rounded-sm border-0 border-b border-[#E5E5EA] bg-transparent px-0 text-[#1D1D1F] shadow-none focus-visible:border-[#C8A46A] focus-visible:ring-0 placeholder:text-[#6E6E73]/60" />
           </div>
         </div>
       ) : (

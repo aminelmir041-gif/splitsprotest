@@ -22,7 +22,7 @@ const Stars = ({ n = 5 }) => (
   </span>
 );
 
-const HomeComfortPage = ({ slug, overline, title, sub, image, introImage, intro, features, imgPos = "object-center", seoBlocks = null, afterHero = null, extraFaqs = null, helmet = null }) => {
+const HomeComfortPage = ({ slug, overline, title, sub, image, introImage, intro, features, imgPos = "object-center", seoBlocks = null, afterHero = null, extraFaqs = null, helmet = null, bookingForm = false }) => {
   const cfg = SERVICE_LANDING[slug] || {};
   const lenis = useLenis();
   const [review, setReview] = useState(null);
@@ -55,15 +55,17 @@ const HomeComfortPage = ({ slug, overline, title, sub, image, introImage, intro,
         <div className="sp-container grid gap-14 lg:grid-cols-2 lg:gap-20">
           {/* Left — value + proof */}
           <div>
-            <Reveal><Overline>The Splits Pro Home Comfort Plan&trade;</Overline></Reveal>
+            <Reveal><Overline>{bookingForm ? "Split System Installation" : "The Splits Pro Home Comfort Plan™"}</Overline></Reveal>
             <Reveal delay={0.05}>
               <h2 className="mt-5 font-serif text-4xl font-medium leading-[1.08] tracking-tight text-[#1D1D1F] md:text-5xl text-balance">
-                Your home deserves more than just a quote
+                {bookingForm ? "Book your split system installation" : "Your home deserves more than just a quote"}
               </h2>
             </Reveal>
             <Reveal delay={0.1}>
               <p className="mt-6 max-w-xl leading-relaxed text-[#6E6E73]">
-                Most companies simply measure your home and send you a price. We take the time to understand your home, your lifestyle and your comfort goals before recommending the right solution — then prepare a personalised plan with a fixed written quote.
+                {bookingForm
+                  ? "Tell us the room, preferred brand or system size if you know it, and your suburb. We’ll confirm suitability, installation details and the final price before locking in the job."
+                  : "Most companies simply measure your home and send you a price. We take the time to understand your home, your lifestyle and your comfort goals before recommending the right solution — then prepare a personalised plan with a fixed written quote."}
               </p>
             </Reveal>
             <Reveal delay={0.15}>
@@ -107,12 +109,14 @@ const HomeComfortPage = ({ slug, overline, title, sub, image, introImage, intro,
             <Reveal delay={0.12}>
               <div className="rounded-2xl border border-[#E5E5EA] bg-white p-8 soft-shadow sm:p-10" data-testid="reserve-form-card">
               <div className="mb-6"><GoogleRating /></div>
-              <h3 className="font-serif text-2xl leading-snug text-[#1D1D1F]">Reserve Your Complimentary Home Comfort Plan&trade;</h3>
+              <h3 className="font-serif text-2xl leading-snug text-[#1D1D1F]">{bookingForm ? "Book Your Split System Installation" : "Reserve Your Complimentary Home Comfort Plan™"}</h3>
               <p className="mt-2 text-sm leading-relaxed text-[#6E6E73]">
-                Book your personalised in-home consultation and receive your professionally prepared Home Comfort Plan&trade;, complete with expert recommendations and a fixed written quotation.
+                {bookingForm
+                  ? "Tell us what you want installed. If you already know the brand or size, add it in the optional message and we’ll confirm the job details with you."
+                  : "Book your personalised in-home consultation and receive your professionally prepared Home Comfort Plan™, complete with expert recommendations and a fixed written quotation."}
               </p>
               <div className="mt-7">
-                <QuoteForm defaultService={cfg.formService} submitLabel="Reserve My Home Comfort Plan" />
+                <QuoteForm defaultService={cfg.formService} submitLabel={bookingForm ? "Request Installation Booking" : "Reserve My Home Comfort Plan"} compact={bookingForm} />
               </div>
               <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2 border-t border-[#E5E5EA] pt-5">
                 {FORM_TRUST_STRIP.map((t) => (

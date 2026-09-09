@@ -243,6 +243,7 @@ const helmet = (
 const SplitSystems = () => (
   <HomeComfortPage
     slug="split-systems"
+    bookingForm
     overline="Split System Air Conditioning"
     title="Split System Air Conditioning Supply & Installation"
     sub="Compare trusted air conditioning brands, view supplied and installed prices and find the right split system for your room."
