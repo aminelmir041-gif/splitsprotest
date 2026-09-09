@@ -372,7 +372,6 @@ export const SPLIT_BRANDS = [
         image: aliraXUserImage,
         gallery: [
           { src: aliraXUserImage, alt: "Daikin Alira X indoor unit" },
-          { src: aliraXAltUserImage, alt: "Daikin Alira X front view" },
         ],
         prices: [
           { kw: "2.5kW", price: "$1,950" },
@@ -398,9 +397,9 @@ export const SPLIT_BRANDS = [
           { title: "Built-in Wi-Fi", desc: "Phone control is built into the indoor unit, so you can change temperature and operation without adding a bulky external Wi-Fi box." },
         ],
         note: "Zena is available in 2.5, 3.5, 5.0 and 6.0 kW reverse-cycle sizes. White models end in W; Black Wood models end in K.",
-        image: `${PUBLIC}/products/zena-black-uploaded.webp`,
+        image: "https://static.wixstatic.com/media/b0568f_bc1882d899314d2ab094cfee5b57b869~mv2.png",
         gallery: [
-          { src: `${PUBLIC}/products/zena-black-uploaded.webp`, alt: "Daikin Zena Black Wood indoor unit" },
+          { src: "https://static.wixstatic.com/media/b0568f_bc1882d899314d2ab094cfee5b57b869~mv2.png", alt: "Daikin Zena Black Wood indoor unit" },
           { src: `${PUBLIC}/products/zena-white-uploaded.webp`, alt: "Daikin Zena White Hair Line with Streamer" },
         ],
         prices: [
