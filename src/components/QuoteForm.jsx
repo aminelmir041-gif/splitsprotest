@@ -16,7 +16,7 @@ const buildInitial = (defaultService = "", defaultMessage = "") => ({
 const fieldClass =
   "h-12 rounded-sm border-0 border-b border-[#E5E5EA] bg-transparent px-0 text-[#1D1D1F] shadow-none focus-visible:border-[#C8A46A] focus-visible:ring-0 placeholder:text-[#6E6E73]/60";
 
-export const QuoteForm = ({ onDark = false, defaultService = "", defaultMessage = "", submitLabel = "Get Free Quote & Plan" }) => {
+export const QuoteForm = ({ onDark = false, defaultService = "", defaultMessage = "", submitLabel = "Get Free Quote & Plan", compact = false }) => {
   const [form, setForm] = useState(buildInitial(defaultService, defaultMessage));
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -83,7 +83,7 @@ export const QuoteForm = ({ onDark = false, defaultService = "", defaultMessage 
           <Check className="h-7 w-7" />
         </div>
         <h3 className={`mt-6 font-serif text-2xl ${onDark ? "text-white" : "text-[#1D1D1F]"}`}>Request received</h3>
-        <p className={`mt-2 ${onDark ? "text-white/70" : "text-[#6E6E73]"}`}>One of our team will call you shortly to arrange your free quote and plan.</p>
+        <p className={`mt-2 ${onDark ? "text-white/70" : "text-[#6E6E73]"}`}>{compact ? "We’ll call you shortly to confirm the installation details." : "One of our team will call you shortly to arrange your free quote and plan."}</p>
         <button onClick={() => setDone(false)} data-testid="quote-another-btn"
           className="mt-6 text-sm font-semibold text-[#C8A46A] link-line">
           Submit another request
@@ -109,38 +109,46 @@ export const QuoteForm = ({ onDark = false, defaultService = "", defaultMessage 
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="q-email" className={labelClass}>Email (optional)</label>
-          <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}
-            onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />
-        </div>
+      {compact ? (
         <div>
           <label htmlFor="q-suburb" className={labelClass}>Suburb</label>
           <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}
             onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />
         </div>
-      </div>
-
-      <div>
-        <label className={labelClass}>Service Required</label>
-        <Select value={form.service} onValueChange={(v) => update("service", v)}>
-          <SelectTrigger data-testid="quote-service-select"
-            className="h-12 rounded-sm border-0 border-b border-[#E5E5EA] bg-transparent px-0 text-[#1D1D1F] shadow-none focus:ring-0 data-[placeholder]:text-[#6E6E73]/60">
-            <SelectValue placeholder="Select a service" />
-          </SelectTrigger>
-          <SelectContent>
-            {SERVICE_OPTIONS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div>
-        <label htmlFor="q-message" className={labelClass}>Message (optional)</label>
-        <Textarea id="q-message" data-testid="quote-message-input" value={form.message}
-          onChange={(e) => update("message", e.target.value)} placeholder="Tell us a little about your home or the system you have in mind…"
-          className="min-h-24 rounded-sm border-0 border-b border-[#E5E5EA] bg-transparent px-0 text-[#1D1D1F] shadow-none focus-visible:border-[#C8A46A] focus-visible:ring-0 placeholder:text-[#6E6E73]/60" />
-      </div>
+      ) : (
+        <>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label htmlFor="q-email" className={labelClass}>Email (optional)</label>
+              <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}
+                onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />
+            </div>
+            <div>
+              <label htmlFor="q-suburb" className={labelClass}>Suburb</label>
+              <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}
+                onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />
+            </div>
+          </div>
+          <div>
+            <label className={labelClass}>Service Required</label>
+            <Select value={form.service} onValueChange={(v) => update("service", v)}>
+              <SelectTrigger data-testid="quote-service-select"
+                className="h-12 rounded-sm border-0 border-b border-[#E5E5EA] bg-transparent px-0 text-[#1D1D1F] shadow-none focus:ring-0 data-[placeholder]:text-[#6E6E73]/60">
+                <SelectValue placeholder="Select a service" />
+              </SelectTrigger>
+              <SelectContent>
+                {SERVICE_OPTIONS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label htmlFor="q-message" className={labelClass}>Message (optional)</label>
+            <Textarea id="q-message" data-testid="quote-message-input" value={form.message}
+              onChange={(e) => update("message", e.target.value)} placeholder="Tell us a little about your home or the system you have in mind…"
+              className="min-h-24 rounded-sm border-0 border-b border-[#E5E5EA] bg-transparent px-0 text-[#1D1D1F] shadow-none focus-visible:border-[#C8A46A] focus-visible:ring-0 placeholder:text-[#6E6E73]/60" />
+          </div>
+        </>
+      )}
 
       <div>
         <label className={labelClass}>Photo of your space or unit (optional)</label>

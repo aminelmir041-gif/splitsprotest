@@ -44,21 +44,34 @@ export const Airflow = ({ className = "" }) => (
 );
 
 // Deep-navy hero used by interior pages (no photo reuse)
-export const PageHero = ({ overline, title, sub, image, note, imgPos = "object-center" }) => {
+export const PageHero = ({ overline, title, sub, image, note, imgPos = "object-center", desktopBrand = false }) => {
   if (image) {
     return (
-      <section className="relative flex min-h-[58vh] items-end overflow-hidden">
-        <div className="img-reveal absolute inset-0 -z-10">
-          <motion.img src={image} alt={title} initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }} className={`h-full w-full object-cover ${imgPos}`} />
-          <div className="absolute inset-0 hero-overlay-lr" />
-          <div className="absolute inset-0 hero-overlay-base" />
-        </div>
-        <div className="sp-container pb-16 pt-40">
-          <Reveal><Overline light>{overline}</Overline></Reveal>
-          <Reveal delay={0.05}><h1 className="mt-5 max-w-4xl font-serif text-5xl font-medium leading-none tracking-tight text-white md:text-6xl lg:text-7xl text-balance">{title}</h1></Reveal>
-          {sub && <Reveal delay={0.1}><p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">{sub}</p></Reveal>}
-        </div>
-      </section>
+      <>
+        <section className={`${desktopBrand ? "lg:hidden" : ""} relative flex min-h-[58vh] items-end overflow-hidden`}>
+          <div className="img-reveal absolute inset-0 -z-10">
+            <motion.img src={image} alt={title} initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }} className={`h-full w-full object-cover ${imgPos}`} />
+            <div className="absolute inset-0 hero-overlay-lr" />
+            <div className="absolute inset-0 hero-overlay-base" />
+          </div>
+          <div className="sp-container pb-16 pt-40">
+            <Reveal><Overline light>{overline}</Overline></Reveal>
+            <Reveal delay={0.05}><h1 className="mt-5 max-w-4xl font-serif text-5xl font-medium leading-none tracking-tight text-white md:text-6xl lg:text-7xl text-balance">{title}</h1></Reveal>
+            {sub && <Reveal delay={0.1}><p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">{sub}</p></Reveal>}
+          </div>
+        </section>
+        {desktopBrand && (
+          <section className="relative hidden h-[390px] items-end overflow-hidden bg-[#17191C] lg:flex">
+            <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_78%_20%,rgba(200,164,106,0.18),transparent_34%),linear-gradient(110deg,#0B0B0B_0%,#17191C_62%,#25272A_100%)]" />
+            <div aria-hidden className="absolute right-[7%] top-1/2 h-[250px] w-[430px] -translate-y-1/2 rounded-full border border-white/[0.035]" />
+            <div className="sp-container relative z-10 pb-12 pt-24">
+              <Reveal><Overline light>{overline}</Overline></Reveal>
+              <Reveal delay={0.05}><h1 className="mt-5 max-w-5xl font-serif text-[58px] font-medium leading-[0.98] tracking-tight text-white text-balance">{title}</h1></Reveal>
+              {sub && <Reveal delay={0.1}><p className="mt-6 max-w-3xl text-lg leading-relaxed text-white/75">{sub}</p></Reveal>}
+            </div>
+          </section>
+        )}
+      </>
     );
   }
   return (

@@ -97,7 +97,7 @@ const BrandPage = () => {
         <meta property="og:image" content={brand.image} />
       </Helmet>
 
-      <PageHero overline={brand.brand} title={brand.h1} sub={brand.tagline} image={brand.image} />
+      <PageHero overline={brand.brand} title={brand.h1} sub={brand.tagline} image={brand.image} desktopBrand />
 
       <section className="border-b border-[#E8E6E1] bg-[#FBFAF8] py-5 sm:py-6" data-testid="brand-top-proof">
         <div className="sp-container">
@@ -355,6 +355,7 @@ const BrandPage = () => {
                 defaultService="Split System Installation"
                 defaultMessage={selectionMessage}
                 submitLabel={submitLabel}
+                compact
               />
               <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2 border-t border-white/10 pt-5">
                 {[
