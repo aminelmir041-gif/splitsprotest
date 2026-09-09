@@ -21,6 +21,8 @@ jobs:
           python3 scripts/fix-split-booking-copy.py
           python3 - <<'PY'
           from pathlib import Path
+
+          # Keep Samsung on the clean official indoor-unit product image.
           p = Path("src/pages/BrandPage.jsx")
           text = p.read_text(encoding="utf-8")
           samsung = '  "geo-windfree": "https://images.samsung.com/is/image/samsung/p6pim/au/ar09dxeanwknsa/gallery/au-ar9500tar10dyeabwknst-ar09dxeanwknsa-554025806?%241164_776_PNG%24=",\n'
@@ -29,6 +31,46 @@ jobs:
               if marker not in text:
                   raise SystemExit("Samsung image insertion point not found")
               text = text.replace(marker, marker + samsung, 1)
+
+          # Use the Daikin editorial install layout for any brand with installEditorial.
+          text = text.replace(
+              '{brand.slug === "daikin" ? (\n        <DaikinIntroEditorial brand={brand} jumpToRange={jumpToRange} />',
+              '{brand.installEditorial ? (\n        <DaikinIntroEditorial brand={brand} jumpToRange={jumpToRange} />',
+              1,
+          )
+          p.write_text(text, encoding="utf-8")
+
+          # Add Rinnai real-install photography to its brand data.
+          p = Path("src/lib/data.js")
+          text = p.read_text(encoding="utf-8")
+          rinnai_install = '''    installEditorial: {\n      primary: {\n        src: IMAGES.outdoorRinnai2,\n        alt: "Rinnai outdoor split system installation by SplitsPro",\n      },\n      secondary: {\n        src: IMAGES.installRinnaiWall,\n        alt: "Rinnai indoor split system installation by SplitsPro",\n      },\n    },\n'''
+          if rinnai_install not in text:
+              rinnai_start = text.find('    slug: "rinnai",')
+              if rinnai_start == -1:
+                  raise SystemExit("Rinnai brand block not found")
+              image_line = '    image: IMAGES.outdoorRinnai,\n'
+              image_pos = text.find(image_line, rinnai_start)
+              if image_pos == -1:
+                  raise SystemExit("Rinnai image line not found")
+              image_end = image_pos + len(image_line)
+              text = text[:image_end] + rinnai_install + text[image_end:]
+          p.write_text(text, encoding="utf-8")
+
+          # Make the editorial review brand-specific. Daikin keeps its existing
+          # review; Rinnai stays photo-only until its exact review is supplied.
+          p = Path("src/components/DaikinIntroEditorial.jsx")
+          text = p.read_text(encoding="utf-8")
+          if 'const review = installs?.review' not in text:
+              text = text.replace(
+                  '  const installs = brand.installEditorial;\n',
+                  '''  const installs = brand.installEditorial;\n  const review = installs?.review || (brand.slug === "daikin"\n    ? { text: "Best in the business, amazing work.", author: "Mat 134" }\n    : null);\n''',
+                  1,
+              )
+
+          old_review = '''              <blockquote className="absolute bottom-[2%] left-[2%] z-10 max-w-[315px] sm:left-[4%] lg:left-[6%]">\n                <div className="text-[14px] tracking-[0.10em] text-[#FBBC04]">★★★★★</div>\n                <p className="mt-2 font-serif text-[20px] italic leading-[1.35] text-[#343842] sm:text-[22px]">\n                  “Best in the business, amazing work.”\n                </p>\n                <footer className="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7A7D83]">\n                  Mat 134 · Google Review\n                </footer>\n              </blockquote>\n'''
+          new_review = '''              {review && (\n                <blockquote className="absolute bottom-[2%] left-[2%] z-10 max-w-[315px] sm:left-[4%] lg:left-[6%]">\n                  <div className="text-[14px] tracking-[0.10em] text-[#FBBC04]">★★★★★</div>\n                  <p className="mt-2 font-serif text-[20px] italic leading-[1.35] text-[#343842] sm:text-[22px]">\n                    “{review.text}”\n                  </p>\n                  <footer className="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7A7D83]">\n                    {review.author} · Google Review\n                  </footer>\n                </blockquote>\n              )}\n'''
+          if old_review in text:
+              text = text.replace(old_review, new_review, 1)
           p.write_text(text, encoding="utf-8")
           PY
 
@@ -72,10 +114,10 @@ jobs:
         run: |
           git config user.name "SplitsPro Site Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/pages/BrandPage.jsx src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx static products asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/pages/BrandPage.jsx src/components/DaikinIntroEditorial.jsx src/lib/data.js src/components/QuoteForm.jsx src/pages/HomeComfortPage.jsx src/pages/SplitSystems.jsx static products asset-manifest.json about split-systems ducted cleaning repairs servicing gallery reviews service-areas faq contact
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Refresh official brand pages and booking flow"
+            git commit -m "Add Rinnai real install editorial"
             git push
           fi
