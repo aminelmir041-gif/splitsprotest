@@ -23,15 +23,13 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          # Keep Samsung on the clean official indoor-unit product image.
+          # Samsung: use the clean locally hosted indoor-unit product render.
+          # Remove the external Samsung gallery override because Samsung can
+          # serve extra room-size marketing copy with that asset.
           p = Path("src/pages/BrandPage.jsx")
           text = p.read_text(encoding="utf-8")
           samsung = '  "geo-windfree": "https://images.samsung.com/is/image/samsung/p6pim/au/ar09dxeanwknsa/gallery/au-ar9500tar10dyeabwknst-ar09dxeanwknsa-554025806?%241164_776_PNG%24=",\n'
-          if samsung not in text:
-              marker = '  "heavy-ciara": "https://www.mhiaa.com.au/wp-content/uploads/2024/01/MHIAA_Ciara_WebHeroImage_588x330px_06.26-1.jpg",\n'
-              if marker not in text:
-                  raise SystemExit("Samsung image insertion point not found")
-              text = text.replace(marker, marker + samsung, 1)
+          text = text.replace(samsung, "")
 
           # Use the Daikin editorial install layout for any brand with installEditorial.
           text = text.replace(
@@ -112,6 +110,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Deploy responsive install review layout"
+            git commit -m "Remove Samsung image marketing text"
             git push
           fi
