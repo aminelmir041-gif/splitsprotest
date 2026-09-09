@@ -56,6 +56,7 @@ const DAIKIN_ICON_MAP = {
 const OFFICIAL_PRODUCT_IMAGES = {
   "electric-ap": "https://www.mitsubishielectric.com.au/wp-content/uploads/2022/02/18OCT_MTBS_AP_AUS_image_03_0079_m-1920x1440-1-1200x900.png",
   "heavy-ciara": "https://www.mhiaa.com.au/wp-content/uploads/2024/01/MHIAA_Ciara_WebHeroImage_588x330px_06.26-1.jpg",
+  "geo-windfree": "https://images.samsung.com/is/image/samsung/p6pim/au/ar09dxeanwknsa/gallery/au-ar9500tar10dyeabwknst-ar09dxeanwknsa-554025806?%241164_776_PNG%24=",
 };
 
 const NON_DAIKIN_FEATURES = {
