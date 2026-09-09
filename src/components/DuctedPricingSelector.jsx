@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Check, ChevronDown } from "lucide-react";
+import QuoteForm from "./QuoteForm";
 
 const PACKAGES = [
   {
@@ -31,30 +32,44 @@ const BRANDS = [
   { id: "daikin", label: "Daikin", fullName: "Daikin" },
   { id: "mhi", label: "Mitsubishi Heavy", fullName: "Mitsubishi Heavy Industries" },
   { id: "fujitsu", label: "Fujitsu", fullName: "Fujitsu" },
+  { id: "rinnai", label: "Rinnai", fullName: "Rinnai" },
 ];
 
 const PRICING = {
   essential: {
     samsung: [
       { kw: "10.0kW", price: "$7,190" },
+      { kw: "12.5kW", price: "$7,590" },
+      { kw: "14.0kW", price: "$8,790" },
     ],
     daikin: [
       { kw: "7.1kW", price: "$5,590" },
       { kw: "10.0kW", price: "$7,090" },
+      { kw: "12.5kW", price: "$8,990" },
+      { kw: "14.0kW", price: "$9,790" },
     ],
     mhi: [
       { kw: "7.1kW", price: "$5,390" },
       { kw: "10.0kW", price: "$7,390" },
+      { kw: "12.5kW", price: "$7,990" },
+      { kw: "14.0kW", price: "$9,490" },
     ],
     fujitsu: [
       { kw: "7.1kW", price: "$5,390" },
       { kw: "10.0kW", price: "$6,690" },
+      { kw: "12.5kW", price: "$7,590" },
+      { kw: "14.0kW", price: "$8,290" },
+    ],
+    rinnai: [
+      { kw: "10.5kW", price: "$8,990" },
+      { kw: "12.5kW", price: "$9,590" },
+      { kw: "14.0kW", price: "$10,190" },
     ],
   },
   comfort: {
     samsung: [
       { kw: "10.0kW", price: "$7,790" },
-      { kw: "12.1kW", price: "$8,390" },
+      { kw: "12.5kW", price: "$8,390" },
       { kw: "14.0kW", price: "$8,890" },
     ],
     daikin: [
@@ -74,10 +89,16 @@ const PRICING = {
       { kw: "12.5kW", price: "$8,890" },
       { kw: "14.0kW", price: "$9,390" },
     ],
+    rinnai: [
+      { kw: "10.5kW", price: "$9,590" },
+      { kw: "12.5kW", price: "$10,190" },
+      { kw: "14.0kW", price: "$10,790" },
+      { kw: "17.0kW", price: "$11,990" },
+    ],
   },
   premium: {
     samsung: [
-      { kw: "12.1kW", price: "$9,390" },
+      { kw: "12.5kW", price: "$9,390" },
       { kw: "14.0kW", price: "$9,990" },
       { kw: "15.5kW", price: "$10,990" },
     ],
@@ -95,6 +116,11 @@ const PRICING = {
       { kw: "12.5kW", price: "$9,890" },
       { kw: "14.0kW", price: "$10,390" },
       { kw: "15.5kW", price: "$11,490" },
+    ],
+    rinnai: [
+      { kw: "12.5kW", price: "$11,190" },
+      { kw: "14.0kW", price: "$11,790" },
+      { kw: "17.0kW", price: "$12,990" },
     ],
   },
 };
@@ -117,6 +143,7 @@ const INCLUDED = [
 const DuctedPricingSelector = () => {
   const [packageId, setPackageId] = useState("comfort");
   const [brandId, setBrandId] = useState("samsung");
+  const [quoteSelection, setQuoteSelection] = useState(null);
 
   const selectedPackage = useMemo(
     () => PACKAGES.find((item) => item.id === packageId) || PACKAGES[1],
@@ -128,28 +155,48 @@ const DuctedPricingSelector = () => {
   );
   const prices = PRICING[packageId]?.[brandId] || [];
 
-  const requestQuote = (option) => {
-    const message = [
-      `Brand: ${selectedBrand.fullName}`,
-      `Package: ${selectedPackage.zones} Zones`,
-      `Outlets: Up to ${selectedPackage.outlets}`,
-      `Capacity: ${option.kw}`,
-      `Displayed Price: ${option.price}`,
-    ].join("\n");
+  const selectPackage = (id) => {
+    setPackageId(id);
+    setQuoteSelection(null);
+  };
 
-    window.dispatchEvent(
-      new CustomEvent("splitspro:quote-preset", {
-        detail: {
-          service: "Ducted Air Conditioning",
-          message,
-        },
-      })
-    );
+  const selectBrand = (id) => {
+    setBrandId(id);
+    setQuoteSelection(null);
+  };
+
+  const requestQuote = (option) => {
+    setQuoteSelection({
+      brand: selectedBrand,
+      package: selectedPackage,
+      option,
+    });
 
     window.setTimeout(() => {
-      document.getElementById("reserve")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById("ducted-book-installation")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 30);
   };
+
+  const bookingMessage = quoteSelection
+    ? [
+        `I'd like to book a ducted installation.`,
+        `Brand: ${quoteSelection.brand.fullName}`,
+        `Package: ${quoteSelection.package.zones} Zones`,
+        `Outlets: Up to ${quoteSelection.package.outlets}`,
+        `Capacity: ${quoteSelection.option.kw}`,
+        `Displayed Price: ${quoteSelection.option.price}`,
+      ].join("\n")
+    : [
+        `I'd like to book a ducted installation.`,
+        `Preferred Brand: ${selectedBrand.fullName}`,
+        `Package: ${selectedPackage.zones} Zones`,
+        `Outlets: Up to ${selectedPackage.outlets}`,
+        `Please help me choose the right capacity.`,
+      ].join("\n");
+
+  const formKey = quoteSelection
+    ? `${quoteSelection.brand.id}-${quoteSelection.package.id}-${quoteSelection.option.kw}`
+    : `${brandId}-${packageId}-custom`;
 
   return (
     <section className="border-b border-[#E8E6E1] bg-[#F5F5F7] py-14 sm:py-20" data-testid="ducted-pricing-selector">
@@ -177,7 +224,7 @@ const DuctedPricingSelector = () => {
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setPackageId(item.id)}
+                  onClick={() => selectPackage(item.id)}
                   aria-pressed={selected}
                   data-testid={`ducted-package-${item.id}`}
                   className={`relative min-h-[154px] rounded-2xl border p-5 text-left transition-all sm:p-6 ${
@@ -212,7 +259,7 @@ const DuctedPricingSelector = () => {
                   <button
                     key={brand.id}
                     type="button"
-                    onClick={() => setBrandId(brand.id)}
+                    onClick={() => selectBrand(brand.id)}
                     aria-pressed={selected}
                     data-testid={`ducted-brand-${brand.id}`}
                     className={`shrink-0 rounded-full border px-5 py-3 text-xs font-semibold transition-colors sm:px-6 ${
@@ -294,6 +341,39 @@ const DuctedPricingSelector = () => {
           <p className="mt-4 text-[11px] leading-relaxed text-[#7A7A7E]">
             Pricing applies to a standard installation with suitable access. Final system sizing and installation requirements are confirmed before installation.
           </p>
+
+          <div id="ducted-book-installation" className="scroll-mt-24 pt-10 sm:pt-14" data-testid="ducted-book-installation">
+            <div className="grid gap-8 rounded-2xl border border-[#DEDAD3] bg-white p-6 shadow-[0_14px_38px_rgba(11,11,11,0.06)] sm:p-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12 lg:p-10">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Book An Installation</p>
+                <h3 className="mt-3 font-serif text-3xl font-medium leading-tight text-[#1D1D1F] sm:text-4xl">
+                  Ready to install your ducted system?
+                </h3>
+                <p className="mt-4 text-sm leading-relaxed text-[#6E6E73] sm:text-base">
+                  Your current package and brand are carried into this booking form. Choose a price above for the exact capacity and advertised price to be added automatically.
+                </p>
+                <div className="mt-6 rounded-xl bg-[#F5F5F7] p-5">
+                  <p className="text-sm font-semibold text-[#1D1D1F]">Need something different?</p>
+                  <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">
+                    Use the optional message box to tell us if you need a different kW size, more or fewer outlets, a different zoning setup, special access requirements or anything else you want quoted.
+                  </p>
+                </div>
+                <p className="mt-5 text-xs leading-relaxed text-[#7A7A7E]">
+                  This installation booking is separate from the complimentary Home Comfort Plan further down the page.
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-[#ECE9E2] bg-white p-5 sm:p-7">
+                <QuoteForm
+                  key={formKey}
+                  defaultService="Ducted Air Conditioning"
+                  defaultMessage={bookingMessage}
+                  submitLabel="Book Installation"
+                  compact
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
