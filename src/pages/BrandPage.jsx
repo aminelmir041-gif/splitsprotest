@@ -343,9 +343,27 @@ const BrandPage = () => {
                 {selected.price} · Supplied &amp; Installed
               </p>
             )}
-            <p className="mt-6 max-w-md leading-relaxed text-white/70">
-              Choose your system above, then send us your details to confirm the installation. Prefer to speak now? Call us directly.
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/75">
+              A standard split-system installation is usually a small, contained job. You can normally keep using the rest of your home while we work.
             </p>
+            <div className="mt-8 grid max-w-lg gap-5" data-testid="installation-reassurance">
+              <div className="flex items-start gap-3">
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
+                <div><p className="font-semibold text-white">Small work area</p><p className="mt-1 text-sm leading-relaxed text-white/60">We only need access around the indoor and outdoor unit positions, not your whole home.</p></div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
+                <div><p className="font-semibold text-white">Minimal disruption</p><p className="mt-1 text-sm leading-relaxed text-white/60">You can normally carry on using the rest of the house while the installation is underway.</p></div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
+                <div><p className="font-semibold text-white">Power stays on</p><p className="mt-1 text-sm leading-relaxed text-white/60">Only the necessary circuit is isolated for the electrical connection, usually for about 10–15 minutes on a standard job.</p></div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
+                <div><p className="font-semibold text-white">Clean when we leave</p><p className="mt-1 text-sm leading-relaxed text-white/60">We manage the mess as we work, pack everything up and leave the installation area neat and tidy.</p></div>
+              </div>
+            </div>
           </div>
           <Reveal delay={0.1}>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-md sm:p-10" data-testid="brand-quote-card">
@@ -361,7 +379,6 @@ const BrandPage = () => {
                 {[
                   "Minimum 5-Year Manufacturer Warranty",
                   "SplitsPro Workmanship Guarantee",
-                  "Licensed & Insured",
                   "Standard installation pricing shown above",
                   "Any extras confirmed before work starts",
                 ].map((t) => (

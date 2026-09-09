@@ -110,10 +110,17 @@ export const QuoteForm = ({ onDark = false, defaultService = "", defaultMessage 
       </div>
 
       {compact ? (
-        <div>
-          <label htmlFor="q-suburb" className={labelClass}>Suburb</label>
-          <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}
-            onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="q-email" className={labelClass}>Email (optional)</label>
+            <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}
+              onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />
+          </div>
+          <div>
+            <label htmlFor="q-suburb" className={labelClass}>Suburb</label>
+            <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}
+              onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />
+          </div>
         </div>
       ) : (
         <>
