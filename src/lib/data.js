@@ -187,7 +187,7 @@ export const FAQS = [
 
 
 // ---- Trust / social proof ----
-export const GOOGLE_RATING = { score: "5.0", count: 24 };
+export const GOOGLE_RATING = { score: "5.0", count: 25 };
 
 // Featured hero review (shown directly under hero CTA).
 export const FEATURED_REVIEW = {
