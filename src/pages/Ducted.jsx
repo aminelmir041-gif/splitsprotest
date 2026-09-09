@@ -6,7 +6,7 @@ import { getReviews } from "../lib/api";
 import { FEATURED_REVIEW, GOOGLE_RATING, IMAGES } from "../lib/data";
 
 const GOOGLE_MAPS_URL = "https://g.page/r/CYTvO1ipeYUtEBM/";
-const PREMIUM_VERTICAL_VENT = "https://images.pexels.com/photos/33451939/pexels-photo-33451939.jpeg?cs=srgb&dl=pexels-hngstrm-33451939.jpg&fm=jpg";
+const PREMIUM_VERTICAL_VENT = `${process.env.PUBLIC_URL || ""}/images/ducted-linear-vent.webp`;
 
 const FALLBACK_GOOGLE_REVIEWS = [
   FEATURED_REVIEW,
