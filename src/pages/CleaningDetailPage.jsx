@@ -153,7 +153,7 @@ const CleaningDetailPage = ({
             </div>
 
             <div id="cleaning-booking" className="scroll-mt-24 border-l border-[#C8A46A]/30 pl-0 lg:pl-8">
-              <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">Book your cleaning</p>
                   <h3 className="mt-1 font-serif text-2xl font-medium text-white">{selectedPlan.name}</h3>
@@ -161,16 +161,17 @@ const CleaningDetailPage = ({
                 <div className="font-serif text-3xl font-medium text-[#DAB66E]">{selectedPlan.price}</div>
               </div>
 
-              <QuoteForm
-                key={`${typeLabel}-${selectedPlan.id}`}
-                defaultService={`Air Conditioner Cleaning | ${typeLabel} | ${selectedPlan.name} | ${selectedPlan.price}`}
-                submitLabel="Book My Clean"
-                compact
-                hideMessage
-                hidePhoto
-                tight
-                onDark
-              />
+              <div className="rounded-2xl bg-white p-4 shadow-[0_16px_40px_rgba(0,0,0,0.20)] sm:p-5">
+                <QuoteForm
+                  key={`${typeLabel}-${selectedPlan.id}`}
+                  defaultService={`Air Conditioner Cleaning | ${typeLabel} | ${selectedPlan.name} | ${selectedPlan.price}`}
+                  submitLabel="Book My Clean"
+                  compact
+                  hideMessage
+                  hidePhoto
+                  tight
+                />
+              </div>
             </div>
           </div>
 
