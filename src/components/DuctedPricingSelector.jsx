@@ -38,12 +38,15 @@ const BRANDS = [
 const PRICING = {
   essential: {
     samsung: [
+      { kw: "7.1kW", price: "$6,390" },
+      { kw: "8.5kW", price: "$6,890" },
       { kw: "10.0kW", price: "$7,190" },
       { kw: "12.5kW", price: "$7,590" },
       { kw: "14.0kW", price: "$8,790" },
     ],
     daikin: [
       { kw: "7.1kW", price: "$5,590" },
+      { kw: "8.5kW", price: "$6,290" },
       { kw: "10.0kW", price: "$7,090" },
       { kw: "12.5kW", price: "$8,990" },
       { kw: "14.0kW", price: "$9,790" },
@@ -51,19 +54,23 @@ const PRICING = {
     mhi: [
       { kw: "7.1kW", price: "$5,390" },
       { kw: "10.0kW", price: "$7,390" },
+      { kw: "12.1kW", price: "$7,890" },
       { kw: "12.5kW", price: "$7,990" },
       { kw: "14.0kW", price: "$9,490" },
     ],
     fujitsu: [
       { kw: "7.1kW", price: "$5,390" },
+      { kw: "8.5kW", price: "$6,090" },
       { kw: "10.0kW", price: "$6,690" },
       { kw: "12.5kW", price: "$7,590" },
       { kw: "14.0kW", price: "$8,290" },
     ],
     rinnai: [
-      { kw: "10.5kW", price: "$8,990" },
-      { kw: "12.5kW", price: "$9,590" },
-      { kw: "14.0kW", price: "$10,190" },
+      { kw: "7.3kW", price: "$7,390" },
+      { kw: "9.0kW", price: "$7,890" },
+      { kw: "10.5kW", price: "$8,490" },
+      { kw: "12.5kW", price: "$8,990" },
+      { kw: "14.0kW", price: "$9,490" },
     ],
   },
   comfort: {
@@ -71,6 +78,7 @@ const PRICING = {
       { kw: "10.0kW", price: "$7,790" },
       { kw: "12.5kW", price: "$8,390" },
       { kw: "14.0kW", price: "$8,890" },
+      { kw: "15.5kW", price: "$9,390" },
     ],
     daikin: [
       { kw: "10.0kW", price: "$9,490" },
@@ -80,6 +88,7 @@ const PRICING = {
     ],
     mhi: [
       { kw: "10.0kW", price: "$8,790" },
+      { kw: "12.1kW", price: "$9,290" },
       { kw: "12.5kW", price: "$9,390" },
       { kw: "14.0kW", price: "$11,490" },
       { kw: "16.0kW", price: "$13,590" },
@@ -88,6 +97,7 @@ const PRICING = {
       { kw: "10.0kW", price: "$7,890" },
       { kw: "12.5kW", price: "$8,890" },
       { kw: "14.0kW", price: "$9,390" },
+      { kw: "15.5kW", price: "$10,190" },
     ],
     rinnai: [
       { kw: "10.5kW", price: "$9,590" },
@@ -198,6 +208,12 @@ const DuctedPricingSelector = () => {
     ? `${quoteSelection.brand.id}-${quoteSelection.package.id}-${quoteSelection.option.kw}`
     : `${brandId}-${packageId}-custom`;
 
+  const priceGridClass = prices.length >= 5
+    ? "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+    : prices.length === 4
+      ? "sm:grid-cols-2 xl:grid-cols-4"
+      : "sm:grid-cols-2 lg:grid-cols-3";
+
   return (
     <section className="border-b border-[#E8E6E1] bg-[#F5F5F7] py-14 sm:py-20" data-testid="ducted-pricing-selector">
       <div className="sp-container">
@@ -286,7 +302,7 @@ const DuctedPricingSelector = () => {
               </p>
             </div>
 
-            <div className={`mt-5 grid gap-3 ${prices.length >= 4 ? "sm:grid-cols-2 xl:grid-cols-4" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
+            <div className={`mt-5 grid gap-3 ${priceGridClass}`}>
               {prices.map((option) => (
                 <article
                   key={`${brandId}-${packageId}-${option.kw}`}
