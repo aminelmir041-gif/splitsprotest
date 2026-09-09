@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  Bacteria,
+  Bug,
   Wind,
   Gauge,
   Sparkles,
@@ -17,7 +17,7 @@ import Reveal from "../components/Reveal";
 
 const SPLIT_BENEFITS = [
   {
-    icon: Bacteria,
+    icon: Bug,
     title: "Bacteria & mould build-up",
     desc: "Remove built-up grime and contamination from accessible internal surfaces.",
   },
@@ -50,7 +50,7 @@ const SPLIT_BENEFITS = [
 
 const DUCTED_BENEFITS = [
   {
-    icon: Bacteria,
+    icon: Bug,
     title: "Cleaner return air",
     desc: "Clean the return-air filter and grille where household dust is constantly drawn in.",
   },
