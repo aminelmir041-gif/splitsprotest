@@ -16,7 +16,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Apply official brand page updates
-        run: python3 scripts/refresh-official-brand-pages.py
+        run: |
+          python3 scripts/refresh-official-brand-pages.py
+          python3 scripts/fix-split-booking-copy.py
 
       - name: Set up Node
         uses: actions/setup-node@v4
