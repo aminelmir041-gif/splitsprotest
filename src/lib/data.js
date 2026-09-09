@@ -431,12 +431,16 @@ export const SPLIT_BRANDS = [
     image: IMAGES.outdoorRinnai,
     installEditorial: {
       primary: {
-        src: IMAGES.outdoorRinnai2,
-        alt: "Rinnai outdoor split system installation by SplitsPro",
+        src: `${PUBLIC}/installs/rinnai-outdoor.webp`,
+        alt: "Rinnai outdoor split system installation completed by SplitsPro",
       },
       secondary: {
-        src: IMAGES.installRinnaiWall,
-        alt: "Rinnai indoor split system installation by SplitsPro",
+        src: `${PUBLIC}/installs/rinnai-indoor.webp`,
+        alt: "Rinnai indoor split system installation completed by SplitsPro",
+      },
+      review: {
+        text: "Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy.",
+        author: "Gill McPhee",
       },
     },
     ranges: [
