@@ -4,39 +4,39 @@ import CleaningDetailPage from "./CleaningDetailPage";
 const BENEFITS = [
   {
     icon: Bug,
-    kicker: "Goodbye grime",
-    title: "Bacteria & mould build-up",
-    desc: "Remove built-up grime and contamination from accessible internal surfaces.",
+    kicker: "Breathe easier",
+    title: "Fresh air starts inside the unit",
+    desc: "That clean, light feeling starts when the hidden grime is gone and the air coming back into the room feels fresher again.",
   },
   {
     icon: Sparkles,
-    kicker: "Less floating around",
-    title: "Dust & allergens",
-    desc: "Clean filters and internal surfaces where dust collects and recirculates.",
+    kicker: "A cleaner-feeling room",
+    title: "Less dust. More fresh.",
+    desc: "A cleaner split means less stale dust hanging around the system and a room that simply feels nicer to spend time in.",
   },
   {
     icon: Wind,
     kicker: "Let it breathe",
-    title: "Stronger airflow",
-    desc: "Reduce dirt restriction through the filters, coil and fan area.",
+    title: "Feel the airflow again",
+    desc: "Bring back that smooth rush of cool air instead of a tired unit that feels like it is barely pushing across the room.",
   },
   {
     icon: Gauge,
-    kicker: "Work smarter",
-    title: "Better efficiency",
-    desc: "A cleaner system can move air more freely and work with less restriction.",
+    kicker: "Easy comfort",
+    title: "Cooling without the struggle",
+    desc: "When the system can breathe properly, comfort feels effortless — quieter, smoother and ready for the hot days when you need it most.",
   },
   {
     icon: Droplets,
     kicker: "Fresh beats funky",
-    title: "Fresher smell",
-    desc: "Remove damp dust and grime that can contribute to stale air-con odours.",
+    title: "No more stale air-con smell",
+    desc: "Switch it on and enjoy cool air without that damp, dusty smell reminding you what has been sitting inside the unit.",
   },
   {
     icon: ShieldCheck,
-    kicker: "Look after the unit",
-    title: "System care",
-    desc: "Regular cleaning helps reduce unnecessary strain caused by heavy dirt build-up.",
+    kicker: "Keep the good feeling",
+    title: "Make a good unit feel new again",
+    desc: "A proper clean can bring back the crisp, cared-for feeling you remember from when the system was newer.",
   },
 ];
 
@@ -45,7 +45,7 @@ const PLANS = [
     id: "refresh",
     name: "Refresh Clean",
     price: "$99",
-    note: "Routine maintenance clean",
+    note: "For a unit that just needs a freshen-up",
     items: [
       "Filter wash and clean",
       "Indoor cover and louvre clean",
@@ -59,7 +59,7 @@ const PLANS = [
     name: "Deep Clean",
     price: "$300",
     popular: true,
-    note: "For dirty, neglected or odorous units",
+    note: "For the full fresh-start feeling",
     items: [
       "Indoor covers removed for access",
       "Deep evaporator coil clean",
@@ -74,16 +74,18 @@ const PLANS = [
 const SplitSystemCleaning = () => (
   <CleaningDetailPage
     overline="Split System Cleaning"
-    title="Your split system called. It wants a clean."
-    sub="From a quick refresh to a proper deep clean, we clean the parts a filter rinse never reaches — with clear pricing and no guesswork."
-    benefitsTitle="Less grime in the machine. More comfort in the room."
-    benefitsIntro="Split systems quietly collect dust, damp grime and debris behind the front cover. Cleaning the filters, coil, blower area and drain helps the unit breathe properly again."
+    title="Make the room feel fresh again."
+    sub="Cleaner air. Stronger airflow. No stale air-con smell. Give your split system the fresh-start feeling it has been missing."
+    benefitsTitle="The kind of clean you can actually feel."
+    benefitsIntro="You know the feeling when a room is cool, fresh and comfortable without the air-con drawing attention to itself? That is the goal — effortless comfort every time you switch it on."
     benefits={BENEFITS}
+    dreamLine="Turn it on. Feel the cool air. Forget the unit is even there."
+    dreamSub="That is what a good split system should feel like — fresh, quiet, easy comfort that makes the whole room feel better."
     plans={PLANS}
     typeLabel="Split System"
     siblingHref="/ducted-cleaning"
     siblingLabel="ducted cleaning"
-    finePrint="Pricing applies to standard wall-mounted split systems with safe access. Heavy contamination, unusual access or damaged components may require a separate quote before work begins."
+    finePrint="Standard wall-mounted split pricing. If your system needs anything outside a normal clean, we’ll confirm it with you first."
   />
 );
 
