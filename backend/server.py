@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Header, Query
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Header, Query, BackgroundTasks
 from fastapi.responses import Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -12,6 +12,8 @@ from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
+
+from lead_integrations import derive_lead_source, notify_quote, sync_quote_to_hubspot, valid_admin_key
 
 
 ROOT_DIR = Path(__file__).parent
@@ -87,6 +89,16 @@ class QuoteCreate(BaseModel):
     email: Optional[str] = ""
     message: Optional[str] = ""
     photo_url: Optional[str] = ""
+    page_url: Optional[str] = ""
+    landing_page: Optional[str] = ""
+    referrer: Optional[str] = ""
+    utm_source: Optional[str] = ""
+    utm_medium: Optional[str] = ""
+    utm_campaign: Optional[str] = ""
+    utm_term: Optional[str] = ""
+    utm_content: Optional[str] = ""
+    gclid: Optional[str] = ""
+    fbclid: Optional[str] = ""
 
     @field_validator("name", "phone", "service", "suburb")
     @classmethod
@@ -113,6 +125,17 @@ class Quote(BaseModel):
     email: str = ""
     message: str = ""
     photo_url: str = ""
+    page_url: str = ""
+    landing_page: str = ""
+    referrer: str = ""
+    utm_source: str = ""
+    utm_medium: str = ""
+    utm_campaign: str = ""
+    utm_term: str = ""
+    utm_content: str = ""
+    gclid: str = ""
+    fbclid: str = ""
+    lead_source: str = ""
     created_at: str = Field(default_factory=now_iso)
 
 
@@ -173,10 +196,17 @@ async def root():
 
 
 @api_router.post("/quotes", response_model=Quote)
-async def create_quote(payload: QuoteCreate):
-    quote = Quote(**payload.model_dump())
-    await db.quotes.insert_one(quote.model_dump())
-    logging.info("New quote lead from %s (%s)", quote.name, quote.suburb)
+async def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
+    data = payload.model_dump()
+    data["lead_source"] = derive_lead_source(data)
+    quote = Quote(**data)
+    lead = quote.model_dump()
+    await db.quotes.insert_one(lead)
+    logging.info("New quote lead from %s (%s) via %s", quote.name, quote.suburb, quote.lead_source)
+
+    # External services are best-effort and run after the customer receives a response.
+    background_tasks.add_task(notify_quote, lead)
+    background_tasks.add_task(sync_quote_to_hubspot, lead)
     return quote
 
 
@@ -218,7 +248,9 @@ async def download(path: str):
 
 
 @api_router.get("/quotes", response_model=List[Quote])
-async def list_quotes():
+async def list_quotes(x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")):
+    if not valid_admin_key(x_admin_key):
+        raise HTTPException(status_code=401, detail="Unauthorized")
     docs = await db.quotes.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return [Quote(**d) for d in docs]
 
