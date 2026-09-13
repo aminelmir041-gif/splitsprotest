@@ -89,5 +89,6 @@ jobs:
             echo "No generated changes"
           else
             git commit -m "Build CRM lead routing changes"
+            git pull --rebase origin crm-lead-routing
             git push origin crm-lead-routing
           fi
