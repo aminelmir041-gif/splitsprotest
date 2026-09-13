@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: splitspro-leads
+    runtime: python
+    plan: free
+    buildCommand: pip install -r lead_api/requirements.txt
+    startCommand: uvicorn lead_api.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: CORS_ORIGINS
+        value: https://splitspro.com.au,https://www.splitspro.com.au,https://aminelmir041-gif.github.io
+      - key: QUOTE_NOTIFY_EMAIL
+        value: info@splitspro.com.au
+      - key: SEND_CUSTOMER_CONFIRMATION
+        value: "true"
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: HUBSPOT_PRIVATE_APP_TOKEN
+        sync: false
+      - key: HUBSPOT_OWNER_ID
+        sync: false
