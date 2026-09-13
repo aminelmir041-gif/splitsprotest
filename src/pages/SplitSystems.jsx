@@ -10,10 +10,10 @@ const CANONICAL = "https://splitspro.com.au/split-systems";
 
 const REGIONAL_PAGES = {
   "oran-park": {
-    name: "Oran Park & South-West Sydney",
-    shortName: "Oran Park",
+    name: "Oran Park & South-West Growth Area",
+    shortName: "Oran Park & South-West Sydney",
     canonical: "https://splitspro.com.au/split-systems/oran-park",
-    areas: "Oran Park, Gregory Hills, Harrington Park, Narellan, Camden, Leppington, Austral and surrounding South-West Sydney suburbs",
+    areas: "Oran Park, Edmondson Park, Leppington, Austral, Catherine Field, Gregory Hills, Gledswood Hills, Denham Court, Bardia, Prestons, Middleton Grange, Harrington Park, Narellan, Spring Farm, Cobbitty and surrounding South-West Growth Area suburbs",
   },
   "willoughby-north-sydney": {
     name: "Willoughby & North Sydney",
