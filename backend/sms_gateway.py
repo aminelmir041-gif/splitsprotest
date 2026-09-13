@@ -1,78 +1,95 @@
+import hashlib
 import hmac
 import json
 import logging
 import os
+import uuid
 from typing import Any, Dict
 
 import requests
 
-MYSMSGATE_API_BASE = "https://mysmsgate.net/api/v1"
+INFINIREACH_API_BASE = "https://api.infinireach.io"
 
 
 def sms_configured() -> bool:
-    return bool((os.environ.get("MYSMSGATE_API_KEY") or "").strip())
+    return bool(
+        (os.environ.get("INFINIREACH_API_KEY") or "").strip()
+        and (os.environ.get("INFINIREACH_FROM_NUMBER") or "").strip()
+    )
 
 
 def send_sms(to: str, body: str) -> Dict[str, Any]:
-    api_key = (os.environ.get("MYSMSGATE_API_KEY") or "").strip()
-    if not api_key:
-        raise RuntimeError("MYSMSGATE_API_KEY is not configured")
-
-    payload: Dict[str, Any] = {"to": to, "message": body}
-    device_id = (os.environ.get("MYSMSGATE_DEVICE_ID") or "").strip()
-    slot = (os.environ.get("MYSMSGATE_SIM_SLOT") or "").strip()
-    if device_id:
-        payload["device_id"] = device_id
-    if slot:
-        try:
-            payload["slot"] = int(slot)
-        except ValueError:
-            logging.warning("Ignoring invalid MYSMSGATE_SIM_SLOT=%s", slot)
+    api_key = (os.environ.get("INFINIREACH_API_KEY") or "").strip()
+    from_number = (os.environ.get("INFINIREACH_FROM_NUMBER") or "").strip()
+    if not api_key or not from_number:
+        raise RuntimeError("INFINIREACH_API_KEY/INFINIREACH_FROM_NUMBER are not configured")
 
     response = requests.post(
-        f"{MYSMSGATE_API_BASE}/send",
+        f"{INFINIREACH_API_BASE}/api/v1/messages",
         headers={
-            "Authorization": f"Bearer {api_key}",
+            "X-API-Key": api_key,
             "Content-Type": "application/json",
         },
-        json=payload,
+        json={
+            "to": to,
+            "message": body,
+            "from": from_number,
+            "channel": "sms",
+            "externalId": str(uuid.uuid4()),
+        },
         timeout=30,
     )
     response.raise_for_status()
     return response.json()
 
 
-def parse_webhook(raw_body: bytes, token: str) -> Dict[str, Any]:
-    expected = (os.environ.get("MYSMSGATE_WEBHOOK_TOKEN") or "").strip()
-    if not expected:
-        raise RuntimeError("MYSMSGATE_WEBHOOK_TOKEN is not configured")
-    if not token or not hmac.compare_digest(token, expected):
-        raise PermissionError("Invalid MySMSGate webhook token")
+def _hmac_hex(secret: str, payload: bytes) -> str:
+    return hmac.new(secret.encode("utf-8"), payload, hashlib.sha256).hexdigest()
+
+
+def verify_webhook(raw_body: bytes, signature: str, secret: str) -> bool:
+    if not signature or not secret:
+        return False
+
+    supplied = signature.strip().lower()
+    candidates = [_hmac_hex(secret, raw_body)]
+
+    # InfiniReach docs verify HMAC-SHA256 over JSON.stringify(payload).
+    # Also try a compact JSON serialization in case the provider normalizes JSON.
+    try:
+        parsed = json.loads(raw_body.decode("utf-8"))
+        compact = json.dumps(parsed, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        candidates.append(_hmac_hex(secret, compact))
+    except Exception:
+        pass
+
+    return any(hmac.compare_digest(candidate.lower(), supplied) for candidate in candidates)
+
+
+def parse_webhook(raw_body: bytes, signature: str) -> Dict[str, Any]:
+    secret = (os.environ.get("INFINIREACH_WEBHOOK_SECRET") or "").strip()
+    if not secret:
+        raise RuntimeError("INFINIREACH_WEBHOOK_SECRET is not configured")
+    if not verify_webhook(raw_body, signature, secret):
+        raise PermissionError("Invalid InfiniReach webhook signature")
     return json.loads(raw_body.decode("utf-8"))
 
 
 def log_sms_event(event: Dict[str, Any]) -> None:
-    event_name = event.get("event") or event.get("eventType") or event.get("type") or "unknown"
-    sender = event.get("from") or event.get("sender") or event.get("phone_from")
-    recipient = event.get("to") or event.get("recipient") or event.get("phone_to")
-    message = event.get("message") or event.get("text") or event.get("body")
-    message_id = event.get("message_id") or event.get("messageId") or event.get("id")
-    status = event.get("status")
-
-    if str(event_name).lower() in {"incoming", "incomingmessage", "sms.received", "received"}:
+    event_name = event.get("event") or "unknown"
+    data = event.get("data") or {}
+    if event_name in {"message.inbound", "message.received"}:
         logging.info(
-            "Inbound MySMSGate SMS id=%s sender=%s recipient=%s body=%s",
-            message_id,
-            sender,
-            recipient,
-            message,
+            "Inbound SMS received message_id=%s sender=%s recipient=%s body=%s",
+            data.get("messageId"),
+            data.get("from"),
+            data.get("to"),
+            data.get("body") or data.get("message"),
         )
     else:
         logging.info(
-            "MySMSGate event=%s id=%s status=%s sender=%s recipient=%s",
+            "InfiniReach event=%s message_id=%s status=%s",
             event_name,
-            message_id,
-            status,
-            sender,
-            recipient,
+            data.get("messageId"),
+            data.get("status"),
         )
