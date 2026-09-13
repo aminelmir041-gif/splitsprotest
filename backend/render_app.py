@@ -1,15 +1,17 @@
-from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File, Header, Request
+from fastapi.responses import FileResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, field_validator
 from typing import Optional
 from pathlib import Path
 from datetime import datetime, timezone
+import json
 import os
 import re
 import uuid
 
-from .lead_integrations import derive_lead_source, notify_quote, sync_quote_to_hubspot
+from .lead_integrations import derive_lead_source, notify_quote, sync_quote_to_hubspot, valid_admin_key
+from .sms_gateway import log_sms_event, parse_webhook, send_sms, sms_configured
 
 app = FastAPI(title="SplitsPro Lead API")
 
@@ -66,6 +68,18 @@ class QuoteCreate(BaseModel):
         return value.strip()
 
 
+class SmsCreate(BaseModel):
+    to: str
+    body: str
+
+    @field_validator("to", "body")
+    @classmethod
+    def sms_not_blank(cls, value):
+        if not value or not value.strip():
+            raise ValueError("Field cannot be empty")
+        return value.strip()
+
+
 @app.get("/")
 @app.get("/api")
 @app.get("/api/")
@@ -75,6 +89,8 @@ def health():
         "status": "ok",
         "hubspot_configured": bool((os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()),
         "email_configured": bool((os.environ.get("SMTP_HOST") or "").strip() and (os.environ.get("SMTP_USER") or "").strip() and (os.environ.get("SMTP_PASSWORD") or "")),
+        "sms_configured": sms_configured(),
+        "sms_webhook_configured": bool((os.environ.get("SIMHOOK_WEBHOOK_SECRET") or "").strip()),
     }
 
 
@@ -92,6 +108,33 @@ def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
         **lead,
         "accepted": True,
     }
+
+
+@app.post("/api/sms/send")
+def send_sms_endpoint(payload: SmsCreate, x_admin_key: Optional[str] = Header(default=None, alias="X-Admin-Key")):
+    if not valid_admin_key(x_admin_key):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    try:
+        return send_sms(payload.to, payload.body)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="SMS provider request failed") from exc
+
+
+@app.post("/api/sms/webhook")
+async def sms_webhook(request: Request, x_simhook_signature: Optional[str] = Header(default=None, alias="X-Simhook-Signature")):
+    raw_body = await request.body()
+    try:
+        event = parse_webhook(raw_body, x_simhook_signature or "")
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except PermissionError as exc:
+        raise HTTPException(status_code=401, detail="Invalid webhook signature") from exc
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise HTTPException(status_code=400, detail="Invalid webhook payload") from exc
+    log_sms_event(event)
+    return Response(status_code=204)
 
 
 @app.post("/api/upload")
