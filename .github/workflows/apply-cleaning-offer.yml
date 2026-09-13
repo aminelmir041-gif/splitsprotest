@@ -1,0 +1,57 @@
+name: Apply cleaning offer updates
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update-live-pages:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Patch live cleaning pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          loader = '<script defer src="/cleaning-overrides.js"></script>'
+          for rel in ['cleaning/index.html', 'split-system-cleaning/index.html']:
+              p = Path(rel)
+              text = p.read_text(encoding='utf-8')
+              if loader not in text:
+                  text = text.replace('</head>', loader + '</head>')
+                  p.write_text(text, encoding='utf-8')
+
+          home = Path('index.html')
+          text = home.read_text(encoding='utf-8')
+          text = text.replace(
+              'Thorough coil and filter cleaning for healthier air, cleaner systems and better efficiency.',
+              'Split system cleaning from $100. Deep Clean $180 limited-time local offer in Bass Hill, Chester Hill and nearby suburbs. Ducted cleaning also available from $299.'
+          )
+          text = text.replace(
+              '<a class="explore" href="#quote">Book a clean →</a>',
+              '<a class="explore" href="./cleaning/">See cleaning options & prices →</a>'
+          )
+          text = text.replace(
+              'Yes. We provide thorough coil and filter cleaning to improve air quality, efficiency and the lifespan of your system — ideal before summer.',
+              'Yes. Split system Standard Cleans are $100, with a $180 Deep Clean limited-time local offer in Bass Hill, Chester Hill and selected nearby suburbs. We also offer ducted cleaning from $299.'
+          )
+          home.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit live page updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html cleaning/index.html split-system-cleaning/index.html
+          if git diff --cached --quiet; then
+            echo "No live-page changes needed"
+            exit 0
+          fi
+          git commit -m "Publish cleaning offer and service summaries"
+          git push
