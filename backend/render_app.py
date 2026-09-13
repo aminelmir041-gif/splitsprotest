@@ -1,0 +1,121 @@
+from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field, field_validator
+from typing import Optional
+from pathlib import Path
+from datetime import datetime, timezone
+import os
+import re
+import uuid
+
+from .lead_integrations import derive_lead_source, notify_quote, sync_quote_to_hubspot
+
+app = FastAPI(title="SplitsPro Lead API")
+
+origins = [o.strip() for o in (os.environ.get("CORS_ORIGINS") or "https://splitspro.com.au,https://www.splitspro.com.au").split(",") if o.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+UPLOAD_DIR = Path("/tmp/splitspro_uploads")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif"}
+
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+class QuoteCreate(BaseModel):
+    name: str
+    phone: str
+    service: str
+    suburb: str
+    email: Optional[str] = ""
+    message: Optional[str] = ""
+    photo_url: Optional[str] = ""
+    page_url: Optional[str] = ""
+    landing_page: Optional[str] = ""
+    referrer: Optional[str] = ""
+    utm_source: Optional[str] = ""
+    utm_medium: Optional[str] = ""
+    utm_campaign: Optional[str] = ""
+    utm_term: Optional[str] = ""
+    utm_content: Optional[str] = ""
+    gclid: Optional[str] = ""
+    fbclid: Optional[str] = ""
+
+    @field_validator("name", "phone", "service", "suburb")
+    @classmethod
+    def not_blank(cls, value):
+        if not value or not value.strip():
+            raise ValueError("Field cannot be empty")
+        return value.strip()
+
+    @field_validator("phone")
+    @classmethod
+    def valid_phone(cls, value):
+        if len(re.sub(r"\D", "", value)) < 8:
+            raise ValueError("Please enter a valid phone number")
+        return value.strip()
+
+
+@app.get("/")
+@app.get("/api")
+@app.get("/api/")
+def health():
+    return {
+        "service": "SplitsPro Lead API",
+        "status": "ok",
+        "hubspot_configured": bool((os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()),
+        "email_configured": bool((os.environ.get("SMTP_HOST") or "").strip() and (os.environ.get("SMTP_USER") or "").strip() and (os.environ.get("SMTP_PASSWORD") or "")),
+    }
+
+
+@app.post("/api/quotes")
+def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
+    lead = payload.model_dump()
+    lead["id"] = str(uuid.uuid4())
+    lead["created_at"] = now_iso()
+    lead["lead_source"] = derive_lead_source(lead)
+
+    background_tasks.add_task(notify_quote, lead)
+    background_tasks.add_task(sync_quote_to_hubspot, lead)
+
+    return {
+        **lead,
+        "accepted": True,
+    }
+
+
+@app.post("/api/upload")
+async def upload(file: UploadFile = File(...)):
+    data = await file.read()
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Image must be 10MB or smaller.")
+    content_type = file.content_type or "application/octet-stream"
+    if content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail="Please upload an image file (JPG, PNG, WEBP).")
+
+    ext = "jpg"
+    if file.filename and "." in file.filename:
+        ext = re.sub(r"[^a-z0-9]", "", file.filename.rsplit(".", 1)[-1].lower()) or "jpg"
+    file_id = f"{uuid.uuid4()}.{ext}"
+    target = UPLOAD_DIR / file_id
+    target.write_bytes(data)
+    return {"path": file_id, "url": f"/api/files/{file_id}"}
+
+
+@app.get("/api/files/{file_id}")
+def get_file(file_id: str):
+    safe_name = Path(file_id).name
+    target = UPLOAD_DIR / safe_name
+    if not target.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(target)
