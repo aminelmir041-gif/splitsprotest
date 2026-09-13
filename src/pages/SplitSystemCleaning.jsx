@@ -42,27 +42,40 @@ const BENEFITS = [
 
 const PLANS = [
   {
-    id: "refresh",
-    name: "Refresh Clean",
-    price: "$99",
-    note: "For a unit that just needs a freshen-up",
-    items: [],
+    id: "standard",
+    name: "Standard Clean",
+    price: "$100",
+    note: "For regular maintenance and a freshen-up",
+    items: [
+      "Wash and clean filters",
+      "Clean indoor covers and accessible surfaces",
+      "Clean accessible evaporator coil surface",
+      "Check and clear accessible drain area",
+      "Basic airflow and operation check",
+    ],
   },
   {
     id: "deep",
     name: "Deep Clean",
-    price: "$300",
+    price: "$180",
     popular: true,
-    note: "For the full fresh-start feeling",
-    items: [],
+    badge: "Limited Time Offer",
+    note: "A more thorough wash for built-up dirt and grime",
+    items: [
+      "Everything in the Standard Clean",
+      "Protective cleaning bag fitted around indoor unit",
+      "Thorough evaporator coil wash",
+      "Blower wheel and internal airflow-path clean",
+      "Drain tray and accessible drain-line clean",
+    ],
   },
 ];
 
 const SplitSystemCleaning = () => (
   <CleaningDetailPage
-    overline="Split System Cleaning"
+    overline="Split System Cleaning · Bass Hill & Chester Hill Offer"
     title="Goodbye grime. Hello fresh air."
-    sub="Less dust. Smoother airflow. No stale air-con smell. Bring back that fresh, crisp feeling every time you switch it on."
+    sub="Standard Clean $100 or step up to our $180 Deep Clean limited-time local offer. Simple pricing, clear inclusions and no confusing service menu."
     benefitsTitle="Small clean. Big difference."
     benefitsIntro="This is not about staring at the air-conditioner. It is about walking into the room and instantly feeling that the air is fresher, the cooling feels stronger and the whole space is simply nicer to be in."
     benefits={BENEFITS}
@@ -72,7 +85,7 @@ const SplitSystemCleaning = () => (
     typeLabel="Split System"
     siblingHref="/ducted-cleaning"
     siblingLabel="ducted cleaning"
-    finePrint="Standard wall-mounted split pricing. If your system needs anything outside a normal clean, we’ll confirm it with you first."
+    finePrint="Limited-time local pricing for Bass Hill, Chester Hill and selected nearby suburbs. Standard wall-mounted split systems only. Heavy contamination, difficult access or repairs are quoted separately and confirmed before work starts."
   />
 );
 
