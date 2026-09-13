@@ -43,6 +43,7 @@ const PlanPill = ({ plan, selected, onSelect }) => (
         <div className="flex flex-wrap items-center gap-2">
           <span className={`text-[9px] font-bold uppercase tracking-[0.14em] ${selected ? "text-[#C8A46A]" : "text-white/45"}`}>{plan.name}</span>
           {plan.popular && <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#C8A46A]">Popular</span>}
+          {plan.badge && <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.1em] text-[#DAB66E]">{plan.badge}</span>}
         </div>
         <p className="mt-1 text-[10px] text-white/42">{plan.note}</p>
       </div>
@@ -132,19 +133,39 @@ const CleaningDetailPage = ({
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C8A46A]">Simple. Affordable. Worth it.</p>
               <h2 className="mt-2 font-serif text-3xl font-medium leading-tight text-white sm:text-4xl">Pick your clean.</h2>
-              <p className="mt-3 max-w-md text-sm leading-relaxed text-white/52">Choose the level that suits your system and book in a few seconds.</p>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-white/52">Choose the level that suits your system. The inclusions update instantly so you can see exactly what you are booking.</p>
               <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
                 {plans.map((plan) => (
                   <PlanPill key={plan.id} plan={plan} selected={selectedPlan.id === plan.id} onSelect={choosePlan} />
                 ))}
               </div>
+
+              {selectedPlan.items?.length > 0 && (
+                <div className="mt-6 max-w-lg rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#C8A46A]">What’s included</p>
+                    {selectedPlan.badge && <span className="rounded-full bg-[#C8A46A] px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-[#0B0B0B]">{selectedPlan.badge}</span>}
+                  </div>
+                  <ul className="mt-4 space-y-2.5">
+                    {selectedPlan.items.map((item) => (
+                      <li key={item} className="flex gap-2.5 text-sm leading-relaxed text-white/70">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#C8A46A]" strokeWidth={2.1} />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             <div id="cleaning-booking" className="scroll-mt-24 lg:border-l lg:border-[#C8A46A]/30 lg:pl-8">
               <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">Book your cleaning</p>
-                  <h3 className="mt-1 font-serif text-2xl font-medium text-white">{selectedPlan.name}</h3>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <h3 className="font-serif text-2xl font-medium text-white">{selectedPlan.name}</h3>
+                    {selectedPlan.badge && <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.1em] text-[#DAB66E]">{selectedPlan.badge}</span>}
+                  </div>
                 </div>
                 <div className="font-serif text-3xl font-medium text-[#DAB66E]">{selectedPlan.price}</div>
               </div>
