@@ -89,8 +89,9 @@ def health():
         "status": "ok",
         "hubspot_configured": bool((os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()),
         "email_configured": bool((os.environ.get("SMTP_HOST") or "").strip() and (os.environ.get("SMTP_USER") or "").strip() and (os.environ.get("SMTP_PASSWORD") or "")),
+        "sms_provider": "smsgate",
         "sms_configured": sms_configured(),
-        "sms_webhook_configured": bool((os.environ.get("SIMHOOK_WEBHOOK_SECRET") or "").strip()),
+        "sms_webhook_configured": bool((os.environ.get("SMSGATE_WEBHOOK_SIGNING_KEY") or "").strip()),
     }
 
 
@@ -123,10 +124,14 @@ def send_sms_endpoint(payload: SmsCreate, x_admin_key: Optional[str] = Header(de
 
 
 @app.post("/api/sms/webhook")
-async def sms_webhook(request: Request, x_simhook_signature: Optional[str] = Header(default=None, alias="X-Simhook-Signature")):
+async def sms_webhook(
+    request: Request,
+    x_signature: Optional[str] = Header(default=None, alias="X-Signature"),
+    x_timestamp: Optional[str] = Header(default=None, alias="X-Timestamp"),
+):
     raw_body = await request.body()
     try:
-        event = parse_webhook(raw_body, x_simhook_signature or "")
+        event = parse_webhook(raw_body, x_signature or "", x_timestamp or "")
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except PermissionError as exc:
