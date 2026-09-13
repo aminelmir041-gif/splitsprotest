@@ -1,0 +1,78 @@
+name: Make cleaning offer options selectable
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/offer-selection.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-offer-page:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add larger offer badge and clickable offer selection
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('split-system-cleaning-offer/index.html')
+          text = p.read_text(encoding='utf-8')
+
+          text = text.replace(
+              '.offer-tag{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(200,164,106,.45);background:rgba(200,164,106,.08);padding:9px 13px;font-size:10px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;color:var(--gold2)}',
+              '.offer-tag{display:inline-flex;align-items:center;gap:12px;border:1px solid rgba(200,164,106,.58);background:rgba(200,164,106,.13);padding:14px 20px;font-size:14px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2)}'
+          )
+          text = text.replace(
+              '.offer-tag:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 6px rgba(200,164,106,.10)}',
+              '.offer-tag:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 7px rgba(200,164,106,.12)}'
+          )
+
+          if '.hero-offers .mini.selected{' not in text:
+              text = text.replace(
+                  '.mini-note{margin-top:5px;font-size:12px;color:rgba(255,255,255,.45)}',
+                  '.mini-note{margin-top:5px;font-size:12px;color:rgba(255,255,255,.45)}\n    .hero-offers .mini{cursor:pointer;position:relative;padding-left:14px;padding-right:14px;border-radius:10px}\n    .hero-offers .mini:hover{background:rgba(200,164,106,.06)}\n    .hero-offers .mini.selected{background:rgba(200,164,106,.13);box-shadow:inset 3px 0 0 var(--gold)}\n    .hero-offers .mini.selected:after{content:"SELECTED";position:absolute;right:14px;top:12px;font-size:9px;font-weight:900;letter-spacing:.14em;color:var(--gold2)}\n    .hero-offers .mini:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}'
+              )
+
+          text = text.replace(
+              '<div class="mini best"><div class="mini-label">Best value · limited time</div><div class="mini-row"><div class="mini-name">2 Deep Cleans</div><div class="mini-price">$300</div></div><div class="mini-note">Same property · $150 each</div></div>',
+              '<div class="mini best offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="2 Deep Cleans — $300 same property"><div class="mini-label">Best value · limited time</div><div class="mini-row"><div class="mini-name">2 Deep Cleans</div><div class="mini-price">$300</div></div><div class="mini-note">Same property · $150 each</div></div>'
+          )
+          text = text.replace(
+              '<div class="mini"><div class="mini-label">Limited time offer</div><div class="mini-row"><div class="mini-name">Deep Clean</div><div class="mini-price">$180</div></div><div class="mini-note">For built-up dirt, grime and tired airflow</div></div>',
+              '<div class="mini offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="Deep Clean — $180"><div class="mini-label">Limited time offer</div><div class="mini-row"><div class="mini-name">Deep Clean</div><div class="mini-price">$180</div></div><div class="mini-note">For built-up dirt, grime and tired airflow</div></div>'
+          )
+          text = text.replace(
+              '<div class="mini"><div class="mini-label">Regular maintenance</div><div class="mini-row"><div class="mini-name">Standard Clean</div><div class="mini-price">$100</div></div><div class="mini-note">For a straightforward freshen-up</div></div>',
+              '<div class="mini offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="Standard Clean — $100"><div class="mini-label">Regular maintenance</div><div class="mini-row"><div class="mini-name">Standard Clean</div><div class="mini-price">$100</div></div><div class="mini-note">For a straightforward freshen-up</div></div>'
+          )
+
+          if 'function selectCleaningOffer' not in text:
+              selection_js = '''\n    function selectCleaningOffer(card){\n      const chosen = card.dataset.offer;\n      const select = document.getElementById('offer');\n      if(select){\n        const match = Array.from(select.options).find(o => o.text.trim() === chosen);\n        if(match) select.value = match.value;\n      }\n      document.querySelectorAll('.offer-choice').forEach(el=>{\n        const active = el === card;\n        el.classList.toggle('selected', active);\n        el.setAttribute('aria-pressed', active ? 'true' : 'false');\n      });\n    }\n\n    document.querySelectorAll('.offer-choice').forEach(card=>{\n      card.addEventListener('click',()=>selectCleaningOffer(card));\n      card.addEventListener('keydown',e=>{\n        if(e.key==='Enter' || e.key===' '){e.preventDefault();selectCleaningOffer(card)}\n      });\n    });\n'''
+              text = text.replace("    if(matchMedia('(hover:hover) and (pointer:fine)').matches){", selection_js + "\n    if(matchMedia('(hover:hover) and (pointer:fine)').matches){")
+
+          if '@media(max-width:640px){.offer-tag' not in text:
+              text = text.replace(
+                  '@media(max-width:640px){.sp-container',
+                  '@media(max-width:640px){.offer-tag{font-size:12px;padding:12px 16px;letter-spacing:.14em}.sp-container'
+              )
+
+          p.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit offer interaction update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add split-system-cleaning-offer/index.html
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git commit -m "Make cleaning offer choices clickable"
+          git push
