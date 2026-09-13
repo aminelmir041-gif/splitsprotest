@@ -13,7 +13,10 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 
-from lead_integrations import derive_lead_source, notify_quote, sync_quote_to_hubspot, valid_admin_key
+try:
+    from .lead_integrations import derive_lead_source, notify_quote, sync_quote_to_hubspot, valid_admin_key
+except ImportError:
+    from lead_integrations import derive_lead_source, notify_quote, sync_quote_to_hubspot, valid_admin_key
 
 
 ROOT_DIR = Path(__file__).parent
