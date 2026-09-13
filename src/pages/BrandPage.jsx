@@ -528,12 +528,12 @@ const BrandPage = () => {
                 defaultMessage={selectionMessage}
                 submitLabel={submitLabel}
                 compact
+                hideMessage
               />
               <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2 border-t border-white/10 pt-5">
                 {[
                   "Minimum 5-Year Manufacturer Warranty",
                   "SplitsPro Workmanship Guarantee",
-                  "Licensed & Insured",
                   "Standard installation pricing shown above",
                   "Any extras confirmed before work starts",
                 ].map((t) => (
