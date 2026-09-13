@@ -72,6 +72,15 @@ jobs:
               if 'Split System Cleaning Western Sydney' not in text:
                   text = text.replace('    <section class="areas">', seo_section + '\n    <section class="areas">')
 
+              if '.review-proof{' not in text:
+                  review_css = '''\n    .review-proof{background:#fff;border-bottom:1px solid var(--line);padding:58px 0}\n    .review-proof-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:70px;align-items:center}\n    .google-rating-pill{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:999px;box-shadow:0 7px 22px rgba(0,0,0,.05);font-size:13px;font-weight:700}\n    .google-rating-pill .stars{color:#FBBC04;letter-spacing:2px;font-size:15px}\n    .google-rating-pill strong{font-size:14px}\n    .google-rating-pill small{color:var(--muted);font-weight:600}\n    .review-proof h2{margin:18px 0 10px;font-size:clamp(32px,4vw,45px)}\n    .review-proof .proof-copy{color:var(--muted);font-size:14px;line-height:1.7;max-width:430px}\n    .google-link{display:inline-block;margin-top:16px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#9A6E32;border-bottom:1px solid #D8C39F;padding-bottom:4px}\n    .review-quote{margin:0;padding:34px 0 34px 34px;border-left:1px solid #D7C6A6}\n    .review-stars{color:#FBBC04;letter-spacing:3px;font-size:18px}\n    .review-quote blockquote{font-family:Georgia,"Times New Roman",serif;font-size:24px;line-height:1.5;color:var(--ink);margin:16px 0 22px}\n    .review-author{font-size:13px;font-weight:800;color:var(--ink)}\n    .review-meta{margin-top:4px;font-size:12px;color:var(--muted)}\n    @media(max-width:800px){.review-proof-grid{grid-template-columns:1fr;gap:34px}.review-quote{padding:28px 0 0;border-left:0;border-top:1px solid #D7C6A6}.review-quote blockquote{font-size:21px}}\n'''
+                  text = text.replace('  </style>', review_css + '  </style>')
+
+              review_section = '''\n    <section class="review-proof" aria-label="Google reviews">\n      <div class="sp-container review-proof-grid">\n        <div>\n          <div class="google-rating-pill"><span class="stars">★★★★★</span><strong>5.0 Google Rating</strong><small>26 reviews</small></div>\n          <h2>Trusted by local homeowners.</h2>\n          <p class="proof-copy">Real Google feedback from customers who chose SplitsPro for their home air conditioning.</p>\n          <a class="google-link" href="https://g.page/r/CYTvO1ipeYUtEBM/" target="_blank" rel="noreferrer">View SplitsPro on Google →</a>\n        </div>\n        <figure class="review-quote">\n          <div class="review-stars" aria-label="5 star review">★★★★★</div>\n          <blockquote>“We had the most fantastic experience with Splits Pro. They were professional from the initial quote through to installation, explained every option clearly, and completed the job to an exceptionally high standard. The workmanship was clean, efficient and we couldn't be happier. Highly recommended.”</blockquote>\n          <figcaption><div class="review-author">Sia</div><div class="review-meta">Google Review · Split System Installation</div></figcaption>\n        </figure>\n      </div>\n    </section>\n'''
+              if 'class="review-proof"' not in text:
+                  trust_line = '    <div class="trust"><div class="sp-container trust-row"><span>5.0 Google Rating</span><span>Licensed &amp; Insured</span><span>Local Western Sydney Team</span><span>Quality Workmanship</span></div></div>'
+                  text = text.replace(trust_line, trust_line + '\n' + review_section)
+
               offer.write_text(text, encoding='utf-8')
           PY
 
@@ -84,5 +93,5 @@ jobs:
             echo "No live-page changes needed"
             exit 0
           fi
-          git commit -m "Publish cleaning offer SEO improvements"
+          git commit -m "Publish cleaning offer trust proof"
           git push
