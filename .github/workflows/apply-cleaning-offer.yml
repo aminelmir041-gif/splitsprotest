@@ -42,16 +42,47 @@ jobs:
               'Yes. Split system Standard Cleans are $100, with a $180 Deep Clean limited-time local offer in Bass Hill, Chester Hill and selected nearby suburbs. We also offer ducted cleaning from $299.'
           )
           home.write_text(text, encoding='utf-8')
+
+          offer = Path('split-system-cleaning-offer/index.html')
+          if offer.exists():
+              text = offer.read_text(encoding='utf-8')
+
+              text = text.replace(
+                  '<title>Limited Time Split System Cleaning Offer | SplitsPro</title>',
+                  '<title>Split System Cleaning Bass Hill | $100 Clean & $180 Deep Clean | SplitsPro</title>'
+              )
+              text = text.replace(
+                  '<meta name="description" content="Limited time split system cleaning offer from SplitsPro. Standard clean $100, deep clean $180, or two deep cleans at the same property for $300. Bass Hill, Yagoona, Greenacre, Chester Hill, Sefton and surrounding suburbs.">',
+                  '<meta name="description" content="Split system air conditioner cleaning in Bass Hill, Yagoona, Greenacre, Chester Hill and Sefton. Standard clean $100, deep clean $180, or 2 deep cleans for $300 at the same property. Limited-time SplitsPro local offer.">'
+              )
+
+              if '<link rel="canonical" href="https://splitspro.com.au/split-system-cleaning-offer/">' not in text:
+                  seo_head = '''  <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning-offer/">\n  <meta name="robots" content="index,follow,max-image-preview:large">\n  <meta property="og:type" content="website">\n  <meta property="og:url" content="https://splitspro.com.au/split-system-cleaning-offer/">\n  <meta property="og:title" content="Split System Cleaning Bass Hill | Limited Time Offer | SplitsPro">\n  <meta property="og:description" content="Local split system cleaning from $100. Deep clean $180 or 2 deep cleans for $300 at the same property. Bass Hill, Yagoona, Greenacre, Chester Hill, Sefton and nearby suburbs.">\n  <meta property="og:image" content="https://splitspro.com.au/logo.png">\n  <meta name="twitter:card" content="summary_large_image">\n  <meta name="twitter:title" content="Split System Cleaning Bass Hill | SplitsPro">\n  <meta name="twitter:description" content="Standard clean $100, deep clean $180, or 2 deep cleans for $300 at the same property. Limited-time local offer.">\n'''
+                  text = text.replace('  <meta name="theme-color" content="#0B0B0B">\n', seo_head + '  <meta name="theme-color" content="#0B0B0B">\n')
+
+              if '"@type": "Service"' not in text:
+                  schema = '''  <script type="application/ld+json">\n  {\n    "@context": "https://schema.org",\n    "@type": "Service",\n    "name": "Split System Air Conditioner Cleaning",\n    "serviceType": "Split system air conditioner cleaning and deep cleaning",\n    "url": "https://splitspro.com.au/split-system-cleaning-offer/",\n    "provider": {\n      "@type": "HVACBusiness",\n      "name": "SplitsPro",\n      "url": "https://splitspro.com.au/",\n      "telephone": "+61414698435",\n      "address": {\n        "@type": "PostalAddress",\n        "addressLocality": "Bass Hill",\n        "addressRegion": "NSW",\n        "addressCountry": "AU"\n      }\n    },\n    "areaServed": [\n      {"@type":"Place","name":"Bass Hill NSW"},\n      {"@type":"Place","name":"Yagoona NSW"},\n      {"@type":"Place","name":"Greenacre NSW"},\n      {"@type":"Place","name":"Chester Hill NSW"},\n      {"@type":"Place","name":"Sefton NSW"}\n    ],\n    "offers": [\n      {"@type":"Offer","name":"Standard Split System Clean","price":"100","priceCurrency":"AUD"},\n      {"@type":"Offer","name":"Deep Split System Clean","price":"180","priceCurrency":"AUD"},\n      {"@type":"Offer","name":"Two Deep Cleans Same Property","price":"300","priceCurrency":"AUD"}\n    ]\n  }\n  </script>\n'''
+                  text = text.replace('  <link rel="icon" href="../logo.png">\n', '  <link rel="icon" href="../logo.png">\n' + schema)
+
+              if '.seo-local{' not in text:
+                  seo_css = '''\n    .seo-local{padding:78px 0;background:#fff;border-top:1px solid var(--line)}\n    .seo-local-inner{max-width:900px;margin:auto;text-align:center}\n    .seo-local h2{font-size:clamp(32px,4vw,46px);margin:12px 0 18px}\n    .seo-local p{margin:0 auto;max-width:820px;color:var(--muted);font-size:15px;line-height:1.75}\n    .seo-links{margin-top:20px;display:flex;justify-content:center;gap:22px;flex-wrap:wrap}\n    .seo-links a{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#9A6E32;border-bottom:1px solid #D8C39F;padding-bottom:4px}\n'''
+                  text = text.replace('  </style>', seo_css + '  </style>')
+
+              seo_section = '''\n    <section class="seo-local">\n      <div class="sp-container seo-local-inner">\n        <div class="eyebrow">Split System Cleaning Western Sydney</div>\n        <h2>Local air conditioner cleaning around Bass Hill.</h2>\n        <p>SplitsPro provides split system air conditioner cleaning and deep cleaning across Bass Hill, Yagoona, Greenacre, Chester Hill, Sefton and nearby suburbs. Our standard clean is designed for regular maintenance, while the deep clean targets heavier buildup around the evaporator coil, blower wheel, drain tray and accessible drain line to help restore cleaner airflow and keep your wall-mounted split system in better condition.</p>\n        <div class="seo-links"><a href="../cleaning/">See all cleaning services</a><a href="../split-system-cleaning/">Split system cleaning details</a><a href="../contact/">Contact SplitsPro</a></div>\n      </div>\n    </section>\n'''
+              if 'Split System Cleaning Western Sydney' not in text:
+                  text = text.replace('    <section class="areas">', seo_section + '\n    <section class="areas">')
+
+              offer.write_text(text, encoding='utf-8')
           PY
 
       - name: Commit live page updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html cleaning/index.html split-system-cleaning/index.html
+          git add index.html cleaning/index.html split-system-cleaning/index.html split-system-cleaning-offer/index.html
           if git diff --cached --quiet; then
             echo "No live-page changes needed"
             exit 0
           fi
-          git commit -m "Publish cleaning offer and service summaries"
+          git commit -m "Publish cleaning offer SEO improvements"
           git push
