@@ -6,6 +6,13 @@ on:
       - crm-lead-routing
     paths:
       - '.github/workflows/build-crm-lead-routing.yml'
+      - 'src/lib/api.js'
+      - 'src/lib/attribution.js'
+      - 'src/components/QuoteForm.jsx'
+      - 'scripts/apply-lead-routing.py'
+      - 'backend/render_app.py'
+      - 'backend/lead_integrations.py'
+      - 'backend/render_requirements.txt'
   workflow_dispatch:
 
 permissions:
