@@ -1,84 +1,78 @@
-import hashlib
 import hmac
 import json
 import logging
 import os
-import time
 from typing import Any, Dict
 
 import requests
 
-SMSGATE_API_BASE = "https://api.sms-gate.app/3rdparty/v1"
+MYSMSGATE_API_BASE = "https://mysmsgate.net/api/v1"
 
 
 def sms_configured() -> bool:
-    return bool(
-        (os.environ.get("SMSGATE_USERNAME") or "").strip()
-        and (os.environ.get("SMSGATE_PASSWORD") or "").strip()
-    )
+    return bool((os.environ.get("MYSMSGATE_API_KEY") or "").strip())
 
 
 def send_sms(to: str, body: str) -> Dict[str, Any]:
-    username = (os.environ.get("SMSGATE_USERNAME") or "").strip()
-    password = (os.environ.get("SMSGATE_PASSWORD") or "").strip()
-    if not username or not password:
-        raise RuntimeError("SMSGATE_USERNAME/SMSGATE_PASSWORD are not configured")
+    api_key = (os.environ.get("MYSMSGATE_API_KEY") or "").strip()
+    if not api_key:
+        raise RuntimeError("MYSMSGATE_API_KEY is not configured")
+
+    payload: Dict[str, Any] = {"to": to, "message": body}
+    device_id = (os.environ.get("MYSMSGATE_DEVICE_ID") or "").strip()
+    slot = (os.environ.get("MYSMSGATE_SIM_SLOT") or "").strip()
+    if device_id:
+        payload["device_id"] = device_id
+    if slot:
+        try:
+            payload["slot"] = int(slot)
+        except ValueError:
+            logging.warning("Ignoring invalid MYSMSGATE_SIM_SLOT=%s", slot)
 
     response = requests.post(
-        f"{SMSGATE_API_BASE}/messages",
-        auth=(username, password),
-        headers={"Content-Type": "application/json"},
-        json={
-            "textMessage": {"text": body},
-            "phoneNumbers": [to],
+        f"{MYSMSGATE_API_BASE}/send",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
         },
+        json=payload,
         timeout=30,
     )
     response.raise_for_status()
     return response.json()
 
 
-def verify_webhook(raw_body: bytes, signature: str, timestamp: str, secret: str, tolerance_seconds: int = 300) -> bool:
-    if not signature or not timestamp or not secret:
-        return False
-    try:
-        timestamp_int = int(timestamp)
-    except (TypeError, ValueError):
-        return False
-    if abs(int(time.time()) - timestamp_int) > tolerance_seconds:
-        return False
-
-    # SMSGate signs: raw request body text + X-Timestamp
-    signed_payload = raw_body + timestamp.encode("utf-8")
-    expected = hmac.new(secret.encode("utf-8"), signed_payload, hashlib.sha256).hexdigest()
-    return hmac.compare_digest(expected.lower(), signature.strip().lower())
-
-
-def parse_webhook(raw_body: bytes, signature: str, timestamp: str) -> Dict[str, Any]:
-    secret = (os.environ.get("SMSGATE_WEBHOOK_SIGNING_KEY") or "").strip()
-    if not secret:
-        raise RuntimeError("SMSGATE_WEBHOOK_SIGNING_KEY is not configured")
-    if not verify_webhook(raw_body, signature, timestamp, secret):
-        raise PermissionError("Invalid or stale SMSGate webhook signature")
+def parse_webhook(raw_body: bytes, token: str) -> Dict[str, Any]:
+    expected = (os.environ.get("MYSMSGATE_WEBHOOK_TOKEN") or "").strip()
+    if not expected:
+        raise RuntimeError("MYSMSGATE_WEBHOOK_TOKEN is not configured")
+    if not token or not hmac.compare_digest(token, expected):
+        raise PermissionError("Invalid MySMSGate webhook token")
     return json.loads(raw_body.decode("utf-8"))
 
 
 def log_sms_event(event: Dict[str, Any]) -> None:
-    event_name = event.get("event") or "unknown"
-    payload = event.get("payload") or {}
-    if event_name == "sms:received":
+    event_name = event.get("event") or event.get("eventType") or event.get("type") or "unknown"
+    sender = event.get("from") or event.get("sender") or event.get("phone_from")
+    recipient = event.get("to") or event.get("recipient") or event.get("phone_to")
+    message = event.get("message") or event.get("text") or event.get("body")
+    message_id = event.get("message_id") or event.get("messageId") or event.get("id")
+    status = event.get("status")
+
+    if str(event_name).lower() in {"incoming", "incomingmessage", "sms.received", "received"}:
         logging.info(
-            "Inbound SMS received id=%s message_id=%s sender=%s recipient=%s body=%s",
-            event.get("id"),
-            payload.get("messageId"),
-            payload.get("sender") or payload.get("phoneNumber"),
-            payload.get("recipient"),
-            payload.get("message"),
+            "Inbound MySMSGate SMS id=%s sender=%s recipient=%s body=%s",
+            message_id,
+            sender,
+            recipient,
+            message,
         )
     else:
         logging.info(
-            "SMSGate event=%s id=%s message_id=%s",
+            "MySMSGate event=%s id=%s status=%s sender=%s recipient=%s",
             event_name,
-            event.get("id"),
-            payload.get("messageId"),
+            message_id,
+            status,
+            sender,
+            recipient,
         )
