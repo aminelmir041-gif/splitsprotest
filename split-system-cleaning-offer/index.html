@@ -3,228 +3,202 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Split System Cleaning Offer | Bass Hill, Yagoona, Greenacre, Chester Hill & Sefton | SplitsPro</title>
-  <meta name="description" content="Split system cleaning offer from SplitsPro. Standard clean $100, deep clean $180, or two deep cleans at the same property for $300. Servicing Bass Hill, Yagoona, Greenacre, Chester Hill, Sefton and surrounding suburbs.">
-  <meta name="theme-color" content="#0b0b0b">
+  <title>Limited Time Split System Cleaning Offer | SplitsPro</title>
+  <meta name="description" content="Limited time split system cleaning offer from SplitsPro. Standard clean $100, deep clean $180, or two deep cleans at the same property for $300. Bass Hill, Yagoona, Greenacre, Chester Hill, Sefton and surrounding suburbs.">
+  <meta name="theme-color" content="#0B0B0B">
   <link rel="icon" href="../logo.png">
   <style>
-    :root{--gold:#c8a46a;--gold2:#e0bf82;--ink:#111;--muted:#6e6e73;--cream:#f5f1e9;--line:#e5e0d7;--black:#0b0b0b}
+    :root{--gold:#C8A46A;--gold2:#E1C184;--ink:#1D1D1F;--muted:#6E6E73;--line:#E5E5EA;--black:#0B0B0B;--soft:#F8F7F5}
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
     a{text-decoration:none;color:inherit}
     button,input,select{font:inherit}
-    .wrap{width:min(1120px,calc(100% - 36px));margin:auto}
+    button{cursor:pointer}
+    .sp-container{width:min(1180px,calc(100% - 40px));margin:auto}
     .serif{font-family:Georgia,"Times New Roman",serif}
-    .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:var(--gold)}
-    .hero{position:relative;overflow:hidden;background:#0b0b0b;color:#fff;padding:24px 0 74px}
-    .hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
-    .hero:before{width:420px;height:420px;background:rgba(200,164,106,.23);left:-160px;top:70px}
-    .hero:after{width:380px;height:380px;background:rgba(144,99,35,.16);right:-120px;top:120px}
-    .top{display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;z-index:2}
-    .logo{height:74px;width:auto;filter:brightness(0) invert(1)}
-    .top a.phone{font-size:14px;font-weight:700;color:#fff}
-    .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;gap:54px;align-items:center;margin-top:58px}
-    h1{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(50px,7vw,82px);line-height:.98;letter-spacing:-.04em;margin:15px 0 22px}
-    h1 span{color:var(--gold2)}
-    .lead{font-size:18px;line-height:1.65;color:rgba(255,255,255,.72);max-width:600px;margin:0}
-    .local{margin-top:22px;font-size:13px;color:rgba(255,255,255,.55);line-height:1.7}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:14px 22px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;border:1px solid transparent;cursor:pointer}
-    .btn-gold{background:var(--gold);color:#111}
-    .btn-light{border-color:rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.04)}
-    .visual{position:relative;min-height:470px;border-radius:2px;overflow:hidden;background:#171717}
-    .visual img{width:100%;height:100%;min-height:470px;object-fit:cover;display:block;filter:saturate(.85) contrast(1.03)}
-    .visual:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.02) 60%)}
-    .visual-copy{position:absolute;z-index:2;left:28px;right:28px;bottom:25px;color:#fff}
-    .visual-copy strong{display:block;font-family:Georgia,serif;font-size:29px;font-weight:500}
-    .visual-copy span{display:block;margin-top:7px;font-size:13px;color:rgba(255,255,255,.72)}
-    .trust{border-bottom:1px solid var(--line);background:#faf9f7}
-    .trust-row{min-height:66px;display:flex;align-items:center;justify-content:center;gap:34px;flex-wrap:wrap;font-size:12px;font-weight:700;color:#353535}
-    .trust-row span:before{content:"•";color:var(--gold);margin-right:9px}
-    .section{padding:82px 0}
-    .center{text-align:center;max-width:780px;margin:0 auto}
-    h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(38px,5vw,58px);line-height:1.06;font-weight:500;letter-spacing:-.03em;margin:12px 0 16px}
-    .center p,.copy{color:var(--muted);font-size:16px;line-height:1.7}
-    .pricing{margin-top:52px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr)}
-    .price{padding:36px 34px;position:relative}
+    .eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.22em;color:var(--gold)}
+
+    /* Same overall header language as the main SplitsPro site */
+    .navbar{position:fixed;inset:0 0 auto;z-index:50;padding:11px 0;transition:.45s}
+    .navbar:before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.45),transparent);pointer-events:none;transition:.45s}
+    .navbar.solid{background:rgba(248,247,245,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(14px);padding:4px 0}
+    .navbar.solid:before{opacity:0}
+    .nav{position:relative;display:flex;align-items:center;justify-content:space-between;gap:28px;min-height:78px}
+    .logo img{height:82px;width:auto;display:block;filter:brightness(0) invert(1);transition:.45s}
+    .navbar.solid .logo img{height:64px;filter:none}
+    .navlinks{display:flex;align-items:center;gap:30px}
+    .navlinks a{font-size:13px;font-weight:600;color:rgba(255,255,255,.88);transition:.25s}
+    .navlinks a:hover{color:#fff}
+    .navbar.solid .navlinks a{color:var(--ink)}
+    .navbar.solid .navlinks a:hover{color:var(--gold)}
+    .phone{font-size:13px;font-weight:700;color:#fff;white-space:nowrap}
+    .navbar.solid .phone{color:var(--gold)}
+    .hamb{display:none;width:42px;height:42px;border:1px solid rgba(255,255,255,.4);border-radius:50%;background:transparent;color:#fff;font-size:21px}
+    .navbar.solid .hamb{border-color:var(--line);color:var(--ink)}
+    .mobilemenu{display:none;position:absolute;left:0;right:0;top:100%;background:white;border-top:1px solid var(--line);box-shadow:0 14px 35px rgba(0,0,0,.08)}
+    .mobilemenu.open{display:block}
+    .mobilemenu a{display:block;padding:14px 0;border-bottom:1px solid #F3F3F4;font-family:Georgia,serif;font-size:18px}
+
+    /* Main site-style hero: dark, animated, no stock image */
+    .hero{position:relative;min-height:100vh;display:flex;align-items:flex-end;overflow:hidden;background:var(--black);color:#fff;padding:170px 0 80px}
+    .hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(115px);pointer-events:none;animation:floatGlow 16s ease-in-out infinite}
+    .hero:before{width:560px;height:560px;left:-190px;top:40px;background:rgba(200,164,106,.42)}
+    .hero:after{width:430px;height:430px;right:-70px;bottom:-80px;background:rgba(200,164,106,.17);animation-delay:-6s}
+    @keyframes floatGlow{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(70px,35px,0)}}
+    .airflow{position:absolute;inset:0;width:100%;height:100%;opacity:.25;pointer-events:none}
+    .airflow path{fill:none;stroke:url(#flow);stroke-width:1.2;stroke-dasharray:14 20;animation:dash 14s linear infinite}
+    .airflow path:nth-child(2){animation-duration:18s;opacity:.65}.airflow path:nth-child(3){animation-duration:22s;opacity:.42}
+    @keyframes dash{to{stroke-dashoffset:-500}}
+    .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.08fr .92fr;gap:70px;align-items:end}
+    .offer-tag{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(200,164,106,.45);background:rgba(200,164,106,.08);padding:9px 13px;font-size:10px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;color:var(--gold2)}
+    .offer-tag:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 6px rgba(200,164,106,.10)}
+    h1{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(54px,7.2vw,92px);line-height:.96;letter-spacing:-.045em;margin:24px 0 24px;max-width:810px}
+    h1 .gold{color:var(--gold2)}
+    .lead{max-width:650px;font-size:18px;line-height:1.7;color:rgba(255,255,255,.72);margin:0}
+    .areas-inline{margin-top:22px;font-size:12px;line-height:1.7;color:rgba(255,255,255,.5)}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 21px;border-radius:999px;border:1px solid transparent;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;transition:.28s}
+    .btn-gold{background:var(--gold);color:#111}.btn-gold:hover{transform:translateY(-2px);filter:brightness(.97)}
+    .btn-glass{border-color:rgba(255,255,255,.28);color:#fff;background:rgba(255,255,255,.04)}.btn-glass:hover{background:rgba(255,255,255,.09)}
+
+    .hero-offers{position:relative;padding-left:34px;border-left:1px solid rgba(200,164,106,.28);transform-style:preserve-3d;perspective:900px}
+    .hero-offers .mini{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.11);transition:transform .2s ease}
+    .hero-offers .mini:first-child{border-top:1px solid rgba(255,255,255,.11)}
+    .mini-label{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.48)}
+    .mini-row{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin-top:6px}
+    .mini-name{font-family:Georgia,serif;font-size:26px;color:#fff}.mini-price{font-family:Georgia,serif;font-size:36px;color:var(--gold2)}
+    .mini.best .mini-label{color:var(--gold2)}
+    .mini-note{margin-top:5px;font-size:12px;color:rgba(255,255,255,.45)}
+    .scrollhint{position:absolute;left:32px;bottom:28px;z-index:3;width:32px;height:48px;border:1px solid rgba(255,255,255,.4);border-radius:999px}
+    .scrollhint:after{content:"";position:absolute;left:13px;top:8px;width:4px;height:8px;border-radius:3px;background:#fff;animation:scrollDot 1.8s infinite}
+    @keyframes scrollDot{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(18px);opacity:1}}
+
+    .trust{border-bottom:1px solid var(--line);background:#F8F7F5}
+    .trust-row{min-height:68px;display:flex;align-items:center;justify-content:center;gap:42px;flex-wrap:wrap;font-size:12px;font-weight:700;color:#333}
+    .trust-row span:before{content:"✦";color:var(--gold);margin-right:9px}
+
+    .section{padding:100px 0}
+    .section-head{max-width:780px;margin:0 auto;text-align:center}
+    h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(38px,5vw,58px);line-height:1.06;font-weight:500;letter-spacing:-.03em;margin:14px 0 18px}
+    .section-head p{font-size:16px;line-height:1.7;color:var(--muted);margin:0}
+
+    /* clean, non-boxy pricing */
+    .pricing{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .price{padding:42px 36px;position:relative;transform-style:preserve-3d;transition:transform .18s ease,background .3s}
     .price+.price{border-left:1px solid var(--line)}
-    .price .name{font-family:Georgia,serif;font-size:26px;font-weight:500}
-    .price .amount{font-family:Georgia,serif;font-size:62px;line-height:1;color:var(--ink);margin-top:10px}
-    .price .amount span{font-size:18px;color:var(--muted)}
-    .price .badge{display:inline-block;margin-top:14px;color:#8d632a;font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
-    .price p{font-size:13px;line-height:1.55;color:var(--muted);margin:14px 0 0}
-    .price.best:before{content:"BEST VALUE";position:absolute;top:-12px;left:34px;background:var(--gold);color:#111;padding:6px 9px;font-size:9px;font-weight:900;letter-spacing:.14em}
-    .included{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
-    .included h3{font-family:Georgia,serif;font-size:34px;font-weight:500;margin:0 0 22px}
-    .cleanlist{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
-    .cleanlist li{padding:15px 0;border-bottom:1px solid var(--line);font-size:14px;color:#3f3f42}
-    .cleanlist li:before{content:"✓";color:var(--gold);font-weight:800;margin-right:11px}
-    .areas{background:var(--cream);padding:54px 0}
-    .areas-row{display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap}
-    .areas-title{font-family:Georgia,serif;font-size:32px;font-weight:500}
-    .pills{display:flex;flex-wrap:wrap;gap:9px}
-    .pill{border-bottom:1px solid #cfc5b5;padding:8px 2px;font-size:12px;font-weight:700;color:#5f5548}
-    .book{background:#0b0b0b;color:#fff;padding:76px 0}
-    .book-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:start}
-    .book h2{color:#fff;margin-top:12px}
-    .book .copy{color:rgba(255,255,255,.58)}
-    .offerline{margin-top:28px;border-top:1px solid rgba(255,255,255,.12);padding-top:20px;color:#fff;font-size:14px;line-height:1.7}
-    .offerline strong{color:var(--gold2)}
-    .form{border-top:1px solid rgba(200,164,106,.45);padding-top:8px}
-    .field{width:100%;padding:15px 0;border:0;border-bottom:1px solid rgba(255,255,255,.16);background:transparent;color:#fff;outline:none}
-    .field::placeholder{color:rgba(255,255,255,.38)}
-    select.field{color:#fff;background:#0b0b0b}
-    .form .btn{margin-top:22px;width:100%;padding:16px 22px}
-    .fine{margin-top:18px;font-size:11px;line-height:1.6;color:rgba(255,255,255,.38)}
-    footer{background:#0b0b0b;color:rgba(255,255,255,.45);border-top:1px solid rgba(255,255,255,.08);padding:22px 0 28px;font-size:11px}
-    footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-    @media(max-width:900px){
-      .hero-grid,.book-grid,.included{grid-template-columns:1fr}
-      .hero-grid{gap:34px;margin-top:38px}
-      .visual,.visual img{min-height:360px}
-      .pricing{grid-template-columns:1fr}
-      .price+.price{border-left:0;border-top:1px solid var(--line)}
-      .price.best:before{top:-11px}
-      .book-grid{gap:40px}
-    }
-    @media(max-width:620px){
-      .hero{padding-bottom:54px}.logo{height:58px}.top a.phone{font-size:12px}
-      h1{font-size:50px}.lead{font-size:16px}.section{padding:62px 0}.price{padding:31px 18px}.price.best:before{left:18px}
-      .trust-row{gap:13px 22px;padding:14px 0}.areas-title{font-size:28px}
-    }
+    .price:hover{background:#FAF9F7}
+    .price .name{font-family:Georgia,serif;font-size:28px}.price .amount{font-family:Georgia,serif;font-size:64px;line-height:1;margin-top:10px}.price .small{font-size:16px;color:var(--muted)}
+    .price .badge{margin-top:14px;font-size:10px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;color:#9A6E32}
+    .price p{margin:14px 0 0;font-size:13px;line-height:1.6;color:var(--muted)}
+    .price.best:before{content:"BEST VALUE";position:absolute;top:-12px;left:36px;background:var(--gold);color:#111;padding:6px 10px;font-size:9px;font-weight:900;letter-spacing:.14em}
+
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start;padding-top:0}
+    .compare h3{font-family:Georgia,serif;font-size:34px;font-weight:500;margin:10px 0 24px}.cleanlist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+    .cleanlist li{padding:16px 0;border-bottom:1px solid var(--line);font-size:14px;color:#3F3F42}.cleanlist li:before{content:"✓";color:var(--gold);font-weight:900;margin-right:11px}
+
+    .areas{background:#F3EFE7;padding:62px 0}.areas-row{display:flex;align-items:center;justify-content:space-between;gap:35px;flex-wrap:wrap}.areas-title{font-family:Georgia,serif;font-size:34px;font-weight:500}.pills{display:flex;gap:16px 22px;flex-wrap:wrap}.pill{font-size:12px;font-weight:700;color:#665C4E;border-bottom:1px solid #CFC3AF;padding-bottom:6px}
+
+    .book{position:relative;overflow:hidden;background:#0B0B0B;color:#fff;padding:92px 0}.book:before{content:"";position:absolute;width:650px;height:420px;border-radius:50%;background:rgba(200,164,106,.25);filter:blur(120px);left:50%;top:-310px;transform:translateX(-50%)}
+    .book-grid{position:relative;display:grid;grid-template-columns:.86fr 1.14fr;gap:80px;align-items:start}.book h2{color:#fff}.book .copy{font-size:16px;line-height:1.7;color:rgba(255,255,255,.58)}.offerline{margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.1);font-size:14px;line-height:1.7}.offerline strong{color:var(--gold2)}
+    .form{border-top:1px solid rgba(200,164,106,.42)}.field{width:100%;padding:16px 0;border:0;border-bottom:1px solid rgba(255,255,255,.15);background:transparent;color:#fff;outline:none}.field::placeholder{color:rgba(255,255,255,.4)}select.field{background:#0B0B0B}.form .btn{width:100%;margin-top:22px;padding:16px}.fine{margin-top:17px;font-size:11px;line-height:1.6;color:rgba(255,255,255,.34)}
+
+    footer{background:#0B0B0B;color:rgba(255,255,255,.48);border-top:1px solid rgba(255,255,255,.08);padding:42px 0 86px;font-size:12px}.footer-row{display:flex;align-items:center;justify-content:space-between;gap:25px;flex-wrap:wrap}.footer-logo{height:70px;filter:brightness(0) invert(1)}
+
+    /* same custom-cursor feel as the main site */
+    .sp-cursor,.sp-cursor-dot{position:fixed;left:0;top:0;pointer-events:none;z-index:9999;display:none}.sp-cursor{width:38px;height:38px;border:1px solid rgba(200,164,106,.7);border-radius:50%;margin:-19px 0 0 -19px;transition:width .2s,height .2s,margin .2s,background .2s}.sp-cursor.hovering{width:56px;height:56px;margin:-28px 0 0 -28px;background:rgba(200,164,106,.09)}.sp-cursor-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin:-2.5px 0 0 -2.5px}
+    @media(hover:hover) and (pointer:fine){.sp-cursor,.sp-cursor-dot{display:block}body{cursor:none}a,button,input,select{cursor:none}}
+
+    .float{position:fixed;right:24px;bottom:24px;z-index:40;display:flex;gap:10px;opacity:0;transform:translateY(20px);pointer-events:none;transition:.4s}.float.show{opacity:1;transform:none;pointer-events:auto}.float a{padding:13px 18px;border-radius:5px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;box-shadow:0 6px 22px rgba(0,0,0,.16)}.float .call{background:#1D1D1F;color:#fff}.float .bookbtn{background:var(--gold);color:#111}
+
+    @media(max-width:980px){.navlinks{display:none}.hamb{display:block}.hero{min-height:auto;padding-top:150px}.hero-inner,.book-grid,.compare{grid-template-columns:1fr}.hero-inner{gap:45px}.hero-offers{padding-left:0;border-left:0}.pricing{grid-template-columns:1fr}.price+.price{border-left:0;border-top:1px solid var(--line)}.price.best:before{top:-11px}.float{left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:0}.float a{text-align:center;border-radius:0;padding:18px 10px}.scrollhint{display:none}}
+    @media(max-width:640px){.sp-container{width:min(100% - 30px,1180px)}.logo img{height:64px}.navbar.solid .logo img{height:54px}.phone{display:none}.hero{padding:138px 0 64px}h1{font-size:50px}.lead{font-size:16px}.hero-offers .mini{padding:16px 0}.mini-name{font-size:22px}.mini-price{font-size:31px}.section{padding:72px 0}.price{padding:34px 18px}.price.best:before{left:18px}.trust-row{gap:12px 20px;padding:14px 0}.areas-title{font-size:29px}.book{padding:72px 0 100px}.footer-logo{height:58px}}
   </style>
 </head>
 <body>
-  <section class="hero">
-    <div class="wrap">
-      <div class="top">
-        <a href="../" aria-label="SplitsPro home"><img class="logo" src="../logo.png" alt="SplitsPro Airconditioning"></a>
-        <a class="phone" href="tel:0414698435">0414 698 435</a>
+  <header class="navbar" id="navbar">
+    <nav class="sp-container nav">
+      <a class="logo" href="../" aria-label="SplitsPro home"><img src="../logo.png" alt="SplitsPro Airconditioning"></a>
+      <div class="navlinks">
+        <a href="../">Home</a><a href="../split-systems/">Split Systems</a><a href="../ducted/">Ducted</a><a href="../cleaning/">Cleaning</a><a href="../gallery/">Gallery</a><a href="../service-areas/">Service Areas</a><a href="../about/">About</a><a href="../contact/">Contact</a>
       </div>
+      <a class="phone" href="tel:0414698435">☎&nbsp; 0414 698 435</a>
+      <button class="hamb" id="hamb" aria-label="Open menu">☰</button>
+      <div class="mobilemenu" id="mobilemenu"><div class="sp-container"><a href="../">Home</a><a href="../split-systems/">Split Systems</a><a href="../ducted/">Ducted</a><a href="../cleaning/">Cleaning</a><a href="../gallery/">Gallery</a><a href="../service-areas/">Service Areas</a><a href="../about/">About</a><a href="../contact/">Contact</a></div></div>
+    </nav>
+  </header>
 
-      <div class="hero-grid">
+  <main>
+    <section class="hero">
+      <svg class="airflow" viewBox="0 0 1400 700" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="flow" x1="0" x2="1"><stop offset="0" stop-color="#C8A46A" stop-opacity="0"/><stop offset=".5" stop-color="#C8A46A" stop-opacity=".7"/><stop offset="1" stop-color="#C8A46A" stop-opacity="0"/></linearGradient></defs>
+        <path d="M-100 180 C300 50 690 330 1500 140"/><path d="M-80 360 C380 230 760 520 1500 300"/><path d="M-50 540 C420 410 840 690 1500 480"/>
+      </svg>
+      <div class="sp-container hero-inner">
         <div>
-          <div class="eyebrow">Split System Cleaning · Local Offer</div>
-          <h1>Cleaner air.<br><span>A healthier home.</span><br>A cooler you.</h1>
-          <p class="lead">Professional split-system cleaning with simple local pricing. Freshen up one unit, go deeper on built-up grime, or save when we deep clean two units at the same property.</p>
-          <div class="hero-actions">
-            <a class="btn btn-gold" href="#book">Book My Clean →</a>
-            <a class="btn btn-light" href="tel:0414698435">Call SplitsPro</a>
-          </div>
-          <div class="local">Bass Hill · Yagoona · Greenacre · Chester Hill · Sefton · surrounding suburbs</div>
+          <div class="offer-tag">Limited Time Offer · Local Cleaning Special</div>
+          <h1>Cleaner air.<br><span class="gold">A healthier home.</span><br>A cooler you.</h1>
+          <p class="lead">A simple local split-system cleaning offer with clear pricing — no confusing service menu and no hidden extras for a normal clean.</p>
+          <div class="hero-actions"><a class="btn btn-gold" href="#book">Book My Clean →</a><a class="btn btn-glass" href="tel:0414698435">Call SplitsPro</a></div>
+          <div class="areas-inline">Bass Hill · Yagoona · Greenacre · Chester Hill · Sefton · surrounding suburbs</div>
         </div>
-        <div class="visual">
-          <img src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/lf1angzr_AdobeStock_2014887759.webp" alt="Split system air conditioner cleaning">
-          <div class="visual-copy"><strong>See the difference a proper clean makes.</strong><span>Less buildup. Fresher airflow. A cleaner-feeling room.</span></div>
+        <div class="hero-offers tilt" data-tilt>
+          <div class="mini best"><div class="mini-label">Best value · limited time</div><div class="mini-row"><div class="mini-name">2 Deep Cleans</div><div class="mini-price">$300</div></div><div class="mini-note">Same property · $150 each</div></div>
+          <div class="mini"><div class="mini-label">Limited time offer</div><div class="mini-row"><div class="mini-name">Deep Clean</div><div class="mini-price">$180</div></div><div class="mini-note">For built-up dirt, grime and tired airflow</div></div>
+          <div class="mini"><div class="mini-label">Regular maintenance</div><div class="mini-row"><div class="mini-name">Standard Clean</div><div class="mini-price">$100</div></div><div class="mini-note">For a straightforward freshen-up</div></div>
         </div>
       </div>
-    </div>
-  </section>
+      <div class="scrollhint" aria-hidden="true"></div>
+    </section>
 
-  <div class="trust"><div class="wrap trust-row"><span>5.0 Google Rating</span><span>Licensed &amp; Insured</span><span>Local Western Sydney Team</span><span>Quality Workmanship</span></div></div>
+    <div class="trust"><div class="sp-container trust-row"><span>5.0 Google Rating</span><span>Licensed &amp; Insured</span><span>Local Western Sydney Team</span><span>Quality Workmanship</span></div></div>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="center">
-        <div class="eyebrow">Limited Time Local Pricing</div>
-        <h2>Choose the clean that suits your system.</h2>
-        <p>Clear pricing before we arrive. If your unit needs anything outside a normal clean, we confirm it with you first.</p>
-      </div>
-
-      <div class="pricing">
-        <div class="price">
-          <div class="name">Standard Clean</div>
-          <div class="amount">$100</div>
-          <div class="badge">Regular Maintenance</div>
-          <p>For a unit that mainly needs a freshen-up and routine clean.</p>
-        </div>
-        <div class="price">
-          <div class="name">Deep Clean</div>
-          <div class="amount">$180</div>
-          <div class="badge">Limited Time Offer</div>
-          <p>A more thorough internal wash for built-up dust, grime and tired airflow.</p>
-        </div>
-        <div class="price best">
-          <div class="name">2 Deep Cleans</div>
-          <div class="amount">$300 <span>same property</span></div>
-          <div class="badge">$150 Each</div>
-          <p>Two wall-mounted split systems deep cleaned in the same visit at the same property.</p>
+    <section class="section">
+      <div class="sp-container">
+        <div class="section-head"><div class="eyebrow">Limited Time Local Pricing</div><h2>Pick the clean that suits your system.</h2><p>Clear pricing before we arrive. If your system needs anything outside a normal clean, we confirm it with you first.</p></div>
+        <div class="pricing">
+          <article class="price" data-tilt><div class="name">Standard Clean</div><div class="amount">$100</div><div class="badge">Regular maintenance</div><p>Filters, covers, accessible coil surface, drain area and a basic operation check.</p></article>
+          <article class="price" data-tilt><div class="name">Deep Clean</div><div class="amount">$180</div><div class="badge">Limited time offer</div><p>A more thorough internal wash for built-up dust, grime and tired airflow.</p></article>
+          <article class="price best" data-tilt><div class="name">2 Deep Cleans</div><div class="amount">$300 <span class="small">same property</span></div><div class="badge">$150 each</div><p>Two wall-mounted split systems deep cleaned in the same visit at the same property.</p></article>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="section" style="padding-top:0">
-    <div class="wrap included">
-      <div>
-        <div class="eyebrow">Standard Clean · $100</div>
-        <h3>Freshen up the essentials.</h3>
-        <ul class="cleanlist">
-          <li>Wash and clean filters</li>
-          <li>Clean indoor covers and accessible surfaces</li>
-          <li>Clean accessible evaporator coil surface</li>
-          <li>Check and clear accessible drain area</li>
-          <li>Basic airflow and operation check</li>
-        </ul>
+    <section class="section" style="padding-top:0">
+      <div class="sp-container compare">
+        <div><div class="eyebrow">Standard Clean · $100</div><h3>Freshen up the essentials.</h3><ul class="cleanlist"><li>Wash and clean filters</li><li>Clean indoor covers and accessible surfaces</li><li>Clean accessible evaporator coil surface</li><li>Check and clear accessible drain area</li><li>Basic airflow and operation check</li></ul></div>
+        <div><div class="eyebrow">Deep Clean · $180</div><h3>Go deeper where grime builds up.</h3><ul class="cleanlist"><li>Everything in the Standard Clean</li><li>Protective cleaning bag fitted around indoor unit</li><li>Thorough evaporator coil wash</li><li>Blower wheel and internal airflow-path clean</li><li>Drain tray and accessible drain-line clean</li></ul></div>
       </div>
-      <div>
-        <div class="eyebrow">Deep Clean · $180</div>
-        <h3>Go deeper where grime builds up.</h3>
-        <ul class="cleanlist">
-          <li>Everything in the Standard Clean</li>
-          <li>Protective cleaning bag fitted around indoor unit</li>
-          <li>Thorough evaporator coil wash</li>
-          <li>Blower wheel and internal airflow-path clean</li>
-          <li>Drain tray and accessible drain-line clean</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="areas">
-    <div class="wrap areas-row">
-      <div><div class="eyebrow">Local Cleaning Area</div><div class="areas-title">We’re keeping this offer close to home.</div></div>
-      <div class="pills"><span class="pill">Bass Hill</span><span class="pill">Yagoona</span><span class="pill">Greenacre</span><span class="pill">Chester Hill</span><span class="pill">Sefton</span><span class="pill">Surrounding suburbs</span></div>
-    </div>
-  </section>
+    <section class="areas"><div class="sp-container areas-row"><div><div class="eyebrow">Local Offer Area</div><div class="areas-title">Keeping the offer close to home.</div></div><div class="pills"><span class="pill">Bass Hill</span><span class="pill">Yagoona</span><span class="pill">Greenacre</span><span class="pill">Chester Hill</span><span class="pill">Sefton</span><span class="pill">Surrounding suburbs</span></div></div></section>
 
-  <section class="book" id="book">
-    <div class="wrap book-grid">
-      <div>
-        <div class="eyebrow">Book Your Clean</div>
-        <h2>Tell us the suburb and which offer you want.</h2>
-        <p class="copy">Keep it simple. Send the details below and your phone will open a ready-to-send message to SplitsPro.</p>
-        <div class="offerline"><strong>Best value:</strong> 2 Deep Cleans at the same property for <strong>$300 total</strong>.</div>
-      </div>
-      <form class="form" onsubmit="bookClean(event)">
-        <input class="field" id="name" placeholder="Name *" required>
-        <input class="field" id="phone" placeholder="Phone *" required>
-        <input class="field" id="suburb" placeholder="Suburb *" required>
-        <select class="field" id="package" required>
-          <option value="">Choose cleaning package *</option>
-          <option>Standard Clean — $100</option>
-          <option>Deep Clean — $180</option>
-          <option>2 Deep Cleans, same property — $300</option>
-        </select>
-        <button class="btn btn-gold" type="submit">Book My Clean →</button>
-        <div class="fine">Offer applies to standard wall-mounted split systems in the listed local area. Difficult access, heavy contamination, repairs or work outside a normal clean may cost extra; we confirm any extra work before proceeding.</div>
-      </form>
-    </div>
-  </section>
+    <section class="book" id="book"><div class="sp-container book-grid"><div><div class="eyebrow">Book Your Cleaning Offer</div><h2>Tell us your suburb and which offer you want.</h2><p class="copy">Send the details below and your phone will open a ready-to-send message to SplitsPro.</p><div class="offerline"><strong>Best value:</strong> 2 Deep Cleans at the same property for <strong>$300 total</strong>.</div></div><form class="form" onsubmit="bookClean(event)"><input class="field" id="name" placeholder="Name *" required><input class="field" id="phone" placeholder="Phone *" required><input class="field" id="suburb" placeholder="Suburb *" required><select class="field" id="offer"><option>Standard Clean — $100</option><option>Deep Clean — $180</option><option>2 Deep Cleans — $300 same property</option></select><button class="btn btn-gold" type="submit">Book My Clean →</button><p class="fine">Limited-time local pricing for standard wall-mounted split systems. Heavy contamination, difficult access or repair work is quoted separately and confirmed before work starts.</p></form></div></section>
+  </main>
 
-  <footer><div class="wrap"><span>© 2026 SplitsPro</span><span>0414 698 435 · www.splitspro.com.au</span></div></footer>
+  <footer><div class="sp-container footer-row"><img class="footer-logo" src="../logo.png" alt="SplitsPro"><span>© 2026 SplitsPro · Fully licensed &amp; insured · 0414 698 435</span></div></footer>
+
+  <div class="float" id="float"><a class="call" href="tel:0414698435">☎ Call Now</a><a class="bookbtn" href="#book">Book Clean →</a></div>
+  <div class="sp-cursor" id="cursorRing" aria-hidden="true"></div><div class="sp-cursor-dot" id="cursorDot" aria-hidden="true"></div>
 
   <script>
-    function bookClean(e){
-      e.preventDefault();
-      const name=document.getElementById('name').value.trim();
-      const phone=document.getElementById('phone').value.trim();
-      const suburb=document.getElementById('suburb').value.trim();
-      const pkg=document.getElementById('package').value;
-      const body=`Hi SplitsPro, I want to book the split-system cleaning offer.%0A%0AName: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0ASuburb: ${encodeURIComponent(suburb)}%0APackage: ${encodeURIComponent(pkg)}`;
-      window.location.href=`sms:0414698435?&body=${body}`;
+    const nav=document.getElementById('navbar'),float=document.getElementById('float'),hamb=document.getElementById('hamb'),menu=document.getElementById('mobilemenu');
+    const onScroll=()=>{nav.classList.toggle('solid',window.scrollY>40);float.classList.toggle('show',window.scrollY>window.innerHeight*.8)};
+    addEventListener('scroll',onScroll,{passive:true});onScroll();
+    hamb.addEventListener('click',()=>menu.classList.toggle('open'));
+
+    function bookClean(e){e.preventDefault();const name=document.getElementById('name').value.trim(),phone=document.getElementById('phone').value.trim(),suburb=document.getElementById('suburb').value.trim(),offer=document.getElementById('offer').value;const body=`Hi SplitsPro, I'd like to book the split-system cleaning offer.%0A%0AName: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0ASuburb: ${encodeURIComponent(suburb)}%0AOffer: ${encodeURIComponent(offer)}`;window.location.href=`sms:0414698435?body=${body}`}
+
+    if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+      const ring=document.getElementById('cursorRing'),dot=document.getElementById('cursorDot');let rx=0,ry=0,dx=0,dy=0;
+      addEventListener('mousemove',e=>{dx=e.clientX;dy=e.clientY;dot.style.transform=`translate(${dx}px,${dy}px)`;ring.classList.toggle('hovering',!!e.target.closest('a,button,input,select'))});
+      (function loop(){rx+=(dx-rx)*.18;ry+=(dy-ry)*.18;ring.style.transform=`translate(${rx}px,${ry}px)`;requestAnimationFrame(loop)})();
     }
+
+    document.querySelectorAll('[data-tilt]').forEach(el=>{
+      el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform=`perspective(900px) rotateX(${-y*5}deg) rotateY(${x*6}deg) translateY(-2px)`});
+      el.addEventListener('mouseleave',()=>el.style.transform='perspective(900px) rotateX(0) rotateY(0) translateY(0)');
+    });
   </script>
 </body>
 </html>
