@@ -1,0 +1,1 @@
+window.SPLITSPRO_LEAD_API_URL = window.SPLITSPRO_LEAD_API_URL || "";
