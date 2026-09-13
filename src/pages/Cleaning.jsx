@@ -8,19 +8,19 @@ const SERVICE_CARDS = [
     href: "/split-system-cleaning",
     eyebrow: "Wall-mounted units",
     title: "Split System Cleaning",
-    price: "From $99",
-    cheeky: "Your wall unit has secrets. Dusty ones.",
-    body: "Choose a quick Refresh Clean or go all-in with a Deep Clean for the coil, blower, drain and internal grime.",
+    price: "From $100",
+    cheeky: "Two simple options. No confusing service menu.",
+    body: "Standard Clean $100: filters, covers, accessible coil surface, drain and operation check. Deep Clean $180 limited-time local offer: full indoor wash including coil, blower wheel and drain area.",
     icons: [Bug, Sparkles, Wind],
-    chips: ["$99 Refresh", "$300 Deep Clean"],
+    chips: ["$100 Standard", "$180 Deep Clean · Limited Offer"],
   },
   {
     href: "/ducted-cleaning",
     eyebrow: "Whole-home systems",
     title: "Ducted Cleaning",
     price: "From $299",
-    cheeky: "That return grille has seen some things.",
-    body: "Clean the return-air area, filters, outlets and accessible indoor components that move air through the whole home.",
+    cheeky: "Whole-home air deserves a proper clean too.",
+    body: "Standard ducted cleaning covers the return-air area, filters, outlets and accessible indoor components. Choose a deeper clean when the system needs more detailed attention.",
     icons: [Fan, Gauge, Wind],
     chips: ["From $299 Standard", "From $399 Deep"],
   },
@@ -31,7 +31,7 @@ const Cleaning = () => (
     <PageHero
       overline="Air Conditioner Cleaning"
       title="Pick your system. We’ll handle the dirty part."
-      sub="Split system on the wall or ducted vents through the ceiling? Choose your system and jump straight to benefits, pricing and booking."
+      sub="Split system on the wall or ducted vents through the ceiling? Choose your system and see a simple summary of what each clean includes before you book."
     />
 
     <TrustBadges />
@@ -41,10 +41,10 @@ const Cleaning = () => (
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C8A46A]">What are we cleaning?</p>
           <h2 className="mt-3 font-serif text-3xl font-medium leading-tight tracking-tight text-[#1D1D1F] sm:text-4xl md:text-5xl">
-            Two systems. Two proper cleaning pages.
+            Split or ducted. See the service at a glance.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#6E6E73] sm:text-base">
-            No giant menu of random options. Pick the system you have and we’ll show you exactly what the clean includes and what it costs.
+            We’ve simplified the cleaning section so you can quickly compare the two services, see the starting price and know what is included before opening the full booking page.
           </p>
         </div>
 
@@ -87,7 +87,7 @@ const Cleaning = () => (
                 </div>
 
                 <div className="relative mt-8 flex items-center justify-between border-t border-[#E0DDD7] pt-5">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#1D1D1F]">See prices & book</span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#1D1D1F]">See full service & book</span>
                   <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1D1D1F] text-white transition-colors group-hover:bg-[#C8A46A]">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
