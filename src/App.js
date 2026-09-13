@@ -54,6 +54,11 @@ const AnimatedRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/split-systems" element={<SplitSystems />} />
+          <Route path="/split-systems/oran-park" element={<SplitSystems />} />
+          <Route path="/split-systems/willoughby-north-sydney" element={<SplitSystems />} />
+          <Route path="/split-systems/central-coast-newcastle" element={<SplitSystems />} />
+          <Route path="/split-systems/wollongong" element={<SplitSystems />} />
+          <Route path="/split-systems/quakers-hill-austral-richmond" element={<SplitSystems />} />
           <Route path="/split-systems/mitsubishi-electric" element={<Navigate to="/split-systems/mitsubishi" replace />} />
           <Route path="/split-systems/mitsubishi-heavy-industries" element={<Navigate to="/split-systems/mitsubishi" replace />} />
           <Route path="/split-systems/:slug" element={<BrandPage />} />
