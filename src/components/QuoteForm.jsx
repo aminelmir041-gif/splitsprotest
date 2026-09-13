@@ -7,7 +7,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "./ui/select";
 import { SERVICE_OPTIONS, PHONE_TEL } from "../lib/data";
-import { submitQuote, uploadPhoto } from "../lib/api";
+import { submitQuote, fileToDataUrl } from "../lib/api";
 
 const buildInitial = (defaultService = "", defaultMessage = "") => {
   if (defaultService === "Ducted Air Conditioning" && defaultMessage) {
@@ -108,12 +108,15 @@ export const QuoteForm = ({
     }
     setLoading(true);
     try {
-      let photo_url = "";
+      let photoPayload = {};
       if (!hidePhoto && photo) {
-        const res = await uploadPhoto(photo);
-        photo_url = res.url;
+        photoPayload = {
+          photo_name: photo.name,
+          photo_type: photo.type,
+          photo_data_url: await fileToDataUrl(photo),
+        };
       }
-      await submitQuote({ ...form, photo_url });
+      await submitQuote({ ...form, ...photoPayload });
       setDone(true);
       setForm(buildInitial(defaultService, defaultMessage));
       clearPhoto();
