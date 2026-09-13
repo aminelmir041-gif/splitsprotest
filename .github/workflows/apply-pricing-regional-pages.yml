@@ -1,0 +1,36 @@
+name: Apply SplitsPro Pricing and Regional Pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'scripts/apply_pricing_and_regional_pages.py'
+      - '.github/workflows/apply-pricing-regional-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+
+      - name: Apply pricing and regional page changes
+        run: python3 scripts/apply_pricing_and_regional_pages.py
+
+      - name: Commit source updates
+        run: |
+          git config user.name "SplitsPro Update Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/App.js src/pages/SplitSystems.jsx src/lib/data.js .github/workflows/publish-original-pages.yml sitemap.xml public/sitemap.xml
+
+          if git diff --cached --quiet; then
+            echo "Updates already applied"
+            exit 0
+          fi
+
+          git commit -m "Update split pricing and add regional landing pages"
+          git push
