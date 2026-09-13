@@ -94,8 +94,8 @@
     .airflow path:nth-child(2){animation-duration:18s;opacity:.65}.airflow path:nth-child(3){animation-duration:22s;opacity:.42}
     @keyframes dash{to{stroke-dashoffset:-500}}
     .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.08fr .92fr;gap:70px;align-items:end}
-    .offer-tag{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(200,164,106,.45);background:rgba(200,164,106,.08);padding:9px 13px;font-size:10px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;color:var(--gold2)}
-    .offer-tag:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 6px rgba(200,164,106,.10)}
+    .offer-tag{display:inline-flex;align-items:center;gap:12px;border:1px solid rgba(200,164,106,.58);background:rgba(200,164,106,.13);padding:14px 20px;font-size:14px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2)}
+    .offer-tag:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 7px rgba(200,164,106,.12)}
     h1{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(54px,7.2vw,92px);line-height:.96;letter-spacing:-.045em;margin:24px 0 24px;max-width:810px}
     h1 .gold{color:var(--gold2)}
     .lead{max-width:650px;font-size:18px;line-height:1.7;color:rgba(255,255,255,.72);margin:0}
@@ -113,6 +113,11 @@
     .mini-name{font-family:Georgia,serif;font-size:26px;color:#fff}.mini-price{font-family:Georgia,serif;font-size:36px;color:var(--gold2)}
     .mini.best .mini-label{color:var(--gold2)}
     .mini-note{margin-top:5px;font-size:12px;color:rgba(255,255,255,.45)}
+    .hero-offers .mini{cursor:pointer;position:relative;padding-left:14px;padding-right:14px;border-radius:10px}
+    .hero-offers .mini:hover{background:rgba(200,164,106,.06)}
+    .hero-offers .mini.selected{background:rgba(200,164,106,.13);box-shadow:inset 3px 0 0 var(--gold)}
+    .hero-offers .mini.selected:after{content:"SELECTED";position:absolute;right:14px;top:12px;font-size:9px;font-weight:900;letter-spacing:.14em;color:var(--gold2)}
+    .hero-offers .mini:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
     .scrollhint{position:absolute;left:32px;bottom:28px;z-index:3;width:32px;height:48px;border:1px solid rgba(255,255,255,.4);border-radius:999px}
     .scrollhint:after{content:"";position:absolute;left:13px;top:8px;width:4px;height:8px;border-radius:3px;background:#fff;animation:scrollDot 1.8s infinite}
     @keyframes scrollDot{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(18px);opacity:1}}
@@ -155,7 +160,7 @@
     .float{position:fixed;right:24px;bottom:24px;z-index:40;display:flex;gap:10px;opacity:0;transform:translateY(20px);pointer-events:none;transition:.4s}.float.show{opacity:1;transform:none;pointer-events:auto}.float a{padding:13px 18px;border-radius:5px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;box-shadow:0 6px 22px rgba(0,0,0,.16)}.float .call{background:#1D1D1F;color:#fff}.float .bookbtn{background:var(--gold);color:#111}
 
     @media(max-width:980px){.navlinks{display:none}.hamb{display:block}.hero{min-height:auto;padding-top:150px}.hero-inner,.book-grid,.compare{grid-template-columns:1fr}.hero-inner{gap:45px}.hero-offers{padding-left:0;border-left:0}.pricing{grid-template-columns:1fr}.price+.price{border-left:0;border-top:1px solid var(--line)}.price.best:before{top:-11px}.float{left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:0}.float a{text-align:center;border-radius:0;padding:18px 10px}.scrollhint{display:none}}
-    @media(max-width:640px){.sp-container{width:min(100% - 30px,1180px)}.logo img{height:64px}.navbar.solid .logo img{height:54px}.phone{display:none}.hero{padding:138px 0 64px}h1{font-size:50px}.lead{font-size:16px}.hero-offers .mini{padding:16px 0}.mini-name{font-size:22px}.mini-price{font-size:31px}.section{padding:72px 0}.price{padding:34px 18px}.price.best:before{left:18px}.trust-row{gap:12px 20px;padding:14px 0}.areas-title{font-size:29px}.book{padding:72px 0 100px}.footer-logo{height:58px}}
+    @media(max-width:640px){.offer-tag{font-size:12px;padding:12px 16px;letter-spacing:.14em}.sp-container{width:min(100% - 30px,1180px)}.logo img{height:64px}.navbar.solid .logo img{height:54px}.phone{display:none}.hero{padding:138px 0 64px}h1{font-size:50px}.lead{font-size:16px}.hero-offers .mini{padding:16px 0}.mini-name{font-size:22px}.mini-price{font-size:31px}.section{padding:72px 0}.price{padding:34px 18px}.price.best:before{left:18px}.trust-row{gap:12px 20px;padding:14px 0}.areas-title{font-size:29px}.book{padding:72px 0 100px}.footer-logo{height:58px}}
 
     .seo-local{padding:78px 0;background:#fff;border-top:1px solid var(--line)}
     .seo-local-inner{max-width:900px;margin:auto;text-align:center}
@@ -209,9 +214,9 @@
           <div class="areas-inline">Bass Hill · Yagoona · Greenacre · Chester Hill · Sefton · surrounding suburbs</div>
         </div>
         <div class="hero-offers tilt" data-tilt>
-          <div class="mini best"><div class="mini-label">Best value · limited time</div><div class="mini-row"><div class="mini-name">2 Deep Cleans</div><div class="mini-price">$300</div></div><div class="mini-note">Same property · $150 each</div></div>
-          <div class="mini"><div class="mini-label">Limited time offer</div><div class="mini-row"><div class="mini-name">Deep Clean</div><div class="mini-price">$180</div></div><div class="mini-note">For built-up dirt, grime and tired airflow</div></div>
-          <div class="mini"><div class="mini-label">Regular maintenance</div><div class="mini-row"><div class="mini-name">Standard Clean</div><div class="mini-price">$100</div></div><div class="mini-note">For a straightforward freshen-up</div></div>
+          <div class="mini best offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="2 Deep Cleans — $300 same property"><div class="mini-label">Best value · limited time</div><div class="mini-row"><div class="mini-name">2 Deep Cleans</div><div class="mini-price">$300</div></div><div class="mini-note">Same property · $150 each</div></div>
+          <div class="mini offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="Deep Clean — $180"><div class="mini-label">Limited time offer</div><div class="mini-row"><div class="mini-name">Deep Clean</div><div class="mini-price">$180</div></div><div class="mini-note">For built-up dirt, grime and tired airflow</div></div>
+          <div class="mini offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="Standard Clean — $100"><div class="mini-label">Regular maintenance</div><div class="mini-row"><div class="mini-name">Standard Clean</div><div class="mini-price">$100</div></div><div class="mini-note">For a straightforward freshen-up</div></div>
         </div>
       </div>
       <div class="scrollhint" aria-hidden="true"></div>
@@ -281,6 +286,28 @@
     hamb.addEventListener('click',()=>menu.classList.toggle('open'));
 
     function bookClean(e){e.preventDefault();const name=document.getElementById('name').value.trim(),phone=document.getElementById('phone').value.trim(),suburb=document.getElementById('suburb').value.trim(),offer=document.getElementById('offer').value;const body=`Hi SplitsPro, I'd like to book the split-system cleaning offer.%0A%0AName: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0ASuburb: ${encodeURIComponent(suburb)}%0AOffer: ${encodeURIComponent(offer)}`;window.location.href=`sms:0414698435?body=${body}`}
+
+
+    function selectCleaningOffer(card){
+      const chosen = card.dataset.offer;
+      const select = document.getElementById('offer');
+      if(select){
+        const match = Array.from(select.options).find(o => o.text.trim() === chosen);
+        if(match) select.value = match.value;
+      }
+      document.querySelectorAll('.offer-choice').forEach(el=>{
+        const active = el === card;
+        el.classList.toggle('selected', active);
+        el.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    document.querySelectorAll('.offer-choice').forEach(card=>{
+      card.addEventListener('click',()=>selectCleaningOffer(card));
+      card.addEventListener('keydown',e=>{
+        if(e.key==='Enter' || e.key===' '){e.preventDefault();selectCleaningOffer(card)}
+      });
+    });
 
     if(matchMedia('(hover:hover) and (pointer:fine)').matches){
       const ring=document.getElementById('cursorRing'),dot=document.getElementById('cursorDot');let rx=0,ry=0,dx=0,dy=0;
