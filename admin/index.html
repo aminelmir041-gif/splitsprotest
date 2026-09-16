@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0B0B0B">
+  <title>SplitsPro Client List</title>
+  <style>
+    :root{--gold:#C8A46A;--ink:#171717;--muted:#6E6E73;--line:#E7E3DB;--soft:#F7F5F1;--black:#0B0B0B;--ok:#247A45;--bad:#A33A32}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--soft);color:var(--ink)}
+    button,input,select{font:inherit}.shell{max-width:1450px;margin:auto;padding:28px}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:14px}.mark{width:44px;height:44px;border-radius:12px;background:var(--black);color:var(--gold);display:grid;place-items:center;font-family:Georgia,serif;font-size:23px}.brand h1{font-family:Georgia,serif;font-weight:500;font-size:30px;margin:0}.brand p{margin:4px 0 0;color:var(--muted);font-size:13px}.logout{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 35px rgba(0,0,0,.04)}
+    .login{max-width:520px;margin:11vh auto;padding:34px}.login h2{font-family:Georgia,serif;font-weight:500;font-size:32px;margin:0 0 8px}.login p{color:var(--muted);line-height:1.55}.login-row{display:flex;gap:10px;margin-top:22px}.login input{flex:1;border:1px solid var(--line);border-radius:10px;padding:13px}.primary{border:0;background:var(--black);color:#fff;border-radius:10px;padding:13px 18px;cursor:pointer;font-weight:700}.error{color:var(--bad);font-size:13px;margin-top:12px}.hidden{display:none!important}
+    .toolbar{display:flex;gap:12px;align-items:center;padding:18px;border-bottom:1px solid var(--line)}.search{flex:1;border:1px solid var(--line);border-radius:11px;padding:12px 14px;background:#fff}.count{font-size:13px;color:var(--muted);white-space:nowrap}.status{font-size:12px;color:var(--muted)}
+    .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:1120px}.table th{text-align:left;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8A8378;padding:13px 14px;border-bottom:1px solid var(--line);background:#FCFBF9;position:sticky;top:0}.table td{padding:14px;border-bottom:1px solid #F0EDE7;vertical-align:middle;font-size:13px}.table tr:hover td{background:#FFFEFC}.name{font-weight:750}.subline{font-size:11px;color:var(--muted);margin-top:4px}.phone{font-weight:650;color:#1D1D1F}.owner{min-width:150px;border:1px solid var(--line);border-radius:9px;padding:8px;background:#fff}.open{display:inline-flex;padding:8px 11px;border-radius:9px;border:1px solid var(--gold);color:#8A632D;text-decoration:none;font-weight:700;font-size:12px}.empty{padding:50px;text-align:center;color:var(--muted)}.pill{display:inline-flex;padding:5px 8px;border-radius:999px;background:#F2ECE2;color:#70552E;font-size:11px;font-weight:700}.top-actions{display:flex;gap:10px;align-items:center}.refresh{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}
+    @media(max-width:700px){.shell{padding:16px}.top{align-items:flex-start}.brand h1{font-size:25px}.brand p{max-width:230px}.toolbar{align-items:stretch;flex-direction:column}.login-row{flex-direction:column}.top-actions{flex-direction:column;align-items:stretch}.refresh,.logout{padding:9px 11px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section id="login" class="card login">
+      <div class="brand"><div class="mark">S</div><div><h2>SplitsPro Clients</h2><p>Private customer list</p></div></div>
+      <p>Enter your SplitsPro admin access key. The key stays in this browser tab and is not saved on the public website.</p>
+      <div class="login-row"><input id="key" type="password" autocomplete="current-password" placeholder="Admin access key"><button class="primary" id="loginBtn">Open Client List</button></div>
+      <div id="loginError" class="error"></div>
+    </section>
+
+    <section id="app" class="hidden">
+      <header class="top">
+        <div class="brand"><div class="mark">S</div><div><h1>Client List</h1><p>Customer details, ownership and last contact</p></div></div>
+        <div class="top-actions"><button class="refresh" id="refreshBtn">Refresh</button><button class="logout" id="logoutBtn">Lock</button></div>
+      </header>
+      <div class="card">
+        <div class="toolbar"><input id="search" class="search" placeholder="Search name, phone, suburb, address or email"><span id="count" class="count"></span><span id="status" class="status"></span></div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Client</th><th>Phone</th><th>Suburb</th><th>Address</th><th>Assigned to</th><th>Lead status</th><th>Last contact</th><th>Added</th><th></th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+          <div id="empty" class="empty hidden">No clients found.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+<script>
+const API='https://splitspro-leads.onrender.com/api/admin';
+let adminKey=sessionStorage.getItem('splitspro_admin_key')||'';
+let clients=[];let owners=[];
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString('en-AU',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'})};
+const headers=()=>({'X-Admin-Key':adminKey,'Content-Type':'application/json'});
+
+async function api(path,opts={}){const r=await fetch(API+path,{...opts,headers:{...headers(),...(opts.headers||{})}});if(r.status===401)throw new Error('unauthorized');if(!r.ok){let msg='Request failed';try{msg=(await r.json()).detail||msg}catch{}throw new Error(msg)}return r.json()}
+
+async function load(){
+  $('status').textContent='Loading…';
+  const [c,o]=await Promise.all([api('/clients?limit=200'),api('/owners')]);
+  clients=c.clients||[];owners=o.owners||[];$('status').textContent='';render();
+}
+
+function ownerOptions(selected){return owners.map(o=>`<option value="${esc(o.id)}" ${String(o.id)===String(selected)?'selected':''}>${esc(o.name)}</option>`).join('')}
+
+function render(){
+  const q=$('search').value.trim().toLowerCase();
+  const filtered=clients.filter(c=>[c.name,c.phone,c.email,c.suburb,c.address,c.owner_name].join(' ').toLowerCase().includes(q));
+  $('count').textContent=`${filtered.length} client${filtered.length===1?'':'s'}`;
+  $('rows').innerHTML=filtered.map(c=>`<tr>
+    <td><div class="name">${esc(c.name||'Unnamed client')}</div><div class="subline">${esc(c.email||'No email')}</div></td>
+    <td><a class="phone" href="tel:${esc(c.phone)}">${esc(c.phone||'—')}</a></td>
+    <td>${esc(c.suburb||'—')}</td>
+    <td>${esc(c.address||'—')}</td>
+    <td><select class="owner" data-client="${esc(c.id)}" data-current="${esc(c.owner_id||'')}"><option value="">Unassigned</option>${ownerOptions(c.owner_id)}</select></td>
+    <td>${c.lead_status?`<span class="pill">${esc(c.lead_status)}</span>`:'—'}</td>
+    <td>${fmt(c.last_contacted)}</td>
+    <td>${fmt(c.created_at)}</td>
+    <td><a class="open" target="_blank" rel="noopener" href="${esc(c.hubspot_url)}">Open timeline</a></td>
+  </tr>`).join('');
+  $('empty').classList.toggle('hidden',filtered.length!==0);
+  document.querySelectorAll('.owner').forEach(el=>el.addEventListener('change',assignOwner));
+}
+
+async function assignOwner(e){
+  const select=e.currentTarget;const clientId=select.dataset.client;const previous=select.dataset.current;const ownerId=select.value;
+  if(!ownerId){select.value=previous;alert('Choose a staff member.');return}
+  select.disabled=true;$('status').textContent='Saving assignment…';
+  try{await api(`/clients/${encodeURIComponent(clientId)}/owner`,{method:'POST',body:JSON.stringify({owner_id:ownerId})});select.dataset.current=ownerId;const client=clients.find(c=>String(c.id)===String(clientId));const owner=owners.find(o=>String(o.id)===String(ownerId));if(client){client.owner_id=ownerId;client.owner_name=owner?.name||'Assigned'}$('status').textContent='Assigned ✓';setTimeout(()=>$('status').textContent='',1600)}catch(err){select.value=previous;$('status').textContent='Could not save';alert(err.message)}finally{select.disabled=false}
+}
+
+async function login(){adminKey=$('key').value.trim();if(!adminKey)return;$('loginError').textContent='';try{await load();sessionStorage.setItem('splitspro_admin_key',adminKey);$('login').classList.add('hidden');$('app').classList.remove('hidden')}catch(err){adminKey='';sessionStorage.removeItem('splitspro_admin_key');$('loginError').textContent=err.message==='unauthorized'?'Wrong access key.':'Could not load client list: '+err.message}}
+
+$('loginBtn').addEventListener('click',login);$('key').addEventListener('keydown',e=>{if(e.key==='Enter')login()});$('search').addEventListener('input',render);$('refreshBtn').addEventListener('click',()=>load().catch(err=>alert(err.message)));$('logoutBtn').addEventListener('click',()=>{sessionStorage.removeItem('splitspro_admin_key');location.reload()});
+if(adminKey){$('key').value=adminKey;login()}
+</script>
+</body>
+</html>
