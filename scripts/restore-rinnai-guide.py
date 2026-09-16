@@ -28,3 +28,16 @@ out = ROOT / "public/installs/rinnai-back-to-back-guide.webp"
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_bytes(data)
 print(f"Restored approved Rinnai guide: {out} ({len(data)} bytes)")
+
+# Keep the Daikin Lite local-offer card visually consistent with the Daikin Cora
+# section by reusing the same Cora product image on the local-offer page.
+brand_page = ROOT / "src/pages/BrandPage.jsx"
+page_text = brand_page.read_text()
+old_image = 'image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.image,'
+new_image = 'image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.ranges?.find((r) => r.slug === "cora")?.image,'
+if old_image in page_text:
+    page_text = page_text.replace(old_image, new_image, 1)
+elif new_image not in page_text:
+    raise SystemExit("Could not locate the Daikin Lite local-offer image reference")
+brand_page.write_text(page_text)
+print("Daikin Lite local offer now uses the same product image as Daikin Cora")
