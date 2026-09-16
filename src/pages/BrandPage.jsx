@@ -363,117 +363,100 @@ const BrandPage = ({ offerMode = null }) => {
       )}
 
       {isRinnaiLocalOffer && (
-        <section className="border-y border-white/10 bg-[#0B0B0B] py-14 text-white sm:py-18" data-testid="back-to-back-explained">
+        <section className="border-y border-[#E8E6E1] bg-[#F8F7F4] py-14 sm:py-18" data-testid="back-to-back-explained">
           <div className="sp-container">
             <div className="mx-auto max-w-4xl text-center">
               <span className="overline text-[#C8A46A]">What the local price includes</span>
-              <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-white sm:text-4xl lg:text-5xl">Back-to-back installation explained</h2>
-              <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-white/65 sm:text-base">
-                The advertised price is for a simple ground-floor installation with a short, direct pipe route. The outdoor unit can sit to the side of the wall penetration or directly below it.
+              <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-[#0B0B0B] sm:text-4xl lg:text-5xl">Back-to-back installation explained</h2>
+              <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-[#6E6E73] sm:text-base">
+                A qualifying back-to-back install is a short, direct ground-floor installation. The pipe route can run straight horizontally through the wall or straight vertically up or down.
               </p>
             </div>
 
-            <div className="mt-10 grid gap-5 lg:grid-cols-2" data-testid="back-to-back-layout-diagrams">
-              <div className="overflow-hidden rounded-2xl border border-[#C8A46A]/35 bg-[#151515]">
-                <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+            <div className="mt-10 grid gap-6 lg:grid-cols-2" data-testid="back-to-back-layout-diagrams">
+              <article className="overflow-hidden rounded-2xl border border-[#DEDAD2] bg-white shadow-sm">
+                <div className="flex items-center justify-between gap-4 border-b border-[#EEEAE2] px-5 py-4 sm:px-6">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Horizontal</p>
-                    <p className="mt-1 text-sm font-semibold text-white">Straight through the wall</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Horizontal installation</p>
+                    <p className="mt-1 text-base font-semibold text-[#0B0B0B]">Straight through the wall</p>
                   </div>
-                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#E4CFA6]">Under 2m pipe</span>
+                  <span className="shrink-0 rounded-full border border-[#C8A46A]/45 bg-[#F7EEDC] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#8A642E]">Under 2m</span>
                 </div>
 
-                <div
-                  className="relative h-[330px] overflow-hidden sm:h-[370px]"
-                  style={{
-                    backgroundColor: "#B76742",
-                    backgroundImage: "linear-gradient(rgba(255,255,255,.13) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px)",
-                    backgroundSize: "62px 28px",
-                  }}
-                >
-                  <div className="absolute left-6 top-10 h-36 w-44 rounded-md border border-black/20 bg-[#F4F4F1] shadow-xl sm:left-8 sm:h-40 sm:w-52">
-                    <div className="absolute left-4 top-4 h-24 w-24 rounded-full border-[8px] border-[#D0D0CC] bg-[#292929] shadow-inner sm:h-28 sm:w-28" />
-                    <div className="absolute right-4 top-4 text-[11px] font-extrabold text-[#D71920]">Rinnai</div>
-                    <div className="absolute bottom-5 right-5 h-[2px] w-10 bg-[#BEBEBA]" />
-                    <div className="absolute -bottom-5 left-5 h-6 w-4 bg-[#AFAFAB]" />
-                    <div className="absolute -bottom-5 right-5 h-6 w-4 bg-[#AFAFAB]" />
-                  </div>
-
-                  <div className="absolute left-[12.6rem] right-10 top-[6.45rem] h-8 rounded-r-md border border-[#D9D9D5] bg-white shadow-md sm:left-[15rem] sm:top-[7.2rem]" />
-                  <div className="absolute right-6 top-[6.05rem] h-10 w-6 rounded-r-full border border-[#D9D9D5] bg-white sm:top-[6.8rem]" />
-
-                  <div className="absolute left-[13rem] right-11 top-[10.2rem] flex items-center justify-between text-[#F0C46E] sm:left-[15.4rem] sm:top-[11.1rem]">
-                    <span className="text-xl">←</span>
-                    <span className="rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.13em]">Under 2 metres</span>
-                    <span className="text-xl">→</span>
-                  </div>
-
-                  <div className="absolute bottom-5 left-5 right-5 rounded-xl border border-white/15 bg-black/75 px-4 py-3 backdrop-blur-sm">
-                    <p className="text-xs font-semibold text-white">Outdoor unit mounted high on a wall bracket, with straight white trunking running horizontally to the wall penetration.</p>
+                <div className="relative bg-[#ECE9E2]">
+                  <img
+                    src={`${process.env.PUBLIC_URL || ""}/installs/rinnai-outdoor.webp`}
+                    alt="Rinnai outdoor unit example for a horizontal back-to-back installation"
+                    className="h-72 w-full object-cover sm:h-80"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent px-5 pb-5 pt-16 sm:px-6">
+                    <div className="flex items-center gap-3 text-white">
+                      <span className="text-xl text-[#F0C46E]">←</span>
+                      <div className="h-1 flex-1 rounded-full bg-white shadow" />
+                      <span className="text-xl text-[#F0C46E]">→</span>
+                    </div>
+                    <p className="mt-2 text-center text-xs font-bold uppercase tracking-[0.16em] text-white">Straight horizontal pipe route · under 2 metres</p>
                   </div>
                 </div>
-              </div>
 
-              <div className="overflow-hidden rounded-2xl border border-[#C8A46A]/35 bg-[#151515]">
-                <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+                <div className="px-5 py-5 sm:px-6">
+                  <p className="text-sm leading-relaxed text-[#5F5F63]">Outdoor unit mounted at a practical height on a wall bracket or positioned on the floor, with the refrigeration pipework running directly across to the wall penetration.</p>
+                </div>
+              </article>
+
+              <article className="overflow-hidden rounded-2xl border border-[#DEDAD2] bg-white shadow-sm">
+                <div className="flex items-center justify-between gap-4 border-b border-[#EEEAE2] px-5 py-4 sm:px-6">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Vertical</p>
-                    <p className="mt-1 text-sm font-semibold text-white">Straight up or down</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Vertical installation</p>
+                    <p className="mt-1 text-base font-semibold text-[#0B0B0B]">Straight up or down</p>
                   </div>
-                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#E4CFA6]">Under 2m pipe</span>
+                  <span className="shrink-0 rounded-full border border-[#C8A46A]/45 bg-[#F7EEDC] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#8A642E]">Under 2m</span>
                 </div>
 
-                <div
-                  className="relative h-[330px] overflow-hidden sm:h-[370px]"
-                  style={{
-                    backgroundColor: "#B76742",
-                    backgroundImage: "linear-gradient(rgba(255,255,255,.13) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px)",
-                    backgroundSize: "62px 28px",
-                  }}
-                >
-                  <div className="absolute bottom-10 left-1/2 h-32 w-40 -translate-x-1/2 rounded-md border border-black/20 bg-[#F4F4F1] shadow-xl sm:h-36 sm:w-48">
-                    <div className="absolute left-4 top-4 h-20 w-20 rounded-full border-[7px] border-[#D0D0CC] bg-[#292929] shadow-inner sm:h-24 sm:w-24" />
-                    <div className="absolute right-4 top-4 text-[10px] font-extrabold text-[#D71920]">Rinnai</div>
-                    <div className="absolute -bottom-5 left-5 h-6 w-4 bg-[#AFAFAB]" />
-                    <div className="absolute -bottom-5 right-5 h-6 w-4 bg-[#AFAFAB]" />
-                  </div>
-
-                  <div className="absolute bottom-[9.9rem] left-1/2 top-8 w-8 -translate-x-1/2 rounded-t-md border border-[#D9D9D5] bg-white shadow-md sm:bottom-[11rem]" />
-                  <div className="absolute left-1/2 top-5 h-7 w-11 -translate-x-1/2 rounded-t-md border border-[#D9D9D5] bg-white" />
-
-                  <div className="absolute bottom-[10rem] right-8 top-9 flex flex-col items-center justify-between text-[#F0C46E] sm:bottom-[11rem]">
+                <div className="relative bg-[#ECE9E2]">
+                  <img
+                    src={`${process.env.PUBLIC_URL || ""}/installs/rinnai-outdoor.webp`}
+                    alt="Rinnai outdoor unit example for a vertical back-to-back installation"
+                    className="h-72 w-full object-cover sm:h-80"
+                    loading="lazy"
+                  />
+                  <div className="absolute right-5 top-5 bottom-5 flex w-16 flex-col items-center justify-between rounded-full bg-black/65 px-2 py-3 text-[#F0C46E] backdrop-blur-sm">
                     <span className="text-xl">↑</span>
-                    <span className="rounded-full bg-black/70 px-2 py-2 text-center text-[9px] font-bold uppercase leading-tight tracking-[0.1em]">Under<br />2 metres</span>
+                    <span className="text-center text-[9px] font-extrabold uppercase leading-tight tracking-[0.1em] text-white">Under<br />2m</span>
                     <span className="text-xl">↓</span>
                   </div>
-
-                  <div className="absolute bottom-5 left-5 right-5 rounded-xl border border-white/15 bg-black/75 px-4 py-3 backdrop-blur-sm">
-                    <p className="text-xs font-semibold text-white">Outdoor unit on the ground or a wall bracket, with the refrigeration pipework covered by straight vertical trunking.</p>
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent px-5 pb-5 pt-16 sm:px-6">
+                    <p className="text-center text-xs font-bold uppercase tracking-[0.16em] text-white">Straight vertical pipe route · covered with trunking</p>
                   </div>
                 </div>
-              </div>
+
+                <div className="px-5 py-5 sm:px-6">
+                  <p className="text-sm leading-relaxed text-[#5F5F63]">Outdoor unit on the ground or a wall bracket, with the refrigeration pipework travelling straight vertically in white trunking to the wall penetration.</p>
+                </div>
+              </article>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] sm:grid-cols-3 lg:grid-cols-6" data-testid="back-to-back-inclusions">
+            <div className="mt-7 grid grid-cols-2 overflow-hidden rounded-2xl border border-[#DEDAD2] bg-white sm:grid-cols-3 lg:grid-cols-6" data-testid="back-to-back-inclusions">
               {[
-                ["Under 2 metres", "of refrigeration piping"],
+                ["Under 2 metres", "refrigeration piping"],
                 ["Straight line", "vertical or horizontal"],
-                ["1 bend or less", "in the pipe route"],
+                ["1 bend or less", "pipe route"],
                 ["Ground floor", "installation"],
                 ["Under 10 metres", "electrical run"],
                 ["Electricals included", "standard connection"],
               ].map(([title, sub], index) => (
-                <div key={title} className={`px-4 py-5 text-center ${index % 2 ? "border-l border-white/10" : ""} sm:border-l sm:first:border-l-0`}>
-                  <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-full border border-[#C8A46A]/55 text-[#C8A46A]">
+                <div key={title} className={`px-4 py-5 text-center ${index % 2 ? "border-l border-[#EEEAE2]" : ""} sm:border-l sm:first:border-l-0`}>
+                  <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-full border border-[#C8A46A]/55 bg-[#FBF6EA] text-[#B58C4E]">
                     <Check className="h-4 w-4" strokeWidth={2.5} />
                   </span>
-                  <p className="mt-3 text-xs font-bold text-white">{title}</p>
-                  <p className="mt-1 text-[10px] leading-relaxed text-white/45">{sub}</p>
+                  <p className="mt-3 text-xs font-bold text-[#0B0B0B]">{title}</p>
+                  <p className="mt-1 text-[10px] leading-relaxed text-[#8A8A8E]">{sub}</p>
                 </div>
               ))}
             </div>
 
-            <p className="mx-auto mt-6 max-w-4xl text-center text-xs leading-relaxed text-white/50">
+            <p className="mx-auto mt-6 max-w-4xl text-center text-xs leading-relaxed text-[#7A7A7E]">
               Outdoor unit can be installed on a wall bracket or on the floor. Switchboard defects, upgrades, asbestos-related work, difficult access or other non-standard site conditions are quoted before any extra work proceeds.
             </p>
           </div>
