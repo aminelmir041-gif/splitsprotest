@@ -1,7 +1,6 @@
 name: Publish Original SplitsPro Pages
 
 # Rebuild all React routes together so every page references the same current asset bundle.
-# Triggered to publish the latest Daikin Zena and Alira X image fixes.
 on:
   workflow_dispatch:
   push:
@@ -9,6 +8,7 @@ on:
     paths:
       - 'src/**'
       - 'public/**'
+      - 'scripts/add_rinnai_local_offer.py'
       - 'package.json'
       - 'craco.config.js'
       - 'postcss.config.js'
@@ -27,6 +27,9 @@ jobs:
 
       - name: Apply final brand booking cleanup
         run: python3 scripts/finalise_brand_booking.py
+
+      - name: Apply Rinnai local offer using the existing Rinnai brand page
+        run: python3 scripts/add_rinnai_local_offer.py
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -55,6 +58,7 @@ jobs:
             "split-systems"
             "split-systems/daikin"
             "split-systems/rinnai"
+            "split-systems/rinnai-local-offer"
             "split-systems/mitsubishi"
             "split-systems/mitsubishi-electric"
             "split-systems/mitsubishi-heavy-industries"
@@ -89,7 +93,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Pages Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/pages/BrandPage.jsx static asset-manifest.json about split-systems ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/App.js src/pages/BrandPage.jsx static asset-manifest.json about split-systems ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
 
           if git diff --cached --quiet; then
             echo "Original pages are already published"
