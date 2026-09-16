@@ -10,7 +10,15 @@ import os
 import re
 import uuid
 
-from .lead_integrations import derive_lead_source, notify_quote, sync_quote_to_hubspot, valid_admin_key
+from .lead_integrations import (
+    derive_lead_source,
+    get_hubspot_clients,
+    notify_quote,
+    record_outbound_sms_to_hubspot,
+    record_sms_event_to_hubspot,
+    sync_quote_to_hubspot,
+    valid_admin_key,
+)
 from .sms_gateway import log_sms_event, parse_webhook, send_sms, sms_configured
 
 app = FastAPI(title="SplitsPro Lead API")
@@ -40,6 +48,8 @@ class QuoteCreate(BaseModel):
     service: str
     suburb: str
     email: Optional[str] = ""
+    address: Optional[str] = ""
+    preferred_date: Optional[str] = ""
     message: Optional[str] = ""
     photo_url: Optional[str] = ""
     page_url: Optional[str] = ""
@@ -71,6 +81,7 @@ class QuoteCreate(BaseModel):
 class SmsCreate(BaseModel):
     to: str
     body: str
+    staff_name: Optional[str] = ""
 
     @field_validator("to", "body")
     @classmethod
@@ -97,6 +108,7 @@ def health():
         "service": "SplitsPro Lead API",
         "status": "ok",
         "hubspot_configured": bool((os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()),
+        "client_list_enabled": bool((os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()),
         "email_provider": "resend" if resend_ready else ("smtp" if smtp_ready else "none"),
         "email_configured": resend_ready or smtp_ready,
         "sms_provider": "infinireach",
@@ -112,8 +124,14 @@ def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
     lead["created_at"] = now_iso()
     lead["lead_source"] = derive_lead_source(lead)
 
+    # Save the client/deal before returning success so a working email cannot hide a failed CRM save.
+    crm_result = sync_quote_to_hubspot(lead)
+    lead["crm_saved"] = bool(crm_result)
+    if crm_result:
+        lead["hubspot_contact_id"] = crm_result.get("contact_id", "")
+        lead["hubspot_deal_id"] = crm_result.get("deal_id", "")
+
     background_tasks.add_task(notify_quote, lead)
-    background_tasks.add_task(sync_quote_to_hubspot, lead)
 
     return {
         **lead,
@@ -121,12 +139,38 @@ def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
     }
 
 
-@app.post("/api/sms/send")
-def send_sms_endpoint(payload: SmsCreate, x_admin_key: Optional[str] = Header(default=None, alias="X-Admin-Key")):
+@app.get("/api/admin/clients")
+def client_list(
+    limit: int = 100,
+    x_admin_key: Optional[str] = Header(default=None, alias="X-Admin-Key"),
+):
     if not valid_admin_key(x_admin_key):
         raise HTTPException(status_code=401, detail="Unauthorized")
     try:
-        return send_sms(payload.to, payload.body)
+        return {"clients": get_hubspot_clients(limit=limit)}
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Could not load client list") from exc
+
+
+@app.post("/api/sms/send")
+def send_sms_endpoint(
+    payload: SmsCreate,
+    background_tasks: BackgroundTasks,
+    x_admin_key: Optional[str] = Header(default=None, alias="X-Admin-Key"),
+):
+    if not valid_admin_key(x_admin_key):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    try:
+        result = send_sms(payload.to, payload.body)
+        background_tasks.add_task(
+            record_outbound_sms_to_hubspot,
+            payload.to,
+            payload.body,
+            payload.staff_name or "",
+        )
+        return result
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
@@ -136,6 +180,7 @@ def send_sms_endpoint(payload: SmsCreate, x_admin_key: Optional[str] = Header(de
 @app.post("/api/sms/webhook")
 async def sms_webhook(
     request: Request,
+    background_tasks: BackgroundTasks,
     x_webhook_signature: Optional[str] = Header(default=None, alias="X-Webhook-Signature"),
 ):
     raw_body = await request.body()
@@ -148,6 +193,7 @@ async def sms_webhook(
     except (json.JSONDecodeError, UnicodeDecodeError) as exc:
         raise HTTPException(status_code=400, detail="Invalid webhook payload") from exc
     log_sms_event(event)
+    background_tasks.add_task(record_sms_event_to_hubspot, event)
     return Response(status_code=200)
 
 
