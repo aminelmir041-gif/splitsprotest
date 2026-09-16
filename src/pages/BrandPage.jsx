@@ -59,6 +59,18 @@ const OFFICIAL_PRODUCT_IMAGES = {
 };
 
 const NON_DAIKIN_FEATURES = {
+  "rinnai-local": [
+    { title: "Reverse Cycle", desc: "Heating and cooling from one split system for year-round comfort.", fallback: Thermometer },
+    { title: "Inverter Comfort", desc: "Variable-speed operation helps maintain a steadier room temperature.", fallback: Fan },
+    { title: "Wi-Fi Control", desc: "Smart control is available on the Rinnai system used for this local offer.", fallback: Wifi },
+    { title: "Local Installation Deal", desc: "Special supplied-and-installed pricing for qualifying local back-to-back jobs.", fallback: ShieldCheck },
+  ],
+  "daikin-lite-local": [
+    { title: "Reverse Cycle", desc: "Heating and cooling in one practical Daikin split system.", fallback: Thermometer },
+    { title: "Inverter Operation", desc: "Designed to adjust output as the room approaches the set temperature.", fallback: Fan },
+    { title: "R32 Refrigerant", desc: "Uses R32 refrigerant, as used across Daikin's current residential split range.", fallback: Droplets },
+    { title: "Local Installation Deal", desc: "Special supplied-and-installed pricing for qualifying local back-to-back jobs.", fallback: ShieldCheck },
+  ],
   "pb-series": [
     {
       title: "Wi-Fi Control",
@@ -161,6 +173,41 @@ const getRinnaiLocalSalePrice = (price) => {
   return `$${sale.toLocaleString("en-AU")}`;
 };
 
+const RINNAI_LOCAL_OFFER_RANGES = [
+  {
+    slug: "rinnai-local",
+    manufacturer: "Rinnai",
+    name: "Rinnai Split Systems",
+    displayName: "Rinnai Split Systems",
+    tabLabel: "Rinnai",
+    localBrand: "Rinnai",
+    blurb: "Our local Rinnai supplied-and-installed offer for straightforward ground-floor back-to-back installations. Choose the capacity that suits your room and claim the limited local price while spots are available.",
+    image: SPLIT_BRANDS.find((b) => b.slug === "rinnai")?.ranges?.[0]?.image,
+    prices: [
+      { kw: "2.5kW", price: "$1,590" },
+      { kw: "3.5kW", price: "$1,690" },
+      { kw: "5.0kW", price: "$1,990" },
+      { kw: "7.0kW", price: "$2,390" },
+    ],
+  },
+  {
+    slug: "daikin-lite-local",
+    manufacturer: "Daikin",
+    name: "Lite Series",
+    displayName: "Daikin Lite Series",
+    tabLabel: "Daikin Lite",
+    localBrand: "Daikin",
+    blurb: "A simple, dependable Daikin option for customers who want a recognised brand at a sharp local supplied-and-installed price. These prices use the same qualifying back-to-back installation conditions explained above.",
+    image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.image,
+    prices: [
+      { kw: "2.5kW", price: "$1,500", localOfferPrice: "$1,500" },
+      { kw: "3.5kW", price: "$1,700", localOfferPrice: "$1,700" },
+      { kw: "5.0kW", price: "$2,200", localOfferPrice: "$2,200" },
+      { kw: "7.0kW", price: "$2,600", localOfferPrice: "$2,600" },
+    ],
+  },
+];
+
 const BrandSelectionBanner = ({ currentSlug }) => (
   <nav aria-label="Choose split system brand" data-testid="brand-selection-banner" className="border-b border-[#E5E5EA] bg-white">
     <div className="sp-container">
@@ -187,14 +234,15 @@ const BrandPage = ({ offerMode = null }) => {
   const { slug } = useParams();
   const isRinnaiLocalOffer = offerMode === "rinnai-local";
   const brand = SPLIT_BRANDS.find((b) => b.slug === (isRinnaiLocalOffer ? "rinnai" : slug));
+  const displayRanges = isRinnaiLocalOffer ? RINNAI_LOCAL_OFFER_RANGES : brand?.ranges || [];
   const lenis = useLenis();
   const [selected, setSelected] = useState(null);
 
   if (!brand) return <Navigate to="/split-systems" replace />;
 
   const handleBook = (range, priceRow) => {
-    const effectivePrice = isRinnaiLocalOffer ? getRinnaiLocalSalePrice(priceRow.price) : priceRow.price;
-    const sel = { rangeName: range.name, displayName: range.displayName || `${brand.brand} ${range.name}`, kw: priceRow.kw, price: effectivePrice, regularPrice: priceRow.price };
+    const effectivePrice = isRinnaiLocalOffer ? (priceRow.localOfferPrice || getRinnaiLocalSalePrice(priceRow.price)) : priceRow.price;
+    const sel = { rangeName: range.name, displayName: range.displayName || `${brand.brand} ${range.name}`, localBrand: range.localBrand || brand.brand, kw: priceRow.kw, price: effectivePrice, regularPrice: priceRow.price };
     setSelected(sel);
     setTimeout(() => {
       const el = document.getElementById("book");
@@ -213,10 +261,10 @@ const BrandPage = ({ offerMode = null }) => {
 
   const selectionMessage = selected
     ? isRinnaiLocalOffer
-      ? `I'd like to claim the local Rinnai offer for ${selected.displayName} ${selected.kw} — ${selected.price} supplied & installed on the advertised ground-floor back-to-back terms. My suburb is within the local offer area.`
+      ? `I'd like to claim the local ${selected.localBrand || "Rinnai"} offer for ${selected.displayName} ${selected.kw} — ${selected.price} supplied & installed on the advertised ground-floor back-to-back terms. My suburb is within the local offer area.`
       : `I'd like to book installation for ${selected.displayName} ${selected.kw} — advertised at ${selected.price} supplied & installed.`
     : isRinnaiLocalOffer
-      ? "I'd like to check eligibility for the local Rinnai back-to-back installation offer."
+      ? "I'd like to check eligibility for the local split-system back-to-back installation offer."
       : "";
 
   const formKey = selected ? `${brand.slug}-${selected.displayName}-${selected.kw}` : `${brand.slug}-default`;
@@ -284,7 +332,7 @@ const BrandPage = ({ offerMode = null }) => {
                 Sale prices are for the back-to-back installation conditions explained below. Any non-standard work is quoted before the job proceeds.
               </p>
             </div>
-            <a href="#range-pb-series" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-[#0B0B0B]">See Local Sale Prices <ArrowDown className="h-4 w-4" /></a>
+            <a href="#range-rinnai-local" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-[#0B0B0B]">See Local Sale Prices <ArrowDown className="h-4 w-4" /></a>
           </div>
         </section>
       )}
@@ -344,13 +392,13 @@ const BrandPage = ({ offerMode = null }) => {
             <div className="mt-5 max-w-3xl">
               <p className="leading-relaxed text-[#6E6E73]">
                 {isRinnaiLocalOffer
-                  ? "This local Rinnai sale uses the same PB Series and PX Series options shown on our main Rinnai page, with a limited-time discount on qualifying back-to-back installations. Choose your size below and book the offer."
+                  ? "Choose from our local Rinnai offer first, then compare the Daikin Lite local offer below. Both use the qualifying back-to-back installation conditions explained on this page, and availability is limited."
                   : brand.body}
               </p>
             </div>
-            {brand.ranges.length > 1 && (
+            {displayRanges.length > 1 && (
               <div className="mt-8 flex flex-wrap items-center gap-2" data-testid="range-tabs">
-                {brand.ranges.map((r) => (
+                {displayRanges.map((r) => (
                   <button key={r.slug} onClick={() => jumpToRange(r.slug)} data-testid={`range-tab-${r.slug}`}
                     className="rounded-full border border-[#0B0B0B]/15 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-[#0B0B0B] transition-all hover:border-[#C8A46A] hover:text-[#C8A46A]">
                     {r.tabLabel || r.name}
@@ -369,7 +417,7 @@ const BrandPage = ({ offerMode = null }) => {
               <span className="overline text-[#C8A46A]">What the local price includes</span>
               <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-[#0B0B0B] sm:text-4xl lg:text-5xl">Back-to-back installation explained</h2>
               <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-[#6E6E73] sm:text-base">
-                This is what qualifies for the advertised local Rinnai sale: a short, direct ground-floor installation with under 2 metres of refrigeration pipework, one bend or less and an electrical run under 10 metres.
+                This is what qualifies for the advertised local sale: a short, direct ground-floor installation with under 2 metres of refrigeration pipework, one bend or less and an electrical run under 10 metres.
               </p>
             </div>
 
@@ -458,7 +506,7 @@ const BrandPage = ({ offerMode = null }) => {
       )}
 
       {/* Ranges + pricing tables */}
-      {brand.ranges.map((range, ri) => (
+      {displayRanges.map((range, ri) => (
         <section
           key={range.slug}
           id={`range-${range.slug}`}
@@ -468,7 +516,12 @@ const BrandPage = ({ offerMode = null }) => {
           <div className="sp-container">
           <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center lg:gap-12">
             <div className="max-w-3xl">
-              <span className="overline text-[#C8A46A]">{range.manufacturer || brand.brand}</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="overline text-[#C8A46A]">{range.manufacturer || brand.brand}</span>
+                {isRinnaiLocalOffer && (
+                  <span className="rounded-full border border-[#C8A46A]/50 bg-[#F3E9D2] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#7B5A28]">Limited spots</span>
+                )}
+              </div>
               <h2 className="mt-3 font-serif text-3xl font-medium leading-tight tracking-tight text-[#0B0B0B] md:text-4xl text-balance">
                 {range.displayName || `${brand.brand} ${range.name}`}
               </h2>
@@ -641,11 +694,19 @@ const BrandPage = ({ offerMode = null }) => {
                   </span>
                   <span className="text-[#0B0B0B]">
                     {isRinnaiLocalOffer ? (
-                      <span className="flex flex-col items-start">
-                        <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[#8A8A8E] line-through">Was {row.price}</span>
-                        <span className="mt-1 font-serif text-2xl text-[#0B0B0B] sm:text-3xl">{getRinnaiLocalSalePrice(row.price)}</span>
-                        <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#B58C4E]">{RINNAI_LOCAL_DISCOUNT_LABEL} · Limited time</span>
-                      </span>
+                      row.localOfferPrice ? (
+                        <span className="flex flex-col items-start">
+                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8A8A8E]">Local supplied &amp; installed</span>
+                          <span className="mt-1 font-serif text-2xl text-[#0B0B0B] sm:text-3xl">{row.localOfferPrice}</span>
+                          <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#B58C4E]">Limited spots</span>
+                        </span>
+                      ) : (
+                        <span className="flex flex-col items-start">
+                          <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[#8A8A8E] line-through">Was {row.price}</span>
+                          <span className="mt-1 font-serif text-2xl text-[#0B0B0B] sm:text-3xl">{getRinnaiLocalSalePrice(row.price)}</span>
+                          <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#B58C4E]">{RINNAI_LOCAL_DISCOUNT_LABEL} · Limited spots</span>
+                        </span>
+                      )
                     ) : (
                       <span className="font-serif text-xl sm:text-2xl">{row.price}</span>
                     )}
