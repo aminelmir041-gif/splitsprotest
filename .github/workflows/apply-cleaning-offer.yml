@@ -3,6 +3,13 @@ name: Apply cleaning offer updates
 on:
   push:
     branches: [main]
+    paths:
+      - 'index.html'
+      - 'cleaning/**'
+      - 'split-system-cleaning/**'
+      - 'split-system-cleaning-offer/**'
+      - 'cleaning-overrides.js'
+      - '.github/workflows/apply-cleaning-offer.yml'
 
 permissions:
   contents: write
