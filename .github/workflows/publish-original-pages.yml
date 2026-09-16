@@ -12,6 +12,7 @@ on:
       - 'scripts/refine-rinnai-local-offer.py'
       - 'scripts/restore-rinnai-guide.py'
       - '.github/assets/rinnai-guide-part*.txt'
+      - '.github/assets/rinnai-guide-v2-part*.txt'
       - 'package.json'
       - 'craco.config.js'
       - 'postcss.config.js'
