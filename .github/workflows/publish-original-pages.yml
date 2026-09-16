@@ -10,6 +10,8 @@ on:
       - 'public/**'
       - 'scripts/add_rinnai_local_offer.py'
       - 'scripts/refine-rinnai-local-offer.py'
+      - 'scripts/restore-rinnai-guide.py'
+      - '.github/assets/rinnai-guide-part*.txt'
       - 'package.json'
       - 'craco.config.js'
       - 'postcss.config.js'
@@ -38,6 +40,9 @@ jobs:
 
       - name: Refine Rinnai local offer layout and terms
         run: python3 scripts/refine-rinnai-local-offer.py
+
+      - name: Restore approved Rinnai back-to-back guide
+        run: python3 scripts/restore-rinnai-guide.py
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -106,7 +111,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Pages Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/App.js src/pages/BrandPage.jsx static installs asset-manifest.json about split-systems ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/App.js src/pages/BrandPage.jsx public/installs/rinnai-back-to-back-guide.webp static installs asset-manifest.json about split-systems ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
 
           if git diff --cached --quiet; then
             echo "Original pages are already published"
