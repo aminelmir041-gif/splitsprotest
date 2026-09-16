@@ -4,20 +4,17 @@ import hashlib
 
 ROOT = Path(__file__).resolve().parents[1]
 PARTS = [
-    ROOT / ".github/assets/rinnai-guide-part01.txt",
-    ROOT / ".github/assets/rinnai-guide-part02.txt",
-    ROOT / ".github/assets/rinnai-guide-part03.txt",
-    ROOT / ".github/assets/rinnai-guide-part04a.txt",
-    ROOT / ".github/assets/rinnai-guide-part04.txt",
-    ROOT / ".github/assets/rinnai-guide-part05.txt",
-    ROOT / ".github/assets/rinnai-guide-part06.txt",
+    ROOT / ".github/assets/rinnai-guide-v2-part01.txt",
+    ROOT / ".github/assets/rinnai-guide-v2-part02.txt",
+    ROOT / ".github/assets/rinnai-guide-v2-part03.txt",
+    ROOT / ".github/assets/rinnai-guide-v2-part04.txt",
 ]
 
 encoded = "".join(path.read_text().strip() for path in PARTS)
 data = base64.b64decode(encoded, validate=True)
 
-EXPECTED_SIZE = 69290
-EXPECTED_SHA256 = "299a2459629ee19386d9d451acab571c9242fc37619d6592becd6feee9c8f73f"
+EXPECTED_SIZE = 35106
+EXPECTED_SHA256 = "6c7047748bbf87c714c6695cd42be44b57b5ab21a25d61a44c8aa11012a076fd"
 
 if len(data) != EXPECTED_SIZE:
     raise SystemExit(f"Unexpected guide image size: {len(data)} bytes")
