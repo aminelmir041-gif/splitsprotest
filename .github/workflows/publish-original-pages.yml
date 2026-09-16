@@ -9,6 +9,7 @@ on:
       - 'src/**'
       - 'public/**'
       - 'scripts/add_rinnai_local_offer.py'
+      - 'scripts/refine-rinnai-local-offer.py'
       - 'package.json'
       - 'craco.config.js'
       - 'postcss.config.js'
@@ -30,6 +31,9 @@ jobs:
 
       - name: Apply Rinnai local offer using the existing Rinnai brand page
         run: python3 scripts/add_rinnai_local_offer.py
+
+      - name: Refine Rinnai local offer layout and terms
+        run: python3 scripts/refine-rinnai-local-offer.py
 
       - name: Set up Node
         uses: actions/setup-node@v4
