@@ -78,6 +78,38 @@ async function sendEnquiry(e){
     window.location.href=`mailto:info@splitspro.com.au?subject=${subject}&body=${body}`;
   }
 }
+  e.preventDefault();
+  const form=e.currentTarget;
+  const btn=form.querySelector('button[type="submit"]');
+  const original=btn?btn.textContent:'';
+  const payload={
+    name:document.getElementById('name').value.trim(),
+    phone:document.getElementById('phone').value.trim(),
+    suburb:document.getElementById('suburb').value.trim(),
+    service:document.getElementById('service').value,
+    message:document.getElementById('message').value.trim(),
+    email:'',
+    page_url:window.location.href,
+    landing_page:window.location.href,
+    referrer:document.referrer||''
+  };
+  if(btn){btn.disabled=true;btn.textContent='Sending…'}
+  try{
+    const r=await fetch('https://splitspro-leads.onrender.com/api/quotes',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
+    });
+    if(!r.ok)throw new Error('Lead endpoint returned '+r.status);
+    form.reset();
+    if(btn)btn.textContent='Request received ✓';
+    setTimeout(()=>{if(btn){btn.disabled=false;btn.textContent=original}},3000);
+  }catch(err){
+    console.error('SplitsPro enquiry failed',err);
+    if(btn){btn.disabled=false;btn.textContent=original}
+    const subject=encodeURIComponent('Website enquiry — '+payload.service+' — '+payload.suburb);
+    const body=encodeURIComponent(`Name: ${payload.name}\nPhone: ${payload.phone}\nSuburb: ${payload.suburb}\nService: ${payload.service}\nMessage: ${payload.message}`);
+    window.location.href=`mailto:info@splitspro.com.au?subject=${subject}&body=${body}`;
+  }
+}
 </script>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
