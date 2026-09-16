@@ -61,6 +61,11 @@ jobs:
           rm -rf static
           cp -R build/static static
 
+          # Public installation images are referenced by the Rinnai local-offer page.
+          # Copy them into the published root as well, otherwise GitHub Pages serves a 404.
+          rm -rf installs
+          cp -R build/installs installs
+
           ROUTES=(
             "about"
             "split-systems"
@@ -101,7 +106,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Pages Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/App.js src/pages/BrandPage.jsx static asset-manifest.json about split-systems ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/App.js src/pages/BrandPage.jsx static installs asset-manifest.json about split-systems ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
 
           if git diff --cached --quiet; then
             echo "Original pages are already published"
