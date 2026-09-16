@@ -22,6 +22,8 @@ const buildInitial = (defaultService = "", defaultMessage = "") => {
       phone: "",
       email: "",
       suburb: "",
+      address: "",
+      preferred_date: "",
       service: selection ? `${defaultService} | ${selection}` : defaultService,
       message: "",
     };
@@ -32,6 +34,8 @@ const buildInitial = (defaultService = "", defaultMessage = "") => {
     phone: "",
     email: "",
     suburb: "",
+    address: "",
+    preferred_date: "",
     service: defaultService,
     message: defaultMessage,
   };
@@ -144,6 +148,21 @@ export const QuoteForm = ({
   const labelClass = `mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] ${onDark ? "text-white/70" : "text-[#6E6E73]"}`;
   const spacing = tight ? "gap-3.5" : "gap-5";
 
+  const extraDetails = (
+    <div className={`grid ${spacing} sm:grid-cols-2`}>
+      <div>
+        <label htmlFor="q-address" className={labelClass}>Street address (optional)</label>
+        <Input id="q-address" data-testid="quote-address-input" value={form.address}
+          onChange={(e) => update("address", e.target.value)} placeholder="Unit / street address" className={fieldClass} />
+      </div>
+      <div>
+        <label htmlFor="q-date" className={labelClass}>Preferred date (optional)</label>
+        <Input id="q-date" type="date" data-testid="quote-date-input" value={form.preferred_date}
+          onChange={(e) => update("preferred_date", e.target.value)} className={fieldClass} />
+      </div>
+    </div>
+  );
+
   return (
     <form onSubmit={handleSubmit} data-testid="quote-form" className={`grid ${spacing}`}>
       <div className={`grid ${spacing} sm:grid-cols-2`}>
@@ -173,6 +192,7 @@ export const QuoteForm = ({
                 onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />
             </div>
           </div>
+          {extraDetails}
           {!hideMessage && (
             <div>
               <label htmlFor="q-message" className={labelClass}>Message (optional)</label>
@@ -196,6 +216,7 @@ export const QuoteForm = ({
                 onChange={(e) => update("suburb", e.target.value)} placeholder="Enter your suburb" className={fieldClass} />
             </div>
           </div>
+          {extraDetails}
           <div>
             <label className={labelClass}>Service Required</label>
             <Select value={form.service} onValueChange={(v) => update("service", v)}>
