@@ -2,6 +2,7 @@ import hmac
 import logging
 import os
 import smtplib
+from datetime import datetime, timezone
 from email.message import EmailMessage
 from typing import Dict, Optional
 from urllib.parse import urljoin
@@ -54,7 +55,9 @@ def _lead_lines(lead: Dict) -> list[str]:
         ("Name", lead.get("name")),
         ("Phone", lead.get("phone")),
         ("Email", lead.get("email")),
+        ("Street address", lead.get("address")),
         ("Suburb", lead.get("suburb")),
+        ("Preferred date", lead.get("preferred_date")),
         ("Service", lead.get("service")),
         ("Message", lead.get("message")),
         ("Lead source", lead.get("lead_source")),
@@ -123,7 +126,6 @@ def _send_resend(*, to: str, subject: str, text: str) -> bool:
 
 
 def _send_email(*, to: str, subject: str, text: str) -> None:
-    # Prefer Resend for website transactional email. SMTP remains a fallback.
     if _send_resend(to=to, subject=subject, text=text):
         return
 
@@ -157,7 +159,8 @@ def notify_quote(lead: Dict) -> None:
                 f"Hi {lead.get('name', '').strip() or 'there'},\n\n"
                 "Thanks for contacting SplitsPro. We have received your request and will be in touch shortly.\n\n"
                 f"Service: {lead.get('service', '')}\n"
-                f"Suburb: {lead.get('suburb', '')}\n\n"
+                f"Suburb: {lead.get('suburb', '')}\n"
+                f"Preferred date: {lead.get('preferred_date', '') or 'To be confirmed'}\n\n"
                 "SplitsPro\n"
                 "splitspro.com.au"
             )
@@ -168,6 +171,10 @@ def notify_quote(lead: Dict) -> None:
             )
     except Exception as exc:
         logging.exception("Lead email notification failed: %s", exc)
+
+
+def _hubspot_token() -> str:
+    return (os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()
 
 
 def _hubspot_request(method: str, path: str, token: str, *, json=None, params=None):
@@ -193,12 +200,44 @@ def _find_contact(token: str, property_name: str, value: str) -> Optional[dict]:
         return None
     payload = {
         "filterGroups": [{"filters": [{"propertyName": property_name, "operator": "EQ", "value": value}]}],
-        "properties": ["firstname", "lastname", "email", "phone", "city", "lifecyclestage"],
+        "properties": [
+            "firstname", "lastname", "email", "phone", "mobilephone", "city", "address",
+            "lifecyclestage", "hubspot_owner_id", "hs_lead_status", "createdate", "lastmodifieddate",
+        ],
         "limit": 1,
     }
     data = _hubspot_request("POST", "/crm/v3/objects/contacts/search", token, json=payload)
     results = data.get("results") or []
     return results[0] if results else None
+
+
+def _phone_variants(phone: str) -> list[str]:
+    raw = (phone or "").strip()
+    digits = "".join(ch for ch in raw if ch.isdigit())
+    variants = [raw]
+    if digits:
+        variants.append(digits)
+    if digits.startswith("04") and len(digits) == 10:
+        variants.extend([f"+61{digits[1:]}", f"61{digits[1:]}"])
+    elif digits.startswith("614") and len(digits) == 11:
+        variants.extend([f"+{digits}", f"0{digits[2:]}"])
+    seen = []
+    for value in variants:
+        if value and value not in seen:
+            seen.append(value)
+    return seen
+
+
+def _find_contact_by_phone(token: str, phone: str) -> Optional[dict]:
+    for variant in _phone_variants(phone):
+        for property_name in ("phone", "mobilephone"):
+            try:
+                found = _find_contact(token, property_name, variant)
+            except Exception:
+                found = None
+            if found:
+                return found
+    return None
 
 
 def _split_name(full_name: str) -> tuple[str, str]:
@@ -215,16 +254,21 @@ def _upsert_contact(token: str, lead: Dict) -> str:
     phone = (lead.get("phone") or "").strip()
     existing = _find_contact(token, "email", email) if email else None
     if not existing and phone:
-        existing = _find_contact(token, "phone", phone)
+        existing = _find_contact_by_phone(token, phone)
 
     first_name, last_name = _split_name(lead.get("name") or "")
     properties = {
         "firstname": first_name,
         "lastname": last_name,
         "phone": phone,
+        "mobilephone": phone,
+        "address": (lead.get("address") or "").strip(),
         "city": (lead.get("suburb") or "").strip(),
         "lifecyclestage": "lead",
     }
+    owner_id = (lead.get("owner_id") or os.environ.get("HUBSPOT_OWNER_ID") or "").strip()
+    if owner_id:
+        properties["hubspot_owner_id"] = owner_id
     if email:
         properties["email"] = email
     properties = {key: value for key, value in properties.items() if value != ""}
@@ -255,47 +299,173 @@ def _deal_description(lead: Dict) -> str:
     return "\n".join(_lead_lines(lead))
 
 
-def _associate_deal_contact(token: str, deal_id: str, contact_id: str) -> None:
-    labels = _hubspot_request("GET", "/crm/v4/associations/deals/contacts/labels", token)
+def _association_type_id(token: str, from_type: str, to_type: str) -> int:
+    labels = _hubspot_request("GET", f"/crm/v4/associations/{from_type}/{to_type}/labels", token)
     candidates = labels.get("results") or []
     association = next(
         (item for item in candidates if item.get("category") == "HUBSPOT_DEFINED" and not item.get("label")),
         None,
     ) or next((item for item in candidates if item.get("category") == "HUBSPOT_DEFINED"), None)
-    if not association:
-        raise RuntimeError("No HubSpot deal-to-contact association type found")
-    association_type_id = association.get("typeId")
+    if not association or association.get("typeId") is None:
+        raise RuntimeError(f"No HubSpot {from_type}-to-{to_type} association type found")
+    return int(association["typeId"])
+
+
+def _associate_objects(token: str, from_type: str, from_id: str, to_type: str, to_id: str) -> None:
+    association_type_id = _association_type_id(token, from_type, to_type)
     _hubspot_request(
         "PUT",
-        f"/crm/v3/objects/deals/{deal_id}/associations/contacts/{contact_id}/{association_type_id}",
+        f"/crm/v3/objects/{from_type}/{from_id}/associations/{to_type}/{to_id}/{association_type_id}",
         token,
     )
 
 
-def sync_quote_to_hubspot(lead: Dict) -> None:
-    token = (os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()
+def _associate_deal_contact(token: str, deal_id: str, contact_id: str) -> None:
+    _associate_objects(token, "deals", deal_id, "contacts", contact_id)
+
+
+def sync_quote_to_hubspot(lead: Dict) -> Optional[Dict[str, str]]:
+    token = _hubspot_token()
     if not token:
-        logging.info("HubSpot lead sync disabled: HUBSPOT_PRIVATE_APP_TOKEN is not configured")
-        return
+        logging.warning("HubSpot lead sync disabled: HUBSPOT_PRIVATE_APP_TOKEN is not configured")
+        return None
 
     try:
         contact_id = _upsert_contact(token, lead)
         pipeline_id, stage_id = _default_deal_pipeline_and_stage(token)
-        owner_id = (os.environ.get("HUBSPOT_OWNER_ID") or "").strip()
+        owner_id = (lead.get("owner_id") or os.environ.get("HUBSPOT_OWNER_ID") or "").strip()
+        preferred_date = (lead.get("preferred_date") or "").strip()
         properties = {
             "dealname": f"{lead.get('service', 'Website enquiry')} — {lead.get('name', '')} — {lead.get('suburb', '')}"[:255],
             "pipeline": pipeline_id,
             "dealstage": stage_id,
             "description": _deal_description(lead),
         }
+        if preferred_date:
+            properties["hs_next_step"] = f"Preferred job date: {preferred_date}"
         if owner_id:
             properties["hubspot_owner_id"] = owner_id
 
         created = _hubspot_request("POST", "/crm/v3/objects/deals", token, json={"properties": properties})
         _associate_deal_contact(token, created["id"], contact_id)
-        logging.info("Synced website lead %s to HubSpot deal %s", lead.get("id"), created.get("id"))
+        logging.info("Synced website lead %s to HubSpot contact %s deal %s", lead.get("id"), contact_id, created.get("id"))
+        return {"contact_id": str(contact_id), "deal_id": str(created["id"])}
     except Exception as exc:
         logging.exception("HubSpot lead sync failed: %s", exc)
+        return None
+
+
+def _ensure_sms_contact(token: str, phone: str) -> str:
+    found = _find_contact_by_phone(token, phone)
+    if found:
+        return str(found["id"])
+    created = _hubspot_request(
+        "POST",
+        "/crm/v3/objects/contacts",
+        token,
+        json={
+            "properties": {
+                "phone": phone,
+                "mobilephone": phone,
+                "lifecyclestage": "lead",
+                **(
+                    {"hubspot_owner_id": (os.environ.get("HUBSPOT_OWNER_ID") or "").strip()}
+                    if (os.environ.get("HUBSPOT_OWNER_ID") or "").strip()
+                    else {}
+                ),
+            }
+        },
+    )
+    return str(created["id"])
+
+
+def _create_contact_note(token: str, contact_id: str, body: str) -> str:
+    created = _hubspot_request(
+        "POST",
+        "/crm/v3/objects/notes",
+        token,
+        json={
+            "properties": {
+                "hs_timestamp": datetime.now(timezone.utc).isoformat(),
+                "hs_note_body": body,
+            }
+        },
+    )
+    note_id = str(created["id"])
+    _associate_objects(token, "notes", note_id, "contacts", contact_id)
+    return note_id
+
+
+def record_sms_event_to_hubspot(event: Dict) -> None:
+    token = _hubspot_token()
+    if not token:
+        return
+    try:
+        event_name = event.get("event") or "unknown"
+        data = event.get("data") or {}
+        if event_name not in {"message.inbound", "message.received"}:
+            return
+        phone = str(data.get("from") or "").strip()
+        message = str(data.get("body") or data.get("message") or "").strip()
+        if not phone:
+            return
+        contact_id = _ensure_sms_contact(token, phone)
+        note_body = f"Incoming SMS from {phone}\n\n{message}" if message else f"Incoming SMS from {phone}"
+        _create_contact_note(token, contact_id, note_body)
+        logging.info("Logged inbound SMS for HubSpot contact %s", contact_id)
+    except Exception as exc:
+        logging.exception("Could not log inbound SMS to HubSpot: %s", exc)
+
+
+def record_outbound_sms_to_hubspot(phone: str, body: str, staff_name: str = "") -> None:
+    token = _hubspot_token()
+    if not token:
+        return
+    try:
+        contact_id = _ensure_sms_contact(token, phone)
+        speaker = (staff_name or os.environ.get("DEFAULT_STAFF_NAME") or "SplitsPro team").strip()
+        note_body = f"Outgoing SMS by {speaker} to {phone}\n\n{body}"
+        _create_contact_note(token, contact_id, note_body)
+        logging.info("Logged outbound SMS by %s for HubSpot contact %s", speaker, contact_id)
+    except Exception as exc:
+        logging.exception("Could not log outbound SMS to HubSpot: %s", exc)
+
+
+def get_hubspot_clients(limit: int = 100) -> list[Dict]:
+    token = _hubspot_token()
+    if not token:
+        raise RuntimeError("HubSpot is not configured")
+    payload = {
+        "filterGroups": [],
+        "sorts": ["-lastmodifieddate"],
+        "properties": [
+            "firstname", "lastname", "email", "phone", "mobilephone", "address", "city",
+            "hubspot_owner_id", "hs_lead_status", "lifecyclestage", "createdate", "lastmodifieddate",
+            "notes_last_contacted", "num_contacted_notes",
+        ],
+        "limit": max(1, min(int(limit), 200)),
+    }
+    data = _hubspot_request("POST", "/crm/v3/objects/contacts/search", token, json=payload)
+    clients = []
+    for item in data.get("results") or []:
+        props = item.get("properties") or {}
+        full_name = " ".join(part for part in [props.get("firstname"), props.get("lastname")] if part).strip()
+        clients.append({
+            "id": str(item.get("id")),
+            "name": full_name,
+            "phone": props.get("mobilephone") or props.get("phone") or "",
+            "email": props.get("email") or "",
+            "address": props.get("address") or "",
+            "suburb": props.get("city") or "",
+            "owner_id": props.get("hubspot_owner_id") or "",
+            "lead_status": props.get("hs_lead_status") or "",
+            "lifecycle_stage": props.get("lifecyclestage") or "",
+            "created_at": props.get("createdate") or "",
+            "updated_at": props.get("lastmodifieddate") or "",
+            "last_contacted": props.get("notes_last_contacted") or "",
+            "times_contacted": props.get("num_contacted_notes") or "0",
+        })
+    return clients
 
 
 def valid_admin_key(provided_key: Optional[str]) -> bool:
