@@ -42,6 +42,17 @@ def patch_homepage():
         "This test site opens your SMS app with the enquiry filled in.",
         "Your enquiry is sent securely to SplitsPro. We'll be in touch shortly.",
     )
+
+    old_fields = '<input class="field" id="suburb" placeholder="Suburb *" required><select class="field" id="service">'
+    new_fields = (
+        '<input class="field" id="suburb" placeholder="Suburb *" required>'
+        '<input class="field wide" id="address" placeholder="Street address (optional)">'
+        '<input class="field" id="preferred_date" type="date" aria-label="Preferred date (optional)">'
+        '<select class="field" id="service">'
+    )
+    if 'id="preferred_date"' not in text and old_fields in text:
+        text = text.replace(old_fields, new_fields, 1)
+
     path.write_text(text, encoding="utf-8")
 
     replacement = r'''async function sendEnquiry(e){
@@ -53,6 +64,8 @@ def patch_homepage():
     name:document.getElementById('name').value.trim(),
     phone:document.getElementById('phone').value.trim(),
     suburb:document.getElementById('suburb').value.trim(),
+    address:(document.getElementById('address')?.value||'').trim(),
+    preferred_date:document.getElementById('preferred_date')?.value||'',
     service:document.getElementById('service').value,
     message:document.getElementById('message').value.trim(),
     email:'',
@@ -73,7 +86,7 @@ def patch_homepage():
     console.error('SplitsPro enquiry failed',err);
     if(btn){btn.disabled=false;btn.textContent=original}
     const subject=encodeURIComponent('Website enquiry — '+payload.service+' — '+payload.suburb);
-    const body=encodeURIComponent(`Name: ${payload.name}\nPhone: ${payload.phone}\nSuburb: ${payload.suburb}\nService: ${payload.service}\nMessage: ${payload.message}`);
+    const body=encodeURIComponent(`Name: ${payload.name}\nPhone: ${payload.phone}\nSuburb: ${payload.suburb}\nAddress: ${payload.address}\nPreferred date: ${payload.preferred_date}\nService: ${payload.service}\nMessage: ${payload.message}`);
     window.location.href=`mailto:info@splitspro.com.au?subject=${subject}&body=${body}`;
   }
 }'''
@@ -84,6 +97,23 @@ def patch_cleaning_offer():
     path = REPO / "split-system-cleaning-offer/index.html"
     if not path.exists():
         return
+
+    text = path.read_text(encoding="utf-8")
+    text = text.replace(
+        "Send the details below and your phone will open a ready-to-send message to SplitsPro.",
+        "Send the details below and your booking request will go straight to SplitsPro.",
+    )
+    old_fields = '<input class="field" id="suburb" placeholder="Suburb *" required><select class="field" id="offer">'
+    new_fields = (
+        '<input class="field" id="suburb" placeholder="Suburb *" required>'
+        '<input class="field" id="address" placeholder="Street address (optional)">'
+        '<input class="field" id="preferred_date" type="date" aria-label="Preferred date (optional)">'
+        '<select class="field" id="offer">'
+    )
+    if 'id="preferred_date"' not in text and old_fields in text:
+        text = text.replace(old_fields, new_fields, 1)
+    path.write_text(text, encoding="utf-8")
+
     replacement = r'''async function bookClean(e){
   e.preventDefault();
   const form=e.currentTarget;
@@ -92,9 +122,11 @@ def patch_cleaning_offer():
   const name=document.getElementById('name').value.trim();
   const phone=document.getElementById('phone').value.trim();
   const suburb=document.getElementById('suburb').value.trim();
+  const address=(document.getElementById('address')?.value||'').trim();
+  const preferred_date=document.getElementById('preferred_date')?.value||'';
   const offer=document.getElementById('offer').value;
   const payload={
-    name,phone,suburb,
+    name,phone,suburb,address,preferred_date,
     service:'Air Conditioner Cleaning',
     message:`Cleaning offer selected: ${offer}`,
     email:'',
@@ -115,7 +147,7 @@ def patch_cleaning_offer():
     console.error('SplitsPro cleaning enquiry failed',err);
     if(btn){btn.disabled=false;btn.textContent=original}
     const subject=encodeURIComponent('Cleaning enquiry — '+suburb);
-    const body=encodeURIComponent(`Name: ${name}\nPhone: ${phone}\nSuburb: ${suburb}\nOffer: ${offer}`);
+    const body=encodeURIComponent(`Name: ${name}\nPhone: ${phone}\nSuburb: ${suburb}\nAddress: ${address}\nPreferred date: ${preferred_date}\nOffer: ${offer}`);
     window.location.href=`mailto:info@splitspro.com.au?subject=${subject}&body=${body}`;
   }
 }'''
@@ -126,7 +158,7 @@ def main():
     patch_api()
     patch_homepage()
     patch_cleaning_offer()
-    print("All website enquiry forms now route to the SplitsPro lead backend.")
+    print("All website enquiry forms now route to the SplitsPro lead backend with client details.")
 
 
 if __name__ == "__main__":
