@@ -1,5 +1,5 @@
 (() => {
-  const splitSummary = "Standard Clean $80: filters, covers, accessible coil surface, drain and operation check. Two Standard Cleans at the same property are $120. Deep Clean $180 limited-time local offer: full indoor wash including coil, blower wheel and drain area.";
+  const overviewSummary = "Standard Clean $100: filters, covers, accessible coil surface, drain and operation check. Deep Clean $180 limited-time local offer: full indoor wash including coil, blower wheel and drain area.";
   const localFinePrint = "Limited-time local pricing for Bass Hill, Chester Hill and selected nearby suburbs. Standard wall-mounted split systems only. Two-for-$120 pricing applies to two Standard Cleans at the same property. Heavy contamination, difficult access or repairs are quoted separately and confirmed before work starts.";
 
   const replaceExactText = (from, to) => {
@@ -88,14 +88,12 @@
     const path = location.pathname.replace(/\/+$/, "");
 
     if (path.endsWith("/cleaning")) {
-      replaceExactText("From $99", "From $80");
-      replaceExactText("From $100", "From $80");
-      replaceExactText("$99 Refresh", "$80 Standard");
-      replaceExactText("$100 Standard", "$80 Standard");
+      replaceExactText("From $99", "From $100");
+      replaceExactText("$99 Refresh", "$100 Standard");
       replaceExactText("$300 Deep Clean", "$180 Deep Clean · Limited Offer");
       replaceContainingText(
         "Choose a quick Refresh Clean or go all-in with a Deep Clean for the coil, blower, drain and internal grime.",
-        splitSummary
+        overviewSummary
       );
       replaceContainingText(
         "Two systems. Two proper cleaning pages.",
