@@ -84,11 +84,21 @@ class SmsCreate(BaseModel):
 @app.get("/api")
 @app.get("/api/")
 def health():
+    resend_ready = bool(
+        (os.environ.get("RESEND_API_KEY") or "").strip()
+        and (os.environ.get("RESEND_FROM") or "").strip()
+    )
+    smtp_ready = bool(
+        (os.environ.get("SMTP_HOST") or "").strip()
+        and (os.environ.get("SMTP_USER") or "").strip()
+        and (os.environ.get("SMTP_PASSWORD") or "")
+    )
     return {
         "service": "SplitsPro Lead API",
         "status": "ok",
         "hubspot_configured": bool((os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()),
-        "email_configured": bool((os.environ.get("SMTP_HOST") or "").strip() and (os.environ.get("SMTP_USER") or "").strip() and (os.environ.get("SMTP_PASSWORD") or "")),
+        "email_provider": "resend" if resend_ready else ("smtp" if smtp_ready else "none"),
+        "email_configured": resend_ready or smtp_ready,
         "sms_provider": "infinireach",
         "sms_configured": sms_configured(),
         "sms_webhook_configured": bool((os.environ.get("INFINIREACH_WEBHOOK_SECRET") or "").strip()),
