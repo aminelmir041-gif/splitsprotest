@@ -271,7 +271,7 @@
 
     <section class="areas"><div class="sp-container areas-row"><div><div class="eyebrow">Local Offer Area</div><div class="areas-title">Keeping the offer close to home.</div></div><div class="pills"><span class="pill">Bass Hill</span><span class="pill">Yagoona</span><span class="pill">Greenacre</span><span class="pill">Chester Hill</span><span class="pill">Sefton</span><span class="pill">Surrounding suburbs</span></div></div></section>
 
-    <section class="book" id="book"><div class="sp-container book-grid"><div><div class="eyebrow">Book Your Cleaning Offer</div><h2>Tell us your suburb and which offer you want.</h2><p class="copy">Send the details below and your phone will open a ready-to-send message to SplitsPro.</p><div class="offerline"><strong>Best value:</strong> 2 Deep Cleans at the same property for <strong>$300 total</strong>.</div></div><form class="form" onsubmit="bookClean(event)"><input class="field" id="name" placeholder="Name *" required><input class="field" id="phone" placeholder="Phone *" required><input class="field" id="suburb" placeholder="Suburb *" required><select class="field" id="offer"><option>Standard Clean — $100</option><option>Deep Clean — $180</option><option>2 Deep Cleans — $300 same property</option></select><button class="btn btn-gold" type="submit">Book My Clean →</button><p class="fine">Limited-time local pricing for standard wall-mounted split systems. Heavy contamination, difficult access or repair work is quoted separately and confirmed before work starts.</p></form></div></section>
+    <section class="book" id="book"><div class="sp-container book-grid"><div><div class="eyebrow">Book Your Cleaning Offer</div><h2>Tell us your suburb and which offer you want.</h2><p class="copy">Send the details below and your booking request will go straight to SplitsPro.</p><div class="offerline"><strong>Best value:</strong> 2 Deep Cleans at the same property for <strong>$300 total</strong>.</div></div><form class="form" onsubmit="bookClean(event)"><input class="field" id="name" placeholder="Name *" required><input class="field" id="phone" placeholder="Phone *" required><input class="field" id="suburb" placeholder="Suburb *" required><input class="field" id="address" placeholder="Street address (optional)"><input class="field" id="preferred_date" type="date" aria-label="Preferred date (optional)"><select class="field" id="offer"><option>Standard Clean — $100</option><option>Deep Clean — $180</option><option>2 Deep Cleans — $300 same property</option></select><button class="btn btn-gold" type="submit">Book My Clean →</button><p class="fine">Limited-time local pricing for standard wall-mounted split systems. Heavy contamination, difficult access or repair work is quoted separately and confirmed before work starts.</p></form></div></section>
   </main>
 
   <footer><div class="sp-container footer-row"><img class="footer-logo" src="../logo.png" alt="SplitsPro"><span>© 2026 SplitsPro · Fully licensed &amp; insured · 0414 698 435</span></div></footer>
@@ -286,6 +286,42 @@
     hamb.addEventListener('click',()=>menu.classList.toggle('open'));
 
 async function bookClean(e){
+  e.preventDefault();
+  const form=e.currentTarget;
+  const btn=form.querySelector('button[type="submit"]');
+  const original=btn?btn.textContent:'';
+  const name=document.getElementById('name').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const suburb=document.getElementById('suburb').value.trim();
+  const address=(document.getElementById('address')?.value||'').trim();
+  const preferred_date=document.getElementById('preferred_date')?.value||'';
+  const offer=document.getElementById('offer').value;
+  const payload={
+    name,phone,suburb,address,preferred_date,
+    service:'Air Conditioner Cleaning',
+    message:`Cleaning offer selected: ${offer}`,
+    email:'',
+    page_url:window.location.href,
+    landing_page:window.location.href,
+    referrer:document.referrer||''
+  };
+  if(btn){btn.disabled=true;btn.textContent='Sending…'}
+  try{
+    const r=await fetch('https://splitspro-leads.onrender.com/api/quotes',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
+    });
+    if(!r.ok)throw new Error('Lead endpoint returned '+r.status);
+    form.reset();
+    if(btn)btn.textContent='Booking request received ✓';
+    setTimeout(()=>{if(btn){btn.disabled=false;btn.textContent=original}},3000);
+  }catch(err){
+    console.error('SplitsPro cleaning enquiry failed',err);
+    if(btn){btn.disabled=false;btn.textContent=original}
+    const subject=encodeURIComponent('Cleaning enquiry — '+suburb);
+    const body=encodeURIComponent(`Name: ${name}\nPhone: ${phone}\nSuburb: ${suburb}\nAddress: ${address}\nPreferred date: ${preferred_date}\nOffer: ${offer}`);
+    window.location.href=`mailto:info@splitspro.com.au?subject=${subject}&body=${body}`;
+  }
+}
   e.preventDefault();
   const form=e.currentTarget;
   const btn=form.querySelector('button[type="submit"]');
