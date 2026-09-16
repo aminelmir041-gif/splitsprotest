@@ -7,6 +7,8 @@ on:
     paths:
       - '.github/workflows/route-all-enquiries.yml'
       - 'scripts/route-all-enquiries.py'
+      - 'src/components/QuoteForm.jsx'
+      - 'src/lib/api.js'
   workflow_dispatch:
 
 permissions:
