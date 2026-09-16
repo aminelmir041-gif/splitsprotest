@@ -10,6 +10,7 @@ import os
 import re
 import uuid
 
+from .crm_admin import assign_client_owner, client_hubspot_url, get_active_owners
 from .lead_integrations import (
     derive_lead_source,
     get_hubspot_clients,
@@ -91,6 +92,17 @@ class SmsCreate(BaseModel):
         return value.strip()
 
 
+class OwnerAssign(BaseModel):
+    owner_id: str
+
+    @field_validator("owner_id")
+    @classmethod
+    def owner_not_blank(cls, value):
+        if not value or not value.strip():
+            raise ValueError("Owner is required")
+        return value.strip()
+
+
 @app.get("/")
 @app.get("/api")
 @app.get("/api/")
@@ -109,6 +121,7 @@ def health():
         "status": "ok",
         "hubspot_configured": bool((os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()),
         "client_list_enabled": bool((os.environ.get("HUBSPOT_PRIVATE_APP_TOKEN") or "").strip()),
+        "admin_api_configured": bool((os.environ.get("ADMIN_API_KEY") or "").strip()),
         "email_provider": "resend" if resend_ready else ("smtp" if smtp_ready else "none"),
         "email_configured": resend_ready or smtp_ready,
         "sms_provider": "infinireach",
@@ -124,7 +137,6 @@ def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
     lead["created_at"] = now_iso()
     lead["lead_source"] = derive_lead_source(lead)
 
-    # Save the client/deal before returning success so a working email cannot hide a failed CRM save.
     crm_result = sync_quote_to_hubspot(lead)
     lead["crm_saved"] = bool(crm_result)
     if crm_result:
@@ -139,19 +151,57 @@ def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
     }
 
 
+def _require_admin(x_admin_key: Optional[str]) -> None:
+    if not valid_admin_key(x_admin_key):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+@app.get("/api/admin/owners")
+def owner_list(x_admin_key: Optional[str] = Header(default=None, alias="X-Admin-Key")):
+    _require_admin(x_admin_key)
+    try:
+        return {"owners": get_active_owners()}
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Could not load staff list") from exc
+
+
 @app.get("/api/admin/clients")
 def client_list(
     limit: int = 100,
     x_admin_key: Optional[str] = Header(default=None, alias="X-Admin-Key"),
 ):
-    if not valid_admin_key(x_admin_key):
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    _require_admin(x_admin_key)
     try:
-        return {"clients": get_hubspot_clients(limit=limit)}
+        clients = get_hubspot_clients(limit=limit)
+        owners = {owner["id"]: owner["name"] for owner in get_active_owners()}
+        for client in clients:
+            client["owner_name"] = owners.get(client.get("owner_id") or "", "Unassigned")
+            client["hubspot_url"] = client_hubspot_url(client["id"])
+        return {"clients": clients}
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=502, detail="Could not load client list") from exc
+
+
+@app.post("/api/admin/clients/{contact_id}/owner")
+def set_client_owner(
+    contact_id: str,
+    payload: OwnerAssign,
+    x_admin_key: Optional[str] = Header(default=None, alias="X-Admin-Key"),
+):
+    _require_admin(x_admin_key)
+    try:
+        assign_client_owner(contact_id, payload.owner_id)
+        return {"ok": True, "contact_id": contact_id, "owner_id": payload.owner_id}
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Could not assign client") from exc
 
 
 @app.post("/api/sms/send")
@@ -160,8 +210,7 @@ def send_sms_endpoint(
     background_tasks: BackgroundTasks,
     x_admin_key: Optional[str] = Header(default=None, alias="X-Admin-Key"),
 ):
-    if not valid_admin_key(x_admin_key):
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    _require_admin(x_admin_key)
     try:
         result = send_sms(payload.to, payload.body)
         background_tasks.add_task(
