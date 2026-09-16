@@ -151,6 +151,16 @@ const NON_DAIKIN_FEATURES = {
   ],
 };
 
+const RINNAI_LOCAL_SALE_FACTOR = 1750 / 1990;
+const RINNAI_LOCAL_DISCOUNT_LABEL = "12% OFF";
+
+const getRinnaiLocalSalePrice = (price) => {
+  const regular = Number(String(price).replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(regular)) return price;
+  const sale = Math.round(regular * RINNAI_LOCAL_SALE_FACTOR);
+  return `$${sale.toLocaleString("en-AU")}`;
+};
+
 const BrandSelectionBanner = ({ currentSlug }) => (
   <nav aria-label="Choose split system brand" data-testid="brand-selection-banner" className="border-b border-[#E5E5EA] bg-white">
     <div className="sp-container">
@@ -173,16 +183,18 @@ const BrandSelectionBanner = ({ currentSlug }) => (
   </nav>
 );
 
-const BrandPage = () => {
+const BrandPage = ({ offerMode = null }) => {
   const { slug } = useParams();
-  const brand = SPLIT_BRANDS.find((b) => b.slug === slug);
+  const isRinnaiLocalOffer = offerMode === "rinnai-local";
+  const brand = SPLIT_BRANDS.find((b) => b.slug === (isRinnaiLocalOffer ? "rinnai" : slug));
   const lenis = useLenis();
   const [selected, setSelected] = useState(null);
 
   if (!brand) return <Navigate to="/split-systems" replace />;
 
   const handleBook = (range, priceRow) => {
-    const sel = { rangeName: range.name, displayName: range.displayName || `${brand.brand} ${range.name}`, kw: priceRow.kw, price: priceRow.price };
+    const effectivePrice = isRinnaiLocalOffer ? getRinnaiLocalSalePrice(priceRow.price) : priceRow.price;
+    const sel = { rangeName: range.name, displayName: range.displayName || `${brand.brand} ${range.name}`, kw: priceRow.kw, price: effectivePrice, regularPrice: priceRow.price };
     setSelected(sel);
     setTimeout(() => {
       const el = document.getElementById("book");
@@ -200,27 +212,74 @@ const BrandPage = () => {
   };
 
   const selectionMessage = selected
-    ? `I'd like to book installation for ${selected.displayName} ${selected.kw} — advertised at ${selected.price} supplied & installed.`
-    : "";
+    ? isRinnaiLocalOffer
+      ? `I'd like to claim the local Rinnai offer for ${selected.displayName} ${selected.kw} — ${selected.price} supplied & installed on the advertised single-storey back-to-back terms. My suburb is within the local offer area.`
+      : `I'd like to book installation for ${selected.displayName} ${selected.kw} — advertised at ${selected.price} supplied & installed.`
+    : isRinnaiLocalOffer
+      ? "I'd like to check eligibility for the local Rinnai back-to-back installation offer near Bass Hill Plaza."
+      : "";
 
   const formKey = selected ? `${brand.slug}-${selected.displayName}-${selected.kw}` : `${brand.slug}-default`;
   const submitLabel = selected
-    ? `Book ${selected.displayName} ${selected.kw}`
-    : `Book ${brand.brand} Installation`;
+    ? isRinnaiLocalOffer
+      ? `Claim ${selected.displayName} ${selected.kw} Offer`
+      : `Book ${selected.displayName} ${selected.kw}`
+    : isRinnaiLocalOffer
+      ? "Check My Local Rinnai Offer"
+      : `Book ${brand.brand} Installation`;
+
+  const pageTitle = isRinnaiLocalOffer
+    ? "Rinnai Split System Local Sale | Bankstown, Bass Hill & Chester Hill | SplitsPro"
+    : brand.metaTitle;
+  const pageDescription = isRinnaiLocalOffer
+    ? "Limited-time local Rinnai split system sale for selected suburbs around Bankstown, Bass Hill and Chester Hill. Supplied and installed back-to-back by licensed SplitsPro technicians."
+    : brand.metaDesc;
+  const canonicalUrl = isRinnaiLocalOffer
+    ? "https://splitspro.com.au/split-systems/rinnai-local-offer"
+    : `https://splitspro.com.au/split-systems/${brand.slug}`;
 
   return (
     <>
       <Helmet>
-        <title>{brand.metaTitle}</title>
-        <meta name="description" content={brand.metaDesc} />
-        <link rel="canonical" href={`https://splitspro.com.au/split-systems/${brand.slug}`} />
-        <meta property="og:title" content={brand.metaTitle} />
-        <meta property="og:description" content={brand.metaDesc} />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={brand.image} />
       </Helmet>
 
-      <PageHero overline={brand.brand} title={brand.h1} sub={brand.tagline} image={brand.image} desktopBrand />
+      <PageHero
+        overline={isRinnaiLocalOffer ? "Rinnai · Local Special" : brand.brand}
+        title={isRinnaiLocalOffer ? "Rinnai Split System Local Installation Sale" : brand.h1}
+        sub={isRinnaiLocalOffer ? "Limited-time supplied & installed back-to-back pricing for selected local suburbs around Bass Hill Plaza." : brand.tagline}
+        image={brand.image}
+        desktopBrand
+      />
+
+      {isRinnaiLocalOffer && (
+        <section className="border-b border-[#D8C59E] bg-[#0B0B0B] py-7 text-white" data-testid="rinnai-local-offer-strip">
+          <div className="sp-container grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-full border border-[#C8A46A]/60 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Limited Time Local Offer</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Bankstown · Bass Hill · Chester Hill · nearby suburbs</span>
+              </div>
+              <div className="mt-4 flex flex-wrap items-end gap-x-5 gap-y-2">
+                <p className="font-serif text-2xl text-white sm:text-3xl">5.0kW Rinnai supplied &amp; installed</p>
+                <span className="text-sm text-white/45 line-through">Was $1,990</span>
+                <span className="font-serif text-4xl text-[#E4CFA6]">Now $1,750</span>
+                <span className="rounded-full bg-[#C8A46A] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0B0B0B]">{RINNAI_LOCAL_DISCOUNT_LABEL}</span>
+              </div>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/70">
+                Local sale pricing applies to qualifying single-storey back-to-back installations in selected suburbs roughly within 25 minutes of Bass Hill Plaza. Enter your suburb below and we&apos;ll confirm eligibility before booking.
+              </p>
+            </div>
+            <a href="#range-pb-series" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-[#0B0B0B]">See Local Sale Prices <ArrowDown className="h-4 w-4" /></a>
+          </div>
+        </section>
+      )}
 
       <section className="border-b border-[#E8E6E1] bg-[#FBFAF8] py-5 sm:py-6" data-testid="brand-top-proof">
         <div className="sp-container">
@@ -236,8 +295,17 @@ const BrandPage = () => {
                 ))}
               </div>
               <p className="mt-2 text-sm leading-relaxed text-[#3A3A3C]">
-                &ldquo;They were professional from the initial quote through to installation... The workmanship was clean, efficient and we couldn&apos;t be happier.&rdquo;
-                <span className="ml-2 whitespace-nowrap text-xs font-semibold text-[#6E6E73]">— {FEATURED_REVIEW.name}, Google Review</span>
+                {isRinnaiLocalOffer ? (
+                  <>
+                    &ldquo;Very happy with the 5kW Rinnai installation. The team was professional.&rdquo;
+                    <span className="ml-2 whitespace-nowrap text-xs font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</span>
+                  </>
+                ) : (
+                  <>
+                    &ldquo;They were professional from the initial quote through to installation... The workmanship was clean, efficient and we couldn&apos;t be happier.&rdquo;
+                    <span className="ml-2 whitespace-nowrap text-xs font-semibold text-[#6E6E73]">— {FEATURED_REVIEW.name}, Google Review</span>
+                  </>
+                )}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
@@ -254,7 +322,7 @@ const BrandPage = () => {
         </div>
       </section>
 
-      <BrandSelectionBanner currentSlug={brand.slug} />
+      {!isRinnaiLocalOffer && <BrandSelectionBanner currentSlug={brand.slug} />}
 
       {/* Brand intro */}
       {brand.installEditorial ? (
@@ -266,7 +334,11 @@ const BrandPage = () => {
               <ArrowLeft className="h-4 w-4" /> Split System Air Conditioning
             </Link>
             <div className="mt-5 max-w-3xl">
-              <p className="leading-relaxed text-[#6E6E73]">{brand.body}</p>
+              <p className="leading-relaxed text-[#6E6E73]">
+                {isRinnaiLocalOffer
+                  ? "This local Rinnai sale uses the same PB Series and PX Series options shown on our main Rinnai page, with a limited-time discount for qualifying back-to-back installs close to our Bass Hill base. Choose your size below, then send your suburb and we will confirm the offer applies before the job is booked."
+                  : brand.body}
+              </p>
             </div>
             {brand.ranges.length > 1 && (
               <div className="mt-8 flex flex-wrap items-center gap-2" data-testid="range-tabs">
@@ -278,6 +350,45 @@ const BrandPage = () => {
                 ))}
               </div>
             )}
+          </div>
+        </section>
+      )}
+
+      {isRinnaiLocalOffer && (
+        <section className="border-y border-[#E8E6E1] bg-[#FBFAF8] py-14 sm:py-18" data-testid="back-to-back-explained">
+          <div className="sp-container grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-14">
+            <div>
+              <span className="overline text-[#C8A46A]">What the local price includes</span>
+              <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-[#0B0B0B] sm:text-4xl">Back-to-back installation, clearly defined.</h2>
+              <p className="mt-4 max-w-2xl leading-relaxed text-[#6E6E73]">For this sale, a back-to-back installation means a simple single-storey layout with the indoor and outdoor units positioned in a straight line vertically or horizontally.</p>
+              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                {[
+                  "Indoor and outdoor units aligned vertically or horizontally",
+                  "Under 1 metre of refrigeration pipework",
+                  "One bend or less in the pipe route",
+                  "Outdoor unit on a wall bracket or on the floor",
+                  "Standard electrical work for the installation included",
+                  "Single-storey property",
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-3 rounded-xl border border-[#E5E5EA] bg-white p-4">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#C8A46A]" />
+                    <span className="text-sm font-medium leading-relaxed text-[#3A3A3C]">{item}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-5 text-xs leading-relaxed text-[#6E6E73]">Standard electrical work is included for the qualifying installation. Switchboard defects, upgrades, asbestos-related work or other site conditions outside the standard installation are discussed and approved before any extra work proceeds.</p>
+            </div>
+            <div className="rounded-2xl border border-[#E5E5EA] bg-white p-6 soft-shadow-sm">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Local offer area</p>
+              <h3 className="mt-3 font-serif text-2xl text-[#0B0B0B]">Around Bass Hill Plaza</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#6E6E73]">Bankstown, Bass Hill and Chester Hill are the core sale area, plus selected nearby suburbs roughly within 25 minutes&apos; drive of Bass Hill Plaza.</p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {["Bankstown", "Bass Hill", "Chester Hill", "Yagoona", "Greenacre", "Georges Hall", "Condell Park", "Sefton", "Regents Park", "Villawood"].map((area) => (
+                  <span key={area} className="rounded-full border border-[#E5E5EA] bg-[#FBFAF8] px-3 py-1.5 text-xs font-semibold text-[#4E4E52]">{area}</span>
+                ))}
+              </div>
+              <a href="#book" className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-white">Check My Suburb <ArrowUpRight className="h-4 w-4" /></a>
+            </div>
           </div>
         </section>
       )}
@@ -464,19 +575,31 @@ const BrandPage = () => {
                     <span className="block font-serif text-xl text-[#0B0B0B] sm:text-2xl">{row.kw}</span>
                     {row.model && <span className="mt-1 block text-xs font-medium text-[#6E6E73]">Model {row.model}</span>}
                   </span>
-                  <span className="font-serif text-xl text-[#0B0B0B] sm:text-2xl">{row.price}</span>
+                  <span className="text-[#0B0B0B]">
+                    {isRinnaiLocalOffer ? (
+                      <span className="flex flex-col items-start">
+                        <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[#8A8A8E] line-through">Was {row.price}</span>
+                        <span className="mt-1 font-serif text-2xl text-[#0B0B0B] sm:text-3xl">{getRinnaiLocalSalePrice(row.price)}</span>
+                        <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#B58C4E]">{RINNAI_LOCAL_DISCOUNT_LABEL} · Limited time</span>
+                      </span>
+                    ) : (
+                      <span className="font-serif text-xl sm:text-2xl">{row.price}</span>
+                    )}
+                  </span>
                   <button
                     onClick={() => handleBook(range, row)}
                     data-testid={`book-btn-${range.slug}-${row.kw.replace(/[^0-9a-z]/gi, "")}`}
                     className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#F8F7F5] transition-all hover:border-[#C8A46A] hover:text-[#E4CFA6] hover:-translate-y-[2px]"
                   >
-                    Book Installation <ArrowUpRight className="h-4 w-4" />
+                    {isRinnaiLocalOffer ? "Claim Local Offer" : "Book Installation"} <ArrowUpRight className="h-4 w-4" />
                   </button>
                 </div>
               ))}
             </div>
             <p className="mt-4 text-xs leading-relaxed text-[#6E6E73]" data-testid={`disclaimer-${range.slug}`}>
-              Standard back-to-back installation pricing. Additional pipework, electrical work, brackets or non-standard access may cost extra. Any additional costs are confirmed before work proceeds.
+              {isRinnaiLocalOffer
+                ? "Local sale pricing is for qualifying single-storey back-to-back installations: units aligned vertically or horizontally, under 1 metre of pipework, one bend or less, outdoor unit on a wall bracket or floor, with standard electrical work included. Any non-standard work is confirmed before work proceeds."
+                : "Standard back-to-back installation pricing. Additional pipework, electrical work, brackets or non-standard access may cost extra. Any additional costs are confirmed before work proceeds."}
             </p>
           </div>
         </section>
@@ -490,7 +613,9 @@ const BrandPage = () => {
             <h2 className="mt-5 font-serif text-4xl font-medium leading-tight tracking-tight text-white md:text-5xl text-balance">
               {selected
                 ? `Book your ${selected.displayName} ${selected.kw}`
-                : `Book your ${brand.brand} installation`}
+                : isRinnaiLocalOffer
+                  ? "Claim your local Rinnai installation offer"
+                  : `Book your ${brand.brand} installation`}
             </h2>
             {selected && (
               <p className="mt-5 text-lg text-[#C8A46A]" data-testid="brand-selected-summary">
@@ -534,7 +659,7 @@ const BrandPage = () => {
                 {[
                   "Minimum 5-Year Manufacturer Warranty",
                   "SplitsPro Workmanship Guarantee",
-                  "Standard installation pricing shown above",
+                  isRinnaiLocalOffer ? "Local back-to-back sale pricing shown above" : "Standard installation pricing shown above",
                   "Any extras confirmed before work starts",
                 ].map((t) => (
                   <li key={t} className="flex items-center gap-1.5 text-xs font-medium text-white/70">
