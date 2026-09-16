@@ -10,6 +10,7 @@ import requests
 
 
 HUBSPOT_BASE_URL = "https://api.hubapi.com"
+RESEND_API_URL = "https://api.resend.com/emails"
 
 
 def derive_lead_source(lead: Dict) -> str:
@@ -74,13 +75,12 @@ def _lead_lines(lead: Dict) -> list[str]:
     return [f"{label}: {value}" for label, value in pairs if value]
 
 
-def _send_smtp(message: EmailMessage) -> None:
+def _send_smtp(message: EmailMessage) -> bool:
     host = (os.environ.get("SMTP_HOST") or "").strip()
     user = (os.environ.get("SMTP_USER") or "").strip()
     password = os.environ.get("SMTP_PASSWORD") or ""
     if not host or not user or not password:
-        logging.info("Lead email notification disabled: SMTP credentials are not configured")
-        return
+        return False
 
     port = int(os.environ.get("SMTP_PORT", "587"))
     timeout = 30
@@ -95,30 +95,65 @@ def _send_smtp(message: EmailMessage) -> None:
             smtp.ehlo()
             smtp.login(user, password)
             smtp.send_message(message)
+    return True
+
+
+def _send_resend(*, to: str, subject: str, text: str) -> bool:
+    api_key = (os.environ.get("RESEND_API_KEY") or "").strip()
+    from_address = (os.environ.get("RESEND_FROM") or "").strip()
+    if not api_key or not from_address:
+        return False
+
+    response = requests.post(
+        RESEND_API_URL,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "from": from_address,
+            "to": [to],
+            "subject": subject,
+            "text": text,
+        },
+        timeout=30,
+    )
+    response.raise_for_status()
+    return True
+
+
+def _send_email(*, to: str, subject: str, text: str) -> None:
+    # Prefer Resend for website transactional email. SMTP remains a fallback.
+    if _send_resend(to=to, subject=subject, text=text):
+        return
+
+    notify_to = (os.environ.get("QUOTE_NOTIFY_EMAIL") or "info@splitspro.com.au").strip()
+    from_address = (os.environ.get("SMTP_FROM") or os.environ.get("SMTP_USER") or notify_to).strip()
+    message = EmailMessage()
+    message["From"] = from_address
+    message["To"] = to
+    message["Subject"] = subject
+    message.set_content(text)
+    if _send_smtp(message):
+        return
+
+    logging.info("Lead email notification disabled: neither Resend nor SMTP is configured")
 
 
 def notify_quote(lead: Dict) -> None:
     try:
         notify_to = (os.environ.get("QUOTE_NOTIFY_EMAIL") or "info@splitspro.com.au").strip()
-        from_address = (os.environ.get("SMTP_FROM") or os.environ.get("SMTP_USER") or notify_to).strip()
         if not notify_to:
             return
 
-        business_message = EmailMessage()
-        business_message["From"] = from_address
-        business_message["To"] = notify_to
-        business_message["Subject"] = f"New SplitsPro lead — {lead.get('service', 'Enquiry')} — {lead.get('suburb', '')}"
-        business_message.set_content("New website enquiry\n\n" + "\n".join(_lead_lines(lead)))
-        _send_smtp(business_message)
+        business_subject = f"New SplitsPro lead — {lead.get('service', 'Enquiry')} — {lead.get('suburb', '')}"
+        business_text = "New website enquiry\n\n" + "\n".join(_lead_lines(lead))
+        _send_email(to=notify_to, subject=business_subject, text=business_text)
 
         customer_email = (lead.get("email") or "").strip()
         confirmations_enabled = (os.environ.get("SEND_CUSTOMER_CONFIRMATION", "true").strip().lower() in {"1", "true", "yes", "on"})
         if customer_email and confirmations_enabled and customer_email.lower() != notify_to.lower():
-            confirmation = EmailMessage()
-            confirmation["From"] = from_address
-            confirmation["To"] = customer_email
-            confirmation["Subject"] = "SplitsPro — we received your request"
-            confirmation.set_content(
+            confirmation_text = (
                 f"Hi {lead.get('name', '').strip() or 'there'},\n\n"
                 "Thanks for contacting SplitsPro. We have received your request and will be in touch shortly.\n\n"
                 f"Service: {lead.get('service', '')}\n"
@@ -126,7 +161,11 @@ def notify_quote(lead: Dict) -> None:
                 "SplitsPro\n"
                 "splitspro.com.au"
             )
-            _send_smtp(confirmation)
+            _send_email(
+                to=customer_email,
+                subject="SplitsPro — we received your request",
+                text=confirmation_text,
+            )
     except Exception as exc:
         logging.exception("Lead email notification failed: %s", exc)
 
