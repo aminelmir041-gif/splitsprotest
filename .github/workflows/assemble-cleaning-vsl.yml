@@ -20,6 +20,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
       - name: Rebuild source MP4 from stored chunks
         run: |
           cat .github/assets/cleaning-vsl-part*.txt | tr -d '\n\r ' | base64 --decode > /tmp/cleaning-vsl-source.mp4
