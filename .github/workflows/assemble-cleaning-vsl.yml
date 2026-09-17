@@ -20,13 +20,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Rebuild the complete MP4 from stored chunks
+      - name: Rebuild source MP4 from stored chunks
         run: |
-          cat .github/assets/cleaning-vsl-part*.txt | tr -d '\n\r ' | base64 --decode > assets/splitspro-cleaning-vsl.mp4
-          test -s assets/splitspro-cleaning-vsl.mp4
-          echo "Rebuilt video size: $(wc -c < assets/splitspro-cleaning-vsl.mp4) bytes"
+          cat .github/assets/cleaning-vsl-part*.txt | tr -d '\n\r ' | base64 --decode > /tmp/cleaning-vsl-source.mp4
+          test -s /tmp/cleaning-vsl-source.mp4
+          echo "Source video size: $(wc -c < /tmp/cleaning-vsl-source.mp4) bytes"
+          ffprobe -v error -show_entries format=duration:stream=codec_name,codec_type,width,height,pix_fmt -of default=noprint_wrappers=1 /tmp/cleaning-vsl-source.mp4
 
-      - name: Commit the working video asset
+      - name: Re-encode for Chrome Safari and mobile
+        run: |
+          ffmpeg -y -v warning -i /tmp/cleaning-vsl-source.mp4 \
+            -map 0:v:0 -map 0:a:0? \
+            -c:v libx264 -profile:v baseline -level 3.0 -pix_fmt yuv420p \
+            -preset medium -crf 23 -r 30 \
+            -c:a aac -b:a 128k -ar 48000 \
+            -movflags +faststart \
+            assets/splitspro-cleaning-vsl.mp4
+          test -s assets/splitspro-cleaning-vsl.mp4
+          echo "Browser video size: $(wc -c < assets/splitspro-cleaning-vsl.mp4) bytes"
+          ffprobe -v error -show_entries format=duration:stream=codec_name,codec_type,width,height,pix_fmt -of default=noprint_wrappers=1 assets/splitspro-cleaning-vsl.mp4
+          ffmpeg -v error -i assets/splitspro-cleaning-vsl.mp4 -f null -
+
+      - name: Commit browser-safe video asset
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -35,6 +50,6 @@ jobs:
             echo "Video asset is already up to date"
             exit 0
           fi
-          git commit -m "Restore complete cleaning VSL video"
+          git commit -m "Re-encode cleaning VSL for browser playback"
           git pull --rebase origin main
           git push
