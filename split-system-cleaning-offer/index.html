@@ -86,6 +86,9 @@
     .vsl-card.finished{opacity:0;transform:scale(.985);pointer-events:none}
     .vsl-embed{display:block;width:100%;height:100%;border:0;background:transparent;border-radius:14px;box-shadow:none}
     @media(max-width:640px){.vsl-card{margin-bottom:18px;border-radius:12px}.vsl-card:before{left:10px;top:10px;font-size:7px}.vsl-embed{border-radius:10px}}
+
+    .vsl-sound-catcher{position:absolute;inset:0;z-index:6;border:0;background:transparent;padding:0;margin:0;cursor:pointer}
+    .vsl-card.sound-on .vsl-sound-catcher{display:none}
   </style>
 </head>
 <body>
@@ -113,10 +116,11 @@
         <div class="hero-offers">
           <div class="vsl-card" id="cleaningVslCard">
             <iframe class="vsl-embed" id="cleaningVsl" loading="eager"
-              src="https://www.canva.com/design/DAHVXLREICQ/ezIJ1mvbhzS9qc2N1WC-rQ/view?embed&autoplay=1&muted=0&loop=0"
+              src="https://www.canva.com/design/DAHVXLREICQ/ezIJ1mvbhzS9qc2N1WC-rQ/view?embed&autoplay=1&loop=0&muted=1"
               title="SplitsPro 35-second split system cleaning video"
               allow="autoplay; fullscreen; picture-in-picture"
               allowfullscreen></iframe>
+            <button class="vsl-sound-catcher" id="vslSoundCatcher" type="button" aria-label="Turn video sound on"></button>
           </div>
           <div class="mini best offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="2 Deep Cleans — $300 same property"><div class="mini-label">Best value · limited time</div><div class="mini-row"><div class="mini-name">2 Deep Cleans</div><div class="mini-price">$300</div></div><div class="mini-note">Same property · $150 each</div></div>
           <div class="mini offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="Deep Clean — $180"><div class="mini-label">Limited time offer</div><div class="mini-row"><div class="mini-name">Deep Clean</div><div class="mini-price">$180</div></div><div class="mini-note">For built-up dirt, grime and tired airflow</div></div>
@@ -170,26 +174,61 @@
       catch(err){console.error('SplitsPro cleaning enquiry failed',err);btn.disabled=false;btn.textContent=original;const subject=encodeURIComponent('Cleaning enquiry — '+suburb),body=encodeURIComponent(`Name: ${name}\nPhone: ${phone}\nSuburb: ${suburb}\nAddress: ${address}\nPreferred date: ${preferred_date}\nOffer: ${offer}`);window.location.href=`mailto:info@splitspro.com.au?subject=${subject}&body=${body}`}
     }
   </script>
-
-  <script id="cleaning-vsl-behaviour">
+<script id="cleaning-vsl-behaviour">
     (()=>{
       const card=document.getElementById('cleaningVslCard');
       const frame=document.getElementById('cleaningVsl');
+      const catcher=document.getElementById('vslSoundCatcher');
       if(!card||!frame)return;
 
-      let hideTimer;
-      const hideAfterPlayback=()=>{
-        clearTimeout(hideTimer);
-        hideTimer=setTimeout(()=>{
-          card.classList.add('finished');
-          setTimeout(()=>{ card.style.display='none'; },460);
-        },35500);
+      const mutedSrc='https://www.canva.com/design/DAHVXLREICQ/ezIJ1mvbhzS9qc2N1WC-rQ/view?embed&autoplay=1&loop=0&muted=1';
+      const soundSrc='https://www.canva.com/design/DAHVXLREICQ/ezIJ1mvbhzS9qc2N1WC-rQ/view?embed&autoplay=1&loop=0&muted=0&volume=1';
+      let soundStarted=false;
+      let hideTimer=null;
+      let fallbackTimer=null;
+
+      const hideCard=()=>{
+        card.classList.add('finished');
+        setTimeout(()=>{ card.style.display='none'; },460);
       };
 
-      // Start the countdown once the Canva player itself has loaded.
-      frame.addEventListener('load',hideAfterPlayback,{once:true});
-      // Fallback in case the browser restores the iframe from cache without firing load.
-      setTimeout(()=>{ if(card.style.display!=='none' && !card.classList.contains('finished')) hideAfterPlayback(); },2500);
+      const armHide=()=>{
+        clearTimeout(hideTimer);
+        hideTimer=setTimeout(hideCard,35000);
+      };
+
+      const cleanup=()=>{
+        ['pointerdown','touchstart','mousedown','click','keydown','wheel','scroll'].forEach(type=>{
+          document.removeEventListener(type,startSound,true);
+        });
+        if(catcher) catcher.removeEventListener('pointerdown',startSound,true);
+      };
+
+      const startSound=(event)=>{
+        if(soundStarted)return;
+        soundStarted=true;
+        cleanup();
+        clearTimeout(hideTimer);
+        clearTimeout(fallbackTimer);
+        card.classList.add('sound-on');
+        if(catcher) catcher.style.display='none';
+
+        // Reload during the user's interaction so mobile browsers permit audio.
+        frame.src=soundSrc+'&started='+(Date.now());
+        frame.addEventListener('load',armHide,{once:true});
+        fallbackTimer=setTimeout(armHide,1500);
+      };
+
+      // Initial muted autoplay is allowed by mobile browsers.
+      if(frame.src!==mutedSrc) frame.src=mutedSrc;
+      frame.addEventListener('load',armHide,{once:true});
+      fallbackTimer=setTimeout(armHide,1800);
+
+      // The first touch used to scroll the page will turn the sound on.
+      ['pointerdown','touchstart','mousedown','click','keydown','wheel','scroll'].forEach(type=>{
+        document.addEventListener(type,startSound,{capture:true,passive:true});
+      });
+      if(catcher) catcher.addEventListener('pointerdown',startSound,{capture:true,passive:true});
     })();
   </script>
 </body>
