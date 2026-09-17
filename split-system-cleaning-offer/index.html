@@ -83,9 +83,9 @@
 
     .vsl-card{position:relative;margin:0 0 22px;border:0;border-radius:16px;overflow:visible;background:transparent;box-shadow:none;isolation:auto}
     .vsl-card:before{content:"WATCH THE 35-SECOND CLEANING DIFFERENCE";position:absolute;left:14px;top:12px;z-index:3;background:rgba(11,11,11,.22);border:1px solid rgba(200,164,106,.45);color:var(--gold2);padding:7px 10px;border-radius:999px;font-size:8px;font-weight:900;letter-spacing:.14em;pointer-events:none}
-    .vsl-video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:transparent;border:0;border-radius:14px;box-shadow:none;opacity:.92}
-    .vsl-sound{display:none;position:absolute;z-index:4;left:50%;bottom:14px;transform:translateX(-50%);border:1px solid rgba(255,255,255,.42);background:rgba(11,11,11,.64);color:#fff;border-radius:999px;padding:10px 14px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;backdrop-filter:blur(6px)}
-    .vsl-card.sound-blocked .vsl-sound{display:inline-flex;align-items:center;justify-content:center}
+    .vsl-video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:transparent;border:0;border-radius:14px;box-shadow:none;opacity:.92;cursor:pointer}
+    .vsl-sound{display:inline-flex;align-items:center;justify-content:center;position:absolute;z-index:4;left:50%;bottom:14px;transform:translateX(-50%);border:1px solid rgba(255,255,255,.42);background:rgba(11,11,11,.72);color:#fff;border-radius:999px;padding:10px 14px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;backdrop-filter:blur(6px)}
+    .vsl-card.sound-on .vsl-sound{display:none}
     .vsl-sound:hover{background:rgba(200,164,106,.9);color:#111;border-color:var(--gold)}
     @media(max-width:640px){.vsl-card{margin-bottom:18px;border-radius:12px}.vsl-card:before{left:10px;top:10px;font-size:7px}.vsl-video{border-radius:10px}.vsl-sound{bottom:10px;padding:9px 12px}}
   </style>
@@ -114,10 +114,10 @@
         </div>
         <div class="hero-offers">
           <div class="vsl-card" id="cleaningVslCard">
-            <video class="vsl-video" id="cleaningVsl" autoplay playsinline preload="auto" aria-label="SplitsPro split system cleaning video">
-              <source src="/assets/splitspro-cleaning-vsl.mp4?v=20260917-3" type="video/mp4">
+            <video class="vsl-video" id="cleaningVsl" autoplay muted playsinline preload="auto" aria-label="SplitsPro split system cleaning video">
+              <source src="/assets/splitspro-cleaning-vsl.mp4?v=20260917-4" type="video/mp4">
             </video>
-            <button class="vsl-sound" id="cleaningVslSound" type="button" aria-label="Play video with sound">Play with sound 🔊</button>
+            <button class="vsl-sound" id="cleaningVslSound" type="button" aria-label="Restart video with sound">Tap for sound 🔊</button>
           </div>
           <div class="mini best offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="2 Deep Cleans — $300 same property"><div class="mini-label">Best value · limited time</div><div class="mini-row"><div class="mini-name">2 Deep Cleans</div><div class="mini-price">$300</div></div><div class="mini-note">Same property · $150 each</div></div>
           <div class="mini offer-choice" role="button" tabindex="0" aria-pressed="false" data-offer="Deep Clean — $180"><div class="mini-label">Limited time offer</div><div class="mini-row"><div class="mini-name">Deep Clean</div><div class="mini-price">$180</div></div><div class="mini-note">For built-up dirt, grime and tired airflow</div></div>
@@ -179,39 +179,53 @@
       if(!video||!sound||!card)return;
 
       video.loop=false;
-      video.muted=false;
+      video.defaultMuted=true;
+      video.muted=true;
       video.volume=1;
 
-      const startWithSound=()=>{
-        video.muted=false;
-        video.volume=1;
+      const startMuted=()=>{
+        video.muted=true;
         const playPromise=video.play();
         if(playPromise&&playPromise.catch){
-          playPromise.then(()=>card.classList.remove('sound-blocked')).catch(()=>{
-            card.classList.add('sound-blocked');
+          playPromise.catch(()=>{
+            video.controls=true;
           });
         }
       };
 
-      if(video.readyState>=2) startWithSound();
-      else video.addEventListener('canplay',startWithSound,{once:true});
-
-      sound.addEventListener('click',()=>{
+      const playWithSound=()=>{
         video.pause();
-        video.currentTime=0;
+        try{video.currentTime=0;}catch(e){}
+        video.defaultMuted=false;
         video.muted=false;
         video.volume=1;
         const playPromise=video.play();
         if(playPromise&&playPromise.catch){
-          playPromise.then(()=>card.classList.remove('sound-blocked')).catch(()=>card.classList.add('sound-blocked'));
+          playPromise.then(()=>{
+            card.classList.add('sound-on');
+            video.controls=false;
+          }).catch(()=>{
+            video.muted=true;
+            video.controls=true;
+            card.classList.remove('sound-on');
+            const retry=video.play();
+            if(retry&&retry.catch)retry.catch(()=>{});
+          });
         }else{
-          card.classList.remove('sound-blocked');
+          card.classList.add('sound-on');
         }
-      });
+      };
+
+      if(video.readyState>=2) startMuted();
+      else video.addEventListener('canplay',startMuted,{once:true});
+      window.addEventListener('load',()=>{ if(video.paused && video.currentTime===0) startMuted(); },{once:true});
+
+      sound.addEventListener('click',playWithSound);
+      video.addEventListener('click',()=>{ if(video.muted) playWithSound(); });
 
       video.addEventListener('ended',()=>{
         video.pause();
-        video.currentTime=video.duration || video.currentTime;
+        card.classList.remove('sound-on');
       });
     })();
   </script>
