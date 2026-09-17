@@ -22,6 +22,18 @@
     .replaceAll("$2,102", "$2,100")
     .replaceAll("7.0kW", "7.1kW");
 
+  const normaliseTextNodes = (root) => {
+    if (!root) return;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => {
+      const current = node.nodeValue || "";
+      const normalised = normaliseOfferText(current);
+      if (normalised !== current) node.nodeValue = normalised;
+    });
+  };
+
   // Keep the lead details consistent with the exact prices shown in the ad/page.
   const originalSend = XMLHttpRequest.prototype.send;
   XMLHttpRequest.prototype.send = function patchedSend(body) {
@@ -43,25 +55,32 @@
 
       const priceColumn = row.children[1];
       if (priceColumn) {
+        // Remove only the crossed-out regular/"Was" price. Keep the live offer price.
         Array.from(priceColumn.querySelectorAll("span")).forEach((span) => {
           const text = span.textContent.trim();
-          if (/^\$[\d,]+$/.test(text) && text !== price) span.textContent = price;
-          if (text.includes("12% OFF")) span.textContent = "LOCAL DEAL · Limited spots";
+          if (/^Was\s+\$[\d,]+$/i.test(text)) {
+            span.remove();
+            return;
+          }
+
+          // Only alter leaf spans so the layout and nested markup stay intact.
+          if (span.children.length === 0 && /^\$[\d,]+$/.test(text) && text !== price) {
+            span.textContent = price;
+          }
+          if (span.children.length === 0 && text.includes("12% OFF")) {
+            span.textContent = "LOCAL DEAL · Limited spots";
+          }
         });
       }
     });
 
+    // Preserve the page structure while correcting any remaining old calculated prices.
+    normaliseTextNodes(document.body);
+
     document.querySelectorAll("span").forEach((span) => {
+      if (span.children.length !== 0) return;
       const text = span.textContent.trim();
       if (text === "12% OFF") span.textContent = "LOCAL DEAL";
-      const normalised = normaliseOfferText(text);
-      if (normalised !== text) span.textContent = normalised;
-    });
-
-    document.querySelectorAll('[data-testid="brand-selected-summary"]').forEach((summary) => {
-      const text = summary.textContent;
-      const normalised = normaliseOfferText(text);
-      if (normalised !== text) summary.textContent = normalised;
     });
 
     hideFieldByTestId("quote-email-input");
