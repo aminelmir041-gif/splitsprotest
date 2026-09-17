@@ -7,8 +7,63 @@
     "7.1kW": "$2,100",
   };
 
-  const daikinCoraImage = "/products/daikin-cora.png";
+  const localOfferAreas = [
+    "Bankstown",
+    "Bass Hill",
+    "Chester Hill",
+    "Yagoona",
+    "Greenacre",
+    "Georges Hall",
+    "Condell Park",
+    "Sefton",
+    "Regents Park",
+    "Villawood",
+    "Granville",
+    "Guildford",
+    "Merrylands",
+    "Auburn",
+    "Lansvale",
+    "Greystanes",
+    "Surrounding suburbs",
+  ];
+
+  let daikinCoraImage = null;
+  let coraImageLoadStarted = false;
   let redirectedHash = false;
+
+  const extractCoraImage = (text) => {
+    const marker = "data:image/webp;base64,UklGRoQIAABXRUJQVlA4IHgIAAAQbQCdASqKAno";
+    const start = String(text || "").indexOf(marker);
+    if (start < 0) return null;
+    const match = String(text).slice(start).match(/^data:image\/webp;base64,[A-Za-z0-9+/=]+/);
+    return match ? match[0] : null;
+  };
+
+  const loadDaikinCoraImage = async () => {
+    if (coraImageLoadStarted || daikinCoraImage) return;
+    coraImageLoadStarted = true;
+
+    const sources = [
+      "/src/lib/embedded/cora.js",
+      "/static/js/main.7e36c733.js",
+    ];
+
+    for (const source of sources) {
+      try {
+        const response = await fetch(source, { cache: "force-cache" });
+        if (!response.ok) continue;
+        const text = await response.text();
+        const found = extractCoraImage(text);
+        if (found) {
+          daikinCoraImage = found;
+          scheduleFixes();
+          return;
+        }
+      } catch (error) {
+        // Try the next source.
+      }
+    }
+  };
 
   const hideFieldByTestId = (testId) => {
     const el = document.querySelector(`[data-testid="${testId}"]`);
@@ -35,6 +90,22 @@
     });
   };
 
+  const updateLocalOfferAreas = () => {
+    const areaSection = document.querySelector('[data-testid="rinnai-local-areas-hero"]');
+    if (!areaSection) return;
+    const areaWrap = areaSection.querySelector("div");
+    if (!areaWrap || areaWrap.dataset.expandedLocalAreas === "true") return;
+
+    areaWrap.dataset.expandedLocalAreas = "true";
+    areaWrap.replaceChildren();
+    localOfferAreas.forEach((area) => {
+      const span = document.createElement("span");
+      span.className = "rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/85";
+      span.textContent = area;
+      areaWrap.appendChild(span);
+    });
+  };
+
   // Keep the lead details consistent with the exact prices shown in the ad/page.
   const originalSend = XMLHttpRequest.prototype.send;
   XMLHttpRequest.prototype.send = function patchedSend(body) {
@@ -56,7 +127,6 @@
 
       const priceColumn = row.children[1];
       if (priceColumn) {
-        // Remove only the crossed-out regular/"Was" price. Keep the live offer price.
         Array.from(priceColumn.querySelectorAll("span")).forEach((span) => {
           const text = span.textContent.trim();
           if (/^Was\s+\$[\d,]+$/i.test(text)) {
@@ -64,7 +134,6 @@
             return;
           }
 
-          // Only alter leaf spans so the layout and nested markup stay intact.
           if (span.children.length === 0 && /^\$[\d,]+$/.test(text) && text !== price) {
             span.textContent = price;
           }
@@ -75,17 +144,23 @@
       }
     });
 
-    // Use the Daikin Cora product image for the Daikin local-offer section.
+    updateLocalOfferAreas();
+
+    // Use the exact same embedded Daikin Cora image used on the Cora section.
     const daikinLocalSection = document.getElementById("range-daikin-lite-local");
     if (daikinLocalSection) {
-      const productImage = daikinLocalSection.querySelector("img");
-      if (productImage && productImage.getAttribute("src") !== daikinCoraImage) {
-        productImage.setAttribute("src", daikinCoraImage);
-        productImage.setAttribute("alt", "Daikin Cora indoor unit");
+      if (!daikinCoraImage) loadDaikinCoraImage();
+      if (daikinCoraImage) {
+        daikinLocalSection.querySelectorAll("img").forEach((productImage) => {
+          if (productImage.getAttribute("src") !== daikinCoraImage) {
+            productImage.removeAttribute("srcset");
+            productImage.setAttribute("src", daikinCoraImage);
+            productImage.setAttribute("alt", "Daikin Cora indoor unit");
+          }
+        });
       }
     }
 
-    // Preserve the page structure while correcting any remaining old calculated prices.
     normaliseTextNodes(document.body);
 
     document.querySelectorAll("span").forEach((span) => {
