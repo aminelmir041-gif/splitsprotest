@@ -13,7 +13,22 @@
     const el = document.querySelector(`[data-testid="${testId}"]`);
     if (!el) return;
     const field = el.closest("div");
-    if (field) field.style.display = "none";
+    if (field && field.style.display !== "none") field.style.display = "none";
+  };
+
+  const normaliseOfferText = (value) => String(value)
+    .replaceAll("$1,398", "$1,400")
+    .replaceAll("$1,486", "$1,500")
+    .replaceAll("$2,102", "$2,100")
+    .replaceAll("7.0kW", "7.1kW");
+
+  // Keep the lead details consistent with the exact prices shown in the ad/page.
+  const originalSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.send = function patchedSend(body) {
+    if (typeof body === "string" && body.includes("local") && body.includes("installed")) {
+      body = normaliseOfferText(body);
+    }
+    return originalSend.call(this, body);
   };
 
   const applyFixes = () => {
@@ -21,8 +36,7 @@
       const kwEl = row.querySelector("span > span.block");
       if (!kwEl) return;
       const originalKw = kwEl.textContent.trim();
-      const lookupKw = originalKw === "7.1kW" ? "7.1kW" : originalKw;
-      const price = exactPrices[lookupKw];
+      const price = exactPrices[originalKw];
       if (!price) return;
 
       if (originalKw === "7.0kW") kwEl.textContent = "7.1kW";
@@ -31,7 +45,7 @@
       if (priceColumn) {
         Array.from(priceColumn.querySelectorAll("span")).forEach((span) => {
           const text = span.textContent.trim();
-          if (/^\$[\d,]+$/.test(text)) span.textContent = price;
+          if (/^\$[\d,]+$/.test(text) && text !== price) span.textContent = price;
           if (text.includes("12% OFF")) span.textContent = "LOCAL DEAL · Limited spots";
         });
       }
@@ -40,15 +54,14 @@
     document.querySelectorAll("span").forEach((span) => {
       const text = span.textContent.trim();
       if (text === "12% OFF") span.textContent = "LOCAL DEAL";
-      if (text === "$2,102") span.textContent = "$2,100";
-      if (text === "$1,398") span.textContent = "$1,400";
-      if (text === "$1,486") span.textContent = "$1,500";
+      const normalised = normaliseOfferText(text);
+      if (normalised !== text) span.textContent = normalised;
     });
 
     document.querySelectorAll('[data-testid="brand-selected-summary"]').forEach((summary) => {
-      let text = summary.textContent;
-      text = text.replace("$2,102", "$2,100").replace("$1,398", "$1,400").replace("$1,486", "$1,500");
-      summary.textContent = text;
+      const text = summary.textContent;
+      const normalised = normaliseOfferText(text);
+      if (normalised !== text) summary.textContent = normalised;
     });
 
     hideFieldByTestId("quote-email-input");
@@ -72,9 +85,19 @@
     }
   };
 
-  const observer = new MutationObserver(applyFixes);
+  let scheduled = false;
+  const scheduleFixes = () => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      applyFixes();
+    });
+  };
+
+  const observer = new MutationObserver(scheduleFixes);
   observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
-  document.addEventListener("DOMContentLoaded", applyFixes);
-  window.addEventListener("load", applyFixes);
-  applyFixes();
+  document.addEventListener("DOMContentLoaded", scheduleFixes);
+  window.addEventListener("load", scheduleFixes);
+  scheduleFixes();
 })();
