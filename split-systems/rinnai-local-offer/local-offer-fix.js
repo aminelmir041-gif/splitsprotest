@@ -7,6 +7,7 @@
     "7.1kW": "$2,100",
   };
 
+  const daikinCoraImage = "/products/daikin-cora.png";
   let redirectedHash = false;
 
   const hideFieldByTestId = (testId) => {
@@ -73,6 +74,16 @@
         });
       }
     });
+
+    // Use the Daikin Cora product image for the Daikin local-offer section.
+    const daikinLocalSection = document.getElementById("range-daikin-lite-local");
+    if (daikinLocalSection) {
+      const productImage = daikinLocalSection.querySelector("img");
+      if (productImage && productImage.getAttribute("src") !== daikinCoraImage) {
+        productImage.setAttribute("src", daikinCoraImage);
+        productImage.setAttribute("alt", "Daikin Cora indoor unit");
+      }
+    }
 
     // Preserve the page structure while correcting any remaining old calculated prices.
     normaliseTextNodes(document.body);
