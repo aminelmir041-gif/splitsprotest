@@ -1,0 +1,40 @@
+name: Assemble cleaning VSL
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/assemble-cleaning-vsl.yml'
+      - '.github/assets/cleaning-vsl-part*.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild the complete MP4 from stored chunks
+        run: |
+          cat .github/assets/cleaning-vsl-part*.txt | tr -d '\n\r ' | base64 --decode > assets/splitspro-cleaning-vsl.mp4
+          test -s assets/splitspro-cleaning-vsl.mp4
+          echo "Rebuilt video size: $(wc -c < assets/splitspro-cleaning-vsl.mp4) bytes"
+
+      - name: Commit the working video asset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/splitspro-cleaning-vsl.mp4
+          if git diff --cached --quiet; then
+            echo "Video asset is already up to date"
+            exit 0
+          fi
+          git commit -m "Restore complete cleaning VSL video"
+          git pull --rebase origin main
+          git push
