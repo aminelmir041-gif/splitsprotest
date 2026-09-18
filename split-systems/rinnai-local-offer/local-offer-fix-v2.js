@@ -42,7 +42,10 @@ import coraUserImage from "/src/lib/embedded/cora.js";
     .replaceAll("$1,398", "$1,400")
     .replaceAll("$1,486", "$1,500")
     .replaceAll("$2,102", "$2,100")
-    .replaceAll("7.0kW", "7.1kW");
+    .replaceAll("7.0kW", "7.1kW")
+    .replaceAll("Rinnai · Local Special", "Rinnai & Daikin · Local Special")
+    .replaceAll("Rinnai Split System Local Installation Sale", "Rinnai & Daikin Split System Local Installation Sale")
+    .replaceAll("Limited-time Rinnai supplied & installed back-to-back sale.", "Limited-time Rinnai & Daikin supplied & installed back-to-back sale.");
 
   const normaliseTextNodes = (root) => {
     if (!root) return;
