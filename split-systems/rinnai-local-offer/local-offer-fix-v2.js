@@ -77,6 +77,42 @@ import coraUserImage from "/src/lib/embedded/cora.js";
     });
   };
 
+  const addLocalAreaEligibilityNote = () => {
+    const areaSection = document.querySelector('[data-testid="rinnai-local-areas-hero"]');
+    if (!areaSection) return;
+
+    let note = areaSection.querySelector('[data-local-area-eligibility-note="1"]');
+    if (!note) {
+      note = document.createElement("div");
+      note.dataset.localAreaEligibilityNote = "1";
+      note.style.margin = "0 0 14px";
+      note.style.padding = "14px 16px";
+      note.style.border = "1px solid rgba(225,193,132,.35)";
+      note.style.borderRadius = "10px";
+      note.style.background = "rgba(225,193,132,.08)";
+      note.style.color = "#fff";
+
+      const title = document.createElement("div");
+      title.style.fontWeight = "800";
+      title.style.fontSize = "15px";
+      title.style.lineHeight = "1.35";
+      title.style.marginBottom = "5px";
+      title.textContent = "Bass Hill Local Deal — available across Bass Hill and surrounding suburbs within our service area.";
+
+      const sub = document.createElement("div");
+      sub.style.fontSize = "13px";
+      sub.style.lineHeight = "1.45";
+      sub.style.color = "rgba(255,255,255,.78)";
+      sub.textContent = "Don’t see your suburb? Send us your suburb — you may still qualify.";
+
+      note.append(title, sub);
+
+      const areaWrap = areaSection.querySelector("div");
+      if (areaWrap) areaSection.insertBefore(note, areaWrap);
+      else areaSection.prepend(note);
+    }
+  };
+
   const removeWasPrices = () => {
     document.querySelectorAll("span").forEach((span) => {
       const text = span.textContent.trim();
@@ -164,6 +200,7 @@ import coraUserImage from "/src/lib/embedded/cora.js";
     applyExactRinnaiPrices();
     removeWasPrices();
     updateLocalOfferAreas();
+    addLocalAreaEligibilityNote();
     replaceDaikinImage();
     normaliseTextNodes(document.body);
     wireMetaTracking();
