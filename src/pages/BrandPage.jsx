@@ -299,9 +299,9 @@ const BrandPage = ({ offerMode = null }) => {
       </Helmet>
 
       <PageHero
-        overline={isRinnaiLocalOffer ? "Rinnai · Local Special" : brand.brand}
-        title={isRinnaiLocalOffer ? "Rinnai Split System Local Installation Sale" : brand.h1}
-        sub={isRinnaiLocalOffer ? "Limited-time Rinnai supplied & installed back-to-back sale." : brand.tagline}
+        overline={isRinnaiLocalOffer ? "Rinnai & Daikin · Local Special" : brand.brand}
+        title={isRinnaiLocalOffer ? "Rinnai & Daikin Split System Local Installation Sale" : brand.h1}
+        sub={isRinnaiLocalOffer ? "Limited-time Rinnai & Daikin supplied & installed back-to-back sale." : brand.tagline}
         image={brand.image}
         desktopBrand
       />
