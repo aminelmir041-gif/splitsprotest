@@ -182,12 +182,14 @@ import coraUserImage from "/src/lib/embedded/cora.js";
       submit.textContent = "GET MY INSTALLED PRICE";
     }
 
-    if (!redirectedHash && window.location.hash === "#range-pb-series") {
+    if (!redirectedHash && (window.location.hash === "#range-pb-series" || window.location.hash.startsWith("#range-rinnai-local"))) {
       const target = document.getElementById("range-rinnai-local");
       if (target) {
         redirectedHash = true;
         target.scrollIntoView({ behavior: "smooth", block: "start" });
-        history.replaceState(null, "", `${window.location.pathname}#range-rinnai-local`);
+        if (window.location.hash === "#range-pb-series") {
+          history.replaceState(null, "", `${window.location.pathname}#range-rinnai-local`);
+        }
       }
     }
   };
