@@ -131,12 +131,39 @@ import coraUserImage from "/src/lib/embedded/cora.js";
     return originalSend.call(this, body);
   };
 
+  const wireMetaTracking = () => {
+    document.querySelectorAll('a[href^="tel:"]').forEach((link) => {
+      if (link.dataset.metaContactWired === "1") return;
+      link.dataset.metaContactWired = "1";
+      link.addEventListener("click", () => {
+        if (typeof window.fbq === "function") {
+          window.fbq("track", "Contact", {
+            content_name: "Rinnai Local Split System Offer",
+            contact_method: "phone",
+          });
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-testid="quote-success"]').forEach((success) => {
+      if (success.dataset.metaLeadFired === "1") return;
+      success.dataset.metaLeadFired = "1";
+      if (typeof window.fbq === "function") {
+        window.fbq("track", "Lead", {
+          content_name: "Rinnai Local Split System Quote",
+          content_category: "Split System Installation",
+        });
+      }
+    });
+  };
+
   const applyFixes = () => {
     applyExactRinnaiPrices();
     removeWasPrices();
     updateLocalOfferAreas();
     replaceDaikinImage();
     normaliseTextNodes(document.body);
+    wireMetaTracking();
 
     document.querySelectorAll("span").forEach((span) => {
       if (span.children.length !== 0) return;
