@@ -198,7 +198,7 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     tabLabel: "Daikin Lite",
     localBrand: "Daikin",
     blurb: "A simple, dependable Daikin option for customers who want a recognised brand at a sharp local supplied-and-installed price. These prices use the same qualifying back-to-back installation conditions explained above.",
-    image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.image,
+    image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.ranges?.find((r) => r.slug === "cora")?.image,
     prices: [
       { kw: "2.5kW", price: "$1,500", localOfferPrice: "$1,500" },
       { kw: "3.5kW", price: "$1,700", localOfferPrice: "$1,700" },
