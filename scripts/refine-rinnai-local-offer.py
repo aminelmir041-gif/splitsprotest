@@ -31,7 +31,7 @@ if "const RINNAI_LOCAL_OFFER_RANGES" not in text:
     text = text.replace(marker, local_ranges, 1)
 
 # Use the two local-offer sections only on the local-offer route.
-if "const displayRanges = isRinnaiLocalOffer ? RINNAI_LOCAL_OFFER_RANGES : brand.ranges;" not in text:
+if "const displayRanges =" not in text:
     text = text.replace(
         '  const brand = SPLIT_BRANDS.find((b) => b.slug === (isRinnaiLocalOffer ? "rinnai" : slug));\n',
         '  const brand = SPLIT_BRANDS.find((b) => b.slug === (isRinnaiLocalOffer ? "rinnai" : slug));\n  const displayRanges = isRinnaiLocalOffer ? RINNAI_LOCAL_OFFER_RANGES : brand?.ranges || [];\n',
