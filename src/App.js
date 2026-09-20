@@ -10,7 +10,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 import CustomCursor from "@/components/CustomCursor";
-import PageLoader from "@/components/PageLoader";
 import { LOGO } from "@/lib/data";
 
 import Home from "@/pages/Home";
@@ -98,7 +97,6 @@ function App() {
   return (
     <HelmetProvider>
       <div className="App">
-        <PageLoader />
         <CustomCursor />
         <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
           <BrowserRouter basename={basename}>
