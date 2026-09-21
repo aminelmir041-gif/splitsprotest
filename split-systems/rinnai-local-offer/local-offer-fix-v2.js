@@ -60,7 +60,9 @@ import coraUserImage from "/src/lib/embedded/cora.js";
         .replaceAll("Under 2 metres", "Up to 3 metres")
         .replaceAll("Under 2m pipe", "Up to 3m pipe")
         .replaceAll("under two metres", "up to three metres")
-        .replaceAll("Choose from our local Rinnai offer first, then compare the Daikin Lite local offer below.", "Choose from our Rinnai installed specials first, then compare the Daikin Cora specials below.");
+        .replaceAll("Choose from our local Rinnai offer first, then compare the Daikin Lite local offer below.", "Choose from our Rinnai installed specials first, then compare the Daikin Cora specials below.")
+        .replaceAll("What the local price includes", "What the installed price includes")
+        .replaceAll("advertised local sale", "advertised installed price");
 
       if (/%\s*OFF/i.test(t)) t = t.replace(/\b\d+%\s*OFF\b/gi, "INSTALLED SPECIAL");
 
