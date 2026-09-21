@@ -414,10 +414,10 @@ const BrandPage = ({ offerMode = null }) => {
         <section className="border-y border-[#E8E6E1] bg-[#F8F7F4] py-14 sm:py-18" data-testid="back-to-back-explained">
           <div className="sp-container">
             <div className="mx-auto max-w-4xl text-center">
-              <span className="overline text-[#C8A46A]">What the local price includes</span>
+              <span className="overline text-[#C8A46A]">What the installed price includes</span>
               <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-[#0B0B0B] sm:text-4xl lg:text-5xl">Back-to-back installation explained</h2>
               <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-[#6E6E73] sm:text-base">
-                This is what qualifies for the advertised local sale: a short, direct ground-floor installation with up to 3 metres of refrigeration pipework, one bend or less and an electrical run under 10 metres.
+                This is what qualifies for the advertised installed price: a short, direct ground-floor installation with up to 3 metres of refrigeration pipework, one bend or less and an electrical run under 10 metres.
               </p>
             </div>
 
