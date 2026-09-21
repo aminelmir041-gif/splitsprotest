@@ -691,6 +691,11 @@ const BrandPage = ({ offerMode = null }) => {
                   <span>
                     <span className="block font-serif text-xl text-[#0B0B0B] sm:text-2xl">{row.kw}</span>
                     {row.model && <span className="mt-1 block text-xs font-medium text-[#6E6E73]">Model {row.model}</span>}
+                    {isRinnaiLocalOffer && (
+                      <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#C8A46A]/50 bg-[#FFF8E8] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] text-[#7B5A28]">
+                        <Zap className="h-3.5 w-3.5" /> Installed within 7 days — guaranteed
+                      </span>
+                    )}
                   </span>
                   <span className="text-[#0B0B0B]">
                     {isRinnaiLocalOffer ? (
@@ -744,7 +749,7 @@ const BrandPage = ({ offerMode = null }) => {
             </h2>
             {selected && (
               <p className="mt-5 text-lg text-[#C8A46A]" data-testid="brand-selected-summary">
-                {selected.price} · Supplied &amp; Installed
+                {selected.price} · Supplied &amp; Installed{isRinnaiLocalOffer ? " · Installed within 7 days" : ""}
               </p>
             )}
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/75">
