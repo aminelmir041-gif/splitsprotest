@@ -414,10 +414,10 @@ const BrandPage = ({ offerMode = null }) => {
         <section className="border-y border-[#E8E6E1] bg-[#F8F7F4] py-14 sm:py-18" data-testid="back-to-back-explained">
           <div className="sp-container">
             <div className="mx-auto max-w-4xl text-center">
-              <span className="overline text-[#C8A46A]">What the installed price includes</span>
+              <span className="overline text-[#C8A46A]">What the local price includes</span>
               <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-[#0B0B0B] sm:text-4xl lg:text-5xl">Back-to-back installation explained</h2>
               <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-[#6E6E73] sm:text-base">
-                This is what qualifies for the advertised installed price: a short, direct ground-floor installation with up to 3 metres of refrigeration pipework, one bend or less and an electrical run under 10 metres.
+                This is what qualifies for the advertised local sale: a short, direct ground-floor installation with under 2 metres of refrigeration pipework, one bend or less and an electrical run under 10 metres.
               </p>
             </div>
 
@@ -428,12 +428,12 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Horizontal</p>
                     <p className="mt-1 text-sm font-semibold text-[#0B0B0B] sm:text-base">Straight through the wall</p>
                   </div>
-                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8F6A34]">Up to 3m pipe</span>
+                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8F6A34]">Under 2m pipe</span>
                 </figcaption>
                 <div className="relative aspect-[390/272] overflow-hidden bg-[#C9B7A8]">
                   <img
                     src={`${process.env.PUBLIC_URL || ""}/installs/rinnai-back-to-back-guide.webp`}
-                    alt="Rinnai outdoor unit with a short straight horizontal pipe route up to three metres"
+                    alt="Rinnai outdoor unit with a short straight horizontal pipe route under two metres"
                     className="absolute left-0 top-[-23.9%] block h-auto w-[192.307%] max-w-none"
                     loading="eager"
                   />
@@ -449,12 +449,12 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Vertical</p>
                     <p className="mt-1 text-sm font-semibold text-[#0B0B0B] sm:text-base">Straight up or down</p>
                   </div>
-                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8F6A34]">Up to 3m pipe</span>
+                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8F6A34]">Under 2m pipe</span>
                 </figcaption>
                 <div className="relative aspect-[360/272] overflow-hidden bg-[#C9B7A8]">
                   <img
                     src={`${process.env.PUBLIC_URL || ""}/installs/rinnai-back-to-back-guide.webp`}
-                    alt="Rinnai outdoor unit with a short straight vertical pipe route up to three metres"
+                    alt="Rinnai outdoor unit with a short straight vertical pipe route under two metres"
                     className="absolute left-[-108.33%] top-[-23.9%] block h-auto w-[208.333%] max-w-none"
                     loading="eager"
                   />
@@ -468,7 +468,7 @@ const BrandPage = ({ offerMode = null }) => {
             <div className="mt-5 grid grid-cols-2 overflow-hidden rounded-2xl border border-[#E2DED7] bg-white sm:grid-cols-3 lg:grid-cols-6" data-testid="back-to-back-inclusions">
               <div className="flex min-h-[112px] flex-col items-center justify-center border-b border-r border-[#ECE8E1] p-4 text-center sm:border-b lg:border-b-0">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#C8A46A]/50 text-[#C8A46A]"><MoveHorizontal className="h-4 w-4" /></span>
-                <p className="mt-3 text-xs font-semibold text-[#0B0B0B]">Up to 3 metres</p>
+                <p className="mt-3 text-xs font-semibold text-[#0B0B0B]">Under 2 metres</p>
                 <p className="mt-1 text-[10px] text-[#8A8A8E]">refrigeration pipe</p>
               </div>
               <div className="flex min-h-[112px] flex-col items-center justify-center border-b border-[#ECE8E1] p-4 text-center sm:border-r lg:border-b-0">
