@@ -18,23 +18,16 @@ import coraUserImage from "/src/lib/embedded/cora.js";
   };
 
   const localOfferAreas = [
-    "Bankstown",
-    "Bass Hill",
-    "Chester Hill",
-    "Yagoona",
-    "Greenacre",
-    "Georges Hall",
-    "Condell Park",
-    "Sefton",
-    "Regents Park",
-    "Villawood",
-    "Granville",
-    "Guildford",
-    "Merrylands",
-    "Auburn",
-    "Lansvale",
-    "Greystanes",
-    "Surrounding suburbs",
+    "Sydney Metro",
+    "Western Sydney",
+    "South West Sydney",
+    "Inner West",
+    "Eastern Suburbs",
+    "Northern Sydney",
+    "Sutherland Shire",
+    "Macarthur",
+    "Central Coast",
+    "Wollongong",
   ];
 
   let currentSelection = null;
@@ -58,7 +51,7 @@ import coraUserImage from "/src/lib/embedded/cora.js";
       let t = node.nodeValue || "";
 
       t = t
-        .replaceAll("Rinnai & Daikin Split System Local Installation Sale", "Rinnai & Daikin Cora Split System Local Installation Sale")
+        .replaceAll("Rinnai & Daikin Split System Local Installation Sale", "Rinnai & Daikin Cora Split System Installed Specials")
         .replaceAll("Limited-time Rinnai & Daikin supplied & installed back-to-back sale.", "Installed within 7 days — Installation Guarantee. Supplied & installed with no more to pay on qualifying standard installations.")
         .replaceAll("Daikin Lite Series", "Daikin Cora")
         .replaceAll("Daikin Lite", "Daikin Cora")
@@ -67,9 +60,9 @@ import coraUserImage from "/src/lib/embedded/cora.js";
         .replaceAll("Under 2 metres", "Up to 3 metres")
         .replaceAll("Under 2m pipe", "Up to 3m pipe")
         .replaceAll("under two metres", "up to three metres")
-        .replaceAll("Choose from our local Rinnai offer first, then compare the Daikin Lite local offer below.", "Choose from our local Rinnai offer first, then compare the Daikin Cora offer below.");
+        .replaceAll("Choose from our local Rinnai offer first, then compare the Daikin Lite local offer below.", "Choose from our Rinnai installed specials first, then compare the Daikin Cora specials below.");
 
-      if (/%\s*OFF/i.test(t)) t = t.replace(/\b\d+%\s*OFF\b/gi, "LOCAL OFFER");
+      if (/%\s*OFF/i.test(t)) t = t.replace(/\b\d+%\s*OFF\b/gi, "INSTALLED SPECIAL");
 
       if (t !== node.nodeValue) node.nodeValue = t;
     });
@@ -84,18 +77,18 @@ import coraUserImage from "/src/lib/embedded/cora.js";
         return;
       }
       if (/\b\d+%\s*OFF\b/i.test(t)) {
-        el.textContent = t.replace(/\b\d+%\s*OFF\b/gi, "LOCAL OFFER");
+        el.textContent = t.replace(/\b\d+%\s*OFF\b/gi, "INSTALLED SPECIAL");
       }
     });
   };
 
   const updateHero = () => {
     const h1 = Array.from(document.querySelectorAll("h1")).find((el) =>
-      /Rinnai.*Daikin.*Local Installation Sale/i.test(el.textContent || "")
+      /Rinnai.*Daikin.*(?:Local Installation Sale|Installed Specials)/i.test(el.textContent || "")
     );
 
     if (h1) {
-      h1.textContent = "Rinnai & Daikin Cora Split System Local Installation Sale";
+      h1.textContent = "Rinnai & Daikin Cora Split System Installed Specials";
       const wrap = h1.parentElement;
       if (wrap && !wrap.querySelector('[data-local-7-day-hero="1"]')) {
         const badge = document.createElement("div");
@@ -218,8 +211,8 @@ import coraUserImage from "/src/lib/embedded/cora.js";
     });
 
     note.innerHTML =
-      '<div style="font-weight:800;font-size:15px;line-height:1.35;margin-bottom:5px">Bass Hill Local Deal — available across Bass Hill and surrounding suburbs within our service area.</div>' +
-      '<div style="font-size:13px;line-height:1.45;color:rgba(255,255,255,.78)">Don’t see your suburb? Send us your suburb — you may still qualify.</div>';
+      '<div style="font-weight:800;font-size:15px;line-height:1.35;margin-bottom:5px">Servicing Sydney, the Central Coast and Wollongong.</div>' +
+      '<div style="font-size:13px;line-height:1.45;color:rgba(255,255,255,.78)">Send us your suburb to confirm installation availability.</div>';
 
     const areaWrap = Array.from(areaSection.querySelectorAll("div")).find((div) => div.querySelector("span"));
     if (areaWrap) areaSection.insertBefore(note, areaWrap);
@@ -328,7 +321,7 @@ import coraUserImage from "/src/lib/embedded/cora.js";
         background: "#FFF8E8",
       });
       box.innerHTML =
-        '<div style="font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#8F6A34">Rinnai local offer</div>' +
+        '<div style="font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#8F6A34">Rinnai installed special</div>' +
         '<div style="margin-top:4px;font-size:34px;line-height:1;font-weight:950;color:#0B0B0B">7-YEAR WARRANTY</div>' +
         '<div style="margin-top:8px;font-size:13px;line-height:1.45;color:#5F5F63">Big warranty protection plus our 7-day installation guarantee on eligible standard installs.</div>';
       const title = features.querySelector("p");
@@ -466,7 +459,7 @@ import coraUserImage from "/src/lib/embedded/cora.js";
       link.addEventListener("click", () => {
         if (typeof window.fbq === "function") {
           window.fbq("track", "Contact", {
-            content_name: "Rinnai & Daikin Cora Local Split System Offer",
+            content_name: "Rinnai & Daikin Cora Installed Specials",
             contact_method: "phone",
           });
         }
@@ -478,7 +471,7 @@ import coraUserImage from "/src/lib/embedded/cora.js";
       success.dataset.metaLeadFired = "1";
       if (typeof window.fbq === "function") {
         window.fbq("track", "Lead", {
-          content_name: "Local Split System Offer",
+          content_name: "Split System Installed Specials",
           content_category: "Split System Installation",
         });
       }
