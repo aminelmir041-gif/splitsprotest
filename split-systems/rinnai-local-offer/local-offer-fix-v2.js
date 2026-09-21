@@ -273,7 +273,34 @@ import coraUserImage from "/src/lib/embedded/cora.js";
     priceColumn.appendChild(wrapper);
   };
 
+  const addSevenDayBadge = (row) => {
+    if (!row || row.querySelector('[data-seven-day-unit-badge="1"]')) return;
+    const unitColumn = row.children[0];
+    if (!unitColumn) return;
+
+    const badge = document.createElement("span");
+    badge.dataset.sevenDayUnitBadge = "1";
+    badge.textContent = "INSTALLED WITHIN 7 DAYS — GUARANTEED";
+    Object.assign(badge.style, {
+      display: "inline-flex",
+      alignItems: "center",
+      marginTop: "8px",
+      padding: "5px 9px",
+      borderRadius: "999px",
+      border: "1px solid rgba(200,164,106,.55)",
+      background: "#FFF8E8",
+      color: "#7B5A28",
+      fontSize: "10px",
+      lineHeight: "1.2",
+      fontWeight: "900",
+      letterSpacing: ".07em",
+      textTransform: "uppercase",
+    });
+    unitColumn.appendChild(badge);
+  };
+
   const wireSelection = (row, brand, kw, price) => {
+    addSevenDayBadge(row);
     const btn = row.querySelector("button");
     if (!btn || btn.dataset.localPriceWired === "1") return;
     btn.dataset.localPriceWired = "1";
@@ -303,7 +330,7 @@ import coraUserImage from "/src/lib/embedded/cora.js";
 
     const summary = document.querySelector('[data-testid="brand-selected-summary"]');
     if (summary && currentSelection?.price) {
-      summary.textContent = `${currentSelection.price} · Supplied & Installed · No more to pay*`;
+      summary.textContent = `${currentSelection.price} · Supplied & Installed · Installed within 7 days · No more to pay*`;
     }
   };
 
