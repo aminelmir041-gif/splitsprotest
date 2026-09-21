@@ -60,16 +60,16 @@ const OFFICIAL_PRODUCT_IMAGES = {
 
 const NON_DAIKIN_FEATURES = {
   "rinnai-local": [
-    { title: "Reverse Cycle", desc: "Heating and cooling from one split system for year-round comfort.", fallback: Thermometer },
-    { title: "Inverter Comfort", desc: "Variable-speed operation helps maintain a steadier room temperature.", fallback: Fan },
+    { title: "7-Year Warranty", desc: "Seven years of warranty cover on this Rinnai local offer for extra peace of mind.", fallback: ShieldCheck, highlight: true },
+    { title: "7-Day Installation Guarantee", desc: "Eligible standard installations booked from this offer are installed within 7 days.", fallback: Zap },
     { title: "Wi-Fi Control", desc: "Smart control is available on the Rinnai system used for this local offer.", fallback: Wifi },
-    { title: "Local Installation Deal", desc: "Special supplied-and-installed pricing for qualifying local back-to-back jobs.", fallback: ShieldCheck },
+    { title: "No More To Pay*", desc: "The advertised price is the installed price for qualifying standard installations.", fallback: Check },
   ],
   "daikin-lite-local": [
-    { title: "Reverse Cycle", desc: "Heating and cooling in one practical Daikin split system.", fallback: Thermometer },
-    { title: "Inverter Operation", desc: "Designed to adjust output as the room approaches the set temperature.", fallback: Fan },
-    { title: "R32 Refrigerant", desc: "Uses R32 refrigerant, as used across Daikin's current residential split range.", fallback: Droplets },
-    { title: "Local Installation Deal", desc: "Special supplied-and-installed pricing for qualifying local back-to-back jobs.", fallback: ShieldCheck },
+    { title: "5-Year Warranty", desc: "Daikin manufacturer warranty for long-term peace of mind.", fallback: ShieldCheck },
+    { title: "7-Day Installation Guarantee", desc: "Eligible standard installations booked from this offer are installed within 7 days.", fallback: Zap },
+    { title: "Blue Fin Anti-Corrosive Coating", desc: "Added outdoor heat-exchanger protection suited to coastal environments.", fallback: ShieldCheck },
+    { title: "No More To Pay*", desc: "The advertised price is the installed price for qualifying standard installations.", fallback: Check },
   ],
   "pb-series": [
     {
@@ -184,26 +184,26 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     blurb: "Our local Rinnai supplied-and-installed offer for straightforward ground-floor back-to-back installations. Choose the capacity that suits your room and claim the limited local price while spots are available.",
     image: SPLIT_BRANDS.find((b) => b.slug === "rinnai")?.ranges?.[0]?.image,
     prices: [
-      { kw: "2.5kW", price: "$1,590" },
-      { kw: "3.5kW", price: "$1,690" },
-      { kw: "5.0kW", price: "$1,990" },
-      { kw: "7.0kW", price: "$2,390" },
+      { kw: "2.5kW", price: "$1,450", localOfferPrice: "$1,450" },
+      { kw: "3.5kW", price: "$1,550", localOfferPrice: "$1,550" },
+      { kw: "5.0kW", price: "$1,900", localOfferPrice: "$1,900" },
+      { kw: "7.0kW", price: "$2,300", localOfferPrice: "$2,300" },
     ],
   },
   {
     slug: "daikin-lite-local",
     manufacturer: "Daikin",
-    name: "Lite Series",
-    displayName: "Daikin Lite Series",
-    tabLabel: "Daikin Lite",
+    name: "Cora",
+    displayName: "Daikin Cora",
+    tabLabel: "Daikin Cora",
     localBrand: "Daikin",
-    blurb: "A simple, dependable Daikin option for customers who want a recognised brand at a sharp local supplied-and-installed price. These prices use the same qualifying back-to-back installation conditions explained above.",
+    blurb: "Daikin Cora supplied and installed at a clear local price, with a 7-day installation guarantee, 5-year warranty and Blue Fin anti-corrosive coating for added protection in coastal areas.",
     image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.ranges?.find((r) => r.slug === "cora")?.image,
     prices: [
-      { kw: "2.5kW", price: "$1,500", localOfferPrice: "$1,500" },
-      { kw: "3.5kW", price: "$1,700", localOfferPrice: "$1,700" },
-      { kw: "5.0kW", price: "$2,200", localOfferPrice: "$2,200" },
-      { kw: "7.0kW", price: "$2,600", localOfferPrice: "$2,600" },
+      { kw: "2.5kW", price: "$1,700", localOfferPrice: "$1,700" },
+      { kw: "3.5kW", price: "$1,900", localOfferPrice: "$1,900" },
+      { kw: "5.0kW", price: "$2,300", localOfferPrice: "$2,300" },
+      { kw: "7.0kW", price: "$2,700", localOfferPrice: "$2,700" },
     ],
   },
 ];
@@ -280,7 +280,7 @@ const BrandPage = ({ offerMode = null }) => {
     ? "Rinnai Split System Local Sale | Bankstown, Bass Hill & Chester Hill | SplitsPro"
     : brand.metaTitle;
   const pageDescription = isRinnaiLocalOffer
-    ? "Limited-time Rinnai split system sale for Bankstown, Bass Hill, Chester Hill and nearby listed local areas. Supplied and installed back-to-back by licensed SplitsPro technicians."
+    ? "Rinnai and Daikin Cora local split-system specials with supplied-and-installed pricing, a 7-day installation guarantee and clear standard-install conditions."
     : brand.metaDesc;
   const canonicalUrl = isRinnaiLocalOffer
     ? "https://splitspro.com.au/split-systems/rinnai-local-offer"
@@ -300,8 +300,8 @@ const BrandPage = ({ offerMode = null }) => {
 
       <PageHero
         overline={isRinnaiLocalOffer ? "Rinnai & Daikin · Local Special" : brand.brand}
-        title={isRinnaiLocalOffer ? "Rinnai & Daikin Split System Local Installation Sale" : brand.h1}
-        sub={isRinnaiLocalOffer ? "Limited-time Rinnai & Daikin supplied & installed back-to-back sale." : brand.tagline}
+        title={isRinnaiLocalOffer ? "Rinnai & Daikin Cora Split System Local Installation Sale" : brand.h1}
+        sub={isRinnaiLocalOffer ? "Installed within 7 days — Installation Guarantee. Supplied & installed with no more to pay on qualifying standard installations." : brand.tagline}
         image={brand.image}
         desktopBrand
       />
@@ -315,10 +315,10 @@ const BrandPage = ({ offerMode = null }) => {
                 <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Bankstown · Bass Hill · Chester Hill · Local Offer</span>
               </div>
               <div className="mt-4 flex flex-wrap items-end gap-x-5 gap-y-2">
-                <p className="font-serif text-2xl text-white sm:text-3xl">5.0kW Rinnai supplied &amp; installed</p>
-                <span className="text-sm text-white/45 line-through">Was $1,990</span>
-                <span className="font-serif text-4xl text-[#E4CFA6]">Now $1,750</span>
-                <span className="rounded-full bg-[#C8A46A] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0B0B0B]">{RINNAI_LOCAL_DISCOUNT_LABEL}</span>
+                <p className="font-serif text-2xl text-white sm:text-3xl">7.0kW Rinnai supplied &amp; installed</p>
+                <span className="font-serif text-4xl text-[#E4CFA6]">$2,300</span>
+                <span className="rounded-full bg-[#C8A46A] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0B0B0B]">No more to pay*</span>
+                <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white">Installed within 7 days — guaranteed</span>
               </div>
               <div className="mt-4" data-testid="rinnai-local-areas-hero">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Local offer areas</p>
@@ -329,7 +329,7 @@ const BrandPage = ({ offerMode = null }) => {
                 </div>
               </div>
               <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/70">
-                Sale prices are for the back-to-back installation conditions explained below. Any non-standard work is quoted before the job proceeds.
+                No more to pay applies to the standard installation conditions explained below. Pipe runs over 3 metres and other non-standard work are quoted before the job proceeds.
               </p>
             </div>
             <a href="#range-rinnai-local" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-[#0B0B0B]">See Local Sale Prices <ArrowDown className="h-4 w-4" /></a>
@@ -392,7 +392,7 @@ const BrandPage = ({ offerMode = null }) => {
             <div className="mt-5 max-w-3xl">
               <p className="leading-relaxed text-[#6E6E73]">
                 {isRinnaiLocalOffer
-                  ? "Choose from our local Rinnai offer first, then compare the Daikin Lite local offer below. Both use the qualifying back-to-back installation conditions explained on this page, and availability is limited."
+                  ? "Choose from our local Rinnai offer first, then compare the Daikin Cora offer below. Both include supplied-and-installed pricing with no more to pay on qualifying standard installations."
                   : brand.body}
               </p>
             </div>
@@ -417,7 +417,7 @@ const BrandPage = ({ offerMode = null }) => {
               <span className="overline text-[#C8A46A]">What the local price includes</span>
               <h2 className="mt-4 font-serif text-3xl font-medium tracking-tight text-[#0B0B0B] sm:text-4xl lg:text-5xl">Back-to-back installation explained</h2>
               <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-[#6E6E73] sm:text-base">
-                This is what qualifies for the advertised local sale: a short, direct ground-floor installation with under 2 metres of refrigeration pipework, one bend or less and an electrical run under 10 metres.
+                This is what qualifies for the advertised local sale: a short, direct ground-floor installation with up to 3 metres of refrigeration pipework, one bend or less and an electrical run under 10 metres.
               </p>
             </div>
 
@@ -428,12 +428,12 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Horizontal</p>
                     <p className="mt-1 text-sm font-semibold text-[#0B0B0B] sm:text-base">Straight through the wall</p>
                   </div>
-                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8F6A34]">Under 2m pipe</span>
+                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8F6A34]">Up to 3m pipe</span>
                 </figcaption>
                 <div className="relative aspect-[390/272] overflow-hidden bg-[#C9B7A8]">
                   <img
                     src={`${process.env.PUBLIC_URL || ""}/installs/rinnai-back-to-back-guide.webp`}
-                    alt="Rinnai outdoor unit with a short straight horizontal pipe route under two metres"
+                    alt="Rinnai outdoor unit with a short straight horizontal pipe route up to three metres"
                     className="absolute left-0 top-[-23.9%] block h-auto w-[192.307%] max-w-none"
                     loading="eager"
                   />
@@ -449,12 +449,12 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Vertical</p>
                     <p className="mt-1 text-sm font-semibold text-[#0B0B0B] sm:text-base">Straight up or down</p>
                   </div>
-                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8F6A34]">Under 2m pipe</span>
+                  <span className="rounded-full border border-[#C8A46A]/40 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8F6A34]">Up to 3m pipe</span>
                 </figcaption>
                 <div className="relative aspect-[360/272] overflow-hidden bg-[#C9B7A8]">
                   <img
                     src={`${process.env.PUBLIC_URL || ""}/installs/rinnai-back-to-back-guide.webp`}
-                    alt="Rinnai outdoor unit with a short straight vertical pipe route under two metres"
+                    alt="Rinnai outdoor unit with a short straight vertical pipe route up to three metres"
                     className="absolute left-[-108.33%] top-[-23.9%] block h-auto w-[208.333%] max-w-none"
                     loading="eager"
                   />
@@ -468,7 +468,7 @@ const BrandPage = ({ offerMode = null }) => {
             <div className="mt-5 grid grid-cols-2 overflow-hidden rounded-2xl border border-[#E2DED7] bg-white sm:grid-cols-3 lg:grid-cols-6" data-testid="back-to-back-inclusions">
               <div className="flex min-h-[112px] flex-col items-center justify-center border-b border-r border-[#ECE8E1] p-4 text-center sm:border-b lg:border-b-0">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#C8A46A]/50 text-[#C8A46A]"><MoveHorizontal className="h-4 w-4" /></span>
-                <p className="mt-3 text-xs font-semibold text-[#0B0B0B]">Under 2 metres</p>
+                <p className="mt-3 text-xs font-semibold text-[#0B0B0B]">Up to 3 metres</p>
                 <p className="mt-1 text-[10px] text-[#8A8A8E]">refrigeration pipe</p>
               </div>
               <div className="flex min-h-[112px] flex-col items-center justify-center border-b border-[#ECE8E1] p-4 text-center sm:border-r lg:border-b-0">
@@ -534,12 +534,12 @@ const BrandPage = ({ offerMode = null }) => {
                     {DAIKIN_COMPACT_FEATURES[range.slug].map((feature) => {
                       const Icon = DAIKIN_ICON_MAP[feature.icon] || Sparkles;
                       return (
-                        <div key={feature.title} className="flex min-w-0 items-start gap-2.5">
+                        <div key={feature.title} className={`flex min-w-0 items-start gap-2.5 ${feature.highlight ? "col-span-2 rounded-xl border-2 border-[#C8A46A] bg-[#FFF8E8] p-4 sm:col-span-3" : ""}`}>
                           <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#009FE3]/10 text-[#008CCF]">
                             <Icon className="h-4 w-4" strokeWidth={1.9} />
                           </span>
                           <div className="min-w-0">
-                            <h3 className="text-[12px] font-bold leading-4 text-[#0B0B0B]">{feature.title}</h3>
+                            <h3 className={feature.highlight ? "text-2xl font-black leading-tight text-[#0B0B0B] sm:text-3xl" : "text-[12px] font-bold leading-4 text-[#0B0B0B]"}>{feature.title}</h3>
                             <p className="mt-0.5 text-[11px] leading-[1.4] text-[#6E6E73]">{feature.desc}</p>
                           </div>
                         </div>
@@ -696,9 +696,9 @@ const BrandPage = ({ offerMode = null }) => {
                     {isRinnaiLocalOffer ? (
                       row.localOfferPrice ? (
                         <span className="flex flex-col items-start">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8A8A8E]">Local supplied &amp; installed</span>
+                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8A8A8E]">Supplied &amp; installed</span>
                           <span className="mt-1 font-serif text-2xl text-[#0B0B0B] sm:text-3xl">{row.localOfferPrice}</span>
-                          <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#B58C4E]">Limited spots</span>
+                          <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#B58C4E]">No more to pay*</span>
                         </span>
                       ) : (
                         <span className="flex flex-col items-start">
@@ -723,7 +723,7 @@ const BrandPage = ({ offerMode = null }) => {
             </div>
             <p className="mt-4 text-xs leading-relaxed text-[#6E6E73]" data-testid={`disclaimer-${range.slug}`}>
               {isRinnaiLocalOffer
-                ? "Local sale pricing is for qualifying ground-floor back-to-back installations: units aligned vertically or horizontally, under 2 metres of refrigeration pipework, one bend or less, outdoor unit on a wall bracket or floor, electrical run under 10 metres, with standard electrical work included. Any non-standard work is confirmed before work proceeds."
+                ? "*No more to pay applies to qualifying standard installations including up to 3 metres of refrigeration pipework and standard electrical installation. Pipe runs over 3 metres, switchboard upgrades, difficult access, asbestos-related work and other non-standard requirements are quoted before proceeding."
                 : "Standard back-to-back installation pricing. Additional pipework, electrical work, brackets or non-standard access may cost extra. Any additional costs are confirmed before work proceeds."}
             </p>
           </div>
