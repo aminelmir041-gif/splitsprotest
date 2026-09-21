@@ -78,6 +78,7 @@ jobs:
             "split-systems/daikin"
             "split-systems/rinnai"
             "split-systems/rinnai-local-offer"
+            "daikin-zena-special"
             "split-systems/mitsubishi"
             "split-systems/mitsubishi-electric"
             "split-systems/mitsubishi-heavy-industries"
@@ -112,7 +113,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Pages Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/App.js src/pages/BrandPage.jsx public/installs/rinnai-back-to-back-guide.webp static installs asset-manifest.json about split-systems ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/App.js src/pages/BrandPage.jsx src/pages/ZenaSpecial.jsx public/installs/rinnai-back-to-back-guide.webp static installs asset-manifest.json about split-systems daikin-zena-special ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
 
           if git diff --cached --quiet; then
             echo "Original pages are already published"
