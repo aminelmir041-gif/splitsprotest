@@ -130,8 +130,8 @@ section{padding:100px 0}
 .gallerygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .photo{margin:0;background:#fff;border:1px solid var(--sp-border);border-radius:20px;overflow:hidden;box-shadow:0 14px 42px rgba(11,11,11,.06);transition:.65s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d}
 .photo:hover{transform:perspective(900px) translateY(-7px) rotateX(2deg);box-shadow:0 28px 62px rgba(11,11,11,.13)}
-.photo img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;transition:1.1s cubic-bezier(.16,1,.3,1)}
-.photo:hover img{transform:scale(1.04)}
+.photo img{width:100%;object-fit:cover;display:block;transition:1.1s cubic-bezier(.16,1,.3,1)}.rotated-media{position:relative;aspect-ratio:1/1;overflow:hidden;background:#f3f3f3}.rotated-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:rotate(90deg)}
+.photo:hover img{transform:scale(1.04)}.photo:hover .rotated-media img{transform:rotate(90deg) scale(1.04)}
 .photo figcaption{padding:16px 17px;font-size:13px;font-weight:800;color:#424247}
 
 /* closing section */
@@ -360,19 +360,19 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
     </div>
     <div class="gallerygrid">
       <figure class="photo">
-        <img loading="lazy" alt="Finished SplitsPro Rinnai indoor split-system installation" src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/a2zwvxp5_20260808_150102.webp">
+        <div class="rotated-media"><img loading="lazy" alt="Finished SplitsPro Rinnai indoor split-system installation" src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/a2zwvxp5_20260808_150102.webp"></div>
         <figcaption>Indoor finish: clean, simple and neat.</figcaption>
       </figure>
       <figure class="photo">
-        <img loading="lazy" alt="Finished SplitsPro Daikin outdoor unit on wall bracket" src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/q9r7krqk_20260810_162548.webp">
+        <div class="rotated-media"><img loading="lazy" alt="Finished SplitsPro Daikin outdoor unit on wall bracket" src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/q9r7krqk_20260810_162548.webp"></div>
         <figcaption>Outdoor unit: mounted neatly and supported properly.</figcaption>
       </figure>
       <figure class="photo">
-        <img loading="lazy" alt="Finished SplitsPro Daikin indoor split-system installation" src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/ld9z3ey8_20260807_165742.webp">
+        <div class="rotated-media"><img loading="lazy" alt="Finished SplitsPro Daikin indoor split-system installation" src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/ld9z3ey8_20260807_165742.webp"></div>
         <figcaption>Living-room finish: straight, simple and tidy.</figcaption>
       </figure>
       <figure class="photo">
-        <img loading="lazy" alt="Finished SplitsPro Daikin split-system installation" src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/smto7cvr_IMG-20260811-WA0065.webp">
+        <div class="rotated-media"><img loading="lazy" alt="Finished SplitsPro Daikin split-system installation" src="https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/smto7cvr_IMG-20260811-WA0065.webp"></div>
         <figcaption>Outdoor finish: neat placement and tidy pipework.</figcaption>
       </figure>
     </div>
