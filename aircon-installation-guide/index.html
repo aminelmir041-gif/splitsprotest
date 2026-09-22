@@ -92,7 +92,7 @@ section{padding:100px 0}
 .section-head h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(38px,5vw,60px);font-weight:500;letter-spacing:-.035em;line-height:1.06;margin:12px 0 16px;color:var(--sp-text);text-wrap:balance}
 .section-head p{font-size:18px;line-height:1.72;color:var(--sp-muted);margin:0}
 .section-head p+p{margin-top:14px}
-#sizing-first{background:#fff}
+#sizing-first{background:#fff;padding-top:170px}
 #checks{background:var(--sp-warm)}
 .checks{display:grid;gap:22px}
 .check{display:grid;grid-template-columns:70px 1fr;gap:24px;padding:30px;border:1px solid var(--sp-border);border-radius:22px;background:#fff;box-shadow:0 18px 52px rgba(11,11,11,.065);transform-style:preserve-3d;transition:.55s cubic-bezier(.16,1,.3,1)}
@@ -163,7 +163,7 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
   .hero{padding:132px 0 64px}.hero:after{background:linear-gradient(180deg,rgba(11,11,11,.52) 0%,rgba(11,11,11,.64) 42%,rgba(11,11,11,.92) 100%)}
   .hero .wrap{display:block}.hero-copy{max-width:none}
   h1{font-size:clamp(42px,12vw,58px);line-height:1.01}.lead{font-size:17px}.hero-actions .btn{width:100%}
-  section{padding:66px 0}.section-head{margin-bottom:30px}.section-head h2{font-size:clamp(34px,9vw,44px)}.section-head p{font-size:16px}
+  section{padding:66px 0}#sizing-first{padding-top:132px}.section-head{margin-bottom:30px}.section-head h2{font-size:clamp(34px,9vw,44px)}.section-head p{font-size:16px}
   .check{grid-template-columns:1fr;padding:22px;gap:14px}.num{width:46px;height:46px}.check h3{font-size:25px}
   .sizing,.gallerygrid,.includegrid{grid-template-columns:1fr}.whybox{padding:23px;transform:none}.photo figcaption{font-size:12px}
   .trustitem{font-size:10px;padding:16px 7px}.float-ctas{left:12px;right:12px;bottom:10px;grid-template-columns:1fr 1fr}.float-ctas a{padding:0 10px;font-size:10px}
@@ -178,7 +178,7 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
   </script>
 </head>
 <body>
-<header class="top" id="siteTop">
+<header class="top scrolled" id="siteTop">
   <div class="wrap topin">
     <a class="brand" href="/" aria-label="SplitsPro home"><img src="/logo.png" alt="SplitsPro Airconditioning"></a>
     <nav class="navlinks" aria-label="Main navigation">
@@ -198,31 +198,6 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 </header>
 
 <main>
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-copy">
-      <div class="eyebrow">SplitsPro · 2-minute aircon buying guide</div>
-      <h1>Before you buy an aircon, get the size right.</h1>
-      <p class="lead">You can buy a great brand and still end up disappointed if the size is wrong. Here is what going too big, going too small and the way your home is built can actually change.</p>
-      <div class="candid">
-        <strong>The goal is not the biggest unit or the cheapest unit.</strong>
-        It is getting the amount of air conditioning your home actually needs — so the money you spend gives you the comfort you expected.
-      </div>
-      <div class="hero-actions">
-        <a class="btn btn-dark" href="#sizing-first">Show me why ↓</a>
-        <a class="btn btn-ghost" data-preserve-query href="/split-systems/rinnai-local-offer/">See installed options</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="trustbar">
-  <div class="wrap trustgrid">
-    <div class="trustitem"><span class="tick">✓</span>Right size first</div>
-    <div class="trustitem"><span class="tick">✓</span>Your home matters</div>
-    <div class="trustitem"><span class="tick">✓</span>Clear installed pricing</div>
-    <div class="trustitem"><span class="tick">✓</span>Real SplitsPro work</div>
-  </div>
 </div>
 
 <section id="sizing-first">
@@ -469,8 +444,7 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 <script>
 (function(){
   var top=document.getElementById('siteTop'),btn=document.getElementById('menuBtn'),nav=document.getElementById('mobileNav');
-  function onScroll(){if(top)top.classList.toggle('scrolled',window.scrollY>40)}
-  onScroll();window.addEventListener('scroll',onScroll,{passive:true});
+  if(top)top.classList.add('scrolled');
   if(btn&&nav){btn.addEventListener('click',function(){var open=nav.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.textContent=open?'×':'☰'});nav.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){nav.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.textContent='☰'})})}
 })();
 </script>
