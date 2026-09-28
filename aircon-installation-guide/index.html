@@ -107,17 +107,53 @@ section{padding:100px 0}
 .whylist div{padding:14px 15px;background:#F8F7F5;border:1px solid #EEECE8;border-radius:12px;font-weight:700;box-shadow:0 8px 22px rgba(11,11,11,.035)}
 .whylist span{display:block;margin-top:3px}
 
-/* disruptive story visuals */
-.story-visual{margin:34px 0 38px;position:relative}
-.story-visual img{display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 26px 70px rgba(11,11,11,.16);border:1px solid rgba(11,11,11,.08)}
-.story-visual.big img{transform:rotate(-.45deg)}
-.story-visual.small img{transform:rotate(.45deg)}
-.story-visual.factors{margin:8px 0 32px}
-.story-visual.factors img{transform:none}
+/* disruptive story visuals — blended into the page, not card-like */
+.story-visual{
+  position:relative;
+  margin:8px auto 18px;
+  width:min(1480px,100vw);
+  left:50%;
+  transform:translateX(-50%);
+  overflow:hidden;
+  background:transparent;
+}
+.story-visual img{
+  display:block;
+  width:100%;
+  height:auto;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  transform:none!important;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 7%,#000 93%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,#000 7%,#000 93%,transparent 100%);
+}
+.story-visual:before,
+.story-visual:after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  height:12%;
+  z-index:2;
+  pointer-events:none;
+}
+.story-visual:before{top:0;background:linear-gradient(to bottom,var(--story-bg,#fff),transparent)}
+.story-visual:after{bottom:0;background:linear-gradient(to top,var(--story-bg,#fff),transparent)}
+#sizing-first .story-visual{--story-bg:#fff}
+section[style*="background:#f6f5f2"] .story-visual{--story-bg:#f6f5f2}
+.story-visual.factors{margin:-8px auto 4px}
 @media(max-width:600px){
-  .story-visual{margin:24px -2px 28px}
-  .story-visual img{border-radius:15px}
-  .story-visual.big img,.story-visual.small img{transform:none}
+  .story-visual{
+    width:100vw;
+    margin:0 0 8px;
+  }
+  .story-visual img{
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 4%,#000 96%,transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 0%,#000 4%,#000 96%,transparent 100%);
+  }
+  .story-visual:before,.story-visual:after{height:8%}
+  .story-visual.factors{margin:-4px 0 0}
 }
 
 /* home factors */
@@ -228,7 +264,7 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
       <img loading="eager" src="/aircon-installation-guide/assets/sizing-too-big.png" alt="Two SplitsPro installers carrying an absurdly oversized air conditioner into a small bedroom">
     </figure>
 
-    <div class="checks">
+    <div class="checks" style="margin-top:4px">
       <article class="check">
         <div class="num">↑</div>
         <div>
@@ -266,7 +302,7 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
       </figure>
     </div>
 
-    <div class="candid" style="margin-top:28px">
+    <div class="candid" style="margin-top:12px">
       <strong>The funny part?</strong>
       Two rooms can be the exact same size... and still need completely different aircons.
     </div>
