@@ -312,134 +312,188 @@ const BrandPage = ({ offerMode = null }) => {
 
 
 
-      {isRinnaiLocalOffer && (
-        <section className="border-b border-[#D8C59E] bg-[#0B0B0B] py-6 text-white" data-testid="rinnai-local-offer-strip">
+
+
+
+
+      {!isRinnaiLocalOffer && (
+        <>
+        <section className="border-b border-[#E8E6E1] bg-[#FBFAF8] py-5 sm:py-6" data-testid="brand-top-proof">
           <div className="sp-container">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="grid gap-5 lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E4CFA6]">Get Your Comfort Back</p>
-                <p className="mt-2 font-serif text-2xl text-white sm:text-3xl">Reliable install. Minimal disruption. No mucking around.</p>
+                <GoogleRating />
+                <p className="mt-2 text-[11px] font-medium text-[#6E6E73]">Verified customer feedback from SplitsPro&apos;s Google Business Profile.</p>
               </div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Sydney · Central Coast · Wollongong</p>
+              <div className="min-w-0 border-[#E5E5EA] lg:border-x lg:px-8">
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: FEATURED_REVIEW.rating || 5 }).map((_, i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-[#FBBC04] text-[#FBBC04]" />
+                  ))}
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-[#3A3A3C]">
+                  {isRinnaiLocalOffer ? (
+                    <>
+                      &ldquo;Very happy with the 5kW Rinnai installation. The team was professional.&rdquo;
+                      <span className="ml-2 whitespace-nowrap text-xs font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</span>
+                    </>
+                  ) : (
+                    <>
+                      &ldquo;They were professional from the initial quote through to installation... The workmanship was clean, efficient and we couldn&apos;t be happier.&rdquo;
+                      <span className="ml-2 whitespace-nowrap text-xs font-semibold text-[#6E6E73]">— {FEATURED_REVIEW.name}, Google Review</span>
+                    </>
+                  )}
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+                <a href="#book" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all hover:border-[#C8A46A]">Book Installation <ArrowUpRight className="h-4 w-4" /></a>
+                <a href={PHONE_TEL} className="inline-flex items-center justify-center gap-2 rounded-md border border-[#0B0B0B]/15 bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#0B0B0B]">Call Now <Phone className="h-4 w-4" /></a>
+              </div>
             </div>
-            <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Zap className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installations within 2 days</span>
-              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Minimal disruption</span>
-              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><ShieldCheck className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installation guarantee</span>
-              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Star className="h-4 w-4 shrink-0 fill-[#E4CFA6] text-[#E4CFA6]" /> 5-star service</span>
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-[#E8E6E1] pt-4 text-xs font-semibold text-[#4E4E52]">
+              <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Fully Licensed &amp; Insured</span>
+              <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> SplitsPro Workmanship Guarantee</span>
+              <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Minimum 5-Year Manufacturer Warranty</span>
+              <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Extras confirmed before work starts</span>
             </div>
           </div>
         </section>
+        </>
       )}
 
       {isRinnaiLocalOffer && (
-        <section className="bg-[#F8F7F4] py-12 sm:py-16" data-testid="installed-value-story">
-          <div className="sp-container">
-            <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start lg:gap-12">
-              <div>
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#C8A46A]">A price that works for your home</p>
-                <h2 className="mt-3 font-serif text-3xl font-medium leading-tight tracking-tight text-[#0B0B0B] sm:text-4xl">
-                  The cheap number is only useful if it still looks cheap when the job is finished.
+        <>
+          <section className="bg-white py-14 sm:py-20" data-testid="local-offer-story">
+            <div className="sp-container">
+              <div className="mx-auto max-w-5xl">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#C8A46A]">A hassle-free way to install split systems</p>
+                <h2 className="mt-4 max-w-4xl font-serif text-4xl font-medium leading-[1.06] tracking-tight text-[#0B0B0B] sm:text-5xl lg:text-6xl">
+                  You pick the system. We handle the rest.
                 </h2>
-                <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#5F5F63]">
-                  Some ads start with a low “from” price, then electrical work, pipe, brackets and installation extras appear later. We would rather make the standard job clear from the start.
+                <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#55555A]">
+                  No chasing an aircon installer, then an electrician, then finding out the “from” price did not include the bits your home actually needs. Our standard installed price includes the unit, labour, standard electrical work, a standard wall bracket or suitable floor placement, and up to 3 metres of pipework.
                 </p>
 
-                <div className="mt-7 rounded-2xl border border-[#E2DED7] bg-white p-5 shadow-sm">
-                  <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0B0B0B]">Your standard installed price includes</p>
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    {[
-                      ["Up to 3m pipework", "Copper and interconnecting pipe included"],
-                      ["Standard electricals", "Normal electrical connection included"],
-                      ["Standard wall bracket", "Or suitable floor placement"],
-                      ["Labour + commissioning", "Installed, tested and handed over"],
-                    ].map(([title, desc]) => (
-                      <div key={title} className="rounded-xl bg-[#F8F7F4] p-4">
-                        <Check className="h-4 w-4 text-[#C8A46A]" />
-                        <p className="mt-2 text-sm font-bold text-[#0B0B0B]">{title}</p>
-                        <p className="mt-1 text-[11px] leading-relaxed text-[#6E6E73]">{desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="mt-4 text-xs leading-relaxed text-[#6E6E73]">
-                    If your home genuinely needs something outside the standard install, we explain it and price it before the extra work starts.
-                  </p>
-                </div>
-              </div>
+                <p className="mt-10 max-w-4xl font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">
+                  Installations within 2 days. A standard install takes just a few hours. Get it sorted now — and beat the summer rush.
+                </p>
 
-              <div className="grid gap-4">
-                <div className="rounded-2xl bg-[#0B0B0B] p-6 text-white">
-                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#E4CFA6]">More than just the box</p>
-                  <h3 className="mt-3 font-serif text-3xl font-medium">Comfort features you will actually use.</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-white/70">
-                    These are premium reverse-cycle systems, not stripped-back bargain units. Depending on the model, you get smart Wi-Fi control, inverter power-saving operation, humidity-control / dry modes, quiet operation and smarter airflow.
-                  </p>
-                  <div className="mt-5 grid grid-cols-2 gap-2 text-xs font-semibold text-white/85">
-                    <span className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3"><Wifi className="h-4 w-4 text-[#E4CFA6]" /> Wi-Fi on supported models</span>
-                    <span className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3"><Leaf className="h-4 w-4 text-[#E4CFA6]" /> Inverter energy saving</span>
-                    <span className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3"><Droplets className="h-4 w-4 text-[#E4CFA6]" /> Dry / humidity control</span>
-                    <span className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3"><Fan className="h-4 w-4 text-[#E4CFA6]" /> Quiet, even airflow</span>
-                  </div>
+                <div className="mt-9 flex flex-wrap gap-x-8 gap-y-4 border-y border-[#E5E5EA] py-6 text-sm font-semibold text-[#3A3A3C]">
+                  <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-[#C8A46A]" /> Installations within 2 days</span>
+                  <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Standard electricals included</span>
+                  <span className="flex items-center gap-2"><MoveHorizontal className="h-4 w-4 text-[#C8A46A]" /> Up to 3m pipework</span>
+                  <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Installation guarantee</span>
+                  <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Manufacturer warranty</span>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-[#E5E5EA] bg-white p-5">
-                    <ShieldCheck className="h-5 w-5 text-[#C8A46A]" />
-                    <p className="mt-3 font-serif text-xl text-[#0B0B0B]">Manufacturer warranty</p>
-                    <p className="mt-2 text-xs leading-relaxed text-[#6E6E73]">Rinnai specials carry a 7-year manufacturer warranty; Daikin Cora carries a 5-year manufacturer warranty.</p>
+                <div className="mt-12 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+                  <div>
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#C8A46A]">Comfort without the compromise</p>
+                    <h3 className="mt-3 font-serif text-3xl font-medium leading-tight text-[#0B0B0B] sm:text-4xl">
+                      Premium units — not stripped-back bargain boxes.
+                    </h3>
+                    <p className="mt-5 text-base leading-relaxed text-[#5F5F63]">
+                      Depending on the model, you get Wi-Fi control, inverter power-saving operation, dry / humidity-control modes, quiet operation and smarter airflow — features designed to make the system easier and cheaper to live with, not just cheaper to buy.
+                    </p>
                   </div>
-                  <div className="rounded-2xl border border-[#E5E5EA] bg-white p-5">
-                    <Check className="h-5 w-5 text-[#C8A46A]" />
-                    <p className="mt-3 font-serif text-xl text-[#0B0B0B]">Installation guarantee</p>
-                    <p className="mt-2 text-xs leading-relaxed text-[#6E6E73]">We stand behind the installation as well as the unit, so you are not left chasing different people if something is not right.</p>
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-6 border-l-0 border-[#E5E5EA] lg:border-l lg:pl-10">
+                    <div><Wifi className="h-5 w-5 text-[#C8A46A]" /><p className="mt-2 font-semibold text-[#0B0B0B]">Smart Wi-Fi</p><p className="mt-1 text-xs leading-relaxed text-[#6E6E73]">Control supported models from your phone.</p></div>
+                    <div><Leaf className="h-5 w-5 text-[#C8A46A]" /><p className="mt-2 font-semibold text-[#0B0B0B]">Power saving</p><p className="mt-1 text-xs leading-relaxed text-[#6E6E73]">Inverter operation adjusts output instead of running flat-out.</p></div>
+                    <div><Droplets className="h-5 w-5 text-[#C8A46A]" /><p className="mt-2 font-semibold text-[#0B0B0B]">Dry mode</p><p className="mt-1 text-xs leading-relaxed text-[#6E6E73]">Helps manage sticky summer humidity.</p></div>
+                    <div><Fan className="h-5 w-5 text-[#C8A46A]" /><p className="mt-2 font-semibold text-[#0B0B0B]">Quiet airflow</p><p className="mt-1 text-xs leading-relaxed text-[#6E6E73]">Comfort without turning the room into a wind tunnel.</p></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section className="bg-[#F8F7F4] py-14 sm:py-20" data-testid="local-offer-proof">
+            <div className="sp-container">
+              <div className="mx-auto max-w-5xl">
+                <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+                  <div>
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#C8A46A]">Why trust us with your home?</p>
+                    <h2 className="mt-4 font-serif text-4xl font-medium leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">Don&apos;t take our word for it. Look at the work.</h2>
+                    <div className="mt-6"><GoogleRating /></div>
+                    <div className="mt-5 flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-5 w-5 fill-[#FBBC04] text-[#FBBC04]" />)}
+                    </div>
+                    <blockquote className="mt-4 max-w-xl text-lg leading-relaxed text-[#3A3A3C]">
+                      &ldquo;Very happy with the 5kW Rinnai installation. The team was professional.&rdquo;
+                    </blockquote>
+                    <p className="mt-2 text-sm font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</p>
+
+                    <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-[#3A3A3C]">
+                      <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Fully licensed &amp; insured</span>
+                      <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Workmanship guarantee</span>
+                      <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> 7-year Rinnai / 5-year Daikin warranty</span>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <figure className="m-0 overflow-hidden rounded-[22px]">
+                      <img
+                        src={brand.installEditorial?.primary?.src}
+                        alt={brand.installEditorial?.primary?.alt || "SplitsPro Rinnai outdoor installation"}
+                        loading="lazy"
+                        data-no-fallback="true"
+                        className="aspect-[4/5] w-full object-cover"
+                      />
+                    </figure>
+                    <figure className="m-0 overflow-hidden rounded-[22px] sm:translate-y-8">
+                      <img
+                        src={brand.installEditorial?.secondary?.src}
+                        alt={brand.installEditorial?.secondary?.alt || "SplitsPro Rinnai indoor installation"}
+                        loading="lazy"
+                        data-no-fallback="true"
+                        className="aspect-[4/5] w-full object-cover"
+                      />
+                    </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-white py-14 sm:py-20" data-testid="local-offer-market-check">
+            <div className="sp-container">
+              <div className="mx-auto max-w-5xl">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#C8A46A]">Then we checked the market</p>
+                <h2 className="mt-4 max-w-4xl font-serif text-4xl font-medium leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">
+                  Same brands. Same size class. Very different numbers.
+                </h2>
+                <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#5F5F63]">
+                  These are current advertised installed examples we found online. Different installers use different models, inclusions and site conditions — so this is a price check, not a claim that every quote is identical.
+                </p>
+
+                <div className="mt-10 grid gap-10 border-y border-[#E5E5EA] py-8 sm:grid-cols-2">
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#6E6E73]">Rinnai 7kW installed</p>
+                    <p className="mt-3 text-lg text-[#6E6E73]">Other advertised example</p>
+                    <p className="font-serif text-4xl text-[#6E6E73] line-through">$2,799</p>
+                    <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
+                    <p className="font-serif text-5xl text-[#0B0B0B]">$2,300</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#6E6E73]">Daikin Cora 7.1kW installed</p>
+                    <p className="mt-3 text-lg text-[#6E6E73]">Other advertised examples</p>
+                    <p className="font-serif text-4xl text-[#6E6E73]">$2,800–$3,411.94</p>
+                    <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
+                    <p className="font-serif text-5xl text-[#0B0B0B]">$2,550</p>
+                  </div>
+                </div>
+
+                <p className="mt-4 text-[10px] leading-relaxed text-[#8A8A8E]">
+                  Price check: Ozcon Air listed a Rinnai 7kW supplied &amp; installed at $2,799; BD Air listed Daikin Cora 7.1kW at $2,800; Hewitt Trade Services listed Daikin Cora 7.1kW at $3,411.94. Checked 28 Sep 2026. Installation conditions and models vary.
+                </p>
+
+                <p className="mt-12 font-serif text-3xl text-[#0B0B0B] sm:text-4xl">Now pick the size that suits your home.</p>
+              </div>
+            </div>
+          </section>
+        </>
       )}
-
-      <section className="border-b border-[#E8E6E1] bg-[#FBFAF8] py-5 sm:py-6" data-testid="brand-top-proof">
-        <div className="sp-container">
-          <div className="grid gap-5 lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-8">
-            <div>
-              <GoogleRating />
-              <p className="mt-2 text-[11px] font-medium text-[#6E6E73]">Verified customer feedback from SplitsPro&apos;s Google Business Profile.</p>
-            </div>
-            <div className="min-w-0 border-[#E5E5EA] lg:border-x lg:px-8">
-              <div className="flex items-center gap-1">
-                {Array.from({ length: FEATURED_REVIEW.rating || 5 }).map((_, i) => (
-                  <Star key={i} className="h-3.5 w-3.5 fill-[#FBBC04] text-[#FBBC04]" />
-                ))}
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-[#3A3A3C]">
-                {isRinnaiLocalOffer ? (
-                  <>
-                    &ldquo;Very happy with the 5kW Rinnai installation. The team was professional.&rdquo;
-                    <span className="ml-2 whitespace-nowrap text-xs font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</span>
-                  </>
-                ) : (
-                  <>
-                    &ldquo;They were professional from the initial quote through to installation... The workmanship was clean, efficient and we couldn&apos;t be happier.&rdquo;
-                    <span className="ml-2 whitespace-nowrap text-xs font-semibold text-[#6E6E73]">— {FEATURED_REVIEW.name}, Google Review</span>
-                  </>
-                )}
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-              <a href="#book" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all hover:border-[#C8A46A]">Book Installation <ArrowUpRight className="h-4 w-4" /></a>
-              <a href={PHONE_TEL} className="inline-flex items-center justify-center gap-2 rounded-md border border-[#0B0B0B]/15 bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#0B0B0B]">Call Now <Phone className="h-4 w-4" /></a>
-            </div>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-[#E8E6E1] pt-4 text-xs font-semibold text-[#4E4E52]">
-            <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Fully Licensed &amp; Insured</span>
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> SplitsPro Workmanship Guarantee</span>
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Minimum 5-Year Manufacturer Warranty</span>
-            <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Extras confirmed before work starts</span>
-          </div>
-        </div>
-      </section>
 
       {isRinnaiLocalOffer && activeOfferRange && (
         <section id="installed-prices" className="scroll-mt-24 bg-white py-10 sm:py-12" data-testid="compact-installed-price-picker">
@@ -500,21 +554,7 @@ const BrandPage = ({ offerMode = null }) => {
                 </div>
 
                 <p className="mt-4 text-[11px] leading-relaxed text-[#6E6E73]">Standard-install pricing shown. If your home genuinely needs extra work, we tell you what it is and the price before it starts.</p>
-                {activeOfferRange.localBrand === "Rinnai" && (
-                  <div className="mt-4 flex flex-col gap-2 rounded-xl border border-[#E7D8B8] bg-[#FFF8E8] p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#7B5A28]">7kW price check</p>
-                      <p className="mt-1 text-sm font-semibold text-[#0B0B0B]">Comparable 7kW Rinnai installed offers we checked were advertised around $2,699–$2,999.</p>
-                    </div>
-                    <div className="shrink-0 sm:text-right">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A8A8E]">SplitsPro 7kW</p>
-                      <p className="font-serif text-3xl text-[#0B0B0B]">$2,300</p>
-                    </div>
-                  </div>
-                )}
-                {activeOfferRange.localBrand === "Rinnai" && (
-                  <p className="mt-2 text-[10px] leading-relaxed text-[#8A8A8E]">Comparison checked 28 Sep 2026. Other sellers&apos; models, inclusions and installation conditions vary.</p>
-                )}
+
               </div>
             </div>
           </div>
