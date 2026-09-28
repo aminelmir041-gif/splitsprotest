@@ -415,13 +415,24 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#C8A46A]">Why trust us with your home?</p>
                     <h2 className="mt-4 font-serif text-4xl font-medium leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">Don&apos;t take our word for it. Look at the work.</h2>
                     <div className="mt-6"><GoogleRating /></div>
-                    <div className="mt-5 flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-5 w-5 fill-[#FBBC04] text-[#FBBC04]" />)}
+                    <div className="mt-5 grid gap-5 md:grid-cols-[1fr_220px] md:items-end">
+                      <div>
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-5 w-5 fill-[#FBBC04] text-[#FBBC04]" />)}
+                        </div>
+                        <blockquote className="mt-4 max-w-xl text-lg leading-relaxed text-[#3A3A3C]">
+                          &ldquo;Very happy with the 5kW Rinnai installation. The team was professional.&rdquo;
+                        </blockquote>
+                        <p className="mt-2 text-sm font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</p>
+                      </div>
+                      <img
+                        src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`}
+                        alt="Beat the summer rush with a team you can trust"
+                        loading="lazy"
+                        data-no-fallback="true"
+                        className="mx-auto w-full max-w-[220px] object-contain md:mx-0 md:justify-self-end"
+                      />
                     </div>
-                    <blockquote className="mt-4 max-w-xl text-lg leading-relaxed text-[#3A3A3C]">
-                      &ldquo;Very happy with the 5kW Rinnai installation. The team was professional.&rdquo;
-                    </blockquote>
-                    <p className="mt-2 text-sm font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</p>
 
                     <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-[#3A3A3C]">
                       <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Fully licensed &amp; insured</span>
