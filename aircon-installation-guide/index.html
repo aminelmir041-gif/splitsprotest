@@ -107,6 +107,19 @@ section{padding:100px 0}
 .whylist div{padding:14px 15px;background:#F8F7F5;border:1px solid #EEECE8;border-radius:12px;font-weight:700;box-shadow:0 8px 22px rgba(11,11,11,.035)}
 .whylist span{display:block;margin-top:3px}
 
+/* disruptive story visuals */
+.story-visual{margin:34px 0 38px;position:relative}
+.story-visual img{display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 26px 70px rgba(11,11,11,.16);border:1px solid rgba(11,11,11,.08)}
+.story-visual.big img{transform:rotate(-.45deg)}
+.story-visual.small img{transform:rotate(.45deg)}
+.story-visual.factors{margin:8px 0 32px}
+.story-visual.factors img{transform:none}
+@media(max-width:600px){
+  .story-visual{margin:24px -2px 28px}
+  .story-visual img{border-radius:15px}
+  .story-visual.big img,.story-visual.small img{transform:none}
+}
+
 /* home factors */
 .why{display:grid;grid-template-columns:1fr 1fr;gap:38px;align-items:center}
 .whybox{padding:34px;border:1px solid var(--sp-border);border-radius:24px;background:#fff;box-shadow:0 24px 60px rgba(11,11,11,.09);transform:perspective(1100px) rotateY(-2deg);transition:.6s cubic-bezier(.16,1,.3,1)}
@@ -211,6 +224,10 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
       <p style="font-weight:800;color:#0b0b0b">Because apparently your bedroom now needs enough cooling for a Woolies.</p>
     </div>
 
+    <figure class="story-visual big">
+      <img loading="eager" src="/aircon-installation-guide/assets/sizing-too-big.webp" alt="Two SplitsPro installers carrying an absurdly oversized air conditioner into a small bedroom">
+    </figure>
+
     <div class="checks">
       <article class="check">
         <div class="num">↑</div>
@@ -244,6 +261,10 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
           <p class="question">Now you get to be hot for the next eight summers.</p>
         </div>
       </article>
+
+      <figure class="story-visual small">
+        <img loading="lazy" src="/aircon-installation-guide/assets/sizing-too-small.webp" alt="An overheated homeowner in a hot bedroom with an air conditioner that is too small">
+      </figure>
     </div>
 
     <div class="candid" style="margin-top:28px">
@@ -254,6 +275,11 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 </section>
 
 <section style="background:#f6f5f2">
+  <div class="wrap">
+    <figure class="story-visual factors">
+      <img loading="lazy" src="/aircon-installation-guide/assets/sizing-factors.webp" alt="SplitsPro installer checking sun, windows, insulation, ceiling height, people and room layout before sizing an air conditioner">
+    </figure>
+  </div>
   <div class="wrap why">
     <div>
       <div class="section-head">
