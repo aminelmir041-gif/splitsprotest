@@ -310,6 +310,8 @@ const BrandPage = ({ offerMode = null }) => {
         title={isRinnaiLocalOffer ? "When the heat takes over, get your home back — without turning your life upside down." : brand.h1}
         sub={isRinnaiLocalOffer ? "Reliable installation. Minimal disruption. 5-star rated. Installations within 2 days. Sydney, Central Coast & Wollongong." : brand.tagline}
         image={isRinnaiLocalOffer ? RINNAI_LOCAL_HERO_IMAGE : brand.image}
+        mobileImageFirst={isRinnaiLocalOffer}
+        mobileImgPos={isRinnaiLocalOffer ? "object-[62%_center]" : "object-center"}
         desktopBrand
       />
 
