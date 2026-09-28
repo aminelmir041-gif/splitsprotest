@@ -181,7 +181,7 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     displayName: "Rinnai Split Systems",
     tabLabel: "Rinnai",
     localBrand: "Rinnai",
-    blurb: "Rinnai supplied-and-installed special pricing available across Sydney, the Central Coast and Wollongong. Choose the capacity that suits your room and book while installation spots are available.",
+    blurb: "Rinnai supplied-and-installed special pricing available Sydney-wide, plus the Central Coast and Wollongong. Choose the capacity that suits your room and book while installation spots are available.",
     image: SPLIT_BRANDS.find((b) => b.slug === "rinnai")?.ranges?.[0]?.image,
     prices: [
       { kw: "2.5kW", price: "$1,450", localOfferPrice: "$1,450" },
@@ -197,7 +197,7 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     displayName: "Daikin Cora",
     tabLabel: "Daikin Cora",
     localBrand: "Daikin",
-    blurb: "Daikin Cora supplied and installed at a clear special price across Sydney, the Central Coast and Wollongong, with a 7-day installation guarantee, 5-year warranty and Blue Fin anti-corrosive coating for added protection in coastal areas.",
+    blurb: "Daikin Cora supplied and installed at a clear special price Sydney-wide, plus the Central Coast and Wollongong, with a 7-day installation guarantee, 5-year warranty and Blue Fin anti-corrosive coating for added protection in coastal areas.",
     image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.ranges?.find((r) => r.slug === "cora")?.image,
     prices: [
       { kw: "2.5kW", price: "$1,700", localOfferPrice: "$1,700" },
@@ -277,10 +277,10 @@ const BrandPage = ({ offerMode = null }) => {
       : `Book ${brand.brand} Installation`;
 
   const pageTitle = isRinnaiLocalOffer
-    ? "Rinnai & Daikin Cora Installed Specials | Sydney, Central Coast & Wollongong | SplitsPro"
+    ? "Rinnai & Daikin Cora Installed Specials | Sydney-Wide, Central Coast & Wollongong | SplitsPro"
     : brand.metaTitle;
   const pageDescription = isRinnaiLocalOffer
-    ? "Rinnai and Daikin Cora split-system specials across Sydney, the Central Coast and Wollongong, with supplied-and-installed pricing, a 7-day installation guarantee and clear standard-install conditions."
+    ? "Rinnai and Daikin Cora split-system specials available Sydney-wide, plus the Central Coast and Wollongong, with supplied-and-installed pricing, a 7-day installation guarantee and clear standard-install conditions."
     : brand.metaDesc;
   const canonicalUrl = isRinnaiLocalOffer
     ? "https://splitspro.com.au/split-systems/rinnai-local-offer"
@@ -301,7 +301,7 @@ const BrandPage = ({ offerMode = null }) => {
       <PageHero
         overline={isRinnaiLocalOffer ? "Rinnai & Daikin Cora · Installed Specials" : brand.brand}
         title={isRinnaiLocalOffer ? "Rinnai & Daikin Cora Split System Installed Specials" : brand.h1}
-        sub={isRinnaiLocalOffer ? "Installed within 7 days — Installation Guarantee. Supplied & installed with no more to pay on qualifying standard installations." : brand.tagline}
+        sub={isRinnaiLocalOffer ? "Sydney-wide, Central Coast & Wollongong. Installed within 7 days — Installation Guarantee. Supplied & installed with no more to pay on qualifying standard installations." : brand.tagline}
         image={brand.image}
         desktopBrand
       />
@@ -312,7 +312,7 @@ const BrandPage = ({ offerMode = null }) => {
             <div>
               <div className="flex flex-wrap items-center gap-3">
                 <span className="rounded-full border border-[#C8A46A]/60 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Installed Specials</span>
-                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Sydney · Central Coast · Wollongong</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Sydney-wide · Central Coast · Wollongong</span>
               </div>
               <div className="mt-4 flex flex-wrap items-end gap-x-5 gap-y-2">
                 <p className="font-serif text-2xl text-white sm:text-3xl">7.0kW Rinnai supplied &amp; installed</p>
@@ -323,7 +323,7 @@ const BrandPage = ({ offerMode = null }) => {
               <div className="mt-4" data-testid="rinnai-local-areas-hero">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Service areas</p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {["Sydney Metro", "Western Sydney", "South West Sydney", "Inner West", "Eastern Suburbs", "Northern Sydney", "Sutherland Shire", "Macarthur", "Central Coast", "Wollongong"].map((area) => (
+                  {["All Sydney Suburbs", "Western Sydney", "South West Sydney", "Inner West", "Eastern Suburbs", "Northern Sydney", "Northern Beaches", "Sutherland Shire", "Macarthur", "Central Coast", "Wollongong"].map((area) => (
                     <span key={area} className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/85">{area}</span>
                   ))}
                 </div>
