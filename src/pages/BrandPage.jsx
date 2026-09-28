@@ -33,6 +33,7 @@ import { SPLIT_BRANDS, FEATURED_REVIEW, PHONE_TEL } from "../lib/data";
 import { DAIKIN_COMPACT_FEATURES, DAIKIN_STREAMER_FOOTNOTE } from "../lib/daikinCompactFeatures";
 
 const RINNAI_LOCAL_HERO_IMAGE = `${process.env.PUBLIC_URL || ""}/landing/overheated-bulldog-hero.webp`;
+// Local offer hero artwork.
 
 const DAIKIN_ICON_MAP = {
   leaf: Leaf,
