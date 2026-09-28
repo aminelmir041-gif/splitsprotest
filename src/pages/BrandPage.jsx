@@ -299,9 +299,9 @@ const BrandPage = ({ offerMode = null }) => {
       </Helmet>
 
       <PageHero
-        overline={isRinnaiLocalOffer ? "Rinnai & Daikin Cora · Installed Specials" : brand.brand}
-        title={isRinnaiLocalOffer ? "Rinnai & Daikin Cora Split System Installed Specials" : brand.h1}
-        sub={isRinnaiLocalOffer ? "Sydney-wide, Central Coast & Wollongong. Installed within 2 days — Installation Guarantee. Supplied & installed with no more to pay on qualifying standard installations." : brand.tagline}
+        overline={isRinnaiLocalOffer ? "Rinnai & Daikin Cora · Fast, Reliable Installation" : brand.brand}
+        title={isRinnaiLocalOffer ? "When the heat takes over, get your home back — without turning your life upside down." : brand.h1}
+        sub={isRinnaiLocalOffer ? "Reliable installation. Minimal disruption. 5-star rated. Usually to you within 2 days. Sydney, Central Coast & Wollongong." : brand.tagline}
         image={brand.image}
         desktopBrand
       />
@@ -313,7 +313,7 @@ const BrandPage = ({ offerMode = null }) => {
           <div className="sp-container grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full border border-[#C8A46A]/60 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Installed Specials</span>
+                <span className="rounded-full border border-[#C8A46A]/60 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Get Your Comfort Back</span>
                 <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Sydney-wide · Central Coast · Wollongong</span>
               </div>
               <div className="mt-4 flex flex-wrap items-end gap-x-5 gap-y-2">
@@ -326,15 +326,15 @@ const BrandPage = ({ offerMode = null }) => {
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Servicing Sydney · Central Coast · Wollongong</p>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Zap className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Usually to you within 2 days</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Standard install takes a few hours</span>
+                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Minimal disruption to your home</span>
                   <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><ShieldCheck className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installation Guarantee</span>
                   <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Manufacturer Warranty</span>
                   <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Star className="h-4 w-4 shrink-0 fill-[#E4CFA6] text-[#E4CFA6]" /> 5-Star Service</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Extras confirmed before work starts</span>
+                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Standard install takes just a few hours</span>
                 </div>
               </div>
               <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/70">
-                No more to pay applies to the standard installation conditions explained below. Pipe runs over 3 metres and other non-standard work are quoted before the job proceeds.
+                Pick your system, see the installed price, and know about any genuine extras before work starts. No surprises after the job begins.
               </p>
             </div>
             <a href="#range-rinnai-local" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-[#0B0B0B]">See Installed Prices <ArrowDown className="h-4 w-4" /></a>
