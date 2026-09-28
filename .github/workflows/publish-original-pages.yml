@@ -45,6 +45,9 @@ jobs:
       - name: Restore approved Rinnai back-to-back guide
         run: python3 scripts/restore-rinnai-guide.py
 
+      - name: Build local offer hero image
+        run: python3 scripts/build_hero_dog.py
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -71,6 +74,10 @@ jobs:
           # Copy them into the published root as well, otherwise GitHub Pages serves a 404.
           rm -rf installs
           cp -R build/installs installs
+
+          # Public landing-page artwork must also be available at /landing/.
+          rm -rf landing
+          cp -R build/landing landing
 
           ROUTES=(
             "about"
@@ -113,7 +120,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Pages Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/App.js src/pages/BrandPage.jsx src/pages/ZenaSpecial.jsx public/installs/rinnai-back-to-back-guide.webp static installs asset-manifest.json about split-systems daikin-zena-special ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/App.js src/pages/BrandPage.jsx src/pages/ZenaSpecial.jsx public/installs/rinnai-back-to-back-guide.webp public/landing/overheated-bulldog-hero.webp static installs landing asset-manifest.json about split-systems daikin-zena-special ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
 
           if git diff --cached --quiet; then
             echo "Original pages are already published"
