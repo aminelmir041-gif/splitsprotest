@@ -61,13 +61,13 @@ const OFFICIAL_PRODUCT_IMAGES = {
 const NON_DAIKIN_FEATURES = {
   "rinnai-local": [
     { title: "7-Year Warranty", desc: "Seven years of warranty cover on this Rinnai installed special for extra peace of mind.", fallback: ShieldCheck, highlight: true },
-    { title: "7-Day Installation Guarantee", desc: "Eligible standard installations booked from this offer are installed within 7 days.", fallback: Zap },
+    { title: "2-Day Installation Guarantee", desc: "Eligible standard installations booked from this offer are installed within 2 days.", fallback: Zap },
     { title: "Wi-Fi Control", desc: "Smart control is available on the Rinnai system used for this offer.", fallback: Wifi },
     { title: "No More To Pay*", desc: "The advertised price is the installed price for qualifying standard installations.", fallback: Check },
   ],
   "daikin-lite-local": [
     { title: "5-Year Warranty", desc: "Daikin manufacturer warranty for long-term peace of mind.", fallback: ShieldCheck },
-    { title: "7-Day Installation Guarantee", desc: "Eligible standard installations booked from this offer are installed within 7 days.", fallback: Zap },
+    { title: "2-Day Installation Guarantee", desc: "Eligible standard installations booked from this offer are installed within 2 days.", fallback: Zap },
     { title: "Blue Fin Anti-Corrosive Coating", desc: "Added outdoor heat-exchanger protection suited to coastal environments.", fallback: ShieldCheck },
     { title: "No More To Pay*", desc: "The advertised price is the installed price for qualifying standard installations.", fallback: Check },
   ],
@@ -197,7 +197,7 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     displayName: "Daikin Cora",
     tabLabel: "Daikin Cora",
     localBrand: "Daikin",
-    blurb: "Daikin Cora supplied and installed at a clear special price Sydney-wide, plus the Central Coast and Wollongong, with a 7-day installation guarantee, 5-year warranty and Blue Fin anti-corrosive coating for added protection in coastal areas.",
+    blurb: "Daikin Cora supplied and installed at a clear special price Sydney-wide, plus the Central Coast and Wollongong, with a 2-day installation guarantee, 5-year warranty and Blue Fin anti-corrosive coating for added protection in coastal areas.",
     image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.ranges?.find((r) => r.slug === "cora")?.image,
     prices: [
       { kw: "2.5kW", price: "$1,700", localOfferPrice: "$1,700" },
@@ -280,7 +280,7 @@ const BrandPage = ({ offerMode = null }) => {
     ? "Rinnai & Daikin Cora Installed Specials | Sydney-Wide, Central Coast & Wollongong | SplitsPro"
     : brand.metaTitle;
   const pageDescription = isRinnaiLocalOffer
-    ? "Rinnai and Daikin Cora split-system specials available Sydney-wide, plus the Central Coast and Wollongong, with supplied-and-installed pricing, a 7-day installation guarantee and clear standard-install conditions."
+    ? "Rinnai and Daikin Cora split-system specials available Sydney-wide, plus the Central Coast and Wollongong, with supplied-and-installed pricing, a 2-day installation guarantee and clear standard-install conditions."
     : brand.metaDesc;
   const canonicalUrl = isRinnaiLocalOffer
     ? "https://splitspro.com.au/split-systems/rinnai-local-offer"
@@ -301,7 +301,7 @@ const BrandPage = ({ offerMode = null }) => {
       <PageHero
         overline={isRinnaiLocalOffer ? "Rinnai & Daikin Cora · Installed Specials" : brand.brand}
         title={isRinnaiLocalOffer ? "Rinnai & Daikin Cora Split System Installed Specials" : brand.h1}
-        sub={isRinnaiLocalOffer ? "Sydney-wide, Central Coast & Wollongong. Installed within 7 days — Installation Guarantee. Supplied & installed with no more to pay on qualifying standard installations." : brand.tagline}
+        sub={isRinnaiLocalOffer ? "Sydney-wide, Central Coast & Wollongong. Installed within 2 days — Installation Guarantee. Supplied & installed with no more to pay on qualifying standard installations." : brand.tagline}
         image={brand.image}
         desktopBrand
       />
@@ -318,7 +318,7 @@ const BrandPage = ({ offerMode = null }) => {
                 <p className="font-serif text-2xl text-white sm:text-3xl">7.0kW Rinnai supplied &amp; installed</p>
                 <span className="font-serif text-4xl text-[#E4CFA6]">$2,300</span>
                 <span className="rounded-full bg-[#C8A46A] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0B0B0B]">No more to pay*</span>
-                <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white">Installed within 7 days — guaranteed</span>
+                <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white">Installed within 2 days — guaranteed</span>
               </div>
               <div className="mt-4" data-testid="rinnai-local-areas-hero">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Service areas</p>
@@ -693,7 +693,7 @@ const BrandPage = ({ offerMode = null }) => {
                     {row.model && <span className="mt-1 block text-xs font-medium text-[#6E6E73]">Model {row.model}</span>}
                     {isRinnaiLocalOffer && (
                       <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#C8A46A]/50 bg-[#FFF8E8] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] text-[#7B5A28]">
-                        <Zap className="h-3.5 w-3.5" /> Installed within 7 days — guaranteed
+                        <Zap className="h-3.5 w-3.5" /> Installed within 2 days — guaranteed
                       </span>
                     )}
                   </span>
@@ -749,7 +749,7 @@ const BrandPage = ({ offerMode = null }) => {
             </h2>
             {selected && (
               <p className="mt-5 text-lg text-[#C8A46A]" data-testid="brand-selected-summary">
-                {selected.price} · Supplied &amp; Installed{isRinnaiLocalOffer ? " · Installed within 7 days" : ""}
+                {selected.price} · Supplied &amp; Installed{isRinnaiLocalOffer ? " · Installed within 2 days" : ""}
               </p>
             )}
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/75">
