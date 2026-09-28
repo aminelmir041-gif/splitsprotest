@@ -320,12 +320,13 @@ const BrandPage = ({ offerMode = null }) => {
                 <span className="rounded-full bg-[#C8A46A] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0B0B0B]">No more to pay*</span>
                 <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white">Installed within 2 days — guaranteed</span>
               </div>
-              <div className="mt-4" data-testid="rinnai-local-areas-hero">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Service areas</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {["All Sydney Suburbs", "Western Sydney", "South West Sydney", "Inner West", "Eastern Suburbs", "Northern Sydney", "Northern Beaches", "Sutherland Shire", "Macarthur", "Central Coast", "Wollongong"].map((area) => (
-                    <span key={area} className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/85">{area}</span>
-                  ))}
+              <div className="mt-5" data-testid="rinnai-local-sales-points">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Servicing Sydney · Central Coast · Wollongong</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Zap className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installed within 2 days</span>
+                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><ShieldCheck className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installation Guarantee</span>
+                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Manufacturer Warranty</span>
+                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Star className="h-4 w-4 shrink-0 fill-[#E4CFA6] text-[#E4CFA6]" /> 5-Star Service</span>
                 </div>
               </div>
               <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/70">
