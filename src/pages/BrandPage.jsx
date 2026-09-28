@@ -425,13 +425,17 @@ const BrandPage = ({ offerMode = null }) => {
                         </blockquote>
                         <p className="mt-2 text-sm font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</p>
                       </div>
-                      <img
-                        src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`}
-                        alt="Beat the summer rush with a team you can trust"
-                        loading="lazy"
-                        data-no-fallback="true"
-                        className="mx-auto w-full max-w-[220px] object-contain md:mx-0 md:justify-self-end"
-                      />
+                      <div className="relative flex min-h-[220px] items-end justify-center md:justify-end">
+                        <div className="pointer-events-none absolute bottom-2 right-0 h-[78%] w-[92%] rounded-full bg-[#FFD84D]/45 blur-3xl" aria-hidden="true" />
+                        <img
+                          src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`}
+                          alt="Beat the summer rush with a team you can trust"
+                          loading="lazy"
+                          data-no-fallback="true"
+                          className="relative z-10 -mb-2 w-full max-w-[285px] object-contain md:max-w-[315px] md:translate-x-3"
+                          style={{ filter: "brightness(1.14) saturate(1.24) contrast(1.08) drop-shadow(0 18px 24px rgba(11,11,11,0.24))" }}
+                        />
+                      </div>
                     </div>
 
                     <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-[#3A3A3C]">
