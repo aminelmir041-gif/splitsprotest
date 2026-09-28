@@ -237,6 +237,10 @@ const BrandPage = ({ offerMode = null }) => {
   const displayRanges = isRinnaiLocalOffer ? RINNAI_LOCAL_OFFER_RANGES : brand?.ranges || [];
   const lenis = useLenis();
   const [selected, setSelected] = useState(null);
+  const [activeOfferSlug, setActiveOfferSlug] = useState("rinnai-local");
+  const activeOfferRange = isRinnaiLocalOffer
+    ? (displayRanges.find((range) => range.slug === activeOfferSlug) || displayRanges[0])
+    : null;
 
   if (!brand) return <Navigate to="/split-systems" replace />;
 
@@ -309,35 +313,21 @@ const BrandPage = ({ offerMode = null }) => {
 
 
       {isRinnaiLocalOffer && (
-        <section className="border-b border-[#D8C59E] bg-[#0B0B0B] py-7 text-white" data-testid="rinnai-local-offer-strip">
-          <div className="sp-container grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div>
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full border border-[#C8A46A]/60 bg-[#C8A46A]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Get Your Comfort Back</span>
-                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Sydney-wide · Central Coast · Wollongong</span>
+        <section className="border-b border-[#D8C59E] bg-[#0B0B0B] py-6 text-white" data-testid="rinnai-local-offer-strip">
+          <div className="sp-container">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E4CFA6]">Get Your Comfort Back</p>
+                <p className="mt-2 font-serif text-2xl text-white sm:text-3xl">Reliable install. Minimal disruption. No mucking around.</p>
               </div>
-              <div className="mt-4 flex flex-wrap items-end gap-x-5 gap-y-2">
-                <p className="font-serif text-2xl text-white sm:text-3xl">7.0kW Rinnai supplied &amp; installed</p>
-                <span className="font-serif text-4xl text-[#E4CFA6]">$2,300</span>
-                <span className="rounded-full bg-[#C8A46A] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0B0B0B]">No more to pay*</span>
-                <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white">Installed within 2 days — guaranteed</span>
-              </div>
-              <div className="mt-5" data-testid="rinnai-local-sales-points">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E4CFA6]">Servicing Sydney · Central Coast · Wollongong</p>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Zap className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Usually to you within 2 days</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Minimal disruption to your home</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><ShieldCheck className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installation Guarantee</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Manufacturer Warranty</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Star className="h-4 w-4 shrink-0 fill-[#E4CFA6] text-[#E4CFA6]" /> 5-Star Service</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Standard install takes just a few hours</span>
-                </div>
-              </div>
-              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/70">
-                Pick your system, see the installed price, and know about any genuine extras before work starts. No surprises after the job begins.
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Sydney · Central Coast · Wollongong</p>
             </div>
-            <a href="#range-rinnai-local" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-[#0B0B0B]">See Installed Prices <ArrowDown className="h-4 w-4" /></a>
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Zap className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Usually to you within 2 days</span>
+              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Minimal disruption</span>
+              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><ShieldCheck className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installation guarantee</span>
+              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Star className="h-4 w-4 shrink-0 fill-[#E4CFA6] text-[#E4CFA6]" /> 5-star service</span>
+            </div>
           </div>
         </section>
       )}
@@ -383,10 +373,75 @@ const BrandPage = ({ offerMode = null }) => {
         </div>
       </section>
 
+      {isRinnaiLocalOffer && activeOfferRange && (
+        <section id="installed-prices" className="scroll-mt-24 bg-white py-10 sm:py-12" data-testid="compact-installed-price-picker">
+          <div className="sp-container">
+            <div className="mx-auto max-w-5xl">
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Choose your system</p>
+                  <h2 className="mt-2 font-serif text-3xl font-medium tracking-tight text-[#0B0B0B] sm:text-4xl">Pick a brand. Pick a size. See the installed price.</h2>
+                </div>
+                <div className="inline-flex self-start rounded-full border border-[#E5E5EA] bg-[#F8F7F4] p-1" role="tablist" aria-label="Choose air conditioner brand">
+                  {displayRanges.map((range) => {
+                    const active = range.slug === activeOfferRange.slug;
+                    return (
+                      <button
+                        key={range.slug}
+                        type="button"
+                        onClick={() => setActiveOfferSlug(range.slug)}
+                        className={`rounded-full px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] transition-all sm:px-5 ${active ? "bg-[#0B0B0B] text-white shadow-sm" : "text-[#5F5F63]"}`}
+                        aria-selected={active}
+                        role="tab"
+                      >
+                        {range.tabLabel || range.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-[#E5E5EA] bg-[#FBFAF8] p-4 sm:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="font-serif text-2xl text-[#0B0B0B]">{activeOfferRange.displayName}</p>
+                    <p className="mt-1 text-xs text-[#6E6E73]">
+                      {activeOfferRange.localBrand === "Rinnai" ? "7-year manufacturer warranty" : "5-year manufacturer warranty"} · Installation guarantee · Usually to you within 2 days
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-[#FFF3D6] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Supplied &amp; installed</span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {activeOfferRange.prices.map((row) => {
+                    const price = row.localOfferPrice || getRinnaiLocalSalePrice(row.price);
+                    return (
+                      <button
+                        key={row.kw}
+                        type="button"
+                        onClick={() => handleBook(activeOfferRange, row)}
+                        className="group rounded-xl border border-[#E2DED7] bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[#C8A46A] hover:shadow-md"
+                      >
+                        <span className="block text-xs font-bold uppercase tracking-[0.12em] text-[#6E6E73]">{row.kw}</span>
+                        <span className="mt-1 block font-serif text-2xl text-[#0B0B0B]">{price}</span>
+                        <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#8A8A8E]">Installed</span>
+                        <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#8F6A34]">Choose <ArrowUpRight className="h-3.5 w-3.5" /></span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <p className="mt-4 text-[11px] leading-relaxed text-[#6E6E73]">Standard-install pricing shown. If your home genuinely needs extra work, we tell you what it is and the price before it starts.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {!isRinnaiLocalOffer && <BrandSelectionBanner currentSlug={brand.slug} />}
 
       {/* Brand intro */}
-      {brand.installEditorial ? (
+      {!isRinnaiLocalOffer && (brand.installEditorial ? (
         <DaikinIntroEditorial brand={brand} jumpToRange={jumpToRange} />
       ) : (
         <section className="bg-white py-14 sm:py-20" data-testid="brand-intro">
@@ -413,10 +468,10 @@ const BrandPage = ({ offerMode = null }) => {
             )}
           </div>
         </section>
-      )}
+      ))}
 
             {/* Ranges + pricing tables */}
-      {displayRanges.map((range, ri) => (
+      {!isRinnaiLocalOffer && displayRanges.map((range, ri) => (
         <section
           key={range.slug}
           id={`range-${range.slug}`}
