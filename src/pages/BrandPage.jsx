@@ -306,33 +306,7 @@ const BrandPage = ({ offerMode = null }) => {
         desktopBrand
       />
 
-      {isRinnaiLocalOffer && (
-        <section className="overflow-hidden bg-[#123A63] text-white" data-testid="rinnai-local-urgency-hero">
-          <div className="grid lg:grid-cols-2 lg:min-h-[390px]">
-            <div className="relative min-h-[280px] lg:min-h-full">
-              <img
-                src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-urgency-man.webp`}
-                alt="Busy homeowner feeling the summer heat"
-                className="absolute inset-0 h-full w-full object-cover object-center"
-                loading="eager"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#123A63]/35 lg:to-[#123A63]" />
-            </div>
-            <div className="flex items-center px-6 py-12 sm:px-10 lg:px-14">
-              <div className="max-w-xl">
-                <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#E4CFA6]">Busy? We get it.</p>
-                <h2 className="mt-3 font-serif text-4xl font-medium leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-6xl">What are you waiting for?</h2>
-                <p className="mt-5 text-lg leading-relaxed text-white/85">Book now and we can usually get to you within <strong className="text-white">2 days</strong>. A standard split-system install normally takes just <strong className="text-white">a few hours</strong>.</p>
-                <p className="mt-4 text-base font-semibold text-[#E4CFA6]">Don&apos;t wait for the first real heatwave. That&apos;s when everyone starts calling at once.</p>
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                  <a href="#range-rinnai-local" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-6 py-3.5 text-xs font-extrabold uppercase tracking-[0.14em] text-[#0B0B0B]">See Installed Prices <ArrowDown className="h-4 w-4" /></a>
-                  <a href="#book" className="inline-flex items-center justify-center gap-2 rounded-md border border-white/25 bg-white/10 px-6 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-white">Get It Sorted <ArrowUpRight className="h-4 w-4" /></a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+
 
       {isRinnaiLocalOffer && (
         <section className="border-b border-[#D8C59E] bg-[#0B0B0B] py-7 text-white" data-testid="rinnai-local-offer-strip">
@@ -671,36 +645,7 @@ const BrandPage = ({ offerMode = null }) => {
         </section>
       ))}
 
-      {isRinnaiLocalOffer && (
-        <section className="overflow-hidden bg-[#EAF6FF]" data-testid="rinnai-local-google-proof">
-          <div className="sp-container grid items-center gap-0 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="relative min-h-[300px] sm:min-h-[360px] lg:min-h-[420px]">
-              <img
-                src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`}
-                alt="Happy dog in sunglasses representing cool home comfort"
-                className="absolute inset-0 h-full w-full object-cover object-center"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#EAF6FF]/15 lg:to-[#EAF6FF]" />
-            </div>
-            <div className="px-6 py-12 sm:px-10 lg:px-14">
-              <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#1D5F94]">Cool comfort. Happier homes.</p>
-              <div className="mt-3 flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-6 w-6 fill-[#FBBC04] text-[#FBBC04]" />)}
-              </div>
-              <h2 className="mt-4 font-serif text-4xl font-medium leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">5-Star Google Rated</h2>
-              <div className="mt-5"><GoogleRating /></div>
-              <blockquote className="mt-6 max-w-xl text-lg leading-relaxed text-[#3A3A3C]">&ldquo;{FEATURED_REVIEW.text}&rdquo;</blockquote>
-              <p className="mt-3 text-sm font-bold text-[#6E6E73]">— {FEATURED_REVIEW.name}, Google Review</p>
-              <div className="mt-7 grid gap-2 sm:grid-cols-3">
-                <span className="flex items-center gap-2 text-sm font-semibold text-[#123A63]"><Check className="h-4 w-4" /> Real reviews</span>
-                <span className="flex items-center gap-2 text-sm font-semibold text-[#123A63]"><Check className="h-4 w-4" /> Real homes</span>
-                <span className="flex items-center gap-2 text-sm font-semibold text-[#123A63]"><Check className="h-4 w-4" /> Workmanship guarantee</span>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+
 
       {/* Booking form — pre-filled with selection */}
       <section id="book" className="scroll-mt-24 bg-[#0B0B0B] py-24 sm:py-32" data-testid="brand-book-section">
