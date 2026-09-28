@@ -200,10 +200,10 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     blurb: "Daikin Cora supplied and installed at a clear special price Sydney-wide, plus the Central Coast and Wollongong, with a 2-day installation guarantee, 5-year warranty and Blue Fin anti-corrosive coating for added protection in coastal areas.",
     image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.ranges?.find((r) => r.slug === "cora")?.image,
     prices: [
-      { kw: "2.5kW", price: "$1,700", localOfferPrice: "$1,700" },
-      { kw: "3.5kW", price: "$1,900", localOfferPrice: "$1,900" },
-      { kw: "5.0kW", price: "$2,300", localOfferPrice: "$2,300" },
-      { kw: "7.0kW", price: "$2,700", localOfferPrice: "$2,700" },
+      { kw: "2.5kW", price: "$1,550", localOfferPrice: "$1,550" },
+      { kw: "3.5kW", price: "$1,750", localOfferPrice: "$1,750" },
+      { kw: "5.0kW", price: "$2,150", localOfferPrice: "$2,150" },
+      { kw: "7.0kW", price: "$2,550", localOfferPrice: "$2,550" },
     ],
   },
 ];
@@ -305,7 +305,7 @@ const BrandPage = ({ offerMode = null }) => {
       <PageHero
         overline={isRinnaiLocalOffer ? "Rinnai & Daikin Cora · Fast, Reliable Installation" : brand.brand}
         title={isRinnaiLocalOffer ? "When the heat takes over, get your home back — without turning your life upside down." : brand.h1}
-        sub={isRinnaiLocalOffer ? "Reliable installation. Minimal disruption. 5-star rated. Usually to you within 2 days. Sydney, Central Coast & Wollongong." : brand.tagline}
+        sub={isRinnaiLocalOffer ? "Reliable installation. Minimal disruption. 5-star rated. Installations within 2 days. Sydney, Central Coast & Wollongong." : brand.tagline}
         image={brand.image}
         desktopBrand
       />
@@ -323,10 +323,78 @@ const BrandPage = ({ offerMode = null }) => {
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Sydney · Central Coast · Wollongong</p>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Zap className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Usually to you within 2 days</span>
+              <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Zap className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installations within 2 days</span>
               <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Check className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Minimal disruption</span>
               <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><ShieldCheck className="h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installation guarantee</span>
               <span className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-xs font-bold text-white"><Star className="h-4 w-4 shrink-0 fill-[#E4CFA6] text-[#E4CFA6]" /> 5-star service</span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {isRinnaiLocalOffer && (
+        <section className="bg-[#F8F7F4] py-12 sm:py-16" data-testid="installed-value-story">
+          <div className="sp-container">
+            <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start lg:gap-12">
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#C8A46A]">A price that works for your home</p>
+                <h2 className="mt-3 font-serif text-3xl font-medium leading-tight tracking-tight text-[#0B0B0B] sm:text-4xl">
+                  The cheap number is only useful if it still looks cheap when the job is finished.
+                </h2>
+                <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#5F5F63]">
+                  Some ads start with a low “from” price, then electrical work, pipe, brackets and installation extras appear later. We would rather make the standard job clear from the start.
+                </p>
+
+                <div className="mt-7 rounded-2xl border border-[#E2DED7] bg-white p-5 shadow-sm">
+                  <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0B0B0B]">Your standard installed price includes</p>
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    {[
+                      ["Up to 3m pipework", "Copper and interconnecting pipe included"],
+                      ["Standard electricals", "Normal electrical connection included"],
+                      ["Standard wall bracket", "Or suitable floor placement"],
+                      ["Labour + commissioning", "Installed, tested and handed over"],
+                    ].map(([title, desc]) => (
+                      <div key={title} className="rounded-xl bg-[#F8F7F4] p-4">
+                        <Check className="h-4 w-4 text-[#C8A46A]" />
+                        <p className="mt-2 text-sm font-bold text-[#0B0B0B]">{title}</p>
+                        <p className="mt-1 text-[11px] leading-relaxed text-[#6E6E73]">{desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-4 text-xs leading-relaxed text-[#6E6E73]">
+                    If your home genuinely needs something outside the standard install, we explain it and price it before the extra work starts.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <div className="rounded-2xl bg-[#0B0B0B] p-6 text-white">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#E4CFA6]">More than just the box</p>
+                  <h3 className="mt-3 font-serif text-3xl font-medium">Comfort features you will actually use.</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-white/70">
+                    These are premium reverse-cycle systems, not stripped-back bargain units. Depending on the model, you get smart Wi-Fi control, inverter power-saving operation, humidity-control / dry modes, quiet operation and smarter airflow.
+                  </p>
+                  <div className="mt-5 grid grid-cols-2 gap-2 text-xs font-semibold text-white/85">
+                    <span className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3"><Wifi className="h-4 w-4 text-[#E4CFA6]" /> Wi-Fi on supported models</span>
+                    <span className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3"><Leaf className="h-4 w-4 text-[#E4CFA6]" /> Inverter energy saving</span>
+                    <span className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3"><Droplets className="h-4 w-4 text-[#E4CFA6]" /> Dry / humidity control</span>
+                    <span className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3"><Fan className="h-4 w-4 text-[#E4CFA6]" /> Quiet, even airflow</span>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-[#E5E5EA] bg-white p-5">
+                    <ShieldCheck className="h-5 w-5 text-[#C8A46A]" />
+                    <p className="mt-3 font-serif text-xl text-[#0B0B0B]">Manufacturer warranty</p>
+                    <p className="mt-2 text-xs leading-relaxed text-[#6E6E73]">Rinnai specials carry a 7-year manufacturer warranty; Daikin Cora carries a 5-year manufacturer warranty.</p>
+                  </div>
+                  <div className="rounded-2xl border border-[#E5E5EA] bg-white p-5">
+                    <Check className="h-5 w-5 text-[#C8A46A]" />
+                    <p className="mt-3 font-serif text-xl text-[#0B0B0B]">Installation guarantee</p>
+                    <p className="mt-2 text-xs leading-relaxed text-[#6E6E73]">We stand behind the installation as well as the unit, so you are not left chasing different people if something is not right.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -406,7 +474,7 @@ const BrandPage = ({ offerMode = null }) => {
                   <div>
                     <p className="font-serif text-2xl text-[#0B0B0B]">{activeOfferRange.displayName}</p>
                     <p className="mt-1 text-xs text-[#6E6E73]">
-                      {activeOfferRange.localBrand === "Rinnai" ? "7-year manufacturer warranty" : "5-year manufacturer warranty"} · Installation guarantee · Usually to you within 2 days
+                      {activeOfferRange.localBrand === "Rinnai" ? "7-year manufacturer warranty" : "5-year manufacturer warranty"} · Installation guarantee · Installations within 2 days
                     </p>
                   </div>
                   <span className="rounded-full bg-[#FFF3D6] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Supplied &amp; installed</span>
@@ -432,6 +500,21 @@ const BrandPage = ({ offerMode = null }) => {
                 </div>
 
                 <p className="mt-4 text-[11px] leading-relaxed text-[#6E6E73]">Standard-install pricing shown. If your home genuinely needs extra work, we tell you what it is and the price before it starts.</p>
+                {activeOfferRange.localBrand === "Rinnai" && (
+                  <div className="mt-4 flex flex-col gap-2 rounded-xl border border-[#E7D8B8] bg-[#FFF8E8] p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#7B5A28]">7kW price check</p>
+                      <p className="mt-1 text-sm font-semibold text-[#0B0B0B]">Comparable 7kW Rinnai installed offers we checked were advertised around $2,699–$2,999.</p>
+                    </div>
+                    <div className="shrink-0 sm:text-right">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A8A8E]">SplitsPro 7kW</p>
+                      <p className="font-serif text-3xl text-[#0B0B0B]">$2,300</p>
+                    </div>
+                  </div>
+                )}
+                {activeOfferRange.localBrand === "Rinnai" && (
+                  <p className="mt-2 text-[10px] leading-relaxed text-[#8A8A8E]">Comparison checked 28 Sep 2026. Other sellers&apos; models, inclusions and installation conditions vary.</p>
+                )}
               </div>
             </div>
           </div>
