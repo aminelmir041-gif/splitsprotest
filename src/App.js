@@ -88,6 +88,12 @@ function App() {
     const handleImageError = (event) => {
       const img = event.target;
       if (!(img instanceof HTMLImageElement) || img.dataset.fallbackApplied === "true" || img.dataset.noFallback === "true") return;
+      const src = img.getAttribute("src") || "";
+      // Never replace large landing-page imagery with the SplitsPro logo.
+      if (src.includes("/landing/")) {
+        img.style.display = "none";
+        return;
+      }
       img.dataset.fallbackApplied = "true";
       img.src = LOGO;
       img.classList.add("site-image-fallback");
