@@ -44,22 +44,42 @@ export const Airflow = ({ className = "" }) => (
 );
 
 // Deep-navy hero used by interior pages (no photo reuse)
-export const PageHero = ({ overline, title, sub, image, note, imgPos = "object-center", desktopBrand = false }) => {
+export const PageHero = ({ overline, title, sub, image, note, imgPos = "object-center", desktopBrand = false, mobileImageFirst = false, mobileImgPos = "object-center" }) => {
   if (image) {
     return (
       <>
-        <section className={`${desktopBrand ? "lg:hidden" : ""} relative flex min-h-[58vh] items-end overflow-hidden`}>
-          <div className="img-reveal absolute inset-0 -z-10">
-            <motion.img src={image} alt={title} initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }} className={`h-full w-full object-cover ${imgPos}`} />
-            <div className="absolute inset-0 hero-overlay-lr" />
-            <div className="absolute inset-0 hero-overlay-base" />
-          </div>
-          <div className="sp-container pb-16 pt-40">
-            <Reveal><Overline light>{overline}</Overline></Reveal>
-            <Reveal delay={0.05}><h1 className="mt-5 max-w-4xl font-serif text-5xl font-medium leading-none tracking-tight text-white md:text-6xl lg:text-7xl text-balance">{title}</h1></Reveal>
-            {sub && <Reveal delay={0.1}><p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">{sub}</p></Reveal>}
-          </div>
-        </section>
+        {mobileImageFirst ? (
+          <section className={`${desktopBrand ? "lg:hidden" : ""} overflow-hidden bg-white`}>
+            <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9]">
+              <motion.img
+                src={image}
+                alt={title}
+                initial={{ scale: 1.04 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className={`h-full w-full object-cover brightness-[1.08] saturate-[1.04] ${mobileImgPos}`}
+              />
+            </div>
+            <div className="sp-container py-7 sm:py-10">
+              <Reveal><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#B58C4E]">{overline}</p></Reveal>
+              <Reveal delay={0.05}><h1 className="mt-3 max-w-xl font-serif text-[2rem] font-medium leading-[1.02] tracking-tight text-[#0B0B0B] sm:text-4xl text-balance">{title}</h1></Reveal>
+              {sub && <Reveal delay={0.1}><p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[#55555A] sm:text-base">{sub}</p></Reveal>}
+            </div>
+          </section>
+        ) : (
+          <section className={`${desktopBrand ? "lg:hidden" : ""} relative flex min-h-[58vh] items-end overflow-hidden`}>
+            <div className="img-reveal absolute inset-0 -z-10">
+              <motion.img src={image} alt={title} initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }} className={`h-full w-full object-cover ${imgPos}`} />
+              <div className="absolute inset-0 hero-overlay-lr" />
+              <div className="absolute inset-0 hero-overlay-base" />
+            </div>
+            <div className="sp-container pb-16 pt-40">
+              <Reveal><Overline light>{overline}</Overline></Reveal>
+              <Reveal delay={0.05}><h1 className="mt-5 max-w-4xl font-serif text-5xl font-medium leading-none tracking-tight text-white md:text-6xl lg:text-7xl text-balance">{title}</h1></Reveal>
+              {sub && <Reveal delay={0.1}><p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">{sub}</p></Reveal>}
+            </div>
+          </section>
+        )}
         {desktopBrand && (
           <section className="relative hidden h-[390px] items-end overflow-hidden bg-[#17191C] lg:flex">
             <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_78%_20%,rgba(200,164,106,0.18),transparent_34%),linear-gradient(110deg,#0B0B0B_0%,#17191C_62%,#25272A_100%)]" />
