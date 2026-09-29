@@ -368,7 +368,7 @@ const BrandPage = ({ offerMode = null }) => {
 
       {isRinnaiLocalOffer && (
         <>
-          <section className="bg-white py-14 sm:py-20" data-testid="local-offer-story">
+          <section className="bg-white pb-12 pt-5 sm:py-16" data-testid="local-offer-story">
             <div className="sp-container">
               <div className="mx-auto max-w-5xl">
                 <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#C8A46A]">A hassle-free way to install split systems</p>
@@ -412,61 +412,94 @@ const BrandPage = ({ offerMode = null }) => {
             </div>
           </section>
 
-          <section className="bg-[#F8F7F4] py-14 sm:py-20" data-testid="local-offer-proof">
+          <section className="bg-[#F8F7F4] py-12 sm:py-18" data-testid="local-offer-proof">
             <div className="sp-container">
               <div className="mx-auto max-w-5xl">
-                <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-                  <div>
-                    <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#C8A46A]">Why trust us with your home?</p>
-                    <h2 className="mt-4 font-serif text-4xl font-medium leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">Don&apos;t take our word for it. Look at the work.</h2>
-                    <div className="mt-6"><GoogleRating /></div>
-                    <div className="mt-5 grid gap-5 md:grid-cols-[1fr_220px] md:items-end">
-                      <div>
-                        <div className="flex items-center gap-1">
-                          {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-5 w-5 fill-[#FBBC04] text-[#FBBC04]" />)}
-                        </div>
-                        <blockquote className="mt-4 max-w-xl text-lg leading-relaxed text-[#3A3A3C]">
-                          &ldquo;Very happy with the 5kW Rinnai installation. The team was professional.&rdquo;
-                        </blockquote>
-                        <p className="mt-2 text-sm font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</p>
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#6E6E73]">Real reviews · Real installs · Real accountability</p>
+                <h2 className="mt-3 max-w-4xl font-serif text-4xl font-medium leading-[1.04] tracking-tight text-[#0B0B0B] sm:text-5xl lg:text-6xl">
+                  Beat the summer rush with a team you can trust.
+                </h2>
+                <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#55555A] sm:text-lg">
+                  Fast is only useful when the job is done properly. You&apos;re trusting someone to drill through your home, run electrical work, mount the system and commission it. We make that easy — and we stand behind what happens after the install, not just the sale.
+                </p>
+
+                <div className="mt-8 border-y border-[#DDD9D1] py-7">
+                  <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+                    <div>
+                      <GoogleRating />
+                      <div className="mt-5 flex items-center gap-1">
+                        {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-5 w-5 fill-[#FBBC04] text-[#FBBC04]" />)}
                       </div>
-                      <div className="relative flex min-h-[220px] items-end justify-center md:justify-end">
-                        <div className="pointer-events-none absolute bottom-2 right-0 h-[78%] w-[92%] rounded-full bg-[#FFD84D]/45 blur-3xl" aria-hidden="true" />
-                        <img
-                          src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`}
-                          alt="Beat the summer rush with a team you can trust"
-                          loading="lazy"
-                          data-no-fallback="true"
-                          className="relative z-10 -mb-2 w-full max-w-[285px] object-contain md:max-w-[315px] md:translate-x-3"
-                          style={{ filter: "brightness(1.14) saturate(1.24) contrast(1.08) drop-shadow(0 18px 24px rgba(11,11,11,0.24))" }}
-                        />
-                      </div>
+                      <blockquote className="mt-4 max-w-xl font-serif text-2xl leading-snug text-[#2E2E31]">
+                        &ldquo;Very happy with the 5kW Rinnai installation. The team was professional.&rdquo;
+                      </blockquote>
+                      <p className="mt-3 text-sm font-semibold text-[#6E6E73]">— Leilani R., Ashcroft NSW · Google Review</p>
+                      <p className="mt-6 max-w-xl text-sm leading-relaxed text-[#5F5F63]">
+                        Reviews tell you how we treated customers before you. Our licences, warranties and installation guarantee tell you what you can expect after we leave.
+                      </p>
                     </div>
 
-                    <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-[#3A3A3C]">
-                      <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Fully licensed &amp; insured</span>
-                      <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Workmanship guarantee</span>
-                      <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> 7-year Rinnai / 5-year Daikin warranty</span>
+                    <div className="grid gap-0 border-t border-[#DDD9D1] lg:border-l lg:border-t-0 lg:pl-10">
+                      <div className="border-b border-[#DDD9D1] py-5 lg:pt-0">
+                        <div className="flex items-start gap-3">
+                          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
+                          <div>
+                            <h3 className="font-semibold text-[#0B0B0B]">Fully licensed &amp; insured</h3>
+                            <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">The electrical and air-conditioning work is handled as one organised installation — not something you need to coordinate yourself.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="border-b border-[#DDD9D1] py-5">
+                        <div className="flex items-start gap-3">
+                          <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
+                          <div>
+                            <h3 className="font-semibold text-[#0B0B0B]">Installation guarantee</h3>
+                            <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">We stand behind the workmanship as well as the unit, so an installation issue does not become your problem to chase.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="border-b border-[#DDD9D1] py-5">
+                        <div className="flex items-start gap-3">
+                          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
+                          <div>
+                            <h3 className="font-semibold text-[#0B0B0B]">Manufacturer-backed warranty</h3>
+                            <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">7-year manufacturer warranty on the Rinnai specials and 5-year manufacturer warranty on Daikin Cora.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="py-5 lg:pb-0">
+                        <div className="flex items-start gap-3">
+                          <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
+                          <div>
+                            <h3 className="font-semibold text-[#0B0B0B]">Clear standard inclusions</h3>
+                            <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">Standard electricals, standard bracket or suitable floor placement, labour, commissioning and up to 3 metres of pipework are included in the advertised standard-install price.</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <figure className="m-0 overflow-hidden rounded-[22px]">
+                <div className="mt-10">
+                  <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#6E6E73]">See the standard for yourself</p>
+                  <h3 className="mt-2 font-serif text-3xl font-medium text-[#0B0B0B] sm:text-4xl">Clean work. Properly finished. Built to stay that way.</h3>
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                    <figure className="m-0 overflow-hidden rounded-[20px]">
                       <img
                         src={brand.installEditorial?.primary?.src}
                         alt={brand.installEditorial?.primary?.alt || "SplitsPro Rinnai outdoor installation"}
                         loading="lazy"
                         data-no-fallback="true"
-                        className="aspect-[4/5] w-full object-cover"
+                        className="aspect-[4/3] w-full object-cover"
                       />
                     </figure>
-                    <figure className="m-0 overflow-hidden rounded-[22px] sm:translate-y-8">
+                    <figure className="m-0 overflow-hidden rounded-[20px]">
                       <img
                         src={brand.installEditorial?.secondary?.src}
                         alt={brand.installEditorial?.secondary?.alt || "SplitsPro Rinnai indoor installation"}
                         loading="lazy"
                         data-no-fallback="true"
-                        className="aspect-[4/5] w-full object-cover"
+                        className="aspect-[4/3] w-full object-cover"
                       />
                     </figure>
                   </div>
