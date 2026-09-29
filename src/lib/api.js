@@ -6,6 +6,8 @@ export const API = `${BACKEND_URL}/api`;
 export const api = axios.create({ baseURL: API });
 
 export const submitQuote = (data) => api.post("/quotes", data).then((r) => r.data);
+export const getBookingSlots = (limit = 8) => api.get(`/booking-slots?limit=${encodeURIComponent(limit)}`).then((r) => r.data);
+export const submitBooking = (data) => api.post("/bookings", data).then((r) => r.data);
 export const getReviews = () => api.get("/reviews").then((r) => r.data);
 export const uploadPhoto = (file) => {
   const fd = new FormData();
