@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // Dynamic booking page for installed split-system offers.
 // Booking slot selector: customer chooses a preferred date and daypart.
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Check, ShieldCheck, Zap, CalendarDays, Sun, Clock3 } from "lucide-react";
+import { ArrowLeft, Check, ShieldCheck, Zap, CalendarDays, Sun, Clock3, Loader2 } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
+import { getBookingSlots } from "../lib/api";
 
 const PACKAGES = {
   "rinnai-local": {
@@ -37,17 +38,57 @@ export default function InstallationBooking() {
   const [confirmed, setConfirmed] = useState(false);
   const [preferredDate, setPreferredDate] = useState("");
   const [timeWindow, setTimeWindow] = useState("");
-
-  const today = useMemo(() => {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    return now.toISOString().slice(0, 10);
-  }, []);
+  const [slots, setSlots] = useState([]);
+  const [slotsLoading, setSlotsLoading] = useState(true);
+  const [slotsError, setSlotsError] = useState("");
+  const [showMoreSlots, setShowMoreSlots] = useState(false);
 
   const productKey = params.get("product") || "";
   const size = params.get("size") || "";
   const pack = PACKAGES[productKey];
   const price = pack?.prices?.[size];
+
+
+  const loadSlots = async (fallbackSlots = null) => {
+    setSlotsLoading(true);
+    setSlotsError("");
+    try {
+      const data = fallbackSlots ? { slots: fallbackSlots } : await getBookingSlots(12);
+      setSlots(Array.isArray(data?.slots) ? data.slots : []);
+    } catch (err) {
+      setSlots([]);
+      setSlotsError("We couldn’t load live installation times. Please try again.");
+    } finally {
+      setSlotsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadSlots();
+  }, []);
+
+  const handleBookingConflict = (detail) => {
+    setPreferredDate("");
+    setTimeWindow("");
+    setShowMoreSlots(false);
+    const alternatives = Array.isArray(detail?.slots) ? detail.slots : null;
+    loadSlots(alternatives);
+  };
+
+  const formatSlotDate = (value) => {
+    const slotDate = new Date(`${value}T00:00:00`);
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    if (
+      slotDate.getFullYear() === tomorrow.getFullYear()
+      && slotDate.getMonth() === tomorrow.getMonth()
+      && slotDate.getDate() === tomorrow.getDate()
+    ) return "Tomorrow";
+    return slotDate.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
+  };
+
+  const visibleSlots = showMoreSlots ? slots : slots.slice(0, 4);
+  const hasTwoDaySlot = slots.some((slot) => slot.within_two_days);
 
   const selectionMessage = useMemo(() => {
     if (!pack || !price) return "";
@@ -92,7 +133,7 @@ export default function InstallationBooking() {
                 <p className="mt-2 text-sm font-semibold text-white/70">Supplied &amp; installed</p>
 
                 <div className="mt-7 grid gap-3 border-t border-white/10 pt-6 text-sm">
-                  <span className="flex items-start gap-3"><Zap className="mt-0.5 h-4 w-4 shrink-0 text-[#E4CFA6]" /> Installations within 2 days</span>
+                  <span className="flex items-start gap-3"><Zap className="mt-0.5 h-4 w-4 shrink-0 text-[#E4CFA6]" /> {slotsLoading ? "Checking live installation times" : hasTwoDaySlot ? "2-day installation slots available" : "Next available time shown live"}</span>
                   <span className="flex items-start gap-3"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#E4CFA6]" /> {pack.warranty}</span>
                   <span className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#E4CFA6]" /> SplitsPro installation guarantee</span>
                 </div>
@@ -141,43 +182,68 @@ export default function InstallationBooking() {
                   </div>
                 ) : (
                   <div className="mt-7 border-t border-[#E8E4DD] pt-7">
-                    <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">Choose your preferred time</p>
-                    <h3 className="mt-2 font-serif text-2xl font-medium text-[#0B0B0B]">Pick a date, then morning or afternoon.</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-[#606064]">This is your preferred installation slot. We&apos;ll confirm the exact arrival window with you.</p>
+                    <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">Live installation availability</p>
+                    <h3 className="mt-2 font-serif text-2xl font-medium text-[#0B0B0B]">Choose one of the times that&apos;s actually available.</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-[#606064]">
+                      Full times disappear automatically, so you don&apos;t have to keep trying different dates.
+                    </p>
 
-                    <div className="mt-5">
-                      <label htmlFor="install-date" className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-[#6E6E73]">Preferred date</label>
-                      <div className="relative">
-                        <CalendarDays className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#C8A46A]" />
-                        <input
-                          id="install-date"
-                          type="date"
-                          min={today}
-                          value={preferredDate}
-                          onChange={(e) => setPreferredDate(e.target.value)}
-                          className="h-12 w-full rounded-xl border border-[#DDD8CF] bg-white pl-11 pr-4 text-sm text-[#1D1D1F] outline-none transition-colors focus:border-[#C8A46A]"
-                        />
+                    {slotsLoading ? (
+                      <div className="mt-5 flex items-center gap-3 rounded-2xl bg-[#FBFAF8] p-5 text-sm text-[#606064]">
+                        <Loader2 className="h-5 w-5 animate-spin text-[#C8A46A]" /> Checking the next available installation times…
                       </div>
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setTimeWindow("Morning")}
-                        className={`flex min-h-[74px] items-center justify-center gap-2 rounded-xl border px-4 text-sm font-bold transition-all ${timeWindow === "Morning" ? "border-[#C8A46A] bg-[#F3E9D2] text-[#6D5125] shadow-sm" : "border-[#DDD8CF] bg-white text-[#303034] hover:border-[#C8A46A]"}`}
-                        aria-pressed={timeWindow === "Morning"}
-                      >
-                        <Sun className="h-5 w-5" /> Morning
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setTimeWindow("Afternoon")}
-                        className={`flex min-h-[74px] items-center justify-center gap-2 rounded-xl border px-4 text-sm font-bold transition-all ${timeWindow === "Afternoon" ? "border-[#C8A46A] bg-[#F3E9D2] text-[#6D5125] shadow-sm" : "border-[#DDD8CF] bg-white text-[#303034] hover:border-[#C8A46A]"}`}
-                        aria-pressed={timeWindow === "Afternoon"}
-                      >
-                        <Clock3 className="h-5 w-5" /> Afternoon
-                      </button>
-                    </div>
+                    ) : slotsError ? (
+                      <div className="mt-5 rounded-2xl bg-[#FFF3D6] p-5 text-sm leading-relaxed text-[#6D5125]">
+                        {slotsError}
+                        <button type="button" onClick={() => loadSlots()} className="ml-2 font-bold underline">Try again</button>
+                      </div>
+                    ) : slots.length === 0 ? (
+                      <div className="mt-5 rounded-2xl bg-[#FFF3D6] p-5 text-sm leading-relaxed text-[#6D5125]">
+                        Our online installation times are currently full. Call us and we&apos;ll check the next opening for you.
+                      </div>
+                    ) : (
+                      <>
+                        {!hasTwoDaySlot && (
+                          <div className="mt-5 rounded-2xl bg-[#FFF3D6] p-4 text-sm font-semibold leading-relaxed text-[#6D5125]">
+                            The next 2-day slots are full. These are the next available times.
+                          </div>
+                        )}
+                        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                          {visibleSlots.map((slot) => {
+                            const active = preferredDate === slot.date && timeWindow === slot.window;
+                            return (
+                              <button
+                                key={`${slot.date}-${slot.window}`}
+                                type="button"
+                                onClick={() => {
+                                  setPreferredDate(slot.date);
+                                  setTimeWindow(slot.window);
+                                }}
+                                className={`flex min-h-[84px] items-center justify-between gap-4 rounded-2xl border px-4 py-3 text-left transition-all ${active ? "border-[#C8A46A] bg-[#F3E9D2] shadow-sm" : "border-[#DDD8CF] bg-white hover:border-[#C8A46A]"}`}
+                                aria-pressed={active}
+                              >
+                                <span>
+                                  <span className={`block text-sm font-extrabold ${active ? "text-[#6D5125]" : "text-[#202024]"}`}>{formatSlotDate(slot.date)}</span>
+                                  <span className="mt-1 block text-xs text-[#6E6E73]">{slot.window}</span>
+                                </span>
+                                {slot.window === "Morning"
+                                  ? <Sun className="h-5 w-5 shrink-0 text-[#C8A46A]" />
+                                  : <Clock3 className="h-5 w-5 shrink-0 text-[#C8A46A]" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {slots.length > 4 && (
+                          <button
+                            type="button"
+                            onClick={() => setShowMoreSlots((value) => !value)}
+                            className="mt-4 text-sm font-bold text-[#8F6A34] underline decoration-[#C8A46A]/50 underline-offset-4"
+                          >
+                            {showMoreSlots ? "Show fewer times" : "See more available times"}
+                          </button>
+                        )}
+                      </>
+                    )}
 
                     {preferredDate && timeWindow ? (
                       <div className="mt-7 border-t border-[#E8E4DD] pt-7">
@@ -188,6 +254,11 @@ export default function InstallationBooking() {
                             defaultService="Split System Installation"
                             defaultMessage={selectionMessage}
                             defaultPreferredDate={preferredDate}
+                            bookingDate={preferredDate}
+                            bookingWindow={timeWindow}
+                            onBookingConflict={handleBookingConflict}
+                            successTitle="Installation booked"
+                            successMessage={`We’ve saved ${formatSlotDate(preferredDate)} — ${timeWindow}. We’ll contact you to confirm the exact arrival window.`}
                             submitLabel="Book This Installation"
                             compact
                             hideMessage
@@ -199,7 +270,7 @@ export default function InstallationBooking() {
                       </div>
                     ) : (
                       <div className="mt-5 rounded-2xl bg-[#FBFAF8] p-4 text-sm leading-relaxed text-[#606064]">
-                        Choose a date and either morning or afternoon to continue.
+                        Choose one of the available times above to continue.
                       </div>
                     )}
                   </div>
