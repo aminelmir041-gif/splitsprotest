@@ -376,7 +376,7 @@ const BrandPage = ({ offerMode = null }) => {
                   You pick the system. We handle the rest.
                 </h2>
                 <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#55555A]">
-                  No chasing an aircon installer, then an electrician, then finding out the “from” price did not include the bits your home actually needs. Our standard installed price includes the unit, labour, up to 3 metres of pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of power circuit if required.
+                  No chasing an aircon installer, then an electrician, then finding out the “from” price did not include the bits your home actually needs. Our standard installed price includes the unit, labour, up to 3 metres of pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of electrical connection if required.
                 </p>
 
                 <p className="mt-10 max-w-4xl font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">
@@ -487,10 +487,10 @@ const BrandPage = ({ offerMode = null }) => {
                           <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
                           <div>
                             <h3 className="font-semibold text-[#0B0B0B]">Clear standard inclusions</h3>
-                            <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">The advertised standard-install price includes labour, commissioning, up to 3 metres of pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of power circuit if required.</p>
+                            <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">The advertised standard-install price includes labour, commissioning, up to 3 metres of pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of electrical connection if required.</p>
                             <div className="mt-3 flex flex-wrap gap-2">
                               <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Wall bracket included</span>
-                              <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Up to 20m power circuit*</span>
+                              <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Up to 20m electrical connection*</span>
                               <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Isolation switch included</span>
                             </div>
                           </div>
@@ -548,7 +548,7 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="font-serif text-5xl text-[#0B0B0B]">$2,300</p>
                     <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">Your SplitsPro price already includes</p>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m power circuit*</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m electrical connection*</span>
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Isolation switch</span>
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Wall bracket</span>
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 3m pipework</span>
@@ -564,7 +564,7 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="font-serif text-5xl text-[#0B0B0B]">$2,550</p>
                     <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">Your SplitsPro price already includes</p>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m power circuit*</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m electrical connection*</span>
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Isolation switch</span>
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Wall bracket</span>
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 3m pipework</span>
@@ -574,7 +574,7 @@ const BrandPage = ({ offerMode = null }) => {
                 </div>
 
                 <p className="mt-4 text-[10px] leading-relaxed text-[#8A8A8E]">
-                  Price check: Ozcon Air listed a Rinnai 7kW supplied &amp; installed at $2,799; Hewitt Trade Services listed Daikin Cora 7.1kW supplied &amp; installed at $3,411.94. Competitor inclusions and installation conditions vary. SplitsPro standard-install pricing includes the wall bracket, isolation switch, up to 20m power circuit if required, up to 3m pipework, labour and commissioning. Checked 29 Sep 2026.
+                  Price check: Ozcon Air listed a Rinnai 7kW supplied &amp; installed at $2,799; Hewitt Trade Services listed Daikin Cora 7.1kW supplied &amp; installed at $3,411.94. Competitor inclusions and installation conditions vary. SplitsPro standard-install pricing includes the wall bracket, isolation switch, up to 20m electrical connection if required, up to 3m pipework, labour and commissioning. Checked 29 Sep 2026.
                 </p>
 
                 <p className="mt-12 font-serif text-3xl text-[#0B0B0B] sm:text-4xl">Now pick the size that suits your home.</p>
@@ -905,7 +905,7 @@ const BrandPage = ({ offerMode = null }) => {
             </div>
             <p className="mt-4 text-xs leading-relaxed text-[#6E6E73]" data-testid={`disclaimer-${range.slug}`}>
               {isRinnaiLocalOffer
-                ? "*No more to pay applies to qualifying standard installations including up to 3 metres of refrigeration pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of power circuit if required. Switchboard upgrades, pipe runs over 3 metres, difficult access, asbestos-related work and other non-standard requirements are quoted before proceeding."
+                ? "*No more to pay applies to qualifying standard installations including up to 3 metres of refrigeration pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of electrical connection if required. Switchboard upgrades, pipe runs over 3 metres, difficult access, asbestos-related work and other non-standard requirements are quoted before proceeding."
                 : "Standard back-to-back installation pricing. Additional pipework, electrical work, brackets or non-standard access may cost extra. Any additional costs are confirmed before work proceeds."}
             </p>
           </div>
