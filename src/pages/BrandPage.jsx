@@ -376,7 +376,7 @@ const BrandPage = ({ offerMode = null }) => {
                   You pick the system. We handle the rest.
                 </h2>
                 <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#55555A]">
-                  No chasing an aircon installer, then an electrician, then finding out the “from” price did not include the bits your home actually needs. Our standard installed price includes the unit, labour, standard electrical work, a standard wall bracket or suitable floor placement, and up to 3 metres of pipework.
+                  No chasing an aircon installer, then an electrician, then finding out the “from” price did not include the bits your home actually needs. Our standard installed price includes the unit, labour, up to 3 metres of pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of power circuit if required.
                 </p>
 
                 <p className="mt-10 max-w-4xl font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">
@@ -385,7 +385,8 @@ const BrandPage = ({ offerMode = null }) => {
 
                 <div className="mt-9 flex flex-wrap gap-x-8 gap-y-4 border-y border-[#E5E5EA] py-6 text-sm font-semibold text-[#3A3A3C]">
                   <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-[#C8A46A]" /> Installations within 2 days</span>
-                  <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Standard electricals included</span>
+                  <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Up to 20m power circuit if required</span>
+                  <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-[#C8A46A]" /> Isolation switch included</span>
                   <span className="flex items-center gap-2"><MoveHorizontal className="h-4 w-4 text-[#C8A46A]" /> Up to 3m pipework</span>
                   <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Installation guarantee</span>
                   <span className="flex items-center gap-2"><Check className="h-4 w-4 text-[#C8A46A]" /> Manufacturer warranty</span>
@@ -486,7 +487,12 @@ const BrandPage = ({ offerMode = null }) => {
                           <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
                           <div>
                             <h3 className="font-semibold text-[#0B0B0B]">Clear standard inclusions</h3>
-                            <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">Standard electricals, standard bracket or suitable floor placement, labour, commissioning and up to 3 metres of pipework are included in the advertised standard-install price.</p>
+                            <p className="mt-1 text-sm leading-relaxed text-[#6E6E73]">The advertised standard-install price includes labour, commissioning, up to 3 metres of pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of power circuit if required.</p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Wall bracket included</span>
+                              <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Up to 20m power circuit*</span>
+                              <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Isolation switch included</span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -883,7 +889,7 @@ const BrandPage = ({ offerMode = null }) => {
             </div>
             <p className="mt-4 text-xs leading-relaxed text-[#6E6E73]" data-testid={`disclaimer-${range.slug}`}>
               {isRinnaiLocalOffer
-                ? "*No more to pay applies to qualifying standard installations including up to 3 metres of refrigeration pipework and standard electrical installation. Pipe runs over 3 metres, switchboard upgrades, difficult access, asbestos-related work and other non-standard requirements are quoted before proceeding."
+                ? "*No more to pay applies to qualifying standard installations including up to 3 metres of refrigeration pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of power circuit if required. Switchboard upgrades, pipe runs over 3 metres, difficult access, asbestos-related work and other non-standard requirements are quoted before proceeding."
                 : "Standard back-to-back installation pricing. Additional pipework, electrical work, brackets or non-standard access may cost extra. Any additional costs are confirmed before work proceeds."}
             </p>
           </div>
