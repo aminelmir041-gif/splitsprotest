@@ -430,11 +430,11 @@ const BrandPage = ({ offerMode = null }) => {
                   <div className="mt-5 flex justify-end sm:absolute sm:right-5 sm:top-6 sm:mt-0 lg:right-8 lg:top-8">
                     <div className="w-[170px] overflow-hidden rounded-[22px] bg-[#0B0B0B] shadow-[0_16px_38px_rgba(11,11,11,0.18)] sm:w-[190px]">
                       <img
-                        src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`}
-                        alt="Beat the summer rush with a team you can trust"
+                        src={RINNAI_LOCAL_HERO_IMAGE}
+                        alt="Overheated dog in a home before air conditioning installation"
                         loading="lazy"
                         data-no-fallback="true"
-                        className="block aspect-[3/2] h-auto w-full object-contain"
+                        className="block aspect-[3/2] h-auto w-full object-cover object-[62%_center]"
                       />
                     </div>
                   </div>
@@ -546,7 +546,14 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="font-serif text-4xl text-[#6E6E73] line-through">$2,799</p>
                     <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
                     <p className="font-serif text-5xl text-[#0B0B0B]">$2,300</p>
-                    <p className="mt-3 max-w-sm text-sm font-semibold leading-relaxed text-[#3A3A3C]">Includes wall bracket, isolation switch, up to 20m power circuit if required, up to 3m pipework, labour &amp; commissioning.</p>
+                    <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">Your SplitsPro price already includes</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m power circuit*</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Isolation switch</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Wall bracket</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 3m pipework</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Labour + commissioning</span>
+                    </div>
                   </div>
 
                   <div>
@@ -555,12 +562,19 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="font-serif text-4xl text-[#6E6E73] line-through">$3,411.94</p>
                     <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
                     <p className="font-serif text-5xl text-[#0B0B0B]">$2,550</p>
-                    <p className="mt-3 max-w-sm text-sm font-semibold leading-relaxed text-[#3A3A3C]">Includes wall bracket, isolation switch, up to 20m power circuit if required, up to 3m pipework, labour &amp; commissioning.</p>
+                    <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">Your SplitsPro price already includes</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m power circuit*</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Isolation switch</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Wall bracket</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 3m pipework</span>
+                      <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Labour + commissioning</span>
+                    </div>
                   </div>
                 </div>
 
                 <p className="mt-4 text-[10px] leading-relaxed text-[#8A8A8E]">
-                  Price check: Ozcon Air listed a Rinnai 7kW supplied &amp; installed at $2,799; Hewitt Trade Services listed Daikin Cora 7.1kW supplied &amp; installed at $3,411.94. Both examples include standard electrical work under their advertised installation conditions. Checked 29 Sep 2026. Installation conditions and models vary.
+                  Price check: Ozcon Air listed a Rinnai 7kW supplied &amp; installed at $2,799; Hewitt Trade Services listed Daikin Cora 7.1kW supplied &amp; installed at $3,411.94. Competitor inclusions and installation conditions vary. SplitsPro standard-install pricing includes the wall bracket, isolation switch, up to 20m power circuit if required, up to 3m pipework, labour and commissioning. Checked 29 Sep 2026.
                 </p>
 
                 <p className="mt-12 font-serif text-3xl text-[#0B0B0B] sm:text-4xl">Now pick the size that suits your home.</p>
