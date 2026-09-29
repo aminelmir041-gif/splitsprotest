@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 // Dynamic booking page for installed split-system offers.
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, ArrowUpRight, Check, ShieldCheck, Zap } from "lucide-react";
+import { ArrowLeft, Check, ShieldCheck, Zap, CalendarDays, Sun, Clock3 } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
 
 const PACKAGES = {
@@ -34,6 +34,14 @@ const PACKAGES = {
 export default function InstallationBooking() {
   const [params] = useSearchParams();
   const [confirmed, setConfirmed] = useState(false);
+  const [preferredDate, setPreferredDate] = useState("");
+  const [timeWindow, setTimeWindow] = useState("");
+
+  const today = useMemo(() => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 10);
+  }, []);
 
   const productKey = params.get("product") || "";
   const size = params.get("size") || "";
@@ -42,8 +50,11 @@ export default function InstallationBooking() {
 
   const selectionMessage = useMemo(() => {
     if (!pack || !price) return "";
-    return `I'd like to book the ${pack.model} ${size} — ${price} supplied & installed. I understand the advertised price applies to the standard installation conditions shown on the booking page.`;
-  }, [pack, price, size]);
+    const slot = preferredDate && timeWindow
+      ? ` Preferred installation: ${preferredDate} — ${timeWindow}.`
+      : "";
+    return `I'd like to book the ${pack.model} ${size} — ${price} supplied & installed.${slot} I understand the advertised price applies to the standard installation conditions shown on the booking page.`;
+  }, [pack, price, size, preferredDate, timeWindow]);
 
   if (!pack || !price) {
     return <Navigate to="/split-systems/rinnai-local-offer#installed-prices" replace />;
@@ -125,23 +136,71 @@ export default function InstallationBooking() {
 
                 {!confirmed ? (
                   <div className="mt-6 rounded-2xl bg-[#F3E9D2] p-4 text-sm leading-relaxed text-[#6D5125]">
-                    Tick the box above to continue with your booking details.
+                    Tick the box above to continue with your booking.
                   </div>
                 ) : (
                   <div className="mt-7 border-t border-[#E8E4DD] pt-7">
-                    <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">Your details</p>
-                    <p className="mt-2 text-sm leading-relaxed text-[#606064]">We&apos;ll call to confirm the installation slot and final site details.</p>
+                    <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">Choose your preferred time</p>
+                    <h3 className="mt-2 font-serif text-2xl font-medium text-[#0B0B0B]">Pick a date, then morning or afternoon.</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-[#606064]">This is your preferred installation slot. We&apos;ll confirm the exact arrival window with you.</p>
+
                     <div className="mt-5">
-                      <QuoteForm
-                        defaultService="Split System Installation"
-                        defaultMessage={selectionMessage}
-                        submitLabel="Book This Installation"
-                        compact
-                        hideMessage
-                        hidePhoto
-                        tight
-                      />
+                      <label htmlFor="install-date" className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-[#6E6E73]">Preferred date</label>
+                      <div className="relative">
+                        <CalendarDays className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#C8A46A]" />
+                        <input
+                          id="install-date"
+                          type="date"
+                          min={today}
+                          value={preferredDate}
+                          onChange={(e) => setPreferredDate(e.target.value)}
+                          className="h-12 w-full rounded-xl border border-[#DDD8CF] bg-white pl-11 pr-4 text-sm text-[#1D1D1F] outline-none transition-colors focus:border-[#C8A46A]"
+                        />
+                      </div>
                     </div>
+
+                    <div className="mt-4 grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setTimeWindow("Morning")}
+                        className={`flex min-h-[74px] items-center justify-center gap-2 rounded-xl border px-4 text-sm font-bold transition-all ${timeWindow === "Morning" ? "border-[#C8A46A] bg-[#F3E9D2] text-[#6D5125] shadow-sm" : "border-[#DDD8CF] bg-white text-[#303034] hover:border-[#C8A46A]"}`}
+                        aria-pressed={timeWindow === "Morning"}
+                      >
+                        <Sun className="h-5 w-5" /> Morning
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTimeWindow("Afternoon")}
+                        className={`flex min-h-[74px] items-center justify-center gap-2 rounded-xl border px-4 text-sm font-bold transition-all ${timeWindow === "Afternoon" ? "border-[#C8A46A] bg-[#F3E9D2] text-[#6D5125] shadow-sm" : "border-[#DDD8CF] bg-white text-[#303034] hover:border-[#C8A46A]"}`}
+                        aria-pressed={timeWindow === "Afternoon"}
+                      >
+                        <Clock3 className="h-5 w-5" /> Afternoon
+                      </button>
+                    </div>
+
+                    {preferredDate && timeWindow ? (
+                      <div className="mt-7 border-t border-[#E8E4DD] pt-7">
+                        <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">Your details</p>
+                        <p className="mt-2 text-sm leading-relaxed text-[#606064]">We&apos;ll call to confirm your {timeWindow.toLowerCase()} installation slot and final site details.</p>
+                        <div className="mt-5">
+                          <QuoteForm
+                            defaultService="Split System Installation"
+                            defaultMessage={selectionMessage}
+                            defaultPreferredDate={preferredDate}
+                            submitLabel="Book This Installation"
+                            compact
+                            hideMessage
+                            hidePhoto
+                            hidePreferredDate
+                            tight
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-5 rounded-2xl bg-[#FBFAF8] p-4 text-sm leading-relaxed text-[#606064]">
+                        Choose a date and either morning or afternoon to continue.
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
