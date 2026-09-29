@@ -207,7 +207,7 @@ const RINNAI_LOCAL_OFFER_RANGES = [
       { kw: "2.5kW", price: "$1,550", localOfferPrice: "$1,550" },
       { kw: "3.5kW", price: "$1,750", localOfferPrice: "$1,750" },
       { kw: "5.0kW", price: "$2,150", localOfferPrice: "$2,150" },
-      { kw: "7.0kW", price: "$2,550", localOfferPrice: "$2,550" },
+      { kw: "7.0kW", price: "$2,600", localOfferPrice: "$2,600" },
     ],
   },
 ];
@@ -560,7 +560,7 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="mt-3 text-lg text-[#6E6E73]">Other advertised example</p>
                     <p className="font-serif text-4xl text-[#6E6E73] line-through">$3,411.94</p>
                     <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
-                    <p className="font-serif text-5xl text-[#0B0B0B]">$2,550</p>
+                    <p className="font-serif text-5xl text-[#0B0B0B]">$2,600</p>
                     <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">Your SplitsPro price already includes</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m electrical connection*</span>
