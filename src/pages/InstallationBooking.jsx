@@ -5,6 +5,8 @@ import { ArrowLeft, Check, ShieldCheck, Zap, Sun, Clock3, Loader2 } from "lucide
 import QuoteForm from "../components/QuoteForm";
 import { getBookingSlots } from "../lib/api";
 
+// Compact live booking checkout.
+
 const PACKAGES = {
   "rinnai-local": {
     model: "Rinnai Split System",
