@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link, Navigate } from "react-router-dom";
+import { useParams, Link, Navigate, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useLenis } from "lenis/react";
 import {
@@ -240,6 +240,7 @@ const BrandPage = ({ offerMode = null }) => {
   const brand = SPLIT_BRANDS.find((b) => b.slug === (isRinnaiLocalOffer ? "rinnai" : slug));
   const displayRanges = isRinnaiLocalOffer ? RINNAI_LOCAL_OFFER_RANGES : brand?.ranges || [];
   const lenis = useLenis();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
   const [activeOfferSlug, setActiveOfferSlug] = useState("rinnai-local");
   const activeOfferRange = isRinnaiLocalOffer
@@ -250,6 +251,12 @@ const BrandPage = ({ offerMode = null }) => {
 
   const handleBook = (range, priceRow) => {
     const effectivePrice = isRinnaiLocalOffer ? (priceRow.localOfferPrice || getRinnaiLocalSalePrice(priceRow.price)) : priceRow.price;
+
+    if (isRinnaiLocalOffer) {
+      navigate(`/book-installation?product=${encodeURIComponent(range.slug)}&size=${encodeURIComponent(priceRow.kw)}`);
+      return;
+    }
+
     const sel = { rangeName: range.name, displayName: range.displayName || `${brand.brand} ${range.name}`, localBrand: range.localBrand || brand.brand, kw: priceRow.kw, price: effectivePrice, regularPrice: priceRow.price };
     setSelected(sel);
     setTimeout(() => {
@@ -914,6 +921,7 @@ const BrandPage = ({ offerMode = null }) => {
 
 
       {/* Booking form — pre-filled with selection */}
+      {!isRinnaiLocalOffer && (
       <section id="book" className="scroll-mt-24 bg-[#0B0B0B] py-24 sm:py-32" data-testid="brand-book-section">
         <div className="sp-container grid gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
@@ -979,6 +987,7 @@ const BrandPage = ({ offerMode = null }) => {
           </Reveal>
         </div>
       </section>
+      )}
 
       {/* Sibling brand nav — compact */}
       <section className="bg-white py-14">
