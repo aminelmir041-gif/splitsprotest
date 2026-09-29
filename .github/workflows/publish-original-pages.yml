@@ -89,6 +89,7 @@ jobs:
             "split-systems/daikin"
             "split-systems/rinnai"
             "split-systems/rinnai-local-offer"
+            "book-installation"
             "daikin-zena-special"
             "split-systems/mitsubishi"
             "split-systems/mitsubishi-electric"
