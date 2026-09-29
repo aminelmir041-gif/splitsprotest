@@ -6,7 +6,7 @@ import { PHONE_TEL } from "../lib/data";
 
 export const FloatingCTA = () => {
   const location = useLocation();
-  const hideOnLocalOffer = location.pathname === "/split-systems/rinnai-local-offer";
+  const hideOnLocalOffer = location.pathname === "/split-systems/rinnai-local-offer" || location.pathname === "/book-installation";
   const [show, setShow] = useState(false);
 
   useEffect(() => {
