@@ -49,20 +49,22 @@ export const PageHero = ({ overline, title, sub, image, note, imgPos = "object-c
     return (
       <>
         {mobileImageFirst ? (
-          <section className={`${desktopBrand ? "lg:hidden" : ""} overflow-hidden bg-white`}>
+          <section className={`${desktopBrand ? "lg:hidden" : ""} overflow-hidden bg-[#F7F5F1]`}>
             <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9]">
               <motion.img
                 src={image}
                 alt={title}
-                initial={{ scale: 1.04 }}
+                initial={{ scale: 1.035 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 className={`h-full w-full object-cover brightness-[1.08] saturate-[1.04] ${mobileImgPos}`}
               />
             </div>
-            <div className="sp-container pb-2 pt-0 sm:py-7">
-              <Reveal><p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#B58C4E]">{overline}</p></Reveal>
-              <Reveal delay={0.05}><h1 className="mt-1.5 max-w-xl font-serif text-[1.72rem] font-medium leading-[1.01] tracking-tight text-[#0B0B0B] sm:text-4xl text-balance">{title}</h1></Reveal>
+            <div className="relative z-10 -mt-5 px-4 pb-5 sm:-mt-7 sm:px-6">
+              <div className="mx-auto max-w-3xl rounded-[26px] bg-white px-5 pb-6 pt-6 shadow-[0_18px_50px_rgba(11,11,11,0.08)] sm:px-7 sm:pb-8 sm:pt-7">
+                <Reveal><p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#B58C4E]">{overline}</p></Reveal>
+                <Reveal delay={0.05}><h1 className="mt-2 max-w-xl font-serif text-[1.82rem] font-medium leading-[1.01] tracking-tight text-[#0B0B0B] sm:text-4xl text-balance">{title}</h1></Reveal>
+              </div>
             </div>
           </section>
         ) : (
