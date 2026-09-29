@@ -412,20 +412,34 @@ const BrandPage = ({ offerMode = null }) => {
             </div>
           </section>
 
-          <section className="bg-white py-8 sm:py-16" data-testid="local-offer-proof">
+          <section className="bg-[#F7F5F1] py-10 sm:py-16" data-testid="local-offer-proof">
             <div className="sp-container">
               <div className="mx-auto max-w-5xl">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#6E6E73]">Real reviews · Real installs · Real accountability</p>
-                <h2 className="mt-3 max-w-4xl font-serif text-4xl font-medium leading-[1.04] tracking-tight text-[#0B0B0B] sm:text-5xl lg:text-6xl">
-                  Beat the summer rush with a team you can trust.
-                </h2>
-                <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#55555A] sm:text-lg">
-                  Fast is only useful when the job is done properly. You&apos;re trusting someone to drill through your home, run electrical work, mount the system and commission it. We make that easy — and we stand behind what happens after the install, not just the sale.
-                </p>
+                <div className="relative overflow-hidden rounded-[30px] bg-[#FCFBF8] px-5 py-7 shadow-[0_22px_70px_rgba(11,11,11,0.07)] sm:px-8 sm:py-10 lg:px-10">
+                  <div className="relative z-10 pr-0 sm:pr-36 lg:pr-44">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#6E6E73]">Real reviews · Real installs · Real accountability</p>
+                    <h2 className="mt-3 max-w-4xl font-serif text-4xl font-medium leading-[1.04] tracking-tight text-[#0B0B0B] sm:text-5xl lg:text-6xl">
+                      Beat the summer rush with a team you can trust.
+                    </h2>
+                    <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#55555A] sm:text-lg">
+                      Fast is only useful when the job is done properly. You&apos;re trusting someone to drill through your home, run electrical work, mount the system and commission it. We make that easy — and we stand behind what happens after the install, not just the sale.
+                    </p>
+                  </div>
 
-                <div className="mt-6 border-y border-[#DDD9D1] py-6">
-                  <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-                    <div>
+                  <div className="mt-5 flex justify-end sm:absolute sm:right-5 sm:top-6 sm:mt-0 lg:right-8 lg:top-8">
+                    <div className="h-[120px] w-[150px] overflow-hidden rounded-[24px] bg-white shadow-[0_14px_36px_rgba(11,11,11,0.10)] sm:h-[135px] sm:w-[165px]">
+                      <img
+                        src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`}
+                        alt="Beat the summer rush with a team you can trust"
+                        loading="lazy"
+                        data-no-fallback="true"
+                        className="h-full w-full object-cover object-right"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-7 grid gap-7 lg:grid-cols-[1fr_1.08fr] lg:gap-10">
+                    <div className="rounded-[24px] bg-white p-5 shadow-[0_14px_36px_rgba(11,11,11,0.06)] sm:p-6">
                       <GoogleRating />
                       <div className="mt-5 flex items-center gap-1">
                         {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-5 w-5 fill-[#FBBC04] text-[#FBBC04]" />)}
@@ -439,8 +453,8 @@ const BrandPage = ({ offerMode = null }) => {
                       </p>
                     </div>
 
-                    <div className="grid gap-0 border-t border-[#DDD9D1] lg:border-l lg:border-t-0 lg:pl-10">
-                      <div className="border-b border-[#DDD9D1] py-5 lg:pt-0">
+                    <div className="grid gap-0 rounded-[24px] border border-[#E5E1D9] bg-white px-5 sm:px-6">
+                      <div className="border-b border-[#E7E3DC] py-5">
                         <div className="flex items-start gap-3">
                           <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
                           <div>
@@ -449,7 +463,7 @@ const BrandPage = ({ offerMode = null }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="border-b border-[#DDD9D1] py-5">
+                      <div className="border-b border-[#E7E3DC] py-5">
                         <div className="flex items-start gap-3">
                           <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
                           <div>
@@ -458,7 +472,7 @@ const BrandPage = ({ offerMode = null }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="border-b border-[#DDD9D1] py-5">
+                      <div className="border-b border-[#E7E3DC] py-5">
                         <div className="flex items-start gap-3">
                           <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
                           <div>
@@ -467,7 +481,7 @@ const BrandPage = ({ offerMode = null }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="py-5 lg:pb-0">
+                      <div className="py-5">
                         <div className="flex items-start gap-3">
                           <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
                           <div>
@@ -478,30 +492,30 @@ const BrandPage = ({ offerMode = null }) => {
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-8">
-                  <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#6E6E73]">See the standard for yourself</p>
-                  <h3 className="mt-2 font-serif text-3xl font-medium text-[#0B0B0B] sm:text-4xl">Clean work. Properly finished. Built to stay that way.</h3>
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    <figure className="m-0 overflow-hidden rounded-[20px]">
-                      <img
-                        src={brand.installEditorial?.primary?.src}
-                        alt={brand.installEditorial?.primary?.alt || "SplitsPro Rinnai outdoor installation"}
-                        loading="lazy"
-                        data-no-fallback="true"
-                        className="aspect-[4/3] w-full object-cover"
-                      />
-                    </figure>
-                    <figure className="m-0 overflow-hidden rounded-[20px]">
-                      <img
-                        src={brand.installEditorial?.secondary?.src}
-                        alt={brand.installEditorial?.secondary?.alt || "SplitsPro Rinnai indoor installation"}
-                        loading="lazy"
-                        data-no-fallback="true"
-                        className="aspect-[4/3] w-full object-cover"
-                      />
-                    </figure>
+                  <div className="mt-9 border-t border-[#E3DED6] pt-8">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#6E6E73]">See the standard for yourself</p>
+                    <h3 className="mt-2 font-serif text-3xl font-medium text-[#0B0B0B] sm:text-4xl">Clean work. Properly finished. Built to stay that way.</h3>
+                    <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
+                      <figure className="m-0 overflow-hidden rounded-[20px]">
+                        <img
+                          src={brand.installEditorial?.primary?.src}
+                          alt={brand.installEditorial?.primary?.alt || "SplitsPro Rinnai outdoor installation"}
+                          loading="lazy"
+                          data-no-fallback="true"
+                          className="aspect-[4/3] w-full object-cover"
+                        />
+                      </figure>
+                      <figure className="m-0 overflow-hidden rounded-[20px]">
+                        <img
+                          src={brand.installEditorial?.secondary?.src}
+                          alt={brand.installEditorial?.secondary?.alt || "SplitsPro Rinnai indoor installation"}
+                          loading="lazy"
+                          data-no-fallback="true"
+                          className="aspect-[4/3] w-full object-cover"
+                        />
+                      </figure>
+                    </div>
                   </div>
                 </div>
               </div>
