@@ -468,6 +468,15 @@ async def sms_webhook(
     return Response(status_code=200)
 
 
+@app.on_event("startup")
+def verify_booking_storage():
+    try:
+        _booking_redis().ping()
+        logging.info("Booking storage connected")
+    except Exception as exc:
+        logging.exception("Booking storage connection failed: %s", exc)
+
+
 @app.post("/api/upload")
 async def upload(file: UploadFile = File(...)):
     data = await file.read()
