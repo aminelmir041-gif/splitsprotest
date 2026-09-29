@@ -3,3 +3,5 @@ uvicorn==0.25.0
 python-multipart>=0.0.9
 requests>=2.31.0
 pydantic>=2.6.4
+
+redis>=5.0.0
