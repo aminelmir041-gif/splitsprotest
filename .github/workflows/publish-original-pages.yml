@@ -11,6 +11,7 @@ on:
       - 'scripts/add_rinnai_local_offer.py'
       - 'scripts/refine-rinnai-local-offer.py'
       - 'scripts/restore-rinnai-guide.py'
+      - 'scripts/build_hero_dog.py'
       - '.github/assets/rinnai-guide-part*.txt'
       - '.github/assets/rinnai-guide-v2-part*.txt'
       - 'package.json'
@@ -44,6 +45,9 @@ jobs:
 
       - name: Restore approved Rinnai back-to-back guide
         run: python3 scripts/restore-rinnai-guide.py
+
+      - name: Prepare landing artwork tools
+        run: python3 -m pip install --disable-pip-version-check --quiet pillow
 
       - name: Build local offer hero image
         run: python3 scripts/build_hero_dog.py
