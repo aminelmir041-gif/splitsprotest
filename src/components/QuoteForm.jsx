@@ -59,6 +59,9 @@ export const QuoteForm = ({
   onBookingConflict = null,
   successTitle = "Request received",
   successMessage = "",
+  hideEmail = false,
+  requireAddress = false,
+  hideCallButton = false,
   tight = false,
 }) => {
   const [form, setForm] = useState(buildInitial(defaultService, defaultMessage, defaultPreferredDate));
@@ -118,8 +121,8 @@ export const QuoteForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.phone || !form.suburb || !form.service) {
-      toast.error("Please complete your name, phone, suburb and service.");
+    if (!form.name || !form.phone || !form.suburb || !form.service || (requireAddress && !form.address)) {
+      toast.error(requireAddress ? "Please complete your name, phone, suburb and address." : "Please complete your name, phone, suburb and service.");
       return;
     }
     if (form.phone.replace(/\D/g, "").length < 8) {
@@ -182,7 +185,7 @@ export const QuoteForm = ({
   const extraDetails = (
     <div className={`grid ${spacing} ${hidePreferredDate ? "" : "sm:grid-cols-2"}`}>
       <div>
-        <label htmlFor="q-address" className={labelClass}>Street address (optional)</label>
+        <label htmlFor="q-address" className={labelClass}>Street address{requireAddress ? "" : " (optional)"}</label>
         <Input id="q-address" data-testid="quote-address-input" value={form.address}
           onChange={(e) => update("address", e.target.value)} placeholder="Unit / street address" className={fieldClass} />
       </div>
@@ -213,12 +216,14 @@ export const QuoteForm = ({
 
       {compact ? (
         <div className={tight ? "space-y-3.5" : "space-y-5"}>
-          <div className={`grid ${spacing} sm:grid-cols-2`}>
-            <div>
-              <label htmlFor="q-email" className={labelClass}>Email (optional)</label>
-              <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}
-                onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />
-            </div>
+          <div className={`grid ${spacing} ${hideEmail ? "" : "sm:grid-cols-2"}`}>
+            {!hideEmail && (
+              <div>
+                <label htmlFor="q-email" className={labelClass}>Email (optional)</label>
+                <Input id="q-email" type="email" data-testid="quote-email-input" value={form.email}
+                  onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className={fieldClass} />
+              </div>
+            )}
             <div>
               <label htmlFor="q-suburb" className={labelClass}>Suburb</label>
               <Input id="q-suburb" data-testid="quote-suburb-input" value={form.suburb}
@@ -300,10 +305,12 @@ export const QuoteForm = ({
           className={`flex flex-1 items-center justify-center rounded-sm bg-[#C8A46A] px-8 text-sm font-semibold uppercase tracking-wider text-white transition-transform duration-300 hover:scale-[1.01] disabled:opacity-70 ${tight ? "h-12 py-3" : "h-[52px] py-4"}`}>
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : submitLabel}
         </button>
-        <a href={PHONE_TEL} data-testid="quote-call-btn"
-          className={`flex items-center justify-center gap-2 rounded-sm border px-6 text-sm font-semibold uppercase tracking-wider transition-colors ${tight ? "py-3" : "py-4"} ${onDark ? "border-white/40 text-white hover:bg-white/10" : "border-[#1D1D1F] text-[#1D1D1F] hover:bg-[#1D1D1F] hover:text-white"}`}>
-          <Phone className="h-4 w-4" /> Call Now
-        </a>
+        {!hideCallButton && (
+          <a href={PHONE_TEL} data-testid="quote-call-btn"
+            className={`flex items-center justify-center gap-2 rounded-sm border px-6 text-sm font-semibold uppercase tracking-wider transition-colors ${tight ? "py-3" : "py-4"} ${onDark ? "border-white/40 text-white hover:bg-white/10" : "border-[#1D1D1F] text-[#1D1D1F] hover:bg-[#1D1D1F] hover:text-white"}`}>
+            <Phone className="h-4 w-4" /> Call Now
+          </a>
+        )}
       </div>
     </form>
   );
