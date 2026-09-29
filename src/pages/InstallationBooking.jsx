@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 // Dynamic booking page for installed split-system offers.
+// Booking slot selector: customer chooses a preferred date and daypart.
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Check, ShieldCheck, Zap, CalendarDays, Sun, Clock3 } from "lucide-react";
