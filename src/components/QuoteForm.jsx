@@ -9,7 +9,7 @@ import {
 import { SERVICE_OPTIONS, PHONE_TEL } from "../lib/data";
 import { submitQuote, uploadPhoto } from "../lib/api";
 
-const buildInitial = (defaultService = "", defaultMessage = "") => {
+const buildInitial = (defaultService = "", defaultMessage = "", defaultPreferredDate = "") => {
   if (defaultService === "Ducted Air Conditioning" && defaultMessage) {
     const selection = defaultMessage
       .split("\n")
@@ -23,7 +23,7 @@ const buildInitial = (defaultService = "", defaultMessage = "") => {
       email: "",
       suburb: "",
       address: "",
-      preferred_date: "",
+      preferred_date: defaultPreferredDate,
       service: selection ? `${defaultService} | ${selection}` : defaultService,
       message: "",
     };
@@ -35,7 +35,7 @@ const buildInitial = (defaultService = "", defaultMessage = "") => {
     email: "",
     suburb: "",
     address: "",
-    preferred_date: "",
+    preferred_date: defaultPreferredDate,
     service: defaultService,
     message: defaultMessage,
   };
@@ -52,14 +52,25 @@ export const QuoteForm = ({
   compact = false,
   hideMessage = false,
   hidePhoto = false,
+  hidePreferredDate = false,
+  defaultPreferredDate = "",
   tight = false,
 }) => {
-  const [form, setForm] = useState(buildInitial(defaultService, defaultMessage));
+  const [form, setForm] = useState(buildInitial(defaultService, defaultMessage, defaultPreferredDate));
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState("");
   const fileRef = useRef(null);
+
+  useEffect(() => {
+    setForm((current) => ({
+      ...current,
+      service: current.service || defaultService,
+      message: defaultMessage,
+      preferred_date: defaultPreferredDate || current.preferred_date,
+    }));
+  }, [defaultService, defaultMessage, defaultPreferredDate]);
 
   useEffect(() => {
     const handleQuotePreset = (event) => {
@@ -119,7 +130,7 @@ export const QuoteForm = ({
       }
       await submitQuote({ ...form, photo_url });
       setDone(true);
-      setForm(buildInitial(defaultService, defaultMessage));
+      setForm(buildInitial(defaultService, defaultMessage, defaultPreferredDate));
       clearPhoto();
       toast.success("Thank you — we'll be in touch shortly.");
     } catch (err) {
@@ -149,17 +160,19 @@ export const QuoteForm = ({
   const spacing = tight ? "gap-3.5" : "gap-5";
 
   const extraDetails = (
-    <div className={`grid ${spacing} sm:grid-cols-2`}>
+    <div className={`grid ${spacing} ${hidePreferredDate ? "" : "sm:grid-cols-2"}`}>
       <div>
         <label htmlFor="q-address" className={labelClass}>Street address (optional)</label>
         <Input id="q-address" data-testid="quote-address-input" value={form.address}
           onChange={(e) => update("address", e.target.value)} placeholder="Unit / street address" className={fieldClass} />
       </div>
-      <div>
-        <label htmlFor="q-date" className={labelClass}>Preferred date (optional)</label>
-        <Input id="q-date" type="date" data-testid="quote-date-input" value={form.preferred_date}
-          onChange={(e) => update("preferred_date", e.target.value)} className={fieldClass} />
-      </div>
+      {!hidePreferredDate && (
+        <div>
+          <label htmlFor="q-date" className={labelClass}>Preferred date (optional)</label>
+          <Input id="q-date" type="date" data-testid="quote-date-input" value={form.preferred_date}
+            onChange={(e) => update("preferred_date", e.target.value)} className={fieldClass} />
+        </div>
+      )}
     </div>
   );
 
