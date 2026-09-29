@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Phone, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PHONE_TEL } from "../lib/data";
 
 export const FloatingCTA = () => {
+  const location = useLocation();
+  const hideOnLocalOffer = location.pathname === "/split-systems/rinnai-local-offer";
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    if (hideOnLocalOffer) {
+      setShow(false);
+      return undefined;
+    }
+
     const onScroll = () => {
       // Appear only once the hero has completely scrolled off screen (hero is full viewport height).
       const threshold = window.innerHeight * 0.95;
@@ -20,7 +27,9 @@ export const FloatingCTA = () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [hideOnLocalOffer]);
+
+  if (hideOnLocalOffer) return null;
 
   const ease = [0.16, 1, 0.3, 1];
 
