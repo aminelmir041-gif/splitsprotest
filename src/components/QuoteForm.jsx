@@ -7,7 +7,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "./ui/select";
 import { SERVICE_OPTIONS, PHONE_TEL } from "../lib/data";
-import { submitQuote, uploadPhoto } from "../lib/api";
+import { submitBooking, submitQuote, uploadPhoto } from "../lib/api";
 
 const buildInitial = (defaultService = "", defaultMessage = "", defaultPreferredDate = "") => {
   if (defaultService === "Ducted Air Conditioning" && defaultMessage) {
@@ -54,6 +54,11 @@ export const QuoteForm = ({
   hidePhoto = false,
   hidePreferredDate = false,
   defaultPreferredDate = "",
+  bookingDate = "",
+  bookingWindow = "",
+  onBookingConflict = null,
+  successTitle = "Request received",
+  successMessage = "",
   tight = false,
 }) => {
   const [form, setForm] = useState(buildInitial(defaultService, defaultMessage, defaultPreferredDate));
@@ -128,13 +133,28 @@ export const QuoteForm = ({
         const res = await uploadPhoto(photo);
         photo_url = res.url;
       }
-      await submitQuote({ ...form, photo_url });
+      if (bookingDate && bookingWindow) {
+        await submitBooking({
+          ...form,
+          photo_url,
+          booking_date: bookingDate,
+          booking_window: bookingWindow,
+          preferred_date: bookingDate,
+        });
+      } else {
+        await submitQuote({ ...form, photo_url });
+      }
       setDone(true);
       setForm(buildInitial(defaultService, defaultMessage, defaultPreferredDate));
       clearPhoto();
-      toast.success("Thank you — we'll be in touch shortly.");
+      toast.success(bookingDate && bookingWindow ? "Installation time saved." : "Thank you — we'll be in touch shortly.");
     } catch (err) {
-      toast.error("Something went wrong. Please call us instead.");
+      if (bookingDate && bookingWindow && err?.response?.status === 409) {
+        toast.error("That time has just filled up. We’ve refreshed the next available times.");
+        if (onBookingConflict) onBookingConflict(err?.response?.data?.detail);
+      } else {
+        toast.error("Something went wrong. Please call us instead.");
+      }
     } finally {
       setLoading(false);
     }
@@ -146,8 +166,8 @@ export const QuoteForm = ({
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#C8A46A] text-white">
           <Check className="h-7 w-7" />
         </div>
-        <h3 className={`mt-6 font-serif text-2xl ${onDark ? "text-white" : "text-[#1D1D1F]"}`}>Request received</h3>
-        <p className={`mt-2 ${onDark ? "text-white/70" : "text-[#6E6E73]"}`}>{compact ? "We’ll call you shortly to confirm the details." : "One of our team will call you shortly to arrange your free quote and plan."}</p>
+        <h3 className={`mt-6 font-serif text-2xl ${onDark ? "text-white" : "text-[#1D1D1F]"}`}>{successTitle}</h3>
+        <p className={`mt-2 ${onDark ? "text-white/70" : "text-[#6E6E73]"}`}>{successMessage || (compact ? "We’ll call you shortly to confirm the details." : "One of our team will call you shortly to arrange your free quote and plan.")}</p>
         <button onClick={() => setDone(false)} data-testid="quote-another-btn"
           className="mt-6 text-sm font-semibold text-[#C8A46A] link-line">
           Submit another request
