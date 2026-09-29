@@ -4,7 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, field_validator
 from typing import Optional
 from pathlib import Path
-from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+from threading import Lock
+from datetime import date, datetime, timedelta, timezone
 import json
 import os
 import re
@@ -14,6 +16,7 @@ from .crm_admin import assign_client_owner, client_hubspot_url, get_active_owner
 from .lead_integrations import (
     derive_lead_source,
     get_hubspot_clients,
+    get_booking_slot_counts,
     notify_quote,
     record_outbound_sms_to_hubspot,
     record_sms_event_to_hubspot,
@@ -79,6 +82,28 @@ class QuoteCreate(BaseModel):
         return value.strip()
 
 
+
+class BookingCreate(QuoteCreate):
+    booking_date: str
+    booking_window: str
+
+    @field_validator("booking_date")
+    @classmethod
+    def valid_booking_date(cls, value):
+        try:
+            date.fromisoformat(value)
+        except Exception as exc:
+            raise ValueError("Please choose a valid installation date") from exc
+        return value
+
+    @field_validator("booking_window")
+    @classmethod
+    def valid_booking_window(cls, value):
+        if value not in {"Morning", "Afternoon"}:
+            raise ValueError("Please choose morning or afternoon")
+        return value
+
+
 class SmsCreate(BaseModel):
     to: str
     body: str
@@ -127,6 +152,124 @@ def health():
         "sms_provider": "infinireach",
         "sms_configured": sms_configured(),
         "sms_webhook_configured": bool((os.environ.get("INFINIREACH_WEBHOOK_SECRET") or "").strip()),
+    }
+
+
+
+BOOKING_TIMEZONE = ZoneInfo(os.environ.get("BOOKING_TIMEZONE", "Australia/Sydney"))
+BOOKING_SLOT_CAPACITY = max(1, int(os.environ.get("BOOKING_SLOT_CAPACITY", "1")))
+BOOKING_LOOKAHEAD_DAYS = max(2, min(30, int(os.environ.get("BOOKING_LOOKAHEAD_DAYS", "14"))))
+BOOKING_WORKDAYS = {
+    int(value)
+    for value in (os.environ.get("BOOKING_WORKDAYS", "0,1,2,3,4,5,6").split(","))
+    if value.strip().isdigit() and 0 <= int(value) <= 6
+}
+BOOKING_SLOT_LOCK = Lock()
+
+
+def _available_booking_slots(limit: int = 8):
+    counts = get_booking_slot_counts()
+    today_local = datetime.now(BOOKING_TIMEZONE).date()
+    slots = []
+
+    for offset in range(1, BOOKING_LOOKAHEAD_DAYS + 1):
+        job_date = today_local + timedelta(days=offset)
+        if job_date.weekday() not in BOOKING_WORKDAYS:
+            continue
+
+        within_two_days = offset <= 2
+        for window in ("Morning", "Afternoon"):
+            used = counts.get((job_date.isoformat(), window), 0)
+            if used >= BOOKING_SLOT_CAPACITY:
+                continue
+            slots.append(
+                {
+                    "date": job_date.isoformat(),
+                    "window": window,
+                    "remaining": BOOKING_SLOT_CAPACITY - used,
+                    "within_two_days": within_two_days,
+                }
+            )
+            if len(slots) >= limit:
+                return slots
+
+    return slots
+
+
+@app.get("/api/booking-slots")
+def booking_slots(limit: int = 8):
+    safe_limit = max(1, min(int(limit), 20))
+    try:
+        slots = _available_booking_slots(safe_limit)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        logging.exception("Could not load booking availability: %s", exc)
+        raise HTTPException(status_code=502, detail="Could not load installation availability") from exc
+
+    return {
+        "timezone": str(BOOKING_TIMEZONE),
+        "capacity_per_slot": BOOKING_SLOT_CAPACITY,
+        "slots": slots,
+    }
+
+
+@app.post("/api/bookings")
+def create_booking(payload: BookingCreate, background_tasks: BackgroundTasks):
+    try:
+        requested_date = date.fromisoformat(payload.booking_date)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="Please choose a valid installation date") from exc
+
+    today_local = datetime.now(BOOKING_TIMEZONE).date()
+    if requested_date <= today_local:
+        raise HTTPException(status_code=400, detail="Please choose a future installation date")
+    if requested_date.weekday() not in BOOKING_WORKDAYS:
+        raise HTTPException(status_code=400, detail="That day is not available for installation")
+
+    with BOOKING_SLOT_LOCK:
+        try:
+            counts = get_booking_slot_counts()
+        except Exception as exc:
+            logging.exception("Could not verify booking slot: %s", exc)
+            raise HTTPException(status_code=502, detail="Could not verify that installation time") from exc
+
+        slot_key = (payload.booking_date, payload.booking_window)
+        if counts.get(slot_key, 0) >= BOOKING_SLOT_CAPACITY:
+            try:
+                alternatives = _available_booking_slots(6)
+            except Exception:
+                alternatives = []
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "message": "That installation time has just filled up.",
+                    "slots": alternatives,
+                },
+            )
+
+        lead = payload.model_dump()
+        lead["preferred_date"] = payload.booking_date
+        lead["id"] = str(uuid.uuid4())
+        lead["created_at"] = now_iso()
+        lead["lead_source"] = derive_lead_source(lead)
+
+        crm_result = sync_quote_to_hubspot(lead)
+        if not crm_result:
+            raise HTTPException(
+                status_code=503,
+                detail="We could not lock in that installation time. Please try again.",
+            )
+
+        lead["crm_saved"] = True
+        lead["hubspot_contact_id"] = crm_result.get("contact_id", "")
+        lead["hubspot_deal_id"] = crm_result.get("deal_id", "")
+        background_tasks.add_task(notify_quote, lead)
+
+    return {
+        **lead,
+        "accepted": True,
+        "booking_confirmed": True,
     }
 
 
