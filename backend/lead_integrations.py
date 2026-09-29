@@ -1,6 +1,7 @@
 import hmac
 import logging
 import os
+import re
 import smtplib
 from datetime import datetime, timezone
 from email.message import EmailMessage
@@ -324,6 +325,57 @@ def _associate_deal_contact(token: str, deal_id: str, contact_id: str) -> None:
     _associate_objects(token, "deals", deal_id, "contacts", contact_id)
 
 
+
+BOOKING_SLOT_PREFIX = "SPLITSPRO_BOOKING"
+_BOOKING_SLOT_RE = re.compile(r"^SPLITSPRO_BOOKING\\|(?P<date>\\d{4}-\\d{2}-\\d{2})\\|(?P<window>Morning|Afternoon)$")
+
+
+def booking_slot_marker(booking_date: str, booking_window: str) -> str:
+    return f"{BOOKING_SLOT_PREFIX}|{booking_date}|{booking_window}"
+
+
+def get_booking_slot_counts(limit: int = 500) -> Dict[tuple[str, str], int]:
+    token = _hubspot_token()
+    if not token:
+        raise RuntimeError("HubSpot is not configured")
+
+    counts: Dict[tuple[str, str], int] = {}
+    after = None
+    fetched = 0
+    while fetched < limit:
+        page_limit = min(200, limit - fetched)
+        payload = {
+            "filterGroups": [{"filters": [{"propertyName": "hs_next_step", "operator": "HAS_PROPERTY"}]}],
+            "properties": ["hs_next_step", "dealstage"],
+            "sorts": ["-createdate"],
+            "limit": page_limit,
+        }
+        if after is not None:
+            payload["after"] = after
+
+        data = _hubspot_request("POST", "/crm/v3/objects/deals/search", token, json=payload)
+        results = data.get("results") or []
+        if not results:
+            break
+
+        for item in results:
+            next_step = ((item.get("properties") or {}).get("hs_next_step") or "").strip()
+            match = _BOOKING_SLOT_RE.match(next_step)
+            if not match:
+                continue
+            key = (match.group("date"), match.group("window"))
+            counts[key] = counts.get(key, 0) + 1
+
+        fetched += len(results)
+        paging = data.get("paging") or {}
+        nxt = ((paging.get("next") or {}).get("after"))
+        if not nxt:
+            break
+        after = nxt
+
+    return counts
+
+
 def sync_quote_to_hubspot(lead: Dict) -> Optional[Dict[str, str]]:
     token = _hubspot_token()
     if not token:
@@ -335,13 +387,17 @@ def sync_quote_to_hubspot(lead: Dict) -> Optional[Dict[str, str]]:
         pipeline_id, stage_id = _default_deal_pipeline_and_stage(token)
         owner_id = (lead.get("owner_id") or os.environ.get("HUBSPOT_OWNER_ID") or "").strip()
         preferred_date = (lead.get("preferred_date") or "").strip()
+        booking_date = (lead.get("booking_date") or "").strip()
+        booking_window = (lead.get("booking_window") or "").strip()
         properties = {
             "dealname": f"{lead.get('service', 'Website enquiry')} — {lead.get('name', '')} — {lead.get('suburb', '')}"[:255],
             "pipeline": pipeline_id,
             "dealstage": stage_id,
             "description": _deal_description(lead),
         }
-        if preferred_date:
+        if booking_date and booking_window:
+            properties["hs_next_step"] = booking_slot_marker(booking_date, booking_window)
+        elif preferred_date:
             properties["hs_next_step"] = f"Preferred job date: {preferred_date}"
         if owner_id:
             properties["hubspot_owner_id"] = owner_id
