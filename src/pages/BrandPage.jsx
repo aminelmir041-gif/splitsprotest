@@ -544,15 +544,15 @@ const BrandPage = ({ offerMode = null }) => {
 
                   <div>
                     <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#6E6E73]">Daikin Cora 7.1kW installed</p>
-                    <p className="mt-3 text-lg text-[#6E6E73]">Other advertised examples</p>
-                    <p className="font-serif text-4xl text-[#6E6E73]">$2,800–$3,411.94</p>
+                    <p className="mt-3 text-lg text-[#6E6E73]">Other advertised example</p>
+                    <p className="font-serif text-4xl text-[#6E6E73] line-through">$3,411.94</p>
                     <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
                     <p className="font-serif text-5xl text-[#0B0B0B]">$2,550</p>
                   </div>
                 </div>
 
                 <p className="mt-4 text-[10px] leading-relaxed text-[#8A8A8E]">
-                  Price check: Ozcon Air listed a Rinnai 7kW supplied &amp; installed at $2,799; BD Air listed Daikin Cora 7.1kW at $2,800; Hewitt Trade Services listed Daikin Cora 7.1kW at $3,411.94. Checked 28 Sep 2026. Installation conditions and models vary.
+                  Price check: Ozcon Air listed a Rinnai 7kW supplied &amp; installed at $2,799; Hewitt Trade Services listed Daikin Cora 7.1kW supplied &amp; installed at $3,411.94. Both examples include standard electrical work under their advertised installation conditions. Checked 29 Sep 2026. Installation conditions and models vary.
                 </p>
 
                 <p className="mt-12 font-serif text-3xl text-[#0B0B0B] sm:text-4xl">Now pick the size that suits your home.</p>
