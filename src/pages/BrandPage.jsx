@@ -412,7 +412,7 @@ const BrandPage = ({ offerMode = null }) => {
             </div>
           </section>
 
-          <section className="bg-[#F8F7F4] py-12 sm:py-18" data-testid="local-offer-proof">
+          <section className="bg-white py-8 sm:py-16" data-testid="local-offer-proof">
             <div className="sp-container">
               <div className="mx-auto max-w-5xl">
                 <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#6E6E73]">Real reviews · Real installs · Real accountability</p>
@@ -423,7 +423,7 @@ const BrandPage = ({ offerMode = null }) => {
                   Fast is only useful when the job is done properly. You&apos;re trusting someone to drill through your home, run electrical work, mount the system and commission it. We make that easy — and we stand behind what happens after the install, not just the sale.
                 </p>
 
-                <div className="mt-8 border-y border-[#DDD9D1] py-7">
+                <div className="mt-6 border-y border-[#DDD9D1] py-6">
                   <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
                     <div>
                       <GoogleRating />
@@ -480,7 +480,7 @@ const BrandPage = ({ offerMode = null }) => {
                   </div>
                 </div>
 
-                <div className="mt-10">
+                <div className="mt-8">
                   <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#6E6E73]">See the standard for yourself</p>
                   <h3 className="mt-2 font-serif text-3xl font-medium text-[#0B0B0B] sm:text-4xl">Clean work. Properly finished. Built to stay that way.</h3>
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">

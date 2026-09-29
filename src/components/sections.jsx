@@ -60,9 +60,9 @@ export const PageHero = ({ overline, title, sub, image, note, imgPos = "object-c
                 className={`h-full w-full object-cover brightness-[1.08] saturate-[1.04] ${mobileImgPos}`}
               />
             </div>
-            <div className="sp-container pb-3 pt-2 sm:py-8">
-              <Reveal><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#B58C4E]">{overline}</p></Reveal>
-              <Reveal delay={0.05}><h1 className="mt-2 max-w-xl font-serif text-[2rem] font-medium leading-[1.02] tracking-tight text-[#0B0B0B] sm:text-4xl text-balance">{title}</h1></Reveal>
+            <div className="sp-container pb-2 pt-0 sm:py-7">
+              <Reveal><p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#B58C4E]">{overline}</p></Reveal>
+              <Reveal delay={0.05}><h1 className="mt-1.5 max-w-xl font-serif text-[1.72rem] font-medium leading-[1.01] tracking-tight text-[#0B0B0B] sm:text-4xl text-balance">{title}</h1></Reveal>
             </div>
           </section>
         ) : (
