@@ -33,7 +33,7 @@ import { SPLIT_BRANDS, FEATURED_REVIEW, PHONE_TEL } from "../lib/data";
 import { DAIKIN_COMPACT_FEATURES, DAIKIN_STREAMER_FOOTNOTE } from "../lib/daikinCompactFeatures";
 
 const RINNAI_LOCAL_HERO_IMAGE = `${process.env.PUBLIC_URL || ""}/landing/overheated-bulldog-hero.webp`;
-const SOCIAL_PROOF_DOG_IMAGE = `${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`;
+const SOCIAL_PROOF_DOG_IMAGE = `${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog-transparent.webp`;
 // Local offer hero artwork. Mobile uses the bright image-first layout.
 
 const DAIKIN_ICON_MAP = {
@@ -429,15 +429,13 @@ const BrandPage = ({ offerMode = null }) => {
                   </div>
 
                   <div className="mt-5 flex justify-end sm:absolute sm:right-5 sm:top-6 sm:mt-0 lg:right-8 lg:top-8">
-                    <div className="w-[170px] overflow-hidden rounded-[22px] bg-[#0B0B0B] shadow-[0_16px_38px_rgba(11,11,11,0.18)] sm:w-[190px]">
-                      <img
-                        src={SOCIAL_PROOF_DOG_IMAGE}
-                        alt="Beat the summer rush with a team you can trust"
-                        loading="lazy"
-                        data-no-fallback="true"
-                        className="block aspect-[3/2] h-auto w-full object-contain"
-                      />
-                    </div>
+                    <img
+                      src={SOCIAL_PROOF_DOG_IMAGE}
+                      alt="Beat the summer rush with a team you can trust"
+                      loading="lazy"
+                      data-no-fallback="true"
+                      className="block h-auto w-[190px] object-contain drop-shadow-[0_16px_26px_rgba(11,11,11,0.14)] sm:w-[215px]"
+                    />
                   </div>
 
                   <div className="mt-7 grid gap-7 lg:grid-cols-[1fr_1.08fr] lg:gap-10">
