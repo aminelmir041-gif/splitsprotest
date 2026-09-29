@@ -428,13 +428,13 @@ const BrandPage = ({ offerMode = null }) => {
                   </div>
 
                   <div className="mt-5 flex justify-end sm:absolute sm:right-5 sm:top-6 sm:mt-0 lg:right-8 lg:top-8">
-                    <div className="h-[120px] w-[150px] overflow-hidden rounded-[24px] bg-white shadow-[0_14px_36px_rgba(11,11,11,0.10)] sm:h-[135px] sm:w-[165px]">
+                    <div className="w-[170px] overflow-hidden rounded-[22px] bg-[#0B0B0B] shadow-[0_16px_38px_rgba(11,11,11,0.18)] sm:w-[190px]">
                       <img
                         src={`${process.env.PUBLIC_URL || ""}/landing/rinnai-google-dog.webp`}
                         alt="Beat the summer rush with a team you can trust"
                         loading="lazy"
                         data-no-fallback="true"
-                        className="h-full w-full object-cover object-right"
+                        className="block aspect-[3/2] h-auto w-full object-contain"
                       />
                     </div>
                   </div>
@@ -536,7 +536,7 @@ const BrandPage = ({ offerMode = null }) => {
                   Same brands. Same size class. Very different numbers.
                 </h2>
                 <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#5F5F63]">
-                  These are current advertised installed examples we found online. Different installers use different models, inclusions and site conditions — so this is a price check, not a claim that every quote is identical.
+                  These are current advertised installed examples we found online. Different installers use different models, inclusions and site conditions — so this is a price check, not a claim that every quote is identical. With SplitsPro, the value is in what the installed price already includes.
                 </p>
 
                 <div className="mt-10 grid gap-10 border-y border-[#E5E5EA] py-8 sm:grid-cols-2">
@@ -546,6 +546,7 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="font-serif text-4xl text-[#6E6E73] line-through">$2,799</p>
                     <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
                     <p className="font-serif text-5xl text-[#0B0B0B]">$2,300</p>
+                    <p className="mt-3 max-w-sm text-sm font-semibold leading-relaxed text-[#3A3A3C]">Includes wall bracket, isolation switch, up to 20m power circuit if required, up to 3m pipework, labour &amp; commissioning.</p>
                   </div>
 
                   <div>
@@ -554,6 +555,7 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="font-serif text-4xl text-[#6E6E73] line-through">$3,411.94</p>
                     <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
                     <p className="font-serif text-5xl text-[#0B0B0B]">$2,550</p>
+                    <p className="mt-3 max-w-sm text-sm font-semibold leading-relaxed text-[#3A3A3C]">Includes wall bracket, isolation switch, up to 20m power circuit if required, up to 3m pipework, labour &amp; commissioning.</p>
                   </div>
                 </div>
 
