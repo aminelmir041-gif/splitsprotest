@@ -11,12 +11,13 @@ import json
 import os
 import re
 import uuid
+import redis
+from redis.exceptions import WatchError
 
 from .crm_admin import assign_client_owner, client_hubspot_url, get_active_owners
 from .lead_integrations import (
     derive_lead_source,
     get_hubspot_clients,
-    get_booking_slot_counts,
     notify_quote,
     record_outbound_sms_to_hubspot,
     record_sms_event_to_hubspot,
@@ -164,13 +165,82 @@ BOOKING_WORKDAYS = {
     for value in (os.environ.get("BOOKING_WORKDAYS", "0,1,2,3,4,5,6").split(","))
     if value.strip().isdigit() and 0 <= int(value) <= 6
 }
-BOOKING_SLOT_LOCK = Lock()
+BOOKING_BLOCKS_FILE = Path(__file__).parent / "booking_blocks.json"
+
+
+def _booking_redis():
+    redis_url = (os.environ.get("REDIS_URL") or "").strip()
+    if not redis_url:
+        raise RuntimeError("Booking storage is not configured")
+    return redis.Redis.from_url(redis_url, decode_responses=True, socket_timeout=5, socket_connect_timeout=5)
+
+
+def _slot_key(booking_date: str, booking_window: str) -> str:
+    return f"splitspro:booking:{booking_date}:{booking_window.lower()}"
+
+
+def _manual_blocks() -> set[tuple[str, str]]:
+    try:
+        payload = json.loads(BOOKING_BLOCKS_FILE.read_text())
+    except Exception:
+        payload = {"blocked": []}
+    blocked = set()
+    for item in payload.get("blocked", []):
+        booking_date = str(item.get("date") or "").strip()
+        booking_window = str(item.get("window") or "").strip()
+        if booking_date and booking_window in {"Morning", "Afternoon"}:
+            blocked.add((booking_date, booking_window))
+    return blocked
+
+
+def _slot_count(client, booking_date: str, booking_window: str) -> int:
+    try:
+        return int(client.get(_slot_key(booking_date, booking_window)) or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _reserve_booking_slot(booking_date: str, booking_window: str) -> bool:
+    client = _booking_redis()
+    key = _slot_key(booking_date, booking_window)
+    while True:
+        try:
+            with client.pipeline() as pipe:
+                pipe.watch(key)
+                current = int(pipe.get(key) or 0)
+                if current >= BOOKING_SLOT_CAPACITY:
+                    pipe.unwatch()
+                    return False
+                pipe.multi()
+                pipe.incr(key)
+                pipe.expire(key, 60 * 60 * 24 * 35)
+                pipe.execute()
+                return True
+        except WatchError:
+            continue
+
+
+def _release_booking_slot(booking_date: str, booking_window: str) -> None:
+    client = _booking_redis()
+    key = _slot_key(booking_date, booking_window)
+    try:
+        value = int(client.get(key) or 0)
+        if value <= 1:
+            client.delete(key)
+        else:
+            client.decr(key)
+    except Exception:
+        logging.exception("Could not release booking slot %s %s", booking_date, booking_window)
 
 
 def _available_booking_slots(limit: int = 8):
-    counts = get_booking_slot_counts()
+    client = _booking_redis()
+    blocked = _manual_blocks()
     today_local = datetime.now(BOOKING_TIMEZONE).date()
     slots = []
+
+    # Ping once so failures are returned immediately instead of showing false availability.
+    client.ping()
 
     for offset in range(1, BOOKING_LOOKAHEAD_DAYS + 1):
         job_date = today_local + timedelta(days=offset)
@@ -179,7 +249,10 @@ def _available_booking_slots(limit: int = 8):
 
         within_two_days = offset <= 2
         for window in ("Morning", "Afternoon"):
-            used = counts.get((job_date.isoformat(), window), 0)
+            key = (job_date.isoformat(), window)
+            if key in blocked:
+                continue
+            used = _slot_count(client, *key)
             if used >= BOOKING_SLOT_CAPACITY:
                 continue
             slots.append(
@@ -227,44 +300,50 @@ def create_booking(payload: BookingCreate, background_tasks: BackgroundTasks):
     if requested_date.weekday() not in BOOKING_WORKDAYS:
         raise HTTPException(status_code=400, detail="That day is not available for installation")
 
-    with BOOKING_SLOT_LOCK:
+    if (payload.booking_date, payload.booking_window) in _manual_blocks():
         try:
-            counts = get_booking_slot_counts()
-        except Exception as exc:
-            logging.exception("Could not verify booking slot: %s", exc)
-            raise HTTPException(status_code=502, detail="Could not verify that installation time") from exc
+            alternatives = _available_booking_slots(6)
+        except Exception:
+            alternatives = []
+        raise HTTPException(
+            status_code=409,
+            detail={"message": "That installation time is no longer available.", "slots": alternatives},
+        )
 
-        slot_key = (payload.booking_date, payload.booking_window)
-        if counts.get(slot_key, 0) >= BOOKING_SLOT_CAPACITY:
-            try:
-                alternatives = _available_booking_slots(6)
-            except Exception:
-                alternatives = []
-            raise HTTPException(
-                status_code=409,
-                detail={
-                    "message": "That installation time has just filled up.",
-                    "slots": alternatives,
-                },
-            )
+    try:
+        reserved = _reserve_booking_slot(payload.booking_date, payload.booking_window)
+    except Exception as exc:
+        logging.exception("Could not access booking storage: %s", exc)
+        raise HTTPException(status_code=503, detail="Live booking is temporarily unavailable") from exc
 
-        lead = payload.model_dump()
-        lead["preferred_date"] = payload.booking_date
-        lead["id"] = str(uuid.uuid4())
-        lead["created_at"] = now_iso()
-        lead["lead_source"] = derive_lead_source(lead)
+    if not reserved:
+        try:
+            alternatives = _available_booking_slots(6)
+        except Exception:
+            alternatives = []
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "message": "That installation time has just filled up.",
+                "slots": alternatives,
+            },
+        )
 
+    lead = payload.model_dump()
+    lead["preferred_date"] = payload.booking_date
+    lead["id"] = str(uuid.uuid4())
+    lead["created_at"] = now_iso()
+    lead["lead_source"] = derive_lead_source(lead)
+
+    try:
         crm_result = sync_quote_to_hubspot(lead)
-        if not crm_result:
-            raise HTTPException(
-                status_code=503,
-                detail="We could not lock in that installation time. Please try again.",
-            )
-
-        lead["crm_saved"] = True
-        lead["hubspot_contact_id"] = crm_result.get("contact_id", "")
-        lead["hubspot_deal_id"] = crm_result.get("deal_id", "")
+        lead["crm_saved"] = bool(crm_result)
+        if crm_result:
+            lead["hubspot_contact_id"] = crm_result.get("contact_id", "")
+            lead["hubspot_deal_id"] = crm_result.get("deal_id", "")
         background_tasks.add_task(notify_quote, lead)
+    except Exception as exc:
+        logging.exception("Booking notification/CRM step failed: %s", exc)
 
     return {
         **lead,
