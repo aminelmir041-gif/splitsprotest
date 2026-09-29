@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+
+// Dynamic booking page for installed split-system offers.
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, ArrowUpRight, Check, ShieldCheck, Zap } from "lucide-react";
