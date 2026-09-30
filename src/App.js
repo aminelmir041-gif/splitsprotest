@@ -29,6 +29,7 @@ import Contact from "@/pages/Contact";
 import BrandPage from "@/pages/BrandPage";
 import ZenaSpecial from "@/pages/ZenaSpecial";
 import InstallationBooking from "@/pages/InstallationBooking";
+import GoogleAdsLanding from "@/pages/GoogleAdsLanding";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -64,6 +65,7 @@ const AnimatedRoutes = () => {
           <Route path="/split-systems/mitsubishi-heavy-industries" element={<Navigate to="/split-systems/mitsubishi" replace />} />
           <Route path="/split-systems/rinnai-local-offer" element={<BrandPage offerMode="rinnai-local" />} />
           <Route path="/book-installation" element={<InstallationBooking />} />
+          <Route path="/split-system-installation-sydney" element={<GoogleAdsLanding />} />
           <Route path="/daikin-zena-special" element={<ZenaSpecial />} />
           <Route path="/split-systems/:slug" element={<BrandPage />} />
           <Route path="/ducted" element={<Ducted />} />
