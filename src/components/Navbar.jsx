@@ -70,7 +70,7 @@ export const Navbar = () => {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <NavLink
-            to="/deals"
+            to="/split-systems/rinnai-local-offer"
             data-testid="nav-deals-btn"
             className={({ isActive }) =>
               `inline-flex h-9 items-center justify-center rounded-full border px-3 text-[11px] font-bold uppercase tracking-[0.12em] transition-all sm:h-10 sm:px-4 sm:text-xs ${
@@ -120,7 +120,7 @@ export const Navbar = () => {
           >
             <div className="sp-container grid gap-0.5 py-4">
               <NavLink
-                to="/deals"
+                to="/split-systems/rinnai-local-offer"
                 data-testid="mobile-deals-link"
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
