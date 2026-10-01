@@ -85,6 +85,7 @@ jobs:
 
           ROUTES=(
             "about"
+            "deals"
             "split-systems"
             "split-systems/daikin"
             "split-systems/rinnai"
@@ -125,7 +126,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Pages Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/App.js src/pages/BrandPage.jsx src/pages/ZenaSpecial.jsx src/pages/InstallationBooking.jsx public/installs/rinnai-back-to-back-guide.webp public/landing/overheated-bulldog-hero.webp static installs landing asset-manifest.json about split-systems book-installation daikin-zena-special ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/App.js src/components/Navbar.jsx src/pages/Deals.jsx src/pages/BrandPage.jsx src/pages/ZenaSpecial.jsx src/pages/InstallationBooking.jsx public/installs/rinnai-back-to-back-guide.webp public/landing/overheated-bulldog-hero.webp static installs landing asset-manifest.json about deals split-systems book-installation daikin-zena-special ducted cleaning split-system-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
 
           if git diff --cached --quiet; then
             echo "Original pages are already published"

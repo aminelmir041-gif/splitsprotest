@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useParams, Link, Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useLenis } from "lenis/react";
 import {
@@ -241,11 +241,32 @@ const BrandPage = ({ offerMode = null }) => {
   const displayRanges = isRinnaiLocalOffer ? RINNAI_LOCAL_OFFER_RANGES : brand?.ranges || [];
   const lenis = useLenis();
   const navigate = useNavigate();
+  const location = useLocation();
   const [selected, setSelected] = useState(null);
   const [activeOfferSlug, setActiveOfferSlug] = useState("rinnai-local");
   const activeOfferRange = isRinnaiLocalOffer
     ? (displayRanges.find((range) => range.slug === activeOfferSlug) || displayRanges[0])
     : null;
+
+  // Handle direct links from the Deals hub, including navigation between Rinnai and Daikin Cora.
+  useEffect(() => {
+    if (!isRinnaiLocalOffer || !location.hash) return undefined;
+    const targetId = location.hash.replace(/^#/, "");
+    const prefix = "range-";
+    const rangeSlug = targetId.startsWith(prefix) ? targetId.slice(prefix.length) : null;
+    if (rangeSlug && displayRanges.some((range) => range.slug === rangeSlug)) {
+      setActiveOfferSlug(rangeSlug);
+    }
+
+    const timer = window.setTimeout(() => {
+      const el = document.getElementById(targetId);
+      if (!el) return;
+      if (lenis) lenis.scrollTo(el, { offset: -90, immediate: true });
+      else el.scrollIntoView({ behavior: "auto", block: "start" });
+    }, 120);
+
+    return () => window.clearTimeout(timer);
+  }, [isRinnaiLocalOffer, location.hash, lenis]);
 
   if (!brand) return <Navigate to="/split-systems" replace />;
 
