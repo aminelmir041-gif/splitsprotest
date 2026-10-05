@@ -80,6 +80,7 @@ const AnimatedRoutes = () => {
           <Route path="/service-areas" element={<ServiceAreas />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
