@@ -5,7 +5,7 @@ import { ArrowLeft, Check, ShieldCheck, Zap, Sun, Clock3, Loader2 } from "lucide
 import QuoteForm from "../components/QuoteForm";
 import { getBookingSlots } from "../lib/api";
 
-// Compact live booking checkout.
+// Compact live booking checkout.\n\nconst BLOCKED_INSTALLATION_DATES = new Set(["2026-10-06", "2026-10-09"]);
 
 const PACKAGES = {
   "rinnai-local": {
@@ -50,7 +50,7 @@ export default function InstallationBooking() {
     setSlotsError("");
     try {
       const data = fallbackSlots ? { slots: fallbackSlots } : await getBookingSlots(12);
-      setSlots(Array.isArray(data?.slots) ? data.slots : []);
+      setSlots(Array.isArray(data?.slots) ? data.slots.filter((slot) => !BLOCKED_INSTALLATION_DATES.has(slot.date)) : []);
     } catch (err) {
       setSlots([]);
       setSlotsError("Live times are taking a moment to load.");
