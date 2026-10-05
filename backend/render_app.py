@@ -189,7 +189,12 @@ def _manual_blocks() -> set[tuple[str, str]]:
     for item in payload.get("blocked", []):
         booking_date = str(item.get("date") or "").strip()
         booking_window = str(item.get("window") or "").strip()
-        if booking_date and booking_window in {"Morning", "Afternoon"}:
+        if not booking_date:
+            continue
+        if booking_window == "All":
+            blocked.add((booking_date, "Morning"))
+            blocked.add((booking_date, "Afternoon"))
+        elif booking_window in {"Morning", "Afternoon"}:
             blocked.add((booking_date, booking_window))
     return blocked
 
