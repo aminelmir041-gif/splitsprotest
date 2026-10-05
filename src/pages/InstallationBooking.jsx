@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Check, ShieldCheck, Zap, Sun, Clock3, Loader2 } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
 import { getBookingSlots } from "../lib/api";
 
-// Compact live booking checkout.\n\nconst BLOCKED_INSTALLATION_DATES = new Set(["2026-10-06", "2026-10-09"]);
+// Compact live booking checkout. Availability is controlled by the live booking API.
 
 const PACKAGES = {
   "rinnai-local": {
@@ -39,6 +39,7 @@ export default function InstallationBooking() {
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [slotsError, setSlotsError] = useState("");
   const [showMoreSlots, setShowMoreSlots] = useState(false);
+  const slotsSectionRef = useRef(null);
 
   const productKey = params.get("product") || "";
   const size = params.get("size") || "";
@@ -50,7 +51,7 @@ export default function InstallationBooking() {
     setSlotsError("");
     try {
       const data = fallbackSlots ? { slots: fallbackSlots } : await getBookingSlots(12);
-      setSlots(Array.isArray(data?.slots) ? data.slots.filter((slot) => !BLOCKED_INSTALLATION_DATES.has(slot.date)) : []);
+      setSlots(Array.isArray(data?.slots) ? data.slots : []);
     } catch (err) {
       setSlots([]);
       setSlotsError("Live times are taking a moment to load.");
@@ -62,6 +63,14 @@ export default function InstallationBooking() {
   useEffect(() => {
     loadSlots();
   }, []);
+
+  useEffect(() => {
+    if (!confirmed) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      slotsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [confirmed]);
 
   const handleBookingConflict = (detail) => {
     setPreferredDate("");
@@ -172,13 +181,14 @@ export default function InstallationBooking() {
                   className="mt-0.5 h-4 w-4 accent-[#C8A46A]"
                 />
                 <span className="text-[13px] leading-relaxed text-[#444449]">
+                  <strong className="block text-[#202024]">Tick here to continue to the live installation dates.</strong>
                   My installation fits these standard conditions. If anything extra is genuinely needed, SplitsPro will tell me before the extra work starts.
                 </span>
               </label>
             </div>
 
             {confirmed && (
-              <div className="border-t border-[#DDD8CF] py-6">
+              <div ref={slotsSectionRef} className="scroll-mt-4 border-t border-[#DDD8CF] py-6">
                 <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">2 · Choose an available time</p>
                 <h2 className="mt-2 font-serif text-2xl font-medium leading-tight text-[#0B0B0B] sm:text-3xl">
                   Pick a time that&apos;s actually free.

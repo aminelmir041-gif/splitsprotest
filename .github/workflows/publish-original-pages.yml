@@ -144,6 +144,51 @@ jobs:
 
           cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
 
+          # Make the booking route self-healing. Some legacy maintenance workflows replace
+          # /static with a newer hashed bundle without rewriting every route HTML file.
+          # This page resolves the current bundle from asset-manifest.json at runtime, so it
+          # cannot be stranded on an obsolete JS/CSS filename again.
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          import re
+
+          path = Path("book-installation/index.html")
+          html = path.read_text(encoding="utf-8")
+          manifest = json.loads(Path("build/asset-manifest.json").read_text(encoding="utf-8"))
+          fallback_js = manifest["files"]["main.js"]
+          fallback_css = manifest["files"].get("main.css", "")
+
+          html = re.sub(r'<script[^>]+src="/static/js/main\.[^"]+\.js"[^>]*></script>', "", html)
+          html = re.sub(r'<link[^>]+href="/static/css/main\.[^"]+\.css"[^>]*>', "", html)
+
+          loader = f"""<script data-splitspro-bundle-loader>
+          (function(){{
+            var fallback={{js:{json.dumps(fallback_js)},css:{json.dumps(fallback_css)}}};
+            function loadBundle(files){{
+              if(files.css){{
+                var link=document.createElement("link");
+                link.rel="stylesheet";
+                link.href=files.css;
+                document.head.appendChild(link);
+              }}
+              var script=document.createElement("script");
+              script.src=files.js;
+              script.defer=true;
+              document.head.appendChild(script);
+            }}
+            fetch("/asset-manifest.json?booking="+Date.now(),{{cache:"no-store"}})
+              .then(function(response){{if(!response.ok)throw new Error("manifest");return response.json();}})
+              .then(function(manifest){{
+                loadBundle({{js:manifest.files["main.js"]||fallback.js,css:manifest.files["main.css"]||fallback.css}});
+              }})
+              .catch(function(){{loadBundle(fallback);}});
+          }})();
+          </script>"""
+          html = html.replace("</head>", loader + "</head>", 1)
+          path.write_text(html, encoding="utf-8")
+          PY
+
       - name: Commit restored pages
         run: |
           git config user.name "SplitsPro Pages Bot"
