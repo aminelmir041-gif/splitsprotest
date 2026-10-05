@@ -124,23 +124,23 @@ jobs:
           rm -rf deals
           mkdir -p deals
           cat > deals/index.html <<'EOF'
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=../split-systems/rinnai-local-offer/">
-  <link rel="canonical" href="https://splitspro.com.au/split-systems/rinnai-local-offer">
-  <title>SplitsPro Deals</title>
-  <script>
-    window.location.replace("../split-systems/rinnai-local-offer/" + window.location.search + window.location.hash);
-  </script>
-</head>
-<body>
-  <a href="../split-systems/rinnai-local-offer/">View current SplitsPro deals</a>
-</body>
-</html>
-EOF
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta http-equiv="refresh" content="0; url=../split-systems/rinnai-local-offer/">
+            <link rel="canonical" href="https://splitspro.com.au/split-systems/rinnai-local-offer">
+            <title>SplitsPro Deals</title>
+            <script>
+              window.location.replace("../split-systems/rinnai-local-offer/" + window.location.search + window.location.hash);
+            </script>
+          </head>
+          <body>
+            <a href="../split-systems/rinnai-local-offer/">View current SplitsPro deals</a>
+          </body>
+          </html>
+          EOF
 
           cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
 
