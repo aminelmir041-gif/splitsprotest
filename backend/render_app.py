@@ -577,69 +577,12 @@ def booking_payment_status(session_id: str = ""):
 
 
 @app.post("/api/bookings")
-def create_booking(payload: BookingCreate, background_tasks: BackgroundTasks):
-    try:
-        requested_date = date.fromisoformat(payload.booking_date)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail="Please choose a valid installation date") from exc
-
-    today_local = datetime.now(BOOKING_TIMEZONE).date()
-    if requested_date <= today_local:
-        raise HTTPException(status_code=400, detail="Please choose a future installation date")
-    if requested_date.weekday() not in BOOKING_WORKDAYS:
-        raise HTTPException(status_code=400, detail="That day is not available for installation")
-
-    if (payload.booking_date, payload.booking_window) in _manual_blocks():
-        try:
-            alternatives = _available_booking_slots(6)
-        except Exception:
-            alternatives = []
-        raise HTTPException(
-            status_code=409,
-            detail={"message": "That installation time is no longer available.", "slots": alternatives},
-        )
-
-    try:
-        reserved = _reserve_booking_slot(payload.booking_date, payload.booking_window)
-    except Exception as exc:
-        logging.exception("Could not access booking storage: %s", exc)
-        raise HTTPException(status_code=503, detail="Live booking is temporarily unavailable") from exc
-
-    if not reserved:
-        try:
-            alternatives = _available_booking_slots(6)
-        except Exception:
-            alternatives = []
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "message": "That installation time has just filled up.",
-                "slots": alternatives,
-            },
-        )
-
-    lead = payload.model_dump()
-    lead["preferred_date"] = payload.booking_date
-    lead["id"] = str(uuid.uuid4())
-    lead["created_at"] = now_iso()
-    lead["lead_source"] = derive_lead_source(lead)
-
-    try:
-        crm_result = sync_quote_to_hubspot(lead)
-        lead["crm_saved"] = bool(crm_result)
-        if crm_result:
-            lead["hubspot_contact_id"] = crm_result.get("contact_id", "")
-            lead["hubspot_deal_id"] = crm_result.get("deal_id", "")
-        background_tasks.add_task(notify_quote, lead)
-    except Exception as exc:
-        logging.exception("Booking notification/CRM step failed: %s", exc)
-
-    return {
-        **lead,
-        "accepted": True,
-        "booking_confirmed": True,
-    }
-
+def legacy_booking_endpoint(payload: BookingCreate):
+    _validate_booking_request(payload)
+    raise HTTPException(
+        status_code=410,
+        detail="This booking endpoint has been retired. Use the secure booking checkout.",
+    )
 
 @app.post("/api/quotes")
 def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
