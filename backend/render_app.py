@@ -577,12 +577,15 @@ def booking_payment_status(session_id: str = ""):
 
 
 @app.post("/api/bookings")
-def legacy_booking_endpoint(payload: BookingCreate):
-    _validate_booking_request(payload)
+def create_booking(payload: BookingCreate, background_tasks: BackgroundTasks):
     raise HTTPException(
         status_code=410,
-        detail="This booking endpoint has been retired. Use the secure booking checkout.",
+        detail={
+            "message": "A $300 deposit is now required to secure installation bookings.",
+            "payment_required": True,
+        },
     )
+
 
 @app.post("/api/quotes")
 def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
