@@ -13,6 +13,9 @@ import os
 import re
 import time
 import uuid
+import hmac
+import hashlib
+from urllib.parse import urlencode
 import redis
 from redis.exceptions import WatchError
 
@@ -168,6 +171,9 @@ BOOKING_WORKDAYS = {
     if value.strip().isdigit() and 0 <= int(value) <= 6
 }
 BOOKING_BLOCKS_FILE = Path(__file__).parent / "booking_blocks.json"
+BOOKING_PAYMENT_LINK_URL = (os.environ.get("BOOKING_PAYMENT_LINK_URL") or "").strip()
+BOOKING_HOLD_SECONDS = max(600, min(7200, int(os.environ.get("BOOKING_HOLD_SECONDS", "3600"))))
+STRIPE_WEBHOOK_SECRET = (os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()
 
 
 def _booking_redis():
@@ -186,6 +192,22 @@ def _booking_redis():
 
 def _slot_key(booking_date: str, booking_window: str) -> str:
     return f"splitspro:booking:{booking_date}:{booking_window.lower()}"
+
+
+def _hold_key(reference: str) -> str:
+    return f"splitspro:booking-hold:{reference}"
+
+
+def _paid_key(reference: str) -> str:
+    return f"splitspro:booking-paid:{reference}"
+
+
+def _session_key(session_id: str) -> str:
+    return f"splitspro:stripe-session:{session_id}"
+
+
+def _slot_lock_key(booking_date: str, booking_window: str) -> str:
+    return f"splitspro:booking-lock:{booking_date}:{booking_window.lower()}"
 
 
 def _manual_blocks() -> set[tuple[str, str]]:
@@ -207,11 +229,27 @@ def _manual_blocks() -> set[tuple[str, str]]:
     return blocked
 
 
+def _pending_hold_count(client, booking_date: str, booking_window: str) -> int:
+    count = 0
+    for key in client.scan_iter(match="splitspro:booking-hold:*", count=100):
+        try:
+            raw = client.get(key)
+            if not raw:
+                continue
+            hold = json.loads(raw)
+            if hold.get("booking_date") == booking_date and hold.get("booking_window") == booking_window:
+                count += 1
+        except Exception:
+            continue
+    return count
+
+
 def _slot_count(client, booking_date: str, booking_window: str) -> int:
     try:
-        return int(client.get(_slot_key(booking_date, booking_window)) or 0)
+        confirmed = int(client.get(_slot_key(booking_date, booking_window)) or 0)
     except (TypeError, ValueError):
-        return 0
+        confirmed = 0
+    return confirmed + _pending_hold_count(client, booking_date, booking_window)
 
 
 def _reserve_booking_slot(booking_date: str, booking_window: str) -> bool:
@@ -308,6 +346,234 @@ def booking_slots(response: Response, limit: int = 8):
 
     logging.exception("Could not load booking availability after retries: %s", last_error)
     raise HTTPException(status_code=502, detail="Could not load installation availability") from last_error
+
+
+
+def _validate_booking_request(payload: BookingCreate):
+    try:
+        requested_date = date.fromisoformat(payload.booking_date)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="Please choose a valid installation date") from exc
+
+    today_local = datetime.now(BOOKING_TIMEZONE).date()
+    if requested_date <= today_local:
+        raise HTTPException(status_code=400, detail="Please choose a future installation date")
+    if requested_date.weekday() not in BOOKING_WORKDAYS:
+        raise HTTPException(status_code=400, detail="That day is not available for installation")
+    if (payload.booking_date, payload.booking_window) in _manual_blocks():
+        try:
+            alternatives = _available_booking_slots(6)
+        except Exception:
+            alternatives = []
+        raise HTTPException(
+            status_code=409,
+            detail={"message": "That installation time is no longer available.", "slots": alternatives},
+        )
+
+
+def _booking_checkout_url(reference: str) -> str:
+    if not BOOKING_PAYMENT_LINK_URL:
+        raise HTTPException(status_code=503, detail="Online deposit payments are not configured")
+    separator = "&" if "?" in BOOKING_PAYMENT_LINK_URL else "?"
+    return f"{BOOKING_PAYMENT_LINK_URL}{separator}{urlencode({'client_reference_id': reference})}"
+
+
+@app.post("/api/booking-checkout")
+def create_booking_checkout(payload: BookingCreate):
+    _validate_booking_request(payload)
+    client = _booking_redis()
+    reference = uuid.uuid4().hex
+    lead = payload.model_dump()
+    lead["preferred_date"] = payload.booking_date
+    lead["id"] = str(uuid.uuid4())
+    lead["created_at"] = now_iso()
+    lead["lead_source"] = derive_lead_source(lead)
+
+    hold = {
+        "reference": reference,
+        "booking_date": payload.booking_date,
+        "booking_window": payload.booking_window,
+        "lead": lead,
+        "created_at": now_iso(),
+    }
+
+    try:
+        with client.lock(
+            _slot_lock_key(payload.booking_date, payload.booking_window),
+            timeout=10,
+            blocking_timeout=5,
+        ):
+            if _slot_count(client, payload.booking_date, payload.booking_window) >= BOOKING_SLOT_CAPACITY:
+                try:
+                    alternatives = _available_booking_slots(6)
+                except Exception:
+                    alternatives = []
+                raise HTTPException(
+                    status_code=409,
+                    detail={"message": "That installation time has just filled up.", "slots": alternatives},
+                )
+            client.set(_hold_key(reference), json.dumps(hold), ex=BOOKING_HOLD_SECONDS)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logging.exception("Could not create booking hold: %s", exc)
+        raise HTTPException(status_code=503, detail="Live booking is temporarily unavailable") from exc
+
+    return {
+        "accepted": True,
+        "payment_required": True,
+        "deposit_amount": 300,
+        "currency": "AUD",
+        "reference": reference,
+        "checkout_url": _booking_checkout_url(reference),
+        "hold_expires_in": BOOKING_HOLD_SECONDS,
+    }
+
+
+def _verify_stripe_signature(raw_body: bytes, signature_header: str) -> None:
+    if not STRIPE_WEBHOOK_SECRET:
+        raise RuntimeError("Stripe webhook secret is not configured")
+    parts = {}
+    signatures = []
+    for item in (signature_header or "").split(","):
+        if "=" not in item:
+            continue
+        key, value = item.split("=", 1)
+        if key == "v1":
+            signatures.append(value)
+        else:
+            parts[key] = value
+    timestamp = parts.get("t")
+    if not timestamp or not signatures:
+        raise PermissionError("Missing Stripe signature")
+    try:
+        ts = int(timestamp)
+    except ValueError as exc:
+        raise PermissionError("Invalid Stripe signature timestamp") from exc
+    if abs(int(time.time()) - ts) > 300:
+        raise PermissionError("Expired Stripe signature")
+    signed = f"{timestamp}.{raw_body.decode('utf-8')}".encode("utf-8")
+    expected = hmac.new(
+        STRIPE_WEBHOOK_SECRET.encode("utf-8"),
+        signed,
+        hashlib.sha256,
+    ).hexdigest()
+    if not any(hmac.compare_digest(expected, value) for value in signatures):
+        raise PermissionError("Invalid Stripe signature")
+
+
+def _complete_paid_booking(reference: str, session_id: str, background_tasks: BackgroundTasks):
+    client = _booking_redis()
+    paid_raw = client.get(_paid_key(reference))
+    if paid_raw:
+        paid = json.loads(paid_raw)
+        if session_id:
+            client.set(_session_key(session_id), json.dumps(paid), ex=60 * 60 * 24 * 90)
+        return paid
+
+    hold_raw = client.get(_hold_key(reference))
+    if not hold_raw:
+        result = {
+            "status": "needs_reschedule",
+            "reference": reference,
+            "session_id": session_id,
+            "message": "Payment received, but the original booking hold expired. SplitsPro will contact you to reschedule.",
+        }
+        client.set(_paid_key(reference), json.dumps(result), ex=60 * 60 * 24 * 90)
+        if session_id:
+            client.set(_session_key(session_id), json.dumps(result), ex=60 * 60 * 24 * 90)
+        return result
+
+    hold = json.loads(hold_raw)
+    booking_date = hold["booking_date"]
+    booking_window = hold["booking_window"]
+    lead = hold["lead"]
+
+    with client.lock(_slot_lock_key(booking_date, booking_window), timeout=10, blocking_timeout=5):
+        confirmed = int(client.get(_slot_key(booking_date, booking_window)) or 0)
+        if confirmed >= BOOKING_SLOT_CAPACITY:
+            status = "needs_reschedule"
+        else:
+            client.incr(_slot_key(booking_date, booking_window))
+            client.expire(_slot_key(booking_date, booking_window), 60 * 60 * 24 * 35)
+            status = "confirmed"
+        client.delete(_hold_key(reference))
+
+    lead["deposit_paid"] = True
+    lead["deposit_amount"] = 300
+    lead["deposit_currency"] = "AUD"
+    lead["stripe_session_id"] = session_id
+    lead["booking_payment_status"] = status
+    if status != "confirmed":
+        lead["message"] = (lead.get("message") or "") + " DEPOSIT PAID — selected slot requires rescheduling."
+
+    try:
+        crm_result = sync_quote_to_hubspot(lead)
+        lead["crm_saved"] = bool(crm_result)
+        if crm_result:
+            lead["hubspot_contact_id"] = crm_result.get("contact_id", "")
+            lead["hubspot_deal_id"] = crm_result.get("deal_id", "")
+        background_tasks.add_task(notify_quote, lead)
+    except Exception as exc:
+        logging.exception("Paid booking CRM/notification step failed: %s", exc)
+
+    result = {
+        "status": status,
+        "reference": reference,
+        "session_id": session_id,
+        "booking_date": booking_date,
+        "booking_window": booking_window,
+        "deposit_amount": 300,
+        "currency": "AUD",
+    }
+    client.set(_paid_key(reference), json.dumps(result), ex=60 * 60 * 24 * 90)
+    if session_id:
+        client.set(_session_key(session_id), json.dumps(result), ex=60 * 60 * 24 * 90)
+    return result
+
+
+@app.post("/api/stripe/webhook")
+async def stripe_webhook(request: Request, background_tasks: BackgroundTasks):
+    raw_body = await request.body()
+    signature = request.headers.get("stripe-signature", "")
+    try:
+        _verify_stripe_signature(raw_body, signature)
+        event = json.loads(raw_body.decode("utf-8"))
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except PermissionError as exc:
+        raise HTTPException(status_code=400, detail="Invalid Stripe signature") from exc
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise HTTPException(status_code=400, detail="Invalid webhook payload") from exc
+
+    event_type = event.get("type", "")
+    session = ((event.get("data") or {}).get("object") or {})
+    reference = session.get("client_reference_id") or ""
+    session_id = session.get("id") or ""
+
+    if not reference:
+        return Response(status_code=200)
+
+    if event_type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"}:
+        if event_type == "checkout.session.completed" and session.get("payment_status") != "paid":
+            return Response(status_code=200)
+        _complete_paid_booking(reference, session_id, background_tasks)
+    elif event_type in {"checkout.session.async_payment_failed", "checkout.session.expired"}:
+        client = _booking_redis()
+        client.delete(_hold_key(reference))
+
+    return Response(status_code=200)
+
+
+@app.get("/api/booking-payment-status")
+def booking_payment_status(session_id: str = ""):
+    if not session_id:
+        raise HTTPException(status_code=400, detail="Missing checkout session")
+    client = _booking_redis()
+    raw = client.get(_session_key(session_id))
+    if not raw:
+        return {"status": "processing"}
+    return json.loads(raw)
 
 
 @app.post("/api/bookings")
