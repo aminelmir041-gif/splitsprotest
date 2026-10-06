@@ -7,7 +7,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "./ui/select";
 import { SERVICE_OPTIONS, PHONE_TEL } from "../lib/data";
-import { submitBooking, submitQuote, uploadPhoto } from "../lib/api";
+import { createBookingCheckout, submitBooking, submitQuote, uploadPhoto } from "../lib/api";
 
 const buildInitial = (defaultService = "", defaultMessage = "", defaultPreferredDate = "") => {
   if (defaultService === "Ducted Air Conditioning" && defaultMessage) {
@@ -145,7 +145,7 @@ export const QuoteForm = ({
           }
         : {};
       if (bookingDate && bookingWindow) {
-        await submitBooking({
+        const checkout = await createBookingCheckout({
           ...form,
           ...attribution,
           photo_url,
@@ -153,6 +153,9 @@ export const QuoteForm = ({
           booking_window: bookingWindow,
           preferred_date: bookingDate,
         });
+        if (!checkout?.checkout_url) throw new Error("Missing Stripe checkout URL");
+        window.location.assign(checkout.checkout_url);
+        return;
       } else {
         await submitQuote({ ...form, ...attribution, photo_url });
       }
