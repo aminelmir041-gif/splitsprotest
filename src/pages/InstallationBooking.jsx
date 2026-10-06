@@ -3,7 +3,7 @@ import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Check, ShieldCheck, Zap, Sun, Clock3, Loader2 } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
-import { getBookingSlots } from "../lib/api";
+import { getBookingPaymentStatus, getBookingSlots } from "../lib/api";
 
 // Compact live booking checkout. Availability is controlled by the live booking API.
 
@@ -67,6 +67,9 @@ export default function InstallationBooking() {
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [slotsError, setSlotsError] = useState("");
   const [showMoreSlots, setShowMoreSlots] = useState(false);
+  const paymentSuccess = params.get("payment") === "success";
+  const checkoutSessionId = params.get("session_id") || "";
+  const [paymentStatus, setPaymentStatus] = useState(paymentSuccess ? { status: "processing" } : null);
   const slotsSectionRef = useRef(null);
 
   const productKey = params.get("product") || "";
@@ -90,8 +93,35 @@ export default function InstallationBooking() {
   };
 
   useEffect(() => {
-    loadSlots();
-  }, []);
+    if (!paymentSuccess) loadSlots();
+  }, [paymentSuccess]);
+
+  useEffect(() => {
+    if (!paymentSuccess || !checkoutSessionId) return undefined;
+    let cancelled = false;
+    let timer;
+    let attempts = 0;
+
+    const poll = async () => {
+      attempts += 1;
+      try {
+        const data = await getBookingPaymentStatus(checkoutSessionId);
+        if (cancelled) return;
+        setPaymentStatus(data);
+        if (data?.status === "processing" && attempts < 15) {
+          timer = window.setTimeout(poll, 1000);
+        }
+      } catch {
+        if (!cancelled && attempts < 15) timer = window.setTimeout(poll, 1200);
+      }
+    };
+
+    poll();
+    return () => {
+      cancelled = true;
+      if (timer) window.clearTimeout(timer);
+    };
+  }, [paymentSuccess, checkoutSessionId]);
 
   useEffect(() => {
     const refresh = () => {
@@ -143,6 +173,34 @@ export default function InstallationBooking() {
       : "";
     return `I'd like to book the ${pack.model} ${size} — ${price} supplied & installed.${slot} I understand the advertised price applies to the standard installation conditions shown on the booking page.`;
   }, [pack, price, size, preferredDate, timeWindow]);
+
+  if (paymentSuccess) {
+    const confirmedPayment = paymentStatus?.status === "confirmed";
+    const needsReschedule = paymentStatus?.status === "needs_reschedule";
+    return (
+      <section className="booking-page-section bg-[#F7F5F1] px-4 py-14 sm:py-20">
+        <div className="mx-auto max-w-xl text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#C8A46A] text-white">
+            {paymentStatus?.status === "processing" ? <Loader2 className="h-7 w-7 animate-spin" /> : <Check className="h-8 w-8" />}
+          </div>
+          <p className="mt-6 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">$300 installation deposit</p>
+          <h1 className="mt-2 font-serif text-3xl font-medium text-[#0B0B0B] sm:text-4xl">
+            {confirmedPayment ? "Installation booked" : needsReschedule ? "Deposit received" : "Confirming your booking"}
+          </h1>
+          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#606064]">
+            {confirmedPayment
+              ? `Your payment is confirmed and we’ve locked in ${paymentStatus.booking_date} — ${paymentStatus.booking_window}. The $300 comes off your final installation price.`
+              : needsReschedule
+                ? "Your $300 deposit is safely received. The original time became unavailable, so we’ll contact you to lock in the next suitable installation time."
+                : "Stripe has returned you to SplitsPro. We’re confirming the payment and locking your installation time now."}
+          </p>
+          <Link to="/split-systems/rinnai-local-offer" className="mt-7 inline-flex items-center justify-center rounded-sm bg-[#C8A46A] px-7 py-3 text-sm font-semibold uppercase tracking-wider text-white">
+            Back to deals
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   if (!pack || !price) {
     return <Navigate to="/split-systems/rinnai-local-offer#installed-prices" replace />;
@@ -311,6 +369,9 @@ export default function InstallationBooking() {
                 <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">3 · Your details</p>
                 <h2 className="mt-2 font-serif text-2xl font-medium text-[#0B0B0B]">Finish your booking.</h2>
                 <p className="mt-2 text-[13px] text-[#606064]">{formatSlotDate(preferredDate)} · {timeWindow}</p>
+                <div className="mt-4 border-y border-[#E2DDD3] py-3 text-[13px] leading-relaxed text-[#55555A]">
+                  <strong className="text-[#202024]">$300 deposit to secure this installation time.</strong> It is credited toward your final installation price. Your selected time is held while you complete secure Stripe payment.
+                </div>
 
                 <div className="mt-4">
                   <QuoteForm
@@ -322,7 +383,7 @@ export default function InstallationBooking() {
                     onBookingConflict={handleBookingConflict}
                     successTitle="Installation booked"
                     successMessage={`We’ve saved ${formatSlotDate(preferredDate)} — ${timeWindow}. We’ll contact you to confirm the exact arrival window.`}
-                    submitLabel="Book This Installation"
+                    submitLabel="Pay $300 Deposit & Book"
                     compact
                     hideMessage
                     hidePhoto
