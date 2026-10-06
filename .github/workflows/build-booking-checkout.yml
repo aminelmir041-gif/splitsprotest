@@ -49,5 +49,6 @@ jobs:
             echo "No generated changes"
           else
             git commit -m "Build secure booking checkout"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
