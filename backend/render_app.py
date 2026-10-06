@@ -11,6 +11,7 @@ import json
 import logging
 import os
 import re
+import time
 import uuid
 import redis
 from redis.exceptions import WatchError
@@ -173,7 +174,14 @@ def _booking_redis():
     redis_url = (os.environ.get("REDIS_URL") or "").strip()
     if not redis_url:
         raise RuntimeError("Booking storage is not configured")
-    return redis.Redis.from_url(redis_url, decode_responses=True, socket_timeout=5, socket_connect_timeout=5)
+    return redis.Redis.from_url(
+        redis_url,
+        decode_responses=True,
+        socket_timeout=8,
+        socket_connect_timeout=8,
+        retry_on_timeout=True,
+        health_check_interval=30,
+    )
 
 
 def _slot_key(booking_date: str, booking_window: str) -> str:
@@ -276,21 +284,30 @@ def _available_booking_slots(limit: int = 8):
 
 
 @app.get("/api/booking-slots")
-def booking_slots(limit: int = 8):
+def booking_slots(response: Response, limit: int = 8):
     safe_limit = max(1, min(int(limit), 20))
-    try:
-        slots = _available_booking_slots(safe_limit)
-    except RuntimeError as exc:
-        raise HTTPException(status_code=503, detail=str(exc)) from exc
-    except Exception as exc:
-        logging.exception("Could not load booking availability: %s", exc)
-        raise HTTPException(status_code=502, detail="Could not load installation availability") from exc
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    response.headers["Pragma"] = "no-cache"
 
-    return {
-        "timezone": str(BOOKING_TIMEZONE),
-        "capacity_per_slot": BOOKING_SLOT_CAPACITY,
-        "slots": slots,
-    }
+    last_error = None
+    for attempt in range(3):
+        try:
+            slots = _available_booking_slots(safe_limit)
+            return {
+                "timezone": str(BOOKING_TIMEZONE),
+                "capacity_per_slot": BOOKING_SLOT_CAPACITY,
+                "slots": slots,
+            }
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except Exception as exc:
+            last_error = exc
+            if attempt < 2:
+                time.sleep(0.35 * (attempt + 1))
+                continue
+
+    logging.exception("Could not load booking availability after retries: %s", last_error)
+    raise HTTPException(status_code=502, detail="Could not load installation availability") from last_error
 
 
 @app.post("/api/bookings")
