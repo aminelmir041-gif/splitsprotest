@@ -12,6 +12,7 @@ on:
       - 'scripts/refine-rinnai-local-offer.py'
       - 'scripts/restore-rinnai-guide.py'
       - 'scripts/build_hero_dog.py'
+      - 'scripts/harden-booking-route.py'
       - '.github/assets/rinnai-guide-part*.txt'
       - '.github/assets/rinnai-guide-v2-part*.txt'
       - 'package.json'
@@ -33,6 +34,8 @@ jobs:
     steps:
       - name: Checkout website
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Apply final brand booking cleanup
         run: python3 scripts/finalise_brand_booking.py
@@ -144,104 +147,9 @@ jobs:
 
           cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
 
-          # Make the booking route self-healing. Some legacy maintenance workflows replace
-          # /static with a newer hashed bundle without rewriting every route HTML file.
-          # This page resolves the current bundle from asset-manifest.json at runtime, so it
-          # cannot be stranded on an obsolete JS/CSS filename again.
-          python3 - <<'PY'
-          from pathlib import Path
-          import json
-          import re
-
-          path = Path("book-installation/index.html")
-          html = path.read_text(encoding="utf-8")
-          manifest = json.loads(Path("build/asset-manifest.json").read_text(encoding="utf-8"))
-          fallback_js = manifest["files"]["main.js"]
-          fallback_css = manifest["files"].get("main.css", "")
-
-          html = re.sub(r'<script[^>]+src="/static/js/main\.[^"]+\.js"[^>]*></script>', "", html)
-          html = re.sub(r'<link[^>]+href="/static/css/main\.[^"]+\.css"[^>]*>', "", html)
-
-          loader = f"""<script data-splitspro-bundle-loader>
-          (function(){{
-            var fallback={{js:{json.dumps(fallback_js)},css:{json.dumps(fallback_css)}}};
-            var attempts=0;
-            var loadedCss={{}};
-
-            function addCss(href){{
-              if(!href || loadedCss[href]) return;
-              loadedCss[href]=true;
-              var link=document.createElement("link");
-              link.rel="stylesheet";
-              link.href=href;
-              document.head.appendChild(link);
-            }}
-
-            function recover(){{
-              if(attempts>=3) return;
-              attempts+=1;
-              setTimeout(loadLatest,700*attempts);
-            }}
-
-            function loadBundle(files){{
-              addCss(files.css);
-              var script=document.createElement("script");
-              script.src=files.js;
-              script.defer=true;
-              script.onerror=recover;
-              script.onload=function(){{
-                setTimeout(function(){{
-                  var root=document.getElementById("root");
-                  if(root && root.childElementCount===0 && !sessionStorage.getItem("splitspro-booking-reload")){{
-                    sessionStorage.setItem("splitspro-booking-reload","1");
-                    location.reload();
-                  }}
-                }},3500);
-              }};
-              document.head.appendChild(script);
-            }}
-
-            function loadLatest(){{
-              fetch("/asset-manifest.json?booking="+Date.now(),{{cache:"no-store"}})
-                .then(function(response){{if(!response.ok)throw new Error("manifest");return response.json();}})
-                .then(function(manifest){{
-                  loadBundle({{js:manifest.files["main.js"]||fallback.js,css:manifest.files["main.css"]||fallback.css}});
-                }})
-                .catch(function(){{
-                  if(attempts<2) recover();
-                  else loadBundle(fallback);
-                }});
-            }}
-
-            loadLatest();
-          }})();
-          </script>"""
-          html = html.replace("</head>", loader + "</head>", 1)
-          path.write_text(html, encoding="utf-8")
-          PY
-
-      - name: Verify booking route assets
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import json
-
-          manifest = json.loads(Path("asset-manifest.json").read_text(encoding="utf-8"))
-          html = Path("book-installation/index.html").read_text(encoding="utf-8")
-
-          for key in ("main.js", "main.css"):
-              asset = manifest.get("files", {}).get(key)
-              if asset and not Path(asset.lstrip("/")).exists():
-                  raise SystemExit(f"Booking asset missing: {asset}")
-
-          if "data-splitspro-bundle-loader" not in html:
-              raise SystemExit("Booking self-healing bundle loader is missing")
-
-          if '<div id="root"></div>' not in html:
-              raise SystemExit("Booking React mount point is missing")
-
-          print("Booking route assets verified")
-          PY
+          # Keep the booking route attached to the current hashed bundle and fail
+          # this publish immediately if its required assets are missing.
+          python3 scripts/harden-booking-route.py
 
       - name: Commit restored pages
         run: |
