@@ -35,6 +35,9 @@ export const getBookingSlots = async (limit = 8) => {
 
 export const submitBooking = (data) => api.post("/bookings", data).then((r) => r.data);
 export const createBookingCheckout = (data) => api.post("/booking-checkout", data).then((r) => r.data);
+export const getBookingPaymentStatus = (sessionId) =>
+  api.get("/booking-payment-status", { params: { session_id: sessionId } }).then((r) => r.data);
+export const createBookingCheckout = (data) => api.post("/booking-checkout", data).then((r) => r.data);
 export const getBookingPaymentStatus = (sessionId) => api.get("/booking-payment-status", { params: { session_id: sessionId } }).then((r) => r.data);
 export const getReviews = () => api.get("/reviews").then((r) => r.data);
 export const uploadPhoto = (file) => {
