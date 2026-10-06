@@ -7,6 +7,34 @@ import { getBookingSlots } from "../lib/api";
 
 // Compact live booking checkout. Availability is controlled by the live booking API.
 
+const BOOKING_CACHE_KEY = "splitspro.booking-slots.v1";
+const BOOKING_CACHE_MAX_AGE_MS = 15 * 60 * 1000;
+
+const readCachedBookingSlots = () => {
+  try {
+    const payload = JSON.parse(window.localStorage.getItem(BOOKING_CACHE_KEY) || "null");
+    if (!payload || !Array.isArray(payload.slots) || !payload.savedAt) return [];
+    if (Date.now() - payload.savedAt > BOOKING_CACHE_MAX_AGE_MS) return [];
+    const today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    const todayIso = today.toISOString().slice(0, 10);
+    return payload.slots.filter((slot) => slot?.date && slot.date > todayIso && slot?.window);
+  } catch {
+    return [];
+  }
+};
+
+const cacheBookingSlots = (slots) => {
+  try {
+    window.localStorage.setItem(
+      BOOKING_CACHE_KEY,
+      JSON.stringify({ savedAt: Date.now(), slots })
+    );
+  } catch {
+    // Storage can be unavailable in private browsing. Live loading still works.
+  }
+};
+
 const PACKAGES = {
   "rinnai-local": {
     model: "Rinnai Split System",
@@ -35,7 +63,7 @@ export default function InstallationBooking() {
   const [confirmed, setConfirmed] = useState(false);
   const [preferredDate, setPreferredDate] = useState("");
   const [timeWindow, setTimeWindow] = useState("");
-  const [slots, setSlots] = useState([]);
+  const [slots, setSlots] = useState(() => readCachedBookingSlots());
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [slotsError, setSlotsError] = useState("");
   const [showMoreSlots, setShowMoreSlots] = useState(false);
@@ -51,9 +79,10 @@ export default function InstallationBooking() {
     setSlotsError("");
     try {
       const data = fallbackSlots ? { slots: fallbackSlots } : await getBookingSlots(12);
-      setSlots(Array.isArray(data?.slots) ? data.slots : []);
+      const nextSlots = Array.isArray(data?.slots) ? data.slots : [];
+      setSlots(nextSlots);
+      cacheBookingSlots(nextSlots);
     } catch (err) {
-      setSlots([]);
       setSlotsError("Live times are taking a moment to load.");
     } finally {
       setSlotsLoading(false);
@@ -62,6 +91,18 @@ export default function InstallationBooking() {
 
   useEffect(() => {
     loadSlots();
+  }, []);
+
+  useEffect(() => {
+    const refresh = () => {
+      if (document.visibilityState === "visible") loadSlots();
+    };
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
   }, []);
 
   useEffect(() => {
@@ -195,11 +236,11 @@ export default function InstallationBooking() {
                 </h2>
                 <p className="mt-2 text-[13px] leading-relaxed text-[#606064]">Full times disappear automatically.</p>
 
-                {slotsLoading ? (
+                {slotsLoading && slots.length === 0 ? (
                   <div className="mt-4 flex items-center gap-2 py-3 text-sm text-[#606064]">
                     <Loader2 className="h-4 w-4 animate-spin text-[#C8A46A]" /> Checking the next available times…
                   </div>
-                ) : slotsError ? (
+                ) : slotsError && slots.length === 0 ? (
                   <div className="mt-4 flex items-center justify-between gap-3 border-y border-[#E2DDD3] py-3 text-[13px] text-[#6D5125]">
                     <span>{slotsError}</span>
                     <button type="button" onClick={() => loadSlots()} className="shrink-0 font-bold underline underline-offset-4">Try again</button>
@@ -210,6 +251,17 @@ export default function InstallationBooking() {
                   </div>
                 ) : (
                   <>
+                    {slotsLoading && (
+                      <div className="mt-4 flex items-center gap-2 text-[12px] text-[#606064]">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin text-[#C8A46A]" /> Refreshing live availability…
+                      </div>
+                    )}
+                    {slotsError && (
+                      <div className="mt-4 flex items-center justify-between gap-3 border-y border-[#E2DDD3] py-3 text-[12px] text-[#6D5125]">
+                        <span>Showing the most recent openings while live availability reconnects. Final availability is checked when you book.</span>
+                        <button type="button" onClick={() => loadSlots()} className="shrink-0 font-bold underline underline-offset-4">Refresh</button>
+                      </div>
+                    )}
                     {!hasTwoDaySlot && (
                       <p className="mt-4 text-[13px] font-semibold text-[#6D5125]">
                         The next 2 days are full — these are the next available times.
