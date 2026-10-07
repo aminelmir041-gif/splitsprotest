@@ -53,5 +53,6 @@ jobs:
             echo "No built changes"
           else
             git commit -m "Publish installation deposit checkout flow"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
