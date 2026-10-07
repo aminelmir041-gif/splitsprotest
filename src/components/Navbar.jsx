@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { NAV, PHONE, PHONE_TEL } from "../lib/data";
 import Logo from "./Logo";
 
@@ -37,11 +36,20 @@ export const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   return (
     <header
       data-testid="navbar"
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        solid ? "border-b border-[#E5E5EA] bg-[#F8F7F5]/95 py-2 lg:py-0 backdrop-blur-xl" : "py-3 lg:py-0"
+      className={`fixed inset-x-0 top-0 z-[9998] transition-all duration-300 ${
+        solid ? "border-b border-[#E5E5EA] bg-[#F8F7F5]/98 py-2 lg:py-0 backdrop-blur-xl" : "py-3 lg:py-0"
       }`}
     >
       {!solid && <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 to-transparent" />}
@@ -95,7 +103,7 @@ export const Navbar = () => {
             type="button"
             data-testid="mobile-menu-toggle"
             onClick={() => setOpen((value) => !value)}
-            className={`flex h-11 w-11 touch-manipulation items-center justify-center rounded-full border lg:hidden ${
+            className={`relative z-[10000] flex h-11 w-11 touch-manipulation items-center justify-center rounded-full border lg:hidden ${
               solid ? "border-[#E5E5EA] bg-white text-[#1D1D1F]" : "border-white/40 bg-black/10 text-white"
             }`}
             aria-label={open ? "Close menu" : "Open menu"}
@@ -107,16 +115,18 @@ export const Navbar = () => {
         </div>
       </nav>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
+      {open && (
+        <>
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="fixed inset-0 top-[72px] z-[9997] bg-black/20 lg:hidden"
+            onClick={() => setOpen(false)}
+          />
+          <div
             id="mobile-navigation"
             data-testid="mobile-menu"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-x-0 top-full z-[60] max-h-[calc(100dvh-72px)] overflow-y-auto overscroll-contain border-t border-[#E5E5EA] bg-white shadow-xl lg:hidden"
+            className="fixed inset-x-0 top-[72px] z-[9999] max-h-[calc(100dvh-72px)] overflow-y-auto overscroll-contain border-t border-[#E5E5EA] bg-white shadow-2xl lg:hidden"
           >
             <div className="sp-container grid gap-0.5 py-4">
               <NavLink
@@ -152,9 +162,9 @@ export const Navbar = () => {
                 <Phone className="h-4 w-4" /> Call {PHONE}
               </a>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </>
+      )}
     </header>
   );
 };
