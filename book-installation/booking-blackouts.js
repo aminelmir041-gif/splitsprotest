@@ -1,5 +1,5 @@
 (() => {
-  const BLOCKED_DATES = new Set(["2026-10-06", "2026-10-09"]);
+  const BLOCKED_DATES = new Set(["2026-10-06", "2026-10-08", "2026-10-09"]);
 
   const labelForDate = (iso) => {
     const date = new Date(`${iso}T00:00:00`);
