@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Check, ShieldCheck, Zap, Sun, Clock3, Loader2 } from "lucide-react";
-import QuoteForm from "../components/QuoteForm";
 import { getBookingPaymentStatus, getBookingSlots } from "../lib/api";
 
 // Compact live booking checkout. Availability is controlled by the live booking API.
@@ -166,13 +165,6 @@ export default function InstallationBooking() {
   const visibleSlots = showMoreSlots ? slots : slots.slice(0, 4);
   const hasTwoDaySlot = slots.some((slot) => slot.within_two_days);
 
-  const selectionMessage = useMemo(() => {
-    if (!pack || !price) return "";
-    const slot = preferredDate && timeWindow
-      ? ` Preferred installation: ${preferredDate} — ${timeWindow}.`
-      : "";
-    return `I'd like to book the ${pack.model} ${size} — ${price} supplied & installed.${slot} I understand the advertised price applies to the standard installation conditions shown on the booking page.`;
-  }, [pack, price, size, preferredDate, timeWindow]);
 
   if (paymentSuccess) {
     const confirmedPayment = paymentStatus?.status === "confirmed";
@@ -366,34 +358,22 @@ export default function InstallationBooking() {
 
             {confirmed && preferredDate && timeWindow && (
               <div className="border-t border-[#DDD8CF] py-6">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">3 · Your details</p>
-                <h2 className="mt-2 font-serif text-2xl font-medium text-[#0B0B0B]">Finish your booking.</h2>
-                <p className="mt-2 text-[13px] text-[#606064]">{formatSlotDate(preferredDate)} · {timeWindow}</p>
-                <div className="mt-4 border-y border-[#E2DDD3] py-3 text-[13px] leading-relaxed text-[#55555A]">
-                  <strong className="text-[#202024]">$300 deposit to secure this installation time.</strong> It is credited toward your final installation price. Your selected time is held while you complete secure Stripe payment.
-                </div>
-
-                <div className="mt-4">
-                  <QuoteForm
-                    defaultService="Split System Installation"
-                    defaultMessage={selectionMessage}
-                    defaultPreferredDate={preferredDate}
-                    bookingDate={preferredDate}
-                    bookingWindow={timeWindow}
-                    onBookingConflict={handleBookingConflict}
-                    successTitle="Installation booked"
-                    successMessage={`We’ve saved ${formatSlotDate(preferredDate)} — ${timeWindow}. We’ll contact you to confirm the exact arrival window.`}
-                    submitLabel="Pay $300 Deposit & Book"
-                    compact
-                    hideMessage
-                    hidePhoto
-                    hidePreferredDate
-                    hideEmail
-                    requireAddress
-                    hideCallButton
-                    tight
-                  />
-                </div>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">3 · Secure your installation time</p>
+                <h2 className="mt-2 font-serif text-2xl font-medium text-[#0B0B0B] sm:text-3xl">
+                  Ready to lock this one in?
+                </h2>
+                <p className="mt-2 text-[13px] leading-relaxed text-[#606064]">
+                  {formatSlotDate(preferredDate)} · {timeWindow}
+                </p>
+                <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-[#55555A]">
+                  Next, we&apos;ll quickly explain how the installation deposit works, take your booking details, then send you through our secure payment checkout.
+                </p>
+                <Link
+                  to={`/secure-installation?product=${encodeURIComponent(productKey)}&size=${encodeURIComponent(size)}&date=${encodeURIComponent(preferredDate)}&window=${encodeURIComponent(timeWindow)}`}
+                  className="mt-5 flex h-12 w-full items-center justify-center rounded-sm bg-[#C8A46A] px-8 text-sm font-semibold uppercase tracking-wider text-white transition-transform duration-300 hover:scale-[1.01]"
+                >
+                  Continue to booking details
+                </Link>
               </div>
             )}
 
