@@ -161,6 +161,47 @@ def health():
     }
 
 
+@app.head("/")
+def health_head():
+    return Response(status_code=200)
+
+
+# Fallback review feed used by the React service/reviews sections. These are the
+# same customer reviews already displayed on the website, exposed through the
+# live API so those sections do not disappear when they request /api/reviews.
+@app.get("/api/reviews")
+def reviews():
+    return [
+        {
+            "id": "sia",
+            "name": "Sia",
+            "rating": 5,
+            "service": "Split System Installation",
+            "category": "general",
+            "featured": True,
+            "text": "We had the most fantastic experience with Splits Pro. They were professional from the initial quote through to installation, explained every option clearly, and completed the job to an exceptionally high standard. The workmanship was clean, efficient and we couldn't be happier. Highly recommended.",
+        },
+        {
+            "id": "gill-mcphee",
+            "name": "Gill McPhee",
+            "rating": 5,
+            "service": "Rinnai Installation",
+            "category": "general",
+            "featured": False,
+            "text": "Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy.",
+        },
+        {
+            "id": "mat-134",
+            "name": "Mat 134",
+            "rating": 5,
+            "service": "Air Conditioning Installation",
+            "category": "general",
+            "featured": False,
+            "text": "Best in the business, amazing work.",
+        },
+    ]
+
+
 
 BOOKING_TIMEZONE = ZoneInfo(os.environ.get("BOOKING_TIMEZONE", "Australia/Sydney"))
 BOOKING_SLOT_CAPACITY = max(1, int(os.environ.get("BOOKING_SLOT_CAPACITY", "1")))
@@ -383,6 +424,7 @@ def create_booking_checkout(payload: BookingCreate):
     _validate_booking_request(payload)
     client = _booking_redis()
     reference = uuid.uuid4().hex
+    checkout_url = _booking_checkout_url(reference)
     lead = payload.model_dump()
     lead["preferred_date"] = payload.booking_date
     lead["id"] = str(uuid.uuid4())
@@ -425,7 +467,7 @@ def create_booking_checkout(payload: BookingCreate):
         "deposit_amount": 300,
         "currency": "AUD",
         "reference": reference,
-        "checkout_url": _booking_checkout_url(reference),
+        "checkout_url": checkout_url,
         "hold_expires_in": BOOKING_HOLD_SECONDS,
     }
 
