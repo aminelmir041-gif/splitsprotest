@@ -8,6 +8,10 @@ import { getBookingPaymentStatus, getBookingSlots } from "../lib/api";
 
 const BOOKING_CACHE_KEY = "splitspro.booking-slots.v1";
 const BOOKING_CACHE_MAX_AGE_MS = 15 * 60 * 1000;
+const BLOCKED_BOOKING_DATES = new Set(["2026-10-08", "2026-10-09"]);
+
+const removeBlockedBookingDates = (slots) =>
+  (Array.isArray(slots) ? slots : []).filter((slot) => slot?.date && !BLOCKED_BOOKING_DATES.has(slot.date));
 
 const readCachedBookingSlots = () => {
   try {
@@ -17,7 +21,7 @@ const readCachedBookingSlots = () => {
     const today = new Date();
     today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
     const todayIso = today.toISOString().slice(0, 10);
-    return payload.slots.filter((slot) => slot?.date && slot.date > todayIso && slot?.window);
+    return removeBlockedBookingDates(payload.slots).filter((slot) => slot.date > todayIso && slot?.window);
   } catch {
     return [];
   }
@@ -81,7 +85,7 @@ export default function InstallationBooking() {
     setSlotsError("");
     try {
       const data = fallbackSlots ? { slots: fallbackSlots } : await getBookingSlots(12);
-      const nextSlots = Array.isArray(data?.slots) ? data.slots : [];
+      const nextSlots = removeBlockedBookingDates(data?.slots);
       setSlots(nextSlots);
       cacheBookingSlots(nextSlots);
     } catch (err) {
