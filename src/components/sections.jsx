@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { Phone, Check, Star, ShieldCheck, BadgeCheck, MapPin } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Reveal from "./Reveal";
-import { PHONE, PHONE_TEL, BRANDS, PROCESS, WHY, GOOGLE_RATING } from "../lib/data";
+import { PHONE, PHONE_TEL, BRANDS, PROCESS, WHY, GOOGLE_RATING, FEATURED_REVIEW } from "../lib/data";
 import { getReviews } from "../lib/api";
 
 export const Overline = ({ children, light = false }) => (
@@ -269,6 +269,26 @@ export const TrustBadges = () => {
   );
 };
 
+const FALLBACK_SERVICE_REVIEWS = [
+  { id: "sia", ...FEATURED_REVIEW, category: "general" },
+  {
+    id: "gill-mcphee",
+    name: "Gill McPhee",
+    rating: 5,
+    category: "general",
+    service: "Rinnai Installation",
+    text: "Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy.",
+  },
+  {
+    id: "mat-134",
+    name: "Mat 134",
+    rating: 5,
+    category: "general",
+    service: "Air Conditioning Installation",
+    text: "Best in the business, amazing work.",
+  },
+];
+
 const Avatar = ({ name }) => (
   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F3E9D2] font-serif text-lg font-medium text-[#C8A46A]">
     {name?.trim()?.charAt(0)?.toUpperCase() || "S"}
@@ -277,8 +297,16 @@ const Avatar = ({ name }) => (
 
 // Reviews section that filters by category. Falls back to any reviews if none match.
 export const ServiceReviews = ({ category, title = "What local homeowners say", light = false, max = 3 }) => {
-  const [reviews, setReviews] = useState([]);
-  useEffect(() => { getReviews().then(setReviews).catch(() => setReviews([])); }, []);
+  const [reviews, setReviews] = useState(FALLBACK_SERVICE_REVIEWS);
+  useEffect(() => {
+    getReviews()
+      .then((items) => {
+        if (Array.isArray(items) && items.length) setReviews(items);
+      })
+      .catch(() => {
+        // Keep the local verified-review fallback instead of hiding the whole section.
+      });
+  }, []);
 
   let list = reviews;
   if (category) {

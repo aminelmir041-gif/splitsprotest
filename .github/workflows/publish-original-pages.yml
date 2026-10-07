@@ -13,6 +13,7 @@ on:
       - 'scripts/restore-rinnai-guide.py'
       - 'scripts/build_hero_dog.py'
       - 'scripts/harden-booking-route.py'
+      - 'scripts/site_smoke_test.py'
       - '.github/assets/rinnai-guide-part*.txt'
       - '.github/assets/rinnai-guide-v2-part*.txt'
       - 'package.json'
@@ -156,6 +157,9 @@ jobs:
           # Keep the booking route attached to the current hashed bundle and fail
           # this publish immediately if its required assets are missing.
           python3 scripts/harden-booking-route.py
+
+      - name: Smoke test every published route
+        run: python3 scripts/site_smoke_test.py
 
       - name: Commit restored pages
         run: |

@@ -11,6 +11,11 @@ on:
 
 permissions:
   contents: write
+  actions: write
+
+concurrency:
+  group: splitspro-site-publish
+  cancel-in-progress: false
 
 jobs:
   update-reviews:
@@ -160,13 +165,37 @@ jobs:
           PY
 
       - name: Commit only when Google numbers changed
+        id: review_update
         run: |
           if git diff --quiet -- index.html src/lib/data.js public/index.html .google-place-id 2>/dev/null; then
             echo "No Google review changes to publish"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "SplitsPro Reviews Bot"
           git config user.email "actions@users.noreply.github.com"
           git add index.html src/lib/data.js public/index.html .google-place-id
           git commit -m "Update Google rating to ${RATING} and reviews to ${COUNT} everywhere"
-          git push
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Could not safely rebase Google review update"
+              exit 1
+            fi
+            if git push origin main; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 3
+          done
+
+          echo "Unable to publish Google review update after 3 attempts"
+          exit 1
+
+      - name: Rebuild React pages with the new Google numbers
+        if: steps.review_update.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run publish-original-pages.yml --ref main
