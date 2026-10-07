@@ -1,13 +1,6 @@
 name: Publish Installation Checkout
 
 on:
-  push:
-    paths:
-      - 'src/pages/InstallationBooking.jsx'
-      - 'src/pages/InstallationDepositCheckout.jsx'
-      - 'src/components/FloatingCTA.jsx'
-      - 'src/App.js'
-      - '.github/workflows/publish-installation-checkout.yml'
   workflow_dispatch:
 
 permissions:

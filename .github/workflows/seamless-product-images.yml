@@ -2,15 +2,6 @@ name: Seamless Split System Images
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-    paths:
-      - '.github/workflows/seamless-product-images.yml'
-      - '.github/scripts/seamless_product_images.py'
-      - 'public/products/zena-white-uploaded.webp'
-      - 'public/products/zena-black-uploaded.webp'
-      - 'products/zena-white-uploaded.webp'
-      - 'products/zena-black-uploaded.webp'
 
 permissions:
   contents: write

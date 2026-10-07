@@ -1,16 +1,6 @@
 name: Refresh Official Brand Pages
 
 on:
-  push:
-    paths:
-      - '.github/workflows/refresh-official-brand-pages.yml'
-      - 'src/components/DaikinIntroEditorial.jsx'
-      - 'src/components/DuctedPricingSelector.jsx'
-      - 'src/components/QuoteForm.jsx'
-      - 'src/components/ServiceAreasMap.jsx'
-      - 'src/pages/Ducted.jsx'
-      - 'src/pages/Gallery.jsx'
-      - 'src/pages/Reviews.jsx'
   workflow_dispatch:
 
 permissions:

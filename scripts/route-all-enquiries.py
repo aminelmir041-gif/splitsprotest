@@ -90,7 +90,9 @@ def patch_homepage():
     window.location.href=`mailto:info@splitspro.com.au?subject=${subject}&body=${body}`;
   }
 }'''
-    replace_function_line(path, "function sendEnquiry(e)", replacement)
+    current = path.read_text(encoding="utf-8")
+    if "https://splitspro-leads.onrender.com/api/quotes" not in current or "async function sendEnquiry(e)" not in current:
+        replace_function_line(path, "function sendEnquiry(e)", replacement)
 
 
 def patch_cleaning_offer():
@@ -151,7 +153,9 @@ def patch_cleaning_offer():
     window.location.href=`mailto:info@splitspro.com.au?subject=${subject}&body=${body}`;
   }
 }'''
-    replace_function_line(path, "function bookClean(e)", replacement)
+    current = path.read_text(encoding="utf-8")
+    if "https://splitspro-leads.onrender.com/api/quotes" not in current or "async function bookClean(e)" not in current:
+        replace_function_line(path, "function bookClean(e)", replacement)
 
 
 def main():

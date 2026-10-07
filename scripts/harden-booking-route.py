@@ -1,34 +1,25 @@
 #!/usr/bin/env python3
-"""Keep the SplitsPro booking route attached to the current React build."""
+"""Keep SplitsPro booking/checkout routes attached to the current React build."""
 
 from pathlib import Path
 import json
 import re
 
-BOOKING_HTML = Path("book-installation/index.html")
+ROUTE_HTMLS = (
+    Path("book-installation/index.html"),
+    Path("secure-installation/index.html"),
+)
 MANIFEST_PATH = Path("asset-manifest.json")
 
 
-def main() -> None:
-    if not BOOKING_HTML.exists():
-        raise SystemExit("Booking route is missing: book-installation/index.html")
-    if not MANIFEST_PATH.exists():
-        raise SystemExit("Booking asset manifest is missing: asset-manifest.json")
+def harden_route(route_html: Path, fallback_js: str, fallback_css: str) -> None:
+    if not route_html.exists():
+        raise SystemExit(f"Booking route is missing: {route_html}")
 
-    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    files = manifest.get("files", {})
-    fallback_js = files.get("main.js")
-    fallback_css = files.get("main.css", "")
+    html = route_html.read_text(encoding="utf-8")
 
-    if not fallback_js:
-        raise SystemExit("Booking manifest has no main.js")
-
-    for asset in (fallback_js, fallback_css):
-        if asset and not Path(asset.lstrip("/")).exists():
-            raise SystemExit(f"Booking asset missing: {asset}")
-
-    html = BOOKING_HTML.read_text(encoding="utf-8")
-
+    # Remove direct hashed bundle tags and any previous dynamic loader so each
+    # route loads exactly one current bundle.
     html = re.sub(
         r'<script[^>]+src="/static/js/main\.[^"]+\.js"[^>]*></script>',
         "",
@@ -106,23 +97,48 @@ def main() -> None:
 </script>"""
 
     if "</head>" not in html:
-        raise SystemExit("Booking HTML has no </head> tag")
+        raise SystemExit(f"{route_html} has no </head> tag")
 
     html = html.replace("</head>", loader + "</head>", 1)
-    BOOKING_HTML.write_text(html, encoding="utf-8")
+    route_html.write_text(html, encoding="utf-8")
 
-    verified = BOOKING_HTML.read_text(encoding="utf-8")
+    verified = route_html.read_text(encoding="utf-8")
     required = (
-        'data-splitspro-bundle-loader',
+        "data-splitspro-bundle-loader",
         '<div id="root"></div>',
-        'splitspro-booking-reload',
-        '/asset-manifest.json?booking=',
+        "splitspro-booking-reload",
+        "/asset-manifest.json?booking=",
+        fallback_js,
     )
     for marker in required:
         if marker not in verified:
-            raise SystemExit(f"Booking hardening verification failed: {marker}")
+            raise SystemExit(f"{route_html} hardening verification failed: {marker}")
 
-    print(f"Booking route hardened against stale bundles: {fallback_js}")
+
+def main() -> None:
+    if not MANIFEST_PATH.exists():
+        raise SystemExit("Booking asset manifest is missing: asset-manifest.json")
+
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    files = manifest.get("files", {})
+    fallback_js = files.get("main.js")
+    fallback_css = files.get("main.css", "")
+
+    if not fallback_js:
+        raise SystemExit("Booking manifest has no main.js")
+
+    for asset in (fallback_js, fallback_css):
+        if asset and not Path(asset.lstrip("/")).exists():
+            raise SystemExit(f"Booking asset missing: {asset}")
+
+    for route_html in ROUTE_HTMLS:
+        harden_route(route_html, fallback_js, fallback_css)
+
+    print(
+        "Booking routes hardened against stale bundles: "
+        + ", ".join(str(route) for route in ROUTE_HTMLS)
+        + f" -> {fallback_js}"
+    )
 
 
 if __name__ == "__main__":
