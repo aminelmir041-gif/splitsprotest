@@ -73,7 +73,11 @@ export default function InstallationBooking() {
   const [showMoreSlots, setShowMoreSlots] = useState(false);
   const paymentSuccess = params.get("payment") === "success";
   const checkoutSessionId = params.get("session_id") || "";
-  const [paymentStatus, setPaymentStatus] = useState(paymentSuccess ? { status: "processing" } : null);
+  const [paymentStatus, setPaymentStatus] = useState(
+    paymentSuccess
+      ? { status: checkoutSessionId ? "processing" : "pending_confirmation" }
+      : null,
+  );
   const slotsSectionRef = useRef(null);
 
   const productKey = params.get("product") || "";
@@ -112,11 +116,19 @@ export default function InstallationBooking() {
         const data = await getBookingPaymentStatus(checkoutSessionId);
         if (cancelled) return;
         setPaymentStatus(data);
-        if (data?.status === "processing" && attempts < 15) {
-          timer = window.setTimeout(poll, 1000);
+        if (data?.status === "processing") {
+          if (attempts < 15) {
+            timer = window.setTimeout(poll, 1000);
+          } else {
+            setPaymentStatus({ status: "pending_confirmation" });
+          }
         }
       } catch {
-        if (!cancelled && attempts < 15) timer = window.setTimeout(poll, 1200);
+        if (!cancelled && attempts < 15) {
+          timer = window.setTimeout(poll, 1200);
+        } else if (!cancelled) {
+          setPaymentStatus({ status: "pending_confirmation" });
+        }
       }
     };
 
@@ -174,6 +186,7 @@ export default function InstallationBooking() {
   if (paymentSuccess) {
     const confirmedPayment = paymentStatus?.status === "confirmed";
     const needsReschedule = paymentStatus?.status === "needs_reschedule";
+    const pendingConfirmation = paymentStatus?.status === "pending_confirmation";
     return (
       <section className="booking-page-section bg-[#F7F5F1] px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-xl text-center">
@@ -182,14 +195,22 @@ export default function InstallationBooking() {
           </div>
           <p className="mt-6 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">$300 installation deposit</p>
           <h1 className="mt-2 font-serif text-3xl font-medium text-[#0B0B0B] sm:text-4xl">
-            {confirmedPayment ? "Installation booked" : needsReschedule ? "Deposit received" : "Confirming your booking"}
+            {confirmedPayment
+              ? "Installation booked"
+              : needsReschedule
+                ? "Deposit received"
+                : pendingConfirmation
+                  ? "Payment received — confirmation pending"
+                  : "Confirming your booking"}
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#606064]">
             {confirmedPayment
               ? `Your payment is confirmed and we’ve locked in ${paymentStatus.booking_date} — ${paymentStatus.booking_window}. The $300 comes off your final installation price.`
               : needsReschedule
                 ? "Your $300 deposit is safely received. The original time became unavailable, so we’ll contact you to lock in the next suitable installation time."
-                : "Stripe has returned you to SplitsPro. We’re confirming the payment and locking your installation time now."}
+                : pendingConfirmation
+                  ? "Stripe returned you to SplitsPro, but the automatic confirmation is taking longer than expected. Your payment will not be charged twice. We’ll verify it and contact you if anything needs attention."
+                  : "Stripe has returned you to SplitsPro. We’re confirming the payment and locking your installation time now."}
           </p>
           <Link to="/split-systems/rinnai-local-offer" className="mt-7 inline-flex items-center justify-center rounded-sm bg-[#C8A46A] px-7 py-3 text-sm font-semibold uppercase tracking-wider text-white">
             Back to deals
