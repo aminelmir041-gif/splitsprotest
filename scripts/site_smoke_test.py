@@ -129,6 +129,12 @@ def main() -> None:
     if cleaning.count("async function bookClean(e)") != 1:
         fail("cleaning-offer booking handler is missing or duplicated")
 
+    # Never ship placeholder navigation/social links that only jump to the top.
+    for source in list((ROOT / "src/pages").glob("*.jsx")) + list((ROOT / "src/components").glob("*.jsx")):
+        source_text = source.read_text(encoding="utf-8")
+        if 'href="#"' in source_text or 'to="#"' in source_text:
+            fail(f"{source} contains a dead # link")
+
     print(
         f"Smoke test passed: {len(REACT_ROUTES)} React routes, "
         f"{len(STATIC_PAGES)} static pages, current assets {main_js} / {main_css}"

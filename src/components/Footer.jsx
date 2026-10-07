@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Phone, Instagram, Facebook, MapPin } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 import { NAV, AREAS, HOURS, PHONE, PHONE_TEL, ABN } from "../lib/data";
 import Logo from "./Logo";
 
@@ -17,14 +17,6 @@ export const Footer = () => (
         <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/55">
           Premium air conditioning installation, cleaning, repairs and maintenance across Western Sydney. Thoughtfully planned, precisely installed.
         </p>
-        <div className="mt-6 flex items-center gap-4">
-          <a href="#" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white/60">
-            <Instagram className="h-4 w-4" />
-          </a>
-          <a href="#" aria-label="Facebook" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white/60">
-            <Facebook className="h-4 w-4" />
-          </a>
-        </div>
       </div>
 
       <div className="lg:col-span-2">
