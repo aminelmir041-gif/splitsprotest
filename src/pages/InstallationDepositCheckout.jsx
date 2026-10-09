@@ -1,6 +1,6 @@
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, CalendarDays, Check, CreditCard, LockKeyhole, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Check, CreditCard, ShieldCheck } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
 
 const PACKAGES = {
@@ -76,6 +76,23 @@ export default function InstallationDepositCheckout() {
               <ArrowLeft className="h-4 w-4" /> Back to installation times
             </Link>
 
+            <div className="mt-5 overflow-hidden rounded-[3px] bg-[#E7E4DB] shadow-[0_10px_30px_rgba(25,30,36,0.08)]">
+              <img
+                src="/landing/splitspro-deposit-hero.webp"
+                alt="SplitsPro installer with a booking calendar: your $300 deposit secures your installation date and comes off the final price."
+                width="1122"
+                height="1402"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = "/landing/overheated-bulldog-hero.webp";
+                }}
+                className="block h-auto w-full object-cover"
+              />
+            </div>
+
             <div className="mt-2 border-y border-[#DDD8CF] py-5">
               <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">
                 Your selected installation
@@ -103,50 +120,29 @@ export default function InstallationDepositCheckout() {
               </div>
             </div>
 
-            <div className="py-7">
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">
-                Why we take a deposit
+            <div className="py-7 sm:py-9">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">
+                Why the $300 deposit?
               </p>
-              <h2 className="mt-2 font-serif text-3xl font-medium leading-tight text-[#0B0B0B] sm:text-4xl">
-                Your installation time is yours — not just a maybe.
+              <h2 className="mt-3 font-serif text-[1.75rem] font-medium leading-[1.15] text-[#151515] sm:text-4xl">
+                Because we start getting things ready before we knock on your door.
               </h2>
-              <p className="mt-4 text-[14px] leading-relaxed text-[#55555A]">
-                Once you choose a time, we stop offering it to someone else and start organising the unit,
-                installer and materials for your job. The $300 deposit simply secures that commitment both ways.
+              <p className="mt-4 text-[15px] leading-[1.8] text-[#4C4C52]">
+                Once you book, we put your installation time aside, organise your air conditioner,
+                arrange the installer and get the materials ready. No double-booking your spot
+                and no last-minute mucking around.
               </p>
-
-              <div className="mt-5 grid gap-0 border-y border-[#DDD8CF]">
-                <div className="flex items-start gap-3 border-b border-[#E7E2D9] py-4">
-                  <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
-                  <div>
-                    <p className="text-[13px] font-bold text-[#202024]">It locks in your chosen installation time.</p>
-                    <p className="mt-1 text-[12px] leading-relaxed text-[#606064]">
-                      Your time is held while you complete the secure payment checkout.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 border-b border-[#E7E2D9] py-4">
-                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
-                  <div>
-                    <p className="text-[13px] font-bold text-[#202024]">It comes straight off your final price.</p>
-                    <p className="mt-1 text-[12px] leading-relaxed text-[#606064]">
-                      The $300 is part of your installation total — it is not an extra fee.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 py-4">
-                  <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0 text-[#C8A46A]" />
-                  <div>
-                    <p className="text-[13px] font-bold text-[#202024]">Your payment is handled securely by Stripe.</p>
-                    <p className="mt-1 text-[12px] leading-relaxed text-[#606064]">
-                      We do not ask you to send card details by message or over the phone.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <p className="mt-4 text-[12px] leading-relaxed text-[#6E6E73]">
-                If your installation needs anything outside the standard conditions, we tell you before that extra work starts.
+              <p className="mt-5 border-l-[4px] border-[#D5AE52] bg-[#F0EBE1] px-4 py-4 text-[15px] font-semibold leading-[1.65] text-[#232529]">
+                The $300 comes straight off your final installation price.
+                <span className="block font-normal text-[#59595B]">
+                  It's part of the price already shown above — not an extra fee.
+                </span>
+              </p>
+              <p className="mt-5 text-[13px] leading-[1.8] text-[#66666A]">
+                Your selected date is secured once your deposit payment is confirmed.
+                You'll complete the payment through Stripe's secure checkout.
+                If your installation needs non-standard work, we'll discuss any extra costs
+                before proceeding.
               </p>
             </div>
 
@@ -155,10 +151,10 @@ export default function InstallationDepositCheckout() {
                 Your booking details
               </p>
               <h2 className="mt-2 font-serif text-2xl font-medium text-[#0B0B0B] sm:text-3xl">
-                Tell us where we&apos;re installing it.
+                The last bit, then we&apos;ll lock it in.
               </h2>
               <p className="mt-2 text-[13px] leading-relaxed text-[#606064]">
-                Add your details below. On the next screen, Stripe will securely process the deposit.
+                Tell us where the air con is going. Next, you’ll pay the $300 deposit securely through Stripe.
               </p>
 
               <div className="mt-5">
