@@ -1,0 +1,42 @@
+name: Publish Original Resolution SplitsPro Deposit Hero
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-deposit-hero.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish-original:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Canva full resolution image
+        env:
+          HERO_URL: "https://export-download.canva.com/2c83974c-d7b8-41ae-81a6-7c5410b04142/0/0001-139004075300775546.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261008%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261008T013255Z&X-Amz-Expires=86589&X-Amz-Signature=fb67a069771ce6ba241bad85d5475a971ecd72467167da853b8eb37ea713eb30&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Fri%2C%2009%20Oct%202026%2001%3A36%3A04%20GMT"
+        run: |
+          set -eu
+          mkdir -p landing public/landing
+          curl --fail --location --retry 3 --silent --show-error --max-time 45 "$HERO_URL" -o /tmp/splitspro-deposit-original.png
+          python3 -m pip -q install Pillow
+          python3 - <<'PY'
+          from PIL import Image
+          im=Image.open('/tmp/splitspro-deposit-original.png')
+          print('Downloaded source size:', im.size)
+          assert im.width >= 1000 and im.height >= 1300, 'Source is not high-resolution'
+          im.convert('RGB').save('public/landing/splitspro-deposit-hero.webp', 'WEBP', quality=87, method=6)
+          im.convert('RGB').save('landing/splitspro-deposit-hero.webp', 'WEBP', quality=87, method=6)
+          print('Published original resolution:', Image.open('landing/splitspro-deposit-hero.webp').size)
+          PY
+      - name: Commit original resolution hero
+        run: |
+          git config user.name "SplitsPro Image Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add landing/splitspro-deposit-hero.webp public/landing/splitspro-deposit-hero.webp
+          if git diff --cached --quiet; then
+            echo "Original image already deployed"
+          else
+            git commit -m "Replace deposit checkout hero with original high-resolution source"
+            git push
+          fi
