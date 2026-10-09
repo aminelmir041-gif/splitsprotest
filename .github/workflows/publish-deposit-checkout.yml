@@ -1,0 +1,72 @@
+name: Publish SplitsPro Deposit Checkout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-deposit-checkout.yml'
+      - 'src/pages/InstallationDepositCheckout.jsx'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import customer-approved deposit hero
+        env:
+          IMAGE_FULL: "https://media.canva.com/v2/image-resize/format:PNG/height:1402/quality:100/uri:ifs%3A%2F%2FM%2F4bd69077-9db7-4084-ba5d-c9b693790644/watermark:F/width:1122?csig=AAAAAAAAAAAAAAAAAAAAAEtLXu5Wkwg-0X9KSMgTAepZEwaz2yzcYqTpW1vrx7Hl&exp=1791518525&osig=AAAAAAAAAAAAAAAAAAAAAPfkzH6rD8O9jl_tTXUx7GehImkscn-r6P5x4LaNyyu0&signer=media-rpc&token=AAIAAU0AJDRiZDY5MDc3LTlkYjctNDA4NC1iYTVkLWM5YjY5Mzc5MDY0NAAAAAABoR7TRkgUpfTYzbjKZ2ANMBAmqy2HaY8Jl5mojQzM5XeGqT3n_g&x-canva-quality=thumbnail"
+          IMAGE_MEDIUM: "https://media.canva.com/v2/image-resize/format:PNG/height:1000/quality:100/uri:ifs%3A%2F%2FM%2F4bd69077-9db7-4084-ba5d-c9b693790644/watermark:F/width:800?csig=AAAAAAAAAAAAAAAAAAAAAEtLXu5Wkwg-0X9KSMgTAepZEwaz2yzcYqTpW1vrx7Hl&exp=1791518525&osig=AAAAAAAAAAAAAAAAAAAAAPfkzH6rD8O9jl_tTXUx7GehImkscn-r6P5x4LaNyyu0&signer=media-rpc&token=AAIAAU0AJDRiZDY5MDc3LTlkYjctNDA4NC1iYTVkLWM5YjY5Mzc5MDY0NAAAAAABoR7TRkgUpfTYzbjKZ2ANMBAmqy2HaY8Jl5mojQzM5XeGqT3n_g&x-canva-quality=thumbnail"
+          IMAGE_THUMB: "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F4bd69077-9db7-4084-ba5d-c9b693790644/watermark:F/width:160?csig=AAAAAAAAAAAAAAAAAAAAAEtLXu5Wkwg-0X9KSMgTAepZEwaz2yzcYqTpW1vrx7Hl&exp=1791518525&osig=AAAAAAAAAAAAAAAAAAAAAPfkzH6rD8O9jl_tTXUx7GehImkscn-r6P5x4LaNyyu0&signer=media-rpc&token=AAIAAU0AJDRiZDY5MDc3LTlkYjctNDA4NC1iYTVkLWM5YjY5Mzc5MDY0NAAAAAABoR7TRkgUpfTYzbjKZ2ANMBAmqy2HaY8Jl5mojQzM5XeGqT3n_g&x-canva-quality=thumbnail"
+        run: |
+          set -eu
+          if [ -s public/landing/splitspro-deposit-hero.webp ]; then
+            echo "Booking hero already included."
+          else
+            mkdir -p public/landing landing
+            for V in IMAGE_FULL IMAGE_MEDIUM IMAGE_THUMB; do
+              URL="${!V}"
+              if curl --fail --location --silent --show-error --max-time 35 "$URL" -o /tmp/deposit-hero.png; then
+                echo "Fetched via $V"
+                file /tmp/deposit-hero.png
+                break
+              fi
+            done
+            test -s /tmp/deposit-hero.png
+            python3 -m pip -q install Pillow
+            python3 - <<'PY'
+          from PIL import Image
+          image=Image.open('/tmp/deposit-hero.png').convert('RGB')
+          print('Fetched deposit image size:', image.size)
+          if image.width < 450:
+              image=image.resize((800, round(800*image.height/image.width)), Image.Resampling.LANCZOS)
+          image.save('public/landing/splitspro-deposit-hero.webp','WEBP',quality=88,method=6)
+          PY
+          fi
+      - name: Build React app
+        run: |
+          npm install --legacy-peer-deps --no-audit
+          npm install --legacy-peer-deps --no-save ajv@8.17.1 ajv-keywords@5.1.0
+          CI=false npm run build
+      - name: Publish live checkout route and JS bundle
+        run: |
+          rm -rf static
+          cp -R build/static static
+          mkdir -p secure-installation landing
+          cp build/index.html secure-installation/index.html
+          cp build/asset-manifest.json asset-manifest.json
+          cp public/landing/splitspro-deposit-hero.webp landing/splitspro-deposit-hero.webp
+      - name: Commit deployed checkout
+        run: |
+          git config user.name "SplitsPro Checkout Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/landing/splitspro-deposit-hero.webp landing/splitspro-deposit-hero.webp static asset-manifest.json secure-installation/index.html
+          if git diff --cached --quiet; then
+            echo "Checkout already deployed"
+          else
+            git commit -m "Publish deposit checkout hero and simpler booking copy"
+            git push
+          fi
