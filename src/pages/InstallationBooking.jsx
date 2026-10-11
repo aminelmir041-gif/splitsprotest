@@ -406,7 +406,7 @@ export default function InstallationBooking() {
                   </button>
                   <button type="button" role="radio" aria-checked={paymentChoice === "instalments"} onClick={() => setPaymentChoice("instalments")} className={`rounded-xl border p-4 text-left ${paymentChoice === "instalments" ? "border-[#C8A46A] bg-[#F8EFDE]" : "border-[#D8D4CB] bg-white"}`}>
                     <span className="block text-sm font-bold">Pay in instalments</span>
-                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Explore financing the air conditioner separately; discounted installation is included by default, and can be removed.</span>
+                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">See Afterpay, Klarna, Zip and PayPal options for the unit. SplitsPro installation is included by default, or you can remove it.</span>
                   </button>
                 </div>
                 {paymentChoice === "deposit" ? (
