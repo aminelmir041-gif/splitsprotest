@@ -71,6 +71,7 @@ export default function InstallationBooking() {
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [slotsError, setSlotsError] = useState("");
   const [showMoreSlots, setShowMoreSlots] = useState(false);
+  const paymentInterrupted = ["cancel", "cancelled", "failed", "declined"].includes(params.get("payment"));
   const paymentSuccess = params.get("payment") === "success";
   const checkoutSessionId = params.get("session_id") || "";
   const [paymentStatus, setPaymentStatus] = useState(
@@ -182,6 +183,10 @@ export default function InstallationBooking() {
   const visibleSlots = showMoreSlots ? slots : slots.slice(0, 4);
   const hasTwoDaySlot = slots.some((slot) => slot.within_two_days);
 
+
+  if (paymentInterrupted) {
+    return <section className="bg-[#F7F5F1] px-5 pb-20 pt-36"><div className="mx-auto max-w-xl"><h1 className="font-serif text-4xl">Checkout didn\u0027t go through?</h1><p className="mt-4 text-base text-[#555]">You can try again, or ask us about a different payment arrangement. Approval for instalments is up to the provider.</p><Link to="/payment-options?help=declined#payment-help" className="mt-6 inline-block bg-[#C8A46A] px-5 py-3 font-bold text-white">Talk to us about payment options</Link><div className="mt-5"><Link to="/split-systems/rinnai-local-offer#installed-prices" className="underline">Back to deals</Link></div></div></section>;
+  }
 
   if (paymentSuccess) {
     const confirmedPayment = paymentStatus?.status === "confirmed";
