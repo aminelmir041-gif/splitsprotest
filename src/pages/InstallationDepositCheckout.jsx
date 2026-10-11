@@ -8,20 +8,20 @@ const PACKAGES = {
     model: "Rinnai Split System",
     warranty: "7-year manufacturer warranty",
     prices: {
-      "2.5kW": "$1,450",
-      "3.5kW": "$1,550",
-      "5.0kW": "$1,900",
-      "7.0kW": "$2,300",
+      "2.5kW": "$1,600",
+      "3.5kW": "$1,700",
+      "5.0kW": "$2,300",
+      "7.0kW": "$2,600",
     },
   },
   "daikin-lite-local": {
     model: "Daikin Cora",
     warranty: "5-year manufacturer warranty",
     prices: {
-      "2.5kW": "$1,550",
-      "3.5kW": "$1,750",
-      "5.0kW": "$2,150",
-      "7.0kW": "$2,600",
+      "2.5kW": "$1,850",
+      "3.5kW": "$2,100",
+      "5.0kW": "$2,500",
+      "7.0kW": "$3,000",
     },
   },
 };
