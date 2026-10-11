@@ -68,7 +68,7 @@ export default function InstallationDepositCheckout() {
 
       <section className="booking-page-section bg-[#F7F5F1] pb-10 pt-3 sm:pb-16 sm:pt-6">
         <div className="sp-container">
-          <div className="mx-auto max-w-2xl">
+          <div className="mx-auto max-w-5xl">
             <Link
               to={backUrl}
               className="inline-flex items-center gap-2 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#8F6A34]"
@@ -76,7 +76,8 @@ export default function InstallationDepositCheckout() {
               <ArrowLeft className="h-4 w-4" /> Back to installation times
             </Link>
 
-            <div className="mt-5 overflow-hidden rounded-[3px] bg-[#E7E4DB] shadow-[0_10px_30px_rgba(25,30,36,0.08)]">
+            <div className="mt-5 grid items-start gap-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-10">
+              <div className="mx-auto w-full max-w-[520px] overflow-hidden rounded-[3px] bg-[#E7E4DB] shadow-[0_10px_30px_rgba(25,30,36,0.08)] lg:mx-0">
               <img
                 src="/landing/splitspro-deposit-hero.webp"
                 alt="SplitsPro installer with a booking calendar: your $300 deposit secures your installation date and comes off the final price."
@@ -89,10 +90,10 @@ export default function InstallationDepositCheckout() {
                   event.currentTarget.onerror = null;
                   event.currentTarget.src = "/landing/overheated-bulldog-hero.webp";
                 }}
-                className="block h-auto w-full object-cover"
+                className="block h-auto w-full object-contain"
               />
-            </div>
-
+              </div>
+              <div className="min-w-0">
             <div className="mt-2 border-y border-[#DDD8CF] py-5">
               <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">
                 Your selected installation
@@ -146,7 +147,10 @@ export default function InstallationDepositCheckout() {
               </p>
             </div>
 
-            <div className="border-t border-[#DDD8CF] py-7">
+              </div>
+            </div>
+
+            <div className="mx-auto w-full max-w-2xl border-t border-[#DDD8CF] py-7">
               <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#C8A46A]">
                 Your booking details
               </p>
