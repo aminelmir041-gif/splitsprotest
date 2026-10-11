@@ -188,10 +188,10 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     blurb: "Rinnai supplied-and-installed special pricing available Sydney-wide, plus the Central Coast and Wollongong. Choose the capacity that suits your room and book while installation spots are available.",
     image: SPLIT_BRANDS.find((b) => b.slug === "rinnai")?.ranges?.[0]?.image,
     prices: [
-      { kw: "2.5kW", price: "$1,450", localOfferPrice: "$1,450" },
-      { kw: "3.5kW", price: "$1,550", localOfferPrice: "$1,550" },
-      { kw: "5.0kW", price: "$1,900", localOfferPrice: "$1,900" },
-      { kw: "7.0kW", price: "$2,300", localOfferPrice: "$2,300" },
+      { kw: "2.5kW", price: "$1,600", localOfferPrice: "$1,600" },
+      { kw: "3.5kW", price: "$1,700", localOfferPrice: "$1,700" },
+      { kw: "5.0kW", price: "$2,300", localOfferPrice: "$2,300" },
+      { kw: "7.0kW", price: "$2,600", localOfferPrice: "$2,600" },
     ],
   },
   {
@@ -204,10 +204,10 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     blurb: "Daikin Cora supplied and installed at a clear special price Sydney-wide, plus the Central Coast and Wollongong, with a 2-day installation guarantee, 5-year warranty and Blue Fin anti-corrosive coating for added protection in coastal areas.",
     image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.ranges?.find((r) => r.slug === "cora")?.image,
     prices: [
-      { kw: "2.5kW", price: "$1,550", localOfferPrice: "$1,550" },
-      { kw: "3.5kW", price: "$1,750", localOfferPrice: "$1,750" },
-      { kw: "5.0kW", price: "$2,150", localOfferPrice: "$2,150" },
-      { kw: "7.0kW", price: "$2,600", localOfferPrice: "$2,600" },
+      { kw: "2.5kW", price: "$1,850", localOfferPrice: "$1,850" },
+      { kw: "3.5kW", price: "$2,100", localOfferPrice: "$2,100" },
+      { kw: "5.0kW", price: "$2,500", localOfferPrice: "$2,500" },
+      { kw: "7.0kW", price: "$3,000", localOfferPrice: "$3,000" },
     ],
   },
 ];
@@ -572,7 +572,7 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="mt-3 text-lg text-[#6E6E73]">Other advertised example</p>
                     <p className="font-serif text-4xl text-[#6E6E73] line-through">$2,799</p>
                     <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
-                    <p className="font-serif text-5xl text-[#0B0B0B]">$2,300</p>
+                    <p className="font-serif text-5xl text-[#0B0B0B]">$2,600</p>
                     <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">Your SplitsPro price already includes</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m electrical connection*</span>
@@ -588,7 +588,7 @@ const BrandPage = ({ offerMode = null }) => {
                     <p className="mt-3 text-lg text-[#6E6E73]">Other advertised example</p>
                     <p className="font-serif text-4xl text-[#6E6E73] line-through">$3,411.94</p>
                     <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-[#8F6A34]">SplitsPro</p>
-                    <p className="font-serif text-5xl text-[#0B0B0B]">$2,600</p>
+                    <p className="font-serif text-5xl text-[#0B0B0B]">$3,000</p>
                     <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">Your SplitsPro price already includes</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       <span className="rounded-full bg-[#F3E9D2] px-3 py-1.5 text-[10px] font-bold text-[#7B5A28]">Up to 20m electrical connection*</span>
