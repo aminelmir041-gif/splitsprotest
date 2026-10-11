@@ -265,6 +265,115 @@ def paypal_sandbox_connection_test():
     return {"connected": True, "environment": "sandbox", "live_payments_enabled": False}
 
 
+
+# Test-only order flow. Requires the existing SplitsPro admin API key; never
+# touches production bookings, live PayPal credentials or Stripe payments.
+PAYPAL_SANDBOX_DEALS = {
+    "rinnai-2.5": ("Rinnai 2.5kW supplied and installed", "1450.00"),
+    "rinnai-3.5": ("Rinnai 3.5kW supplied and installed", "1550.00"),
+    "rinnai-5.0": ("Rinnai 5kW supplied and installed", "1900.00"),
+    "rinnai-7.0": ("Rinnai 7kW supplied and installed", "2300.00"),
+    "daikin-cora-7.0": ("Daikin Cora 7kW supplied and installed", "2600.00"),
+}
+
+
+class PaypalSandboxOrderRequest(BaseModel):
+    deal: str = "rinnai-5.0"
+
+
+def _paypal_admin_required(key: str):
+    if not valid_admin_key(key):
+        raise HTTPException(status_code=403, detail="Not authorised")
+
+
+@app.post("/api/paypal/sandbox/create-order")
+def paypal_sandbox_create_order(payload: PaypalSandboxOrderRequest, x_admin_key: str = Header(default="")):
+    _paypal_admin_required(x_admin_key)
+    if payload.deal not in PAYPAL_SANDBOX_DEALS:
+        raise HTTPException(status_code=400, detail="Unknown test deal")
+    name, amount = PAYPAL_SANDBOX_DEALS[payload.deal]
+    token = _paypal_sandbox_token()
+    try:
+        response = requests.post(
+            "https://api-m.sandbox.paypal.com/v2/checkout/orders",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+                "PayPal-Request-Id": uuid.uuid4().hex,
+            },
+            json={
+                "intent": "CAPTURE",
+                "purchase_units": [{
+                    "reference_id": payload.deal,
+                    "description": name,
+                    "amount": {"currency_code": "AUD", "value": amount},
+                }],
+                "payment_source": {
+                    "paypal": {
+                        "experience_context": {
+                            "return_url": "https://splitspro.com.au/payment-options?paypal_test=returned",
+                            "cancel_url": "https://splitspro.com.au/payment-options?paypal_test=cancelled",
+                            "user_action": "PAY_NOW",
+                        }
+                    }
+                },
+            },
+            timeout=20,
+        )
+        response.raise_for_status()
+        result = response.json()
+    except (requests.RequestException, ValueError) as exc:
+        logging.warning("Sandbox order create error: %s", type(exc).__name__)
+        raise HTTPException(status_code=502, detail="Could not create PayPal Sandbox order") from exc
+    return {
+        "environment": "sandbox",
+        "order_id": result.get("id"),
+        "status": result.get("status"),
+        "deal": payload.deal,
+        "amount": amount,
+        "currency": "AUD",
+        "approval_url": next((link.get("href") for link in result.get("links", []) if link.get("rel") in ("payer-action", "approve")), None),
+        "booking_confirmed": False,
+    }
+
+
+@app.post("/api/paypal/sandbox/capture-order/{order_id}")
+def paypal_sandbox_capture_order(order_id: str, x_admin_key: str = Header(default="")):
+    _paypal_admin_required(x_admin_key)
+    if not re.fullmatch(r"[A-Z0-9]{10,30}", order_id):
+        raise HTTPException(status_code=400, detail="Invalid order ID")
+    token = _paypal_sandbox_token()
+    try:
+        response = requests.post(
+            f"https://api-m.sandbox.paypal.com/v2/checkout/orders/{order_id}/capture",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+                "PayPal-Request-Id": "splitspro-test-" + order_id,
+            },
+            timeout=20,
+        )
+        response.raise_for_status()
+        result = response.json()
+    except (requests.RequestException, ValueError) as exc:
+        logging.warning("Sandbox order capture error: %s", type(exc).__name__)
+        raise HTTPException(status_code=502, detail="Could not capture PayPal Sandbox order") from exc
+    completed = [
+        capture
+        for unit in result.get("purchase_units", [])
+        for capture in (unit.get("payments") or {}).get("captures", [])
+        if capture.get("status") == "COMPLETED"
+    ]
+    return {
+        "environment": "sandbox",
+        "order_id": result.get("id"),
+        "status": result.get("status"),
+        "capture_completed": bool(completed),
+        "booking_confirmed": False,
+        "note": "Test payment only; no installation booking created",
+    }
+
+
 def _booking_redis():
     redis_url = (os.environ.get("REDIS_URL") or "").strip()
     if not redis_url:
