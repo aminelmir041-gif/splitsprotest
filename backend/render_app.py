@@ -1,5 +1,5 @@
 from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File, Header, Request
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, field_validator
 from typing import Optional
@@ -264,6 +264,69 @@ def paypal_sandbox_connection_test():
     _paypal_sandbox_token()
     return {"connected": True, "environment": "sandbox", "live_payments_enabled": False}
 
+
+
+
+@app.get("/api/paypal/sandbox/test", response_class=HTMLResponse)
+def paypal_sandbox_test_page():
+    # Public page, but all transactional API calls require the private admin key.
+    return HTMLResponse("""<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SplitsPro PayPal Sandbox Checkout Test</title>
+<style>
+body{font-family:system-ui,Arial,sans-serif;background:#f5f4f1;color:#101b2b;margin:0;padding:35px 16px}
+main{max-width:600px;margin:auto;background:white;padding:28px;border-radius:16px;box-shadow:0 12px 36px #0001}
+h1{font-size:27px;margin:0 0 10px}p{line-height:1.55}
+label{display:block;font-weight:650;margin:20px 0 7px}input{width:100%;padding:12px;border:1px solid #aeb5bd;border-radius:7px;box-sizing:border-box}
+button,a.action{display:inline-block;background:#0c2039;color:white;padding:12px 18px;border:0;border-radius:6px;font-weight:700;margin:14px 7px 0 0;text-decoration:none;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}#result{white-space:pre-wrap;margin:16px 0;line-height:1.5}
+small{color:#566373}a.action{background:#ba9150}
+</style></head><body><main>
+<h1>SplitsPro PayPal Sandbox Test</h1>
+<p>Test: Rinnai 5kW supplied and installed, <strong>AUD $1,900</strong>. This uses fake Sandbox funds only. No installation date is booked.</p>
+<label for="key">SplitsPro admin API key</label>
+<input type="password" id="key" autocomplete="off" placeholder="Enter privately here, not in chat">
+<small>Used for this page only. Never saved to the browser or sent anywhere except your SplitsPro backend.</small>
+<div><button id="create">1. Create $1,900 test order</button></div>
+<div id="result" role="status"></div>
+<div id="approve"></div>
+<div><button id="capture" disabled>3. Verify and capture approved test payment</button></div>
+<small>Step 2: Open the PayPal approval link, sign in with your PERSONAL Sandbox buyer and approve the payment. Then return here and click step 3. Pay Later isn't guaranteed to appear in Sandbox.</small>
+<script>
+let orderId="";
+const result=document.getElementById("result");
+const output=(s)=>{result.textContent=s};
+async function request(path,body){
+const key=document.getElementById("key").value;
+if(!key)throw new Error("Enter your SplitsPro admin API key.");
+const response=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Key":key},body:body?JSON.stringify(body):undefined});
+const data=await response.json();
+if(!response.ok)throw new Error(typeof data.detail==="string"?data.detail:"Request failed ("+response.status+")");
+return data;
+}
+document.getElementById("create").onclick=async()=>{
+output("Creating Sandbox order...");
+document.getElementById("approve").replaceChildren();
+document.getElementById("capture").disabled=true;
+try{
+const d=await request("/api/paypal/sandbox/create-order",{deal:"rinnai-5.0"});
+orderId=d.order_id;
+output("Sandbox order created: "+orderId+"\nStatus: "+d.status);
+if(!d.approval_url)throw new Error("PayPal did not return an approval link.");
+const a=document.createElement("a");a.href=d.approval_url;a.target="_blank";a.rel="noopener noreferrer";a.className="action";a.textContent="2. Approve with Sandbox buyer";
+document.getElementById("approve").append(a);
+document.getElementById("capture").disabled=false;
+}catch(e){output("Error: "+e.message);}
+};
+document.getElementById("capture").onclick=async()=>{
+if(!orderId)return;
+output("Checking Sandbox capture...");
+try{
+const d=await request("/api/paypal/sandbox/capture-order/"+encodeURIComponent(orderId));
+output("PayPal status: "+d.status+"\nCapture completed: "+d.capture_completed+"\nThis did NOT book an installation or charge real money.");
+}catch(e){output("Error: "+e.message);}
+};
+</script></main></body></html>""")
 
 
 # Test-only order flow. Requires the existing SplitsPro admin API key; never
