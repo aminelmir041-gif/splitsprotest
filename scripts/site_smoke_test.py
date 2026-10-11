@@ -16,6 +16,7 @@ REACT_ROUTES = (
     "split-systems/rinnai-local-offer",
     "book-installation",
     "secure-installation",
+    "payment-options",
     "split-system-installation-sydney",
     "daikin-zena-special",
     "split-systems/mitsubishi",
