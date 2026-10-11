@@ -401,7 +401,7 @@ export default function InstallationBooking() {
                 <div className="mt-4 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Payment option">
                   <button type="button" role="radio" aria-checked={paymentChoice === "deposit"} onClick={() => setPaymentChoice("deposit")} className={`rounded-xl border p-4 text-left ${paymentChoice === "deposit" ? "border-[#C8A46A] bg-[#F8EFDE]" : "border-[#D8D4CB] bg-white"}`}>
                     <span className="block text-sm font-bold">Book</span>
-                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Choose your date, enter your details, and secure your booking. Payment details are explained on the next page.</span>
+                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Continue with your selected installation date and booking details.</span>
                   </button>
                   <button type="button" role="radio" aria-checked={paymentChoice === "instalments"} onClick={() => setPaymentChoice("instalments")} className={`rounded-xl border p-4 text-left ${paymentChoice === "instalments" ? "border-[#C8A46A] bg-[#F8EFDE]" : "border-[#D8D4CB] bg-white"}`}>
                     <span className="block text-sm font-bold">Pay in instalments</span>
