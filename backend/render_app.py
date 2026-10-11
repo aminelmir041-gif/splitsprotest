@@ -311,7 +311,7 @@ document.getElementById("capture").disabled=true;
 try{
 const d=await request("/api/paypal/sandbox/create-order",{deal:"rinnai-5.0"});
 orderId=d.order_id;
-output("Sandbox order created: "+orderId+"\nStatus: "+d.status);
+output("Sandbox order created: "+orderId+"\\nStatus: "+d.status);
 if(!d.approval_url)throw new Error("PayPal did not return an approval link.");
 const a=document.createElement("a");a.href=d.approval_url;a.target="_blank";a.rel="noopener noreferrer";a.className="action";a.textContent="2. Approve with Sandbox buyer";
 document.getElementById("approve").append(a);
@@ -323,7 +323,7 @@ if(!orderId)return;
 output("Checking Sandbox capture...");
 try{
 const d=await request("/api/paypal/sandbox/capture-order/"+encodeURIComponent(orderId));
-output("PayPal status: "+d.status+"\nCapture completed: "+d.capture_completed+"\nThis did NOT book an installation or charge real money.");
+output("PayPal status: "+d.status+"\\nCapture completed: "+d.capture_completed+"\\nThis did NOT book an installation or charge real money.");
 }catch(e){output("Error: "+e.message);}
 };
 </script></main></body></html>""")
