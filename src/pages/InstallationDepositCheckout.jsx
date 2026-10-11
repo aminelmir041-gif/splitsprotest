@@ -43,6 +43,10 @@ export default function InstallationDepositCheckout() {
   const bookingWindow = params.get("window") || "";
   const pack = PACKAGES[productKey];
   const price = pack?.prices?.[size];
+  const installedAmount = price ? Number(price.replace(/[^0-9.]/g, "")) : 0;
+  const depositAmount = installedAmount / 10;
+  const balanceAmount = installedAmount - depositAmount;
+  const formatMoney = (amount) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(amount);
 
   if (!pack || !price || !bookingDate || !bookingWindow) {
     return <Navigate to="/split-systems/rinnai-local-offer#installed-prices" replace />;
@@ -80,7 +84,7 @@ export default function InstallationDepositCheckout() {
               <div className="mx-auto w-full max-w-[520px] overflow-hidden rounded-[3px] bg-[#E7E4DB] shadow-[0_10px_30px_rgba(25,30,36,0.08)] lg:mx-0">
               <img
                 src="/landing/splitspro-deposit-hero.webp"
-                alt="SplitsPro installer with a booking calendar: your $300 deposit secures your installation date and comes off the final price."
+                alt="SplitsPro installer with a booking calendar: your 10% deposit goes towards the selected installation price."
                 width="1122"
                 height="1402"
                 loading="eager"
@@ -123,7 +127,7 @@ export default function InstallationDepositCheckout() {
 
             <div className="py-7 sm:py-9">
               <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">
-                Why the $300 deposit?
+                Why a 10% booking deposit?
               </p>
               <h2 className="mt-3 font-serif text-[1.75rem] font-medium leading-[1.15] text-[#151515] sm:text-4xl">
                 Because we start getting things ready before we knock on your door.
@@ -134,11 +138,16 @@ export default function InstallationDepositCheckout() {
                 and no last-minute mucking around.
               </p>
               <p className="mt-5 border-l-[4px] border-[#D5AE52] bg-[#F0EBE1] px-4 py-4 text-[15px] font-semibold leading-[1.65] text-[#232529]">
-                The $300 comes straight off your final installation price.
+                Your {formatMoney(depositAmount)} booking deposit (10%) comes straight off your final installation price.
                 <span className="block font-normal text-[#59595B]">
                   It's part of the price already shown above — not an extra fee.
                 </span>
               </p>
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-y border-[#DDD8CF] py-4 text-[15px]">
+                <span className="font-semibold text-[#333]">Pay today — 10% deposit</span>
+                <strong className="text-2xl text-[#8F6A34]">{formatMoney(depositAmount)}</strong>
+                <span className="w-full text-xs text-[#66666A]">Remaining installation balance: {formatMoney(balanceAmount)}. The deposit is included in the advertised total of {price}.</span>
+              </div>
               <p className="mt-5 text-[13px] leading-[1.8] text-[#66666A]">
                 Your selected date is secured once your deposit payment is confirmed.
                 You'll complete the payment through Stripe's secure checkout.
@@ -158,7 +167,7 @@ export default function InstallationDepositCheckout() {
                 The last bit, then we&apos;ll lock it in.
               </h2>
               <p className="mt-2 text-[13px] leading-relaxed text-[#606064]">
-                Tell us where the air con is going. Next, you’ll pay the $300 deposit securely through Stripe.
+                Tell us where the air con is going. Next, you’ll pay your 10% booking deposit of {formatMoney(depositAmount)} securely through Stripe.
               </p>
 
               <div className="mt-5">
@@ -168,6 +177,8 @@ export default function InstallationDepositCheckout() {
                   defaultPreferredDate={bookingDate}
                   bookingDate={bookingDate}
                   bookingWindow={bookingWindow}
+                  bookingProductKey={productKey}
+                  bookingSize={size}
                   onBookingConflict={handleBookingConflict}
                   successTitle="Installation booked"
                   successMessage={`We’ve saved ${formatSlotDate(bookingDate)} — ${bookingWindow}. We’ll contact you to confirm the exact arrival window.`}
