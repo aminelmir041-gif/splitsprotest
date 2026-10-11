@@ -58,6 +58,7 @@ export const QuoteForm = ({
   bookingWindow = "",
   bookingProductKey = "",
   bookingSize = "",
+  expectedBookingDeposit = null,
   onBookingConflict = null,
   successTitle = "Request received",
   successMessage = "",
@@ -158,6 +159,11 @@ export const QuoteForm = ({
           preferred_date: bookingDate,
         });
         if (!checkout?.checkout_url) throw new Error("Missing Stripe checkout URL");
+        // Never send a customer to the legacy fixed-$300 checkout while the
+        // payment backend is deploying. The displayed and charged deposit must match.
+        if (expectedBookingDeposit !== null && Number(checkout.deposit_amount) !== Number(expectedBookingDeposit)) {
+          throw new Error("Deposit checkout amount mismatch");
+        }
         window.location.assign(checkout.checkout_url);
         return;
       } else {
@@ -172,7 +178,7 @@ export const QuoteForm = ({
         toast.error("That time has just filled up. We’ve refreshed the next available times.");
         if (onBookingConflict) onBookingConflict(err?.response?.data?.detail);
       } else {
-        toast.error("Something went wrong. Please call us instead.");
+        toast.error(err?.message === "Deposit checkout amount mismatch" ? "Your deposit amount could not be confirmed. No payment taken. Please call SplitsPro to book." : "Something went wrong. Please call us instead.");
       }
     } finally {
       setLoading(false);
