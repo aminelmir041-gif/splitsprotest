@@ -378,3 +378,36 @@ img {
         line-height: 1.08 !important;
     }
 }
+
+
+/* Finance page is a compact checkout decision screen, not a full-screen hero.
+   This overrides the broad first-section mobile treatment above. */
+.finance-page-hero {
+    padding: 6.7rem 1rem 1.5rem;
+    min-height: 0;
+}
+.finance-page-hero .sp-container {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+@media (max-width: 640px) {
+    main > div > section.finance-page-hero:first-child {
+        min-height: 0 !important;
+    }
+    main > div > section.finance-page-hero:first-child .sp-container {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    .finance-page-hero {
+        padding: 5rem 0.15rem 1.25rem;
+    }
+    main .finance-page-hero h1 {
+        font-size: clamp(1.9rem, 8vw, 2.5rem) !important;
+        line-height: 1.09 !important;
+        overflow-wrap: normal !important;
+    }
+    main .finance-page-hero h1 + p {
+        font-size: 0.875rem;
+        line-height: 1.55;
+    }
+}
