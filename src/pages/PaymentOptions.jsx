@@ -62,7 +62,7 @@ export default function PaymentOptions() {
                 <span className="mt-2 block text-sm text-[#555]">Four instalments where PayPal offers this option and approves your purchase.</span>
               </button>
               <button type="button" onClick={() => setPaymentOption("stripe")} aria-pressed={paymentOption === "stripe"} className={`rounded-xl border-2 p-5 text-left ${paymentOption === "stripe" ? "border-[#C8A46A] bg-[#FFF9EC]" : "border-[#DDD8CF] bg-white"}`}>
-                <strong className="block text-lg">Card, Klarna or Zip</strong>
+                <strong className="block text-lg">Card, Afterpay or Klarna</strong>
                 <span className="mt-2 block text-sm text-[#555]">Pay in full by card or choose an eligible Stripe instalment method.</span>
               </button>
             </div>
@@ -80,8 +80,8 @@ export default function PaymentOptions() {
           <p className="text-xs font-bold uppercase tracking-widest text-[#9A7540]">Your options</p>
           <h2 className="mt-3 font-serif text-4xl text-[#161616]">More than one way to pay.</h2>
           <div className="mt-7 grid gap-4 sm:grid-cols-3">
-            <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Pay in instalments</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">Klarna and Zip are supported in our existing Stripe checkout when eligible. PayPal Pay in 4 requires a separate checkout integration and is not yet live through our website.</p></div>
-            <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Book</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">Secure your standard installation booking with a $300 deposit, deducted from the total, and settle the rest on installation day.</p></div>
+            <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Pay in instalments</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">Afterpay and Klarna are supported in our existing Stripe checkout when eligible. PayPal Pay in 4 requires a separate checkout integration and is not yet live through our website.</p></div>
+            <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Book</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">Secure your installation with a 10% booking deposit, deducted from the total, and settle the rest on installation day.</p></div>
             <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Ask for a custom split</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">We can discuss a smaller eligible provider transaction and a separate card, bank-transfer or cash balance, if your provider's terms permit it.</p></div>
           </div>
           <div className="mt-8 border-l-4 border-[#C8A46A] bg-[#FBF7EF] p-5">
