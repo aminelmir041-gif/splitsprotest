@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import QuoteForm from "../components/QuoteForm";
@@ -6,6 +7,7 @@ import { PHONE, PHONE_TEL } from "../lib/data";
 export default function PaymentOptions() {
   const [params] = useSearchParams();
   const needsHelp = params.get("help") === "declined";
+  const [paymentOption, setPaymentOption] = useState("paypal");
   const fullPurchase = params.get("mode") === "full";
   const product = params.get("product");
   const size = params.get("size");
@@ -42,12 +44,37 @@ export default function PaymentOptions() {
             </div>
           )}
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href="#payment-help" className="bg-[#D9B573] px-6 py-3 text-sm font-extrabold text-[#10151C]">Ask us to call you</a>
+            <a href={fullPurchase ? "#instalment-checkout" : "#payment-help"} className="bg-[#D9B573] px-6 py-3 text-sm font-extrabold text-[#10151C]">{fullPurchase ? "See payment options" : "Ask us to call you"}</a>
             <a href={PHONE_TEL} className="border border-white/70 px-6 py-3 text-sm font-extrabold text-white">Call {PHONE}</a>
           </div>
           <p className="mt-4 text-xs text-white/60">All financing is subject to provider approval, transaction rules and eligibility. Our team cannot guarantee approval or override a declined application.</p>
         </div>
       </section>
+      {fullPurchase && (
+        <section className="bg-white px-5 py-12 sm:py-16" id="instalment-checkout" data-testid="instalment-checkout">
+          <div className="mx-auto max-w-5xl">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#9A7540]">Secure checkout</p>
+            <h2 className="mt-2 font-serif text-4xl text-[#161616]">Choose how you'd like to pay.</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#555]">Pay the full installed price through a supported payment provider. Your selected installation time is not reserved until payment and booking confirmation.</p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <button type="button" onClick={() => setPaymentOption("paypal")} aria-pressed={paymentOption === "paypal"} className={`rounded-xl border-2 p-5 text-left ${paymentOption === "paypal" ? "border-[#C8A46A] bg-[#FFF9EC]" : "border-[#DDD8CF] bg-white"}`}>
+                <strong className="block text-lg">PayPal Pay in 4</strong>
+                <span className="mt-2 block text-sm text-[#555]">Four instalments where PayPal offers this option and approves your purchase.</span>
+              </button>
+              <button type="button" onClick={() => setPaymentOption("stripe")} aria-pressed={paymentOption === "stripe"} className={`rounded-xl border-2 p-5 text-left ${paymentOption === "stripe" ? "border-[#C8A46A] bg-[#FFF9EC]" : "border-[#DDD8CF] bg-white"}`}>
+                <strong className="block text-lg">Card, Klarna or Zip</strong>
+                <span className="mt-2 block text-sm text-[#555]">Pay in full by card or choose an eligible Stripe instalment method.</span>
+              </button>
+            </div>
+            <div className="mt-6 rounded-xl bg-[#F7F5F1] p-5">
+              <strong className="block text-lg text-[#161616]">{paymentOption === "paypal" ? "PayPal checkout" : "Stripe checkout"}</strong>
+              <p className="mt-2 text-sm leading-relaxed text-[#555]">We're finalising secure full-price payment confirmation and date locking. Payments for this option are not yet enabled; you will not be charged from this page.</p>
+              <a href="#payment-help" className="mt-4 inline-flex min-h-11 items-center justify-center bg-[#C8A46A] px-6 py-3 text-sm font-bold text-[#161616]">Arrange my instalment checkout</a>
+            </div>
+            <p className="mt-3 text-xs text-[#666]">Pay in 4 is subject to provider eligibility and limits. Never enter card details directly into a SplitsPro enquiry form.</p>
+          </div>
+        </section>
+      )}
       <section className="bg-white px-5 py-14 sm:py-20">
         <div className="mx-auto max-w-5xl">
           <p className="text-xs font-bold uppercase tracking-widest text-[#9A7540]">Your options</p>
