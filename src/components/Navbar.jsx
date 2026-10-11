@@ -8,7 +8,8 @@ export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const solid = scrolled || open;
+  const isFinancePage = location.pathname.startsWith("/payment-options");
+  const solid = scrolled || open || isFinancePage;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -115,12 +116,14 @@ export const Navbar = () => {
         </div>
       </nav>
 
-      <div data-testid="site-instalments-banner" className="relative border-t border-[#D9C7A4] bg-[#F4E9D5] text-[#28221A]">
-        <div className="sp-container flex min-h-[36px] items-center justify-center gap-2 py-1 text-center text-[11px] font-semibold leading-snug sm:text-xs">
-          <span><strong>FLEXIBLE PAYMENTS:</strong> Instalments &amp; tailored options. Subject to eligibility.</span>
-          <NavLink to="/payment-options" onClick={() => setOpen(false)} className="shrink-0 font-extrabold underline underline-offset-2">Find out more</NavLink>
+      {!isFinancePage && (
+        <div data-testid="site-instalments-banner" className="relative border-t border-[#D9C7A4] bg-[#F4E9D5] text-[#28221A]">
+          <div className="sp-container flex min-h-[36px] items-center justify-center gap-2 py-1 text-center text-[11px] font-semibold leading-snug sm:text-xs">
+            <span><strong>FLEXIBLE PAYMENTS:</strong> Instalments &amp; tailored options. Subject to eligibility.</span>
+            <NavLink to="/payment-options" onClick={() => setOpen(false)} className="shrink-0 font-extrabold underline underline-offset-2">Find out more</NavLink>
+          </div>
         </div>
-      </div>
+      )}
 
       {open && (
         <>
