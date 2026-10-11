@@ -406,7 +406,7 @@ export default function InstallationBooking() {
                   </button>
                   <button type="button" role="radio" aria-checked={paymentChoice === "instalments"} onClick={() => setPaymentChoice("instalments")} className={`rounded-xl border p-4 text-left ${paymentChoice === "instalments" ? "border-[#C8A46A] bg-[#F8EFDE]" : "border-[#D8D4CB] bg-white"}`}>
                     <span className="block text-sm font-bold">Pay in instalments</span>
-                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Explore paying the full installed price with an eligible instalment provider.</span>
+                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Explore financing the air conditioner separately; discounted installation is included by default, and can be removed.</span>
                   </button>
                 </div>
                 {paymentChoice === "deposit" ? (
@@ -416,11 +416,11 @@ export default function InstallationBooking() {
                   >Continue to booking</Link>
                 ) : (
                   <>
-                    <p className="mt-4 text-xs leading-relaxed text-[#555]">Full-price instalment checkout is being configured. We'll help you find an eligible option and confirm your booking only after payment arrangements are agreed.</p>
+                    <p className="mt-4 text-xs leading-relaxed text-[#555]">See the separate equipment purchase and optional discounted installation. We'll confirm provider eligibility and the separate agreements before any charge.</p>
                     <Link
-                      to={`/payment-options?mode=full&product=${encodeURIComponent(productKey)}&size=${encodeURIComponent(size)}&date=${encodeURIComponent(preferredDate)}&window=${encodeURIComponent(timeWindow)}#payment-help`}
+                      to={`/payment-options?mode=full&product=${encodeURIComponent(productKey)}&size=${encodeURIComponent(size)}&date=${encodeURIComponent(preferredDate)}&window=${encodeURIComponent(timeWindow)}`}
                       className="mt-4 flex h-12 w-full items-center justify-center rounded-sm bg-[#C8A46A] px-8 text-center text-sm font-semibold uppercase tracking-wider text-white"
-                    >Get full-price instalment options</Link>
+                    >See equipment finance options</Link>
                   </>
                 )}
               </div>
