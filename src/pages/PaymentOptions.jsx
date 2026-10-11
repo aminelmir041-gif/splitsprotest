@@ -7,12 +7,21 @@ export default function PaymentOptions() {
   const [params] = useSearchParams();
   const needsHelp = params.get("help") === "declined";
   const fullPurchase = params.get("mode") === "full";
+  const product = params.get("product");
+  const size = params.get("size");
+  const selectedDate = params.get("date");
+  const selectedWindow = params.get("window");
+  const packages = { "rinnai-local": { label: "Rinnai", prices: { "2.5kW": "$1,450", "3.5kW": "$1,550", "5.0kW": "$1,900", "7.0kW": "$2,300" } }, "daikin-lite-local": { label: "Daikin Cora", prices: { "2.5kW": "$1,550", "3.5kW": "$1,750", "5.0kW": "$2,150", "7.0kW": "$2,600" } } };
+  const chosen = packages[product];
+  const chosenPrice = chosen?.prices[size];
+  const selectionLabel = chosen && chosenPrice ? `${chosen.label} ${size} — ${chosenPrice} installed` : "";
+  const datePassed = selectedDate ? selectedDate < new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" }) : false;
   const selection = fullPurchase
     ? ` Customer selected ${params.get("product") || "air conditioner"} ${params.get("size") || ""}, installation date ${params.get("date") || "not specified"}, ${params.get("window") || ""}. They want instalments on the full price, not just the deposit.`
     : "";
   const message = needsHelp
     ? "Instalment-payment help requested: the customer could not complete an instalment checkout. Please call them to discuss eligible alternatives, including a smaller provider transaction plus separate balance if permitted."
-    : "I'd like to talk about flexible payments for an air conditioner installation. Please call me to discuss deposit, instalments and a possible combination of payment methods.";
+    : "I'd like to talk about flexible payments for an air conditioner installation. Please call me to discuss instalments and a possible combination of payment methods." + selection;
   return (
     <>
       <Helmet><title>Aircon Instalment Payments & Help | SplitsPro</title>
@@ -23,6 +32,15 @@ export default function PaymentOptions() {
           <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#D9B573]">SplitsPro flexible payments</p>
           <h1 className="mt-5 max-w-4xl font-serif text-5xl leading-[1.08] sm:text-7xl">{needsHelp ? "Pay in 4 didn't work? There's still something we can try." : "Get the air con sorted. Talk to us about how you pay."}</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/80">Book with a deposit, pay by card, or explore instalment options. If the provider can't approve the amount, our team can discuss another way to split the payments.</p>
+          {fullPurchase && (
+            <div className="mt-7 max-w-2xl border border-white/25 bg-white/10 p-5" data-testid="selected-instalment-deal">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#D9B573]">Your selected installation</p>
+              <p className="mt-2 text-2xl font-semibold">{selectionLabel || "Air conditioning installation"}</p>
+              <p className="mt-2 text-sm text-white/85">{selectedDate || "Date not selected"}{selectedWindow ? ` · ${selectedWindow}` : ""}</p>
+              {datePassed && <p className="mt-3 text-sm font-bold text-[#FFD68B]">This date has passed. You'll need to choose a new installation date before booking.</p>}
+              <p className="mt-3 text-xs text-white/70">Your date is not reserved until payment and booking are confirmed.</p>
+            </div>
+          )}
           <div className="mt-7 flex flex-wrap gap-3">
             <a href="#payment-help" className="bg-[#D9B573] px-6 py-3 text-sm font-extrabold text-[#10151C]">Ask us to call you</a>
             <a href={PHONE_TEL} className="border border-white/70 px-6 py-3 text-sm font-extrabold text-white">Call {PHONE}</a>
@@ -36,12 +54,12 @@ export default function PaymentOptions() {
           <h2 className="mt-3 font-serif text-4xl text-[#161616]">More than one way to pay.</h2>
           <div className="mt-7 grid gap-4 sm:grid-cols-3">
             <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Pay in instalments</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">Klarna and Zip are supported in our existing Stripe checkout when eligible. PayPal Pay in 4 requires a separate checkout integration and is not yet live through our website.</p></div>
-            <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Book with a deposit</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">Secure your standard installation booking with a $300 deposit, deducted from the total, and settle the rest on installation day.</p></div>
+            <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Book</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">Secure your standard installation booking with a $300 deposit, deducted from the total, and settle the rest on installation day.</p></div>
             <div className="border-t-4 border-[#C8A46A] bg-[#F7F5F1] p-5"><h3 className="text-lg font-bold">Ask for a custom split</h3><p className="mt-2 text-sm leading-relaxed text-[#555]">We can discuss a smaller eligible provider transaction and a separate card, bank-transfer or cash balance, if your provider's terms permit it.</p></div>
           </div>
           <div className="mt-8 border-l-4 border-[#C8A46A] bg-[#FBF7EF] p-5">
             <h3 className="text-xl font-bold">Declined? Don't give up on getting comfortable.</h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#555]">A declined payment doesn't necessarily mean there's no suitable payment arrangement. Tell us what happened and we'll contact you to explore options. We don't give credit approval or financial advice.</p>
+            <p className="mt-2 text-sm leading-relaxed text-[#555]">An unsuccessful payment doesn't necessarily mean there's no suitable payment arrangement. Tell us what happened and we'll contact you to explore options. We don't give credit approval or financial advice.</p>
             <a href="#payment-help" className="mt-4 inline-block text-sm font-extrabold text-[#8F6A34] underline">Get payment help →</a>
           </div>
         </div>
