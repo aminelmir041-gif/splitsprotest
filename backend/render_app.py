@@ -17,6 +17,7 @@ import hmac
 import hashlib
 from urllib.parse import urlencode
 import redis
+import requests
 from redis.exceptions import WatchError
 
 from .crm_admin import assign_client_owner, client_hubspot_url, get_active_owners
@@ -215,6 +216,53 @@ BOOKING_BLOCKS_FILE = Path(__file__).parent / "booking_blocks.json"
 BOOKING_PAYMENT_LINK_URL = (os.environ.get("BOOKING_PAYMENT_LINK_URL") or "").strip()
 BOOKING_HOLD_SECONDS = max(600, min(7200, int(os.environ.get("BOOKING_HOLD_SECONDS", "3600"))))
 STRIPE_WEBHOOK_SECRET = (os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()
+
+
+
+# Sandbox-only PayPal integration preflight. These routes never create a live charge
+# or confirm a booking. Secrets are read from Render environment, never returned.
+@app.get("/api/paypal/sandbox/status")
+def paypal_sandbox_status():
+    client_id = bool((os.environ.get("PAYPAL_SANDBOX_CLIENT_ID") or "").strip())
+    secret = bool((os.environ.get("PAYPAL_SANDBOX_CLIENT_SECRET") or "").strip())
+    return {
+        "environment": "sandbox",
+        "client_id_configured": client_id,
+        "secret_configured": secret,
+        "ready_for_testing": client_id and secret,
+        "live_payments_enabled": False,
+    }
+
+
+def _paypal_sandbox_token():
+    client_id = (os.environ.get("PAYPAL_SANDBOX_CLIENT_ID") or "").strip()
+    secret = (os.environ.get("PAYPAL_SANDBOX_CLIENT_SECRET") or "").strip()
+    if not client_id or not secret:
+        raise HTTPException(status_code=503, detail="PayPal Sandbox credentials are not configured")
+    try:
+        response = requests.post(
+            "https://api-m.sandbox.paypal.com/v1/oauth2/token",
+            auth=(client_id, secret),
+            data={"grant_type": "client_credentials"},
+            headers={"Accept": "application/json"},
+            timeout=12,
+        )
+        response.raise_for_status()
+        token = response.json().get("access_token")
+        if not token:
+            raise ValueError("No PayPal access token returned")
+        return token
+    except (requests.RequestException, ValueError) as exc:
+        logging.warning("PayPal Sandbox authentication failed: %s", type(exc).__name__)
+        raise HTTPException(status_code=502, detail="PayPal Sandbox authentication failed") from exc
+
+
+@app.get("/api/paypal/sandbox/connection-test")
+def paypal_sandbox_connection_test():
+    # Authenticates to PayPal's sandbox API without charging, creating an
+    # order, consuming checkout inventory, or accessing Live credentials.
+    _paypal_sandbox_token()
+    return {"connected": True, "environment": "sandbox", "live_payments_enabled": False}
 
 
 def _booking_redis():
