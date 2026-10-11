@@ -679,7 +679,7 @@ const BrandPage = ({ offerMode = null }) => {
                     </div>
                     <div className="rounded-xl border border-[#DED9D0] bg-white p-4">
                       <p className="text-sm font-bold text-[#181818]">Interested in paying in instalments?</p>
-                      <p className="mt-1 text-xs leading-relaxed text-[#606064]">Ask about financing the equipment separately through eligible providers. SplitsPro's discounted standard installation is included by default, with an equipment-only choice.</p>
+                      <p className="mt-1 text-xs leading-relaxed text-[#606064]">Choose Afterpay, Klarna, Zip or PayPal Pay in 4 as a preferred equipment-payment option. Discounted SplitsPro installation is selected by default, with an equipment-only choice.</p>
                       <p className="mt-2 text-xs font-semibold text-[#8F6A34]"><Link to="/payment-options?mode=full" className="underline">See equipment finance and installation choices →</Link></p>
                     </div>
                   </div>
