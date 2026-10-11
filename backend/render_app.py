@@ -93,6 +93,8 @@ class QuoteCreate(BaseModel):
 class BookingCreate(QuoteCreate):
     booking_date: str
     booking_window: str
+    product_key: str = ""
+    size: str = ""
 
     @field_validator("booking_date")
     @classmethod
@@ -213,6 +215,18 @@ BOOKING_WORKDAYS = {
     if value.strip().isdigit() and 0 <= int(value) <= 6
 }
 BOOKING_BLOCKS_FILE = Path(__file__).parent / "booking_blocks.json"
+BOOKING_DEPOSIT_DEALS = {
+    ("rinnai-local", "2.5kW"): {"total_cents": 160000, "deposit_cents": 16000, "payment_link_id": "plink_1UPIlCPpUx7EUhdNQ4AetSsa", "payment_link_url": "https://buy.stripe.com/3cI14p8QO4K25xyaiBcs803"},
+    ("rinnai-local", "3.5kW"): {"total_cents": 170000, "deposit_cents": 17000, "payment_link_id": "plink_1UPIlOPpUx7EUhdN9CsZQwKN", "payment_link_url": "https://buy.stripe.com/eVq28t7MK0tM1hi9excs804"},
+    ("rinnai-local", "5.0kW"): {"total_cents": 230000, "deposit_cents": 23000, "payment_link_id": "plink_1UPIlRPpUx7EUhdN0tCJuJbo", "payment_link_url": "https://buy.stripe.com/aFa5kF0ki7We3pq76pcs805"},
+    ("rinnai-local", "7.0kW"): {"total_cents": 260000, "deposit_cents": 26000, "payment_link_id": "plink_1UPIlTPpUx7EUhdNdk1Mt5D9", "payment_link_url": "https://buy.stripe.com/14A4gBc30foGbVW8atcs806"},
+    ("daikin-lite-local", "2.5kW"): {"total_cents": 185000, "deposit_cents": 18500, "payment_link_id": "plink_1UPIlVPpUx7EUhdNJd81sywM", "payment_link_url": "https://buy.stripe.com/00wcN7ffca4m9NOcqJcs807"},
+    ("daikin-lite-local", "3.5kW"): {"total_cents": 210000, "deposit_cents": 21000, "payment_link_id": "plink_1UPIlYPpUx7EUhdNBH2nrrUD", "payment_link_url": "https://buy.stripe.com/3cI00l7MKb8qe441M5cs808"},
+    ("daikin-lite-local", "5.0kW"): {"total_cents": 250000, "deposit_cents": 25000, "payment_link_id": "plink_1UPIlaPpUx7EUhdNJzdhtgt9", "payment_link_url": "https://buy.stripe.com/5kQfZj0kigsK4tu1M5cs809"},
+    ("daikin-lite-local", "7.0kW"): {"total_cents": 300000, "deposit_cents": 30000, "payment_link_id": "plink_1UPIlcPpUx7EUhdNVgG5Wxgd", "payment_link_url": "https://buy.stripe.com/aFaaEZeb8dgye444Yhcs80a"},
+}
+
+# Legacy fixed link is only relevant to old in-flight checkout sessions.
 BOOKING_PAYMENT_LINK_URL = (os.environ.get("BOOKING_PAYMENT_LINK_URL") or "").strip()
 BOOKING_HOLD_SECONDS = max(600, min(7200, int(os.environ.get("BOOKING_HOLD_SECONDS", "3600"))))
 STRIPE_WEBHOOK_SECRET = (os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()
@@ -632,20 +646,39 @@ def _validate_booking_request(payload: BookingCreate):
         )
 
 
-def _booking_checkout_url(reference: str) -> str:
-    if not BOOKING_PAYMENT_LINK_URL:
-        raise HTTPException(status_code=503, detail="Online deposit payments are not configured")
-    separator = "&" if "?" in BOOKING_PAYMENT_LINK_URL else "?"
-    return f"{BOOKING_PAYMENT_LINK_URL}{separator}{urlencode({'client_reference_id': reference})}"
+def _booking_deal(payload: BookingCreate):
+    # Whitelist total and deposit prices on the server; ignore client amounts.
+    key = (payload.product_key, payload.size)
+    if key in BOOKING_DEPOSIT_DEALS:
+        return key, BOOKING_DEPOSIT_DEALS[key]
+
+    # Support previous frontend bundle during rollout without taking $300.
+    message = payload.message or ""
+    product_key = "daikin-lite-local" if "Daikin Cora" in message else "rinnai-local" if "Rinnai Split System" in message else ""
+    match = re.search(r"\b(2\.5|3\.5|5(?:\.0)?|7(?:\.0)?)\s*kW\b", message, flags=re.I)
+    size = f"{float(match.group(1)):.1f}kW" if match else ""
+    legacy_key = (product_key, size)
+    if legacy_key not in BOOKING_DEPOSIT_DEALS:
+        raise HTTPException(status_code=400, detail="Please select a valid air conditioner to calculate your 10% deposit.")
+    return legacy_key, BOOKING_DEPOSIT_DEALS[legacy_key]
+
+
+def _booking_checkout_url(reference: str, deal: dict) -> str:
+    url = deal["payment_link_url"]
+    separator = "&" if "?" in url else "?"
+    return f"{url}{separator}{urlencode({'client_reference_id': reference})}"
 
 
 @app.post("/api/booking-checkout")
 def create_booking_checkout(payload: BookingCreate):
     _validate_booking_request(payload)
     client = _booking_redis()
+    (product_key, size), deal = _booking_deal(payload)
     reference = uuid.uuid4().hex
-    checkout_url = _booking_checkout_url(reference)
+    checkout_url = _booking_checkout_url(reference, deal)
     lead = payload.model_dump()
+    lead["product_key"] = product_key
+    lead["size"] = size
     lead["preferred_date"] = payload.booking_date
     lead["id"] = str(uuid.uuid4())
     lead["created_at"] = now_iso()
@@ -657,6 +690,9 @@ def create_booking_checkout(payload: BookingCreate):
         "booking_window": payload.booking_window,
         "lead": lead,
         "created_at": now_iso(),
+        "total_cents": deal["total_cents"],
+        "deposit_cents": deal["deposit_cents"],
+        "payment_link_id": deal["payment_link_id"],
     }
 
     try:
@@ -684,7 +720,9 @@ def create_booking_checkout(payload: BookingCreate):
     return {
         "accepted": True,
         "payment_required": True,
-        "deposit_amount": 300,
+        "deposit_amount": deal["deposit_cents"] / 100,
+        "total_amount": deal["total_cents"] / 100,
+        "balance_amount": (deal["total_cents"] - deal["deposit_cents"]) / 100,
         "currency": "AUD",
         "reference": reference,
         "checkout_url": checkout_url,
@@ -724,7 +762,7 @@ def _verify_stripe_signature(raw_body: bytes, signature_header: str) -> None:
         raise PermissionError("Invalid Stripe signature")
 
 
-def _complete_paid_booking(reference: str, session_id: str, background_tasks: BackgroundTasks):
+def _complete_paid_booking(reference: str, session_id: str, background_tasks: BackgroundTasks, session_amount_cents: int = 0):
     client = _booking_redis()
     paid_raw = client.get(_paid_key(reference))
     if paid_raw:
@@ -740,6 +778,8 @@ def _complete_paid_booking(reference: str, session_id: str, background_tasks: Ba
             "reference": reference,
             "session_id": session_id,
             "message": "Payment received, but the original booking hold expired. SplitsPro will contact you to reschedule.",
+            "deposit_amount": session_amount_cents / 100,
+            "currency": "AUD",
         }
         client.set(_paid_key(reference), json.dumps(result), ex=60 * 60 * 24 * 90)
         if session_id:
@@ -750,6 +790,8 @@ def _complete_paid_booking(reference: str, session_id: str, background_tasks: Ba
     booking_date = hold["booking_date"]
     booking_window = hold["booking_window"]
     lead = hold["lead"]
+    deposit_cents = int(hold.get("deposit_cents", 30000))
+    total_cents = int(hold.get("total_cents", 0))
 
     with client.lock(_slot_lock_key(booking_date, booking_window), timeout=10, blocking_timeout=5):
         confirmed = int(client.get(_slot_key(booking_date, booking_window)) or 0)
@@ -762,7 +804,10 @@ def _complete_paid_booking(reference: str, session_id: str, background_tasks: Ba
         client.delete(_hold_key(reference))
 
     lead["deposit_paid"] = True
-    lead["deposit_amount"] = 300
+    lead["deposit_amount"] = deposit_cents / 100
+    if total_cents:
+        lead["total_amount"] = total_cents / 100
+        lead["balance_amount"] = (total_cents - deposit_cents) / 100
     lead["deposit_currency"] = "AUD"
     lead["stripe_session_id"] = session_id
     lead["booking_payment_status"] = status
@@ -785,7 +830,9 @@ def _complete_paid_booking(reference: str, session_id: str, background_tasks: Ba
         "session_id": session_id,
         "booking_date": booking_date,
         "booking_window": booking_window,
-        "deposit_amount": 300,
+        "deposit_amount": deposit_cents / 100,
+        "total_amount": total_cents / 100 if total_cents else None,
+        "balance_amount": (total_cents - deposit_cents) / 100 if total_cents else None,
         "currency": "AUD",
     }
     client.set(_paid_key(reference), json.dumps(result), ex=60 * 60 * 24 * 90)
@@ -819,7 +866,33 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks):
     if event_type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"}:
         if event_type == "checkout.session.completed" and session.get("payment_status") != "paid":
             return Response(status_code=200)
-        _complete_paid_booking(reference, session_id, background_tasks)
+
+        client = _booking_redis()
+        hold_raw = client.get(_hold_key(reference))
+        if hold_raw:
+            hold = json.loads(hold_raw)
+            expected_cents = int(hold.get("deposit_cents", 30000))
+            expected_link_id = hold.get("payment_link_id")
+            if (
+                session.get("amount_total") != expected_cents
+                or (session.get("currency") or "").lower() != "aud"
+                or (expected_link_id and session.get("payment_link") != expected_link_id)
+            ):
+                logging.error("Rejected booking payment with mismatched amount/link: %s", session_id)
+                return Response(status_code=200)
+        else:
+            # Check even late payments whose slot holds have expired.
+            known = next(
+                (deal for deal in BOOKING_DEPOSIT_DEALS.values()
+                 if deal["payment_link_id"] == session.get("payment_link")), None
+            )
+            if known and (
+                session.get("amount_total") != known["deposit_cents"]
+                or (session.get("currency") or "").lower() != "aud"
+            ):
+                logging.error("Rejected late booking with mismatched amount: %s", session_id)
+                return Response(status_code=200)
+        _complete_paid_booking(reference, session_id, background_tasks, int(session.get("amount_total") or 0))
     elif event_type in {"checkout.session.async_payment_failed", "checkout.session.expired"}:
         client = _booking_redis()
         client.delete(_hold_key(reference))
@@ -843,7 +916,7 @@ def create_booking(payload: BookingCreate, background_tasks: BackgroundTasks):
     raise HTTPException(
         status_code=410,
         detail={
-            "message": "A $300 deposit is now required to secure installation bookings.",
+            "message": "A 10% booking deposit is required to secure installation bookings.",
             "payment_required": True,
         },
     )
