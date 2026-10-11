@@ -118,7 +118,7 @@ function App() {
           <BrowserRouter basename={basename}>
             <ScrollToTop />
             <Navbar />
-            <main>
+            <main className="pt-[36px]">
               <AnimatedRoutes />
             </main>
             <Footer />
