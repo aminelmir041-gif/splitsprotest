@@ -117,8 +117,8 @@ export const Navbar = () => {
 
       <div data-testid="site-instalments-banner" className="relative border-t border-[#D9C7A4] bg-[#F4E9D5] text-[#28221A]">
         <div className="sp-container flex min-h-[36px] items-center justify-center gap-2 py-1 text-center text-[11px] font-semibold leading-snug sm:text-xs">
-          <span><strong>Pay in instalments available</strong> with Klarna &amp; Zip, subject to approval.</span>
-          <NavLink to="/split-systems/rinnai-local-offer#installed-prices" onClick={() => setOpen(false)} className="shrink-0 font-extrabold underline underline-offset-2">See deals</NavLink>
+          <span><strong>FLEXIBLE PAYMENTS:</strong> Instalments &amp; tailored options. Subject to eligibility.</span>
+          <NavLink to="/payment-options" onClick={() => setOpen(false)} className="shrink-0 font-extrabold underline underline-offset-2">Find out more</NavLink>
         </div>
       </div>
 
