@@ -193,13 +193,14 @@ export default function InstallationBooking() {
     const confirmedPayment = paymentStatus?.status === "confirmed";
     const needsReschedule = paymentStatus?.status === "needs_reschedule";
     const pendingConfirmation = paymentStatus?.status === "pending_confirmation";
+    const paidDeposit = typeof paymentStatus?.deposit_amount === "number" ? new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(paymentStatus.deposit_amount) : null;
     return (
       <section className="booking-page-section bg-[#F7F5F1] px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-xl text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#C8A46A] text-white">
             {paymentStatus?.status === "processing" ? <Loader2 className="h-7 w-7 animate-spin" /> : <Check className="h-8 w-8" />}
           </div>
-          <p className="mt-6 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">$300 installation deposit</p>
+          <p className="mt-6 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">{paidDeposit ? `${paidDeposit} installation deposit` : "10% installation booking deposit"}</p>
           <h1 className="mt-2 font-serif text-3xl font-medium text-[#0B0B0B] sm:text-4xl">
             {confirmedPayment
               ? "Installation booked"
@@ -211,9 +212,9 @@ export default function InstallationBooking() {
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#606064]">
             {confirmedPayment
-              ? `Your payment is confirmed and we’ve locked in ${paymentStatus.booking_date} — ${paymentStatus.booking_window}. The $300 comes off your final installation price.`
+              ? `Your payment is confirmed and we’ve locked in ${paymentStatus.booking_date} — ${paymentStatus.booking_window}. ${paidDeposit || "Your 10% deposit"} comes off your final installation price.`
               : needsReschedule
-                ? "Your $300 deposit is safely received. The original time became unavailable, so we’ll contact you to lock in the next suitable installation time."
+                ? `${paidDeposit || "Your deposit"} was received. The original time became unavailable, so we’ll contact you to lock in the next suitable installation time.`
                 : pendingConfirmation
                   ? "Stripe returned you to SplitsPro, but the automatic confirmation is taking longer than expected. Your payment will not be charged twice. We’ll verify it and contact you if anything needs attention."
                   : "Stripe has returned you to SplitsPro. We’re confirming the payment and locking your installation time now."}
