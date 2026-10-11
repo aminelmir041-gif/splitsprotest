@@ -56,6 +56,8 @@ export const QuoteForm = ({
   defaultPreferredDate = "",
   bookingDate = "",
   bookingWindow = "",
+  bookingProductKey = "",
+  bookingSize = "",
   onBookingConflict = null,
   successTitle = "Request received",
   successMessage = "",
@@ -151,6 +153,8 @@ export const QuoteForm = ({
           photo_url,
           booking_date: bookingDate,
           booking_window: bookingWindow,
+          product_key: bookingProductKey,
+          size: bookingSize,
           preferred_date: bookingDate,
         });
         if (!checkout?.checkout_url) throw new Error("Missing Stripe checkout URL");
