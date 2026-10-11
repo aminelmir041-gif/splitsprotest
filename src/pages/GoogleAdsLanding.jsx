@@ -26,10 +26,10 @@ const OFFERS = [
     image: rinnaiImage,
     note: "Fast supplied-and-installed pricing with clear standard-install inclusions.",
     prices: [
-      { kw: "2.5kW", price: "$1,450" },
-      { kw: "3.5kW", price: "$1,550" },
-      { kw: "5.0kW", price: "$1,900" },
-      { kw: "7.0kW", price: "$2,300" },
+      { kw: "2.5kW", price: "$1,600" },
+      { kw: "3.5kW", price: "$1,700" },
+      { kw: "5.0kW", price: "$2,300" },
+      { kw: "7.0kW", price: "$2,600" },
     ],
   },
   {
@@ -38,10 +38,10 @@ const OFFERS = [
     image: daikinImage,
     note: "Daikin Cora supplied and installed, including Blue Fin anti-corrosive coating.",
     prices: [
-      { kw: "2.5kW", price: "$1,550" },
-      { kw: "3.5kW", price: "$1,750" },
-      { kw: "5.0kW", price: "$2,150" },
-      { kw: "7.0kW", price: "$2,600" },
+      { kw: "2.5kW", price: "$1,850" },
+      { kw: "3.5kW", price: "$2,100" },
+      { kw: "5.0kW", price: "$2,500" },
+      { kw: "7.0kW", price: "$3,000" },
     ],
   },
 ];
@@ -68,7 +68,7 @@ const EXTRA_ITEMS = [
 const FAQS = [
   {
     q: "How much does split system air conditioning installation cost in Sydney?",
-    a: "Our current supplied-and-installed specials start from $1,450 for a 2.5kW Rinnai and $1,550 for a 2.5kW Daikin Cora on qualifying standard installations. Larger capacities are shown on this page.",
+    a: "Our current supplied-and-installed prices start from $1,600 for a 2.5kW Rinnai and $1,850 for a 2.5kW Daikin Cora on qualifying standard installations. Larger capacities are shown on this page.",
   },
   {
     q: "What does supplied and installed include?",
@@ -157,7 +157,7 @@ const GoogleAdsLanding = () => {
         <title>Split System Air Conditioning Installation Sydney | Supplied & Installed | SplitsPro</title>
         <meta
           name="description"
-          content="Split system air conditioning supplied and installed across Sydney from $1,450. Rinnai and Daikin Cora pricing, clear standard-install inclusions and fast installation."
+          content="Split system air conditioning supplied and installed across Sydney from $1,600. Rinnai and Daikin Cora pricing, clear standard-install inclusions and fast installation."
         />
         <link rel="canonical" href="https://splitspro.com.au/split-system-installation-sydney" />
         <meta property="og:title" content="Split System Air Conditioning Supplied & Installed | SplitsPro" />
@@ -178,7 +178,7 @@ const GoogleAdsLanding = () => {
             </div>
             <h1 className="mt-5 font-serif text-[clamp(46px,7vw,82px)] font-medium leading-[0.98] tracking-[-0.045em]">
               Split systems supplied &amp; installed
-              <span className="block text-[#E4CFA6]">from $1,450.</span>
+              <span className="block text-[#E4CFA6]">from $1,600.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl">
               Rinnai and Daikin Cora installed with clear standard-install pricing, fast booking and no guessing what the advertised price includes.
@@ -192,10 +192,10 @@ const GoogleAdsLanding = () => {
 
             <div className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4">
               {[
-                ["Rinnai", "2.5kW", "$1,450"],
-                ["Rinnai", "5.0kW", "$1,900"],
-                ["Daikin", "2.5kW", "$1,550"],
-                ["Daikin", "7.0kW", "$2,600"],
+                ["Rinnai", "2.5kW", "$1,600"],
+                ["Rinnai", "5.0kW", "$2,300"],
+                ["Daikin", "2.5kW", "$1,850"],
+                ["Daikin", "7.0kW", "$3,000"],
               ].map(([brand, kw, price]) => (
                 <div key={`${brand}-${kw}`} className="rounded-xl border border-white/10 bg-white/[0.055] p-4">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{brand}</p>
