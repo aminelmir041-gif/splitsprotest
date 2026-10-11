@@ -82,10 +82,10 @@ export const PageHero = ({ overline, title, sub, image, note, imgPos = "object-c
           </section>
         )}
         {desktopBrand && (
-          <section className="relative hidden h-[390px] items-end overflow-hidden bg-[#17191C] lg:flex">
+          <section className="relative hidden min-h-[540px] items-end overflow-hidden bg-[#17191C] lg:flex">
             <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_78%_20%,rgba(200,164,106,0.18),transparent_34%),linear-gradient(110deg,#0B0B0B_0%,#17191C_62%,#25272A_100%)]" />
             <div aria-hidden className="absolute right-[7%] top-1/2 h-[250px] w-[430px] -translate-y-1/2 rounded-full border border-white/[0.035]" />
-            <div className="sp-container relative z-10 pb-12 pt-24">
+            <div className="sp-container relative z-10 pb-16 pt-44">
               <Reveal><Overline light>{overline}</Overline></Reveal>
               <Reveal delay={0.05}><h1 className="mt-5 max-w-5xl font-serif text-[58px] font-medium leading-[0.98] tracking-tight text-white text-balance">{title}</h1></Reveal>
               {sub && <Reveal delay={0.1}><p className="mt-6 max-w-3xl text-lg leading-relaxed text-white/75">{sub}</p></Reveal>}
