@@ -669,6 +669,22 @@ const BrandPage = ({ offerMode = null }) => {
                   })}
                 </div>
 
+                <div className="mt-5 border-t border-[#E5E0D7] pt-5" data-testid="payment-options">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Flexible ways to pay</p>
+                  <h3 className="mt-1 font-serif text-2xl text-[#0B0B0B]">Get the comfort sorted. Choose how you pay.</h3>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-xl border border-[#DED9D0] bg-white p-4">
+                      <p className="text-sm font-bold text-[#181818]">Book with a $300 deposit</p>
+                      <p className="mt-1 text-xs leading-relaxed text-[#606064]">Secure your installation date now. The $300 comes off your installed price; pay the remaining balance on installation day.</p>
+                    </div>
+                    <div className="rounded-xl border border-[#DED9D0] bg-white p-4">
+                      <p className="text-sm font-bold text-[#181818]">Interested in paying in instalments?</p>
+                      <p className="mt-1 text-xs leading-relaxed text-[#606064]">Klarna and Zip are supported by our Stripe payment provider. Availability, repayment terms and approval depend on the customer and transaction.</p>
+                      <p className="mt-2 text-xs font-semibold text-[#8F6A34]">Ask us about instalment options for the full installation price.</p>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-[11px] leading-relaxed text-[#6E6E73]">Online booking currently collects a $300 deposit, not the full installed price. Any instalment option shown during secure checkout applies to the amount being charged. Finance eligibility and fees are determined by the provider; not every customer or purchase qualifies.</p>
+                </div>
                 <p className="mt-4 text-[11px] leading-relaxed text-[#6E6E73]">Standard-install pricing shown. If your home genuinely needs extra work, we tell you what it is and the price before it starts.</p>
 
               </div>
