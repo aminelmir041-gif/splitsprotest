@@ -179,6 +179,7 @@ export default function InstallationDepositCheckout() {
                   bookingWindow={bookingWindow}
                   bookingProductKey={productKey}
                   bookingSize={size}
+                  expectedBookingDeposit={depositAmount}
                   onBookingConflict={handleBookingConflict}
                   successTitle="Installation booked"
                   successMessage={`We’ve saved ${formatSlotDate(bookingDate)} — ${bookingWindow}. We’ll contact you to confirm the exact arrival window.`}
