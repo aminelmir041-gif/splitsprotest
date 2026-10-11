@@ -400,8 +400,8 @@ export default function InstallationBooking() {
                 <p className="mt-3 text-[13px] leading-relaxed text-[#55555A]">Choose how you'd like to pay before we take your booking details.</p>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Payment option">
                   <button type="button" role="radio" aria-checked={paymentChoice === "deposit"} onClick={() => setPaymentChoice("deposit")} className={`rounded-xl border p-4 text-left ${paymentChoice === "deposit" ? "border-[#C8A46A] bg-[#F8EFDE]" : "border-[#D8D4CB] bg-white"}`}>
-                    <span className="block text-sm font-bold">Book with a $300 deposit</span>
-                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Pay the deposit securely; the balance is due on installation day.</span>
+                    <span className="block text-sm font-bold">Book</span>
+                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Choose your date, enter your details, and secure your booking. Payment details are explained on the next page.</span>
                   </button>
                   <button type="button" role="radio" aria-checked={paymentChoice === "instalments"} onClick={() => setPaymentChoice("instalments")} className={`rounded-xl border p-4 text-left ${paymentChoice === "instalments" ? "border-[#C8A46A] bg-[#F8EFDE]" : "border-[#D8D4CB] bg-white"}`}>
                     <span className="block text-sm font-bold">Pay in instalments</span>
@@ -412,7 +412,7 @@ export default function InstallationBooking() {
                   <Link
                     to={`/secure-installation?product=${encodeURIComponent(productKey)}&size=${encodeURIComponent(size)}&date=${encodeURIComponent(preferredDate)}&window=${encodeURIComponent(timeWindow)}`}
                     className="mt-5 flex h-12 w-full items-center justify-center rounded-sm bg-[#C8A46A] px-8 text-sm font-semibold uppercase tracking-wider text-white"
-                  >Continue to $300 deposit</Link>
+                  >Continue to booking</Link>
                 ) : (
                   <>
                     <p className="mt-4 text-xs leading-relaxed text-[#555]">Full-price instalment checkout is being configured. We'll help you find an eligible option and confirm your booking only after payment arrangements are agreed.</p>
