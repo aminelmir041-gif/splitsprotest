@@ -6,6 +6,10 @@ import { PHONE, PHONE_TEL } from "../lib/data";
 export default function PaymentOptions() {
   const [params] = useSearchParams();
   const needsHelp = params.get("help") === "declined";
+  const fullPurchase = params.get("mode") === "full";
+  const selection = fullPurchase
+    ? ` Customer selected ${params.get("product") || "air conditioner"} ${params.get("size") || ""}, installation date ${params.get("date") || "not specified"}, ${params.get("window") || ""}. They want instalments on the full price, not just the deposit.`
+    : "";
   const message = needsHelp
     ? "Instalment-payment help requested: the customer could not complete an instalment checkout. Please call them to discuss eligible alternatives, including a smaller provider transaction plus separate balance if permitted."
     : "I'd like to talk about flexible payments for an air conditioner installation. Please call me to discuss deposit, instalments and a possible combination of payment methods.";
