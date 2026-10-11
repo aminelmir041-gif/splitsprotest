@@ -1,222 +1,147 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Check, ChevronDown, ArrowRight, CreditCard, Phone, ShieldCheck } from "lucide-react";
+import { ChevronDown, Check, CreditCard, Phone, ArrowLeft } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
 import { PHONE, PHONE_TEL } from "../lib/data";
 
-// Advertised standard installed prices. The user has only confirmed an
-// independent retail price and discounted installation price for Rinnai 2.5kW.
-// Do not invent component prices or offer unapproved finance checkout links.
+// Do not invent separate retail prices for units not yet priced independently.
 const DEALS = [
-  { id: "rinnai-local:2.5kW", product: "rinnai-local", size: "2.5kW", name: "Rinnai 2.5kW", installed: 1600, equipment: 1200, install: 400 },
-  { id: "rinnai-local:3.5kW", product: "rinnai-local", size: "3.5kW", name: "Rinnai 3.5kW", installed: 1700 },
-  { id: "rinnai-local:5.0kW", product: "rinnai-local", size: "5.0kW", name: "Rinnai 5kW", installed: 2300 },
-  { id: "rinnai-local:7.0kW", product: "rinnai-local", size: "7.0kW", name: "Rinnai 7kW", installed: 2600 },
-  { id: "daikin-lite-local:2.5kW", product: "daikin-lite-local", size: "2.5kW", name: "Daikin Cora 2.5kW", installed: 1850 },
-  { id: "daikin-lite-local:3.5kW", product: "daikin-lite-local", size: "3.5kW", name: "Daikin Cora 3.5kW", installed: 2100 },
-  { id: "daikin-lite-local:5.0kW", product: "daikin-lite-local", size: "5.0kW", name: "Daikin Cora 5kW", installed: 2500 },
-  { id: "daikin-lite-local:7.0kW", product: "daikin-lite-local", size: "7.0kW", name: "Daikin Cora 7kW", installed: 3000 },
+  { id: "rinnai-local:2.5kW", name: "Rinnai 2.5kW", installed: 1600, equipment: 1200, installation: 400 },
+  { id: "rinnai-local:3.5kW", name: "Rinnai 3.5kW", installed: 1700 },
+  { id: "rinnai-local:5.0kW", name: "Rinnai 5kW", installed: 2300 },
+  { id: "rinnai-local:7.0kW", name: "Rinnai 7kW", installed: 2600 },
+  { id: "daikin-lite-local:2.5kW", name: "Daikin Cora 2.5kW", installed: 1850 },
+  { id: "daikin-lite-local:3.5kW", name: "Daikin Cora 3.5kW", installed: 2100 },
+  { id: "daikin-lite-local:5.0kW", name: "Daikin Cora 5kW", installed: 2500 },
+  { id: "daikin-lite-local:7.0kW", name: "Daikin Cora 7kW", installed: 3000 },
 ];
-const aud = (value) => new Intl.NumberFormat("en-AU", {
-  style: "currency", currency: "AUD", maximumFractionDigits: 0
-}).format(value);
+const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
+const tile = (chosen) => "rounded-xl border-2 p-4 text-left " + (chosen ? "border-[#C8A46A] bg-[#FBF6EB]" : "border-[#E7E2DA] bg-white");
 
 export default function PaymentOptions() {
   const [params] = useSearchParams();
-  const requested = (params.get("product") || "") + ":" + (params.get("size") || "");
-  const initial = DEALS.find((deal) => deal.id === requested) || DEALS[0];
-  const [dealId, setDealId] = useState(initial.id);
-  const [withInstallation, setWithInstallation] = useState(true);
+  const initial = (params.get("product") || "") + ":" + (params.get("size") || "");
+  const [modelId, setModelId] = useState(DEALS.some((d) => d.id === initial) ? initial : DEALS[0].id);
+  const [withInstall, setWithInstall] = useState(true);
   const [provider, setProvider] = useState("afterpay");
-  const deal = DEALS.find((item) => item.id === dealId) || DEALS[0];
-  const hasSplit = typeof deal.equipment === "number" && typeof deal.install === "number";
-  const payableTotal = withInstallation ? deal.installed : hasSplit ? deal.equipment : null;
-  const day = params.get("date") || "";
-  const windowChoice = params.get("window") || "";
-  const bookingRequest = withInstallation && day
-    ? "Original preferred installation date: " + day + (windowChoice ? " " + windowChoice : "") + ". Date requires reconfirmation."
-    : "";
-  const enquiryMessage = [
-    "Equipment finance request for " + deal.name + ".",
-    "Selected option: " + (withInstallation ? "air conditioner + discounted SplitsPro installation" : "air conditioner only; customer will arrange own licensed installer") + ".",
-    "Installed advertised price: " + aud(deal.installed) + ".",
-    hasSplit ? "Equipment-only retail price: " + aud(deal.equipment) + "." : "Equipment-only retail price needs confirmation before purchase.",
-    withInstallation && hasSplit ? "Discounted standard installation quote: " + aud(deal.install) + "." : "",
-    "Preferred provider: " + (provider === "afterpay" ? "Afterpay" : "Klarna") + ".",
-    bookingRequest,
-    "Please confirm standalone product availability, stock/delivery/collection, lawful installation terms and BNPL eligibility before sending payment links. No payment authorised on this page.",
-  ].filter(Boolean).join(" ");
+  const model = DEALS.find((d) => d.id === modelId) || DEALS[0];
+  const hasSeparatePrices = Number.isFinite(model.equipment);
+  const selectedDate = params.get("date");
+  const selectedWindow = params.get("window");
+  const validDate = selectedDate && selectedDate >= new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
+
+  const message = "SplitsPro finance enquiry. " + model.name + ". " +
+    (withInstall ? "Customer selected separate equipment purchase and discounted SplitsPro standard installation (default selection). " : "Customer opted out of SplitsPro installation and wants an independent EQUIPMENT-ONLY sale by phone with collection or delivery and their own licensed installer. ") +
+    "Requested provider: " + (provider === "afterpay" ? "Afterpay" : "Klarna") + ". " +
+    (hasSeparatePrices
+      ? "Air conditioner price: " + money(model.equipment) + ". " + (withInstall ? "Optional installation price: " + money(model.installation) + ". Combined installed total: " + money(model.installed) + ". " : "No installation selected. ")
+      : "Published installed package: " + money(model.installed) + ". A separate equipment price and installation allocation must be confirmed and accepted before any finance checkout. ") +
+    (validDate && withInstall ? "Requested date: " + selectedDate + " " + (selectedWindow || "") + " (not confirmed). " : "") +
+    "Please call to confirm independent equipment sale, optional installation contract, stock, delivery, financing eligibility and all customer rights. No finance was charged through this enquiry.";
 
   return (
-    <>
+    <div className="finance-page bg-[#F7F5F1] text-[#181818]" data-testid="finance-purchase-page">
       <Helmet>
-        <title>Split System Instalments | SplitsPro</title>
-        <meta name="description" content="Explore air conditioner equipment instalment options and optional discounted SplitsPro installation. Equipment-only purchases are available by phone." />
+        <title>Pay for Your Aircon in Instalments | SplitsPro</title>
+        <meta name="description" content="Explore aircon equipment finance through SplitsPro with installation selected by default or equipment-only by choice." />
       </Helmet>
 
-      <section className="finance-page-hero bg-[#10151C] text-white" data-testid="finance-page-hero">
-        <div className="sp-container mx-auto max-w-5xl">
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9B573]">SplitsPro · Flexible payments</p>
-          <h1 className="mt-2 max-w-3xl font-serif text-3xl leading-[1.08] tracking-tight sm:mt-3 sm:text-5xl">
-            Your aircon, with installation sorted.
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/75 sm:mt-3 sm:text-base">
-            Choose your aircon. Our standard installation is included in the displayed price. Prefer your own installer? You can remove installation below.
-          </p>
-        </div>
-      </section>
-
-      <section className="bg-[#F7F5F1] px-4 pb-10 pt-5 sm:py-10" id="finance-selection">
+      <div className="px-4 pb-14 pt-24 sm:px-6 sm:pb-20 sm:pt-36">
         <div className="mx-auto max-w-3xl">
-          <div className="overflow-hidden rounded-2xl border border-[#E3DFD5] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)]" data-testid="finance-purchase-selector">
-            <div className="p-4 sm:p-7">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Your purchase</p>
-                <span className="rounded-full bg-[#F6EBD5] px-3 py-1 text-[10px] font-bold uppercase text-[#755320]">Supplied &amp; installed</span>
-              </div>
-              <label htmlFor="finance-deal" className="mt-3 block text-sm font-bold text-[#212121]">Air conditioner</label>
-              <div className="relative mt-2">
-                <select
-                  id="finance-deal"
-                  value={dealId}
-                  onChange={(event) => setDealId(event.target.value)}
-                  className="min-h-[50px] w-full appearance-none rounded-lg border border-[#D4CFC6] bg-white px-3 pr-10 text-base font-semibold text-[#1B1B1B]"
-                >
-                  {DEALS.map((item) => (
-                    <option key={item.id} value={item.id}>{item.name} — {aud(item.installed)} installed</option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-4 h-4 w-4 text-[#4F4F4F]" />
-              </div>
+          <header className="mb-6 sm:mb-9">
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#967141]">SPLITSPRO · PAYMENT OPTIONS</p>
+            <h1 className="mt-2 font-serif !text-[2rem] !leading-[1.13] tracking-tight sm:!text-[3rem]">Pay for your aircon over time.</h1>
+            <p className="mt-3 text-sm leading-relaxed text-[#606064] sm:text-base">
+              Choose your system. Discounted SplitsPro installation is selected by default. Prefer your own installer? Choose air conditioner only.
+            </p>
+          </header>
 
-              <div className="mt-5 border-t border-[#EEEAE3] pt-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-[#202020]">Include SplitsPro standard installation</p>
-                    <p className="mt-1 text-xs leading-relaxed text-[#65615B]">Included by default. We arrange the installer, and you get the advertised inclusions and installation guarantee.</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    aria-label="Include SplitsPro standard installation"
-                    checked={withInstallation}
-                    onChange={(event) => setWithInstallation(event.target.checked)}
-                    className="mt-1 h-6 w-6 shrink-0 accent-[#9D7A3F]"
-                  />
-                </div>
-                <button type="button" onClick={() => setWithInstallation((value) => !value)}
-                  className="mt-2 text-left text-xs font-bold text-[#81602F] underline underline-offset-2">
-                  {withInstallation ? "Remove installation — buy the unit only" : "Add SplitsPro installation back"}
+          <section className="rounded-2xl border border-[#E5DFD5] bg-white p-5 shadow-[0_10px_30px_rgba(0,0,0,0.04)] sm:p-8" id="choose-package">
+            <label htmlFor="finance-model" className="block text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">1 · Choose your air conditioner</label>
+            <div className="relative mt-3">
+              <select id="finance-model" value={modelId} onChange={(e) => setModelId(e.target.value)}
+                className="h-14 w-full appearance-none rounded-xl border border-[#D9D3CA] bg-[#FAF9F7] px-4 pr-9 text-sm font-semibold text-[#181818] sm:text-base">
+                {DEALS.map((d) => <option value={d.id} key={d.id}>{d.name} — {money(d.installed)} installed</option>)}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-3 top-[18px] h-5 w-5 text-[#8F6A34]" />
+            </div>
+
+            <div className="mt-6 border-t border-[#E7E2DB] pt-5">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">2 · Installation preference</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Installation preference">
+                <button type="button" role="radio" aria-checked={withInstall} onClick={() => setWithInstall(true)} className={tile(withInstall)}>
+                  <span className="flex items-center gap-2 font-bold"><Check className="h-4 w-4 text-[#8F6A34]" /> With installation</span>
+                  <span className="mt-1 block text-xs text-[#666]">Included by default · SplitsPro installation</span>
+                </button>
+                <button type="button" role="radio" aria-checked={!withInstall} onClick={() => setWithInstall(false)} className={tile(!withInstall)}>
+                  <span className="block font-bold">Air conditioner only</span>
+                  <span className="mt-1 block text-xs text-[#666]">Remove installation · Use your own installer</span>
                 </button>
               </div>
+            </div>
 
-              <div className="mt-5 rounded-lg bg-[#F7F5F1] px-4 py-4" aria-live="polite" data-testid="finance-price-summary">
-                {hasSplit && (
-                  <>
-                    <div className="flex justify-between gap-3 text-sm text-[#414141]">
-                      <span>Air conditioner (separate retail purchase)</span>
-                      <strong>{aud(deal.equipment)}</strong>
-                    </div>
-                    {withInstallation && (
-                      <div className="mt-3 flex justify-between gap-3 text-sm text-[#414141]">
-                        <span>Discounted standard installation (separate agreement)</span>
-                        <strong>{aud(deal.install)}</strong>
-                      </div>
-                    )}
-                  </>
-                )}
-                <div className={hasSplit ? "mt-4 flex items-end justify-between gap-3 border-t border-[#DDD7CB] pt-4" : "flex items-end justify-between gap-3"}>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-[#67615B]">
-                      {withInstallation ? "Complete standard package" : "Air conditioner only"}
-                    </p>
-                    <p className="mt-1 text-[11px] text-[#69615A]">
-                      {withInstallation ? "No additional charge for the standard inclusions" : "No SplitsPro installation included"}
-                    </p>
+            <div className="mt-6 rounded-xl bg-[#F7F5F1] p-4 sm:p-5" data-testid="finance-price-summary">
+              {hasSeparatePrices ? (
+                <>
+                  <div className="flex justify-between gap-4 text-sm"><span>Air conditioner · equipment sale</span><strong>{money(model.equipment)}</strong></div>
+                  {withInstall && <div className="mt-3 flex justify-between gap-4 text-sm"><span>Discounted installation · separate agreement</span><strong>{money(model.installation)}</strong></div>}
+                  <div className="mt-4 flex items-end justify-between gap-4 border-t border-[#DED8CE] pt-4">
+                    <strong className="text-sm">{withInstall ? "Total installed" : "Aircon only"}</strong>
+                    <strong className="font-serif text-3xl text-[#8F6A34]">{money(withInstall ? model.installed : model.equipment)}</strong>
                   </div>
-                  <strong className="shrink-0 font-serif text-3xl text-[#8A662D] sm:text-4xl">
-                    {payableTotal === null ? "On request" : aud(payableTotal)}
-                  </strong>
-                </div>
-                {!hasSplit && (
-                  <p className="mt-3 text-xs leading-relaxed text-[#67615B]">
-                    {withInstallation
-                      ? "We'll confirm the separate equipment price and discounted installation charge before any finance application. The complete installed total shown above remains the advertised price."
-                      : "Equipment-only pricing for this model is available by phone. You can buy the unit without using our installer."}
-                  </p>
-                )}
-                {hasSplit && (
-                  <p className="mt-3 text-xs leading-relaxed text-[#67615B]">
-                    {withInstallation
-                      ? "Equipment finance enquiry: " + aud(deal.equipment) + ". Installation payment is agreed separately and is not included in equipment financing."
-                      : "Equipment finance enquiry: " + aud(deal.equipment) + ". You can collect the unit or arrange delivery and use another licensed installer."}
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-5 flex flex-wrap gap-3 text-xs font-semibold text-[#555]">
-                <span className="inline-flex items-center gap-1.5"><Check className="h-4 w-4 text-[#9B773F]" /> Up to 3m pipework*</span>
-                <span className="inline-flex items-center gap-1.5"><Check className="h-4 w-4 text-[#9B773F]" /> Up to 20m electrical*</span>
-                <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-[#9B773F]" /> Installation guarantee*</span>
-              </div>
-              <p className="mt-2 text-[11px] text-[#777]">*Standard-install inclusions apply only when SplitsPro installation is selected, subject to site conditions.</p>
+                  <p className="mt-3 text-xs leading-relaxed text-[#666]">Equipment finance enquiry: {money(model.equipment)} only. {withInstall ? "Installation is separately agreed and paid at a lawful stage." : "No SplitsPro installation included."}</p>
+                </>
+              ) : (
+                <>
+                  {withInstall && <div className="flex items-end justify-between gap-3"><strong className="text-sm">Advertised installed total</strong><strong className="font-serif text-3xl text-[#8F6A34]">{money(model.installed)}</strong></div>}
+                  <p className="mt-3 text-sm leading-relaxed text-[#666]">{withInstall ? "Separate equipment and installation prices for this model will be provided in writing before any agreement." : "Call to confirm the equipment-only price, delivery or collection."} No unconfirmed amount will be charged.</p>
+                </>
+              )}
+              {withInstall && <p className="mt-3 text-xs leading-relaxed text-[#666]">Standard installation retains the advertised inclusions and limits, including electrical work and pipework. Non-standard extras need separate approval.</p>}
+              {validDate && withInstall && <p className="mt-2 text-xs font-semibold text-[#8F6A34]">Requested date: {selectedDate} · {selectedWindow || "time to confirm"} (not reserved)</p>}
             </div>
-          </div>
 
-          <div className="mt-5 rounded-xl border border-[#E1DBD0] bg-white p-4 sm:p-6" data-testid="finance-provider-picker">
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Payment choice</p>
-            <h2 className="mt-1 font-serif text-2xl text-[#161616] sm:text-3xl">Pay for the aircon over time.</h2>
-            <p className="mt-2 text-xs leading-relaxed text-[#5D5D5D]">Choose which provider you'd like us to check for the equipment purchase. All plans depend on provider eligibility and approval.</p>
-            <div className="mt-4 grid grid-cols-2 gap-3" role="radiogroup" aria-label="Preferred equipment finance provider">
-              <button type="button" role="radio" aria-checked={provider === "afterpay"} onClick={() => setProvider("afterpay")}
-                className={provider === "afterpay" ? "min-h-[68px] rounded-lg border-2 border-[#B68C4A] bg-[#FFF7E9] p-3 text-left" : "min-h-[68px] rounded-lg border border-[#D8D3C9] p-3 text-left"}>
-                <CreditCard className="h-4 w-4 text-[#8F6A34]" />
-                <strong className="mt-1 block text-base">Afterpay</strong>
-              </button>
-              <button type="button" role="radio" aria-checked={provider === "klarna"} onClick={() => setProvider("klarna")}
-                className={provider === "klarna" ? "min-h-[68px] rounded-lg border-2 border-[#B68C4A] bg-[#FFF7E9] p-3 text-left" : "min-h-[68px] rounded-lg border border-[#D8D3C9] p-3 text-left"}>
-                <CreditCard className="h-4 w-4 text-[#8F6A34]" />
-                <strong className="mt-1 block text-base">Klarna</strong>
-              </button>
+            <div className="mt-6 border-t border-[#E7E2DB] pt-5">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">3 · Choose a preferred finance provider</p>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <button type="button" aria-pressed={provider === "afterpay"} onClick={() => setProvider("afterpay")} className={tile(provider === "afterpay")}>
+                  <CreditCard className="h-5 w-5 text-[#8F6A34]" /><strong className="mt-2 block text-base">Afterpay</strong>
+                </button>
+                <button type="button" aria-pressed={provider === "klarna"} onClick={() => setProvider("klarna")} className={tile(provider === "klarna")}>
+                  <CreditCard className="h-5 w-5 text-[#8F6A34]" /><strong className="mt-2 block text-base">Klarna</strong>
+                </button>
+              </div>
+              <p className="mt-3 text-xs leading-relaxed text-[#666]">Provider approval and terms apply. Online equipment finance checkout is not active yet.</p>
             </div>
-            <a href="#finance-enquiry" className="mt-4 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-4 py-3 text-center text-sm font-extrabold text-[#111]">
-              Continue — request finance options <ArrowRight className="h-4 w-4" />
+
+            <a href="#payment-help" className="mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#C8A46A] px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-[#171717]">
+              Continue to finance enquiry
             </a>
-            <p className="mt-2 text-[11px] leading-relaxed text-[#6B6B6B]">Finance is not charged or approved here. We'll confirm both agreements and provider eligibility before sending a secure payment link.</p>
-          </div>
+            <p className="mt-3 text-center text-xs text-[#777]">No payment taken on this page</p>
+          </section>
 
-          <div className="mt-6 text-sm leading-relaxed text-[#4C4C4C]">
-            <p><strong>Know what you're buying.</strong> Equipment can be bought independently, including by phone. If you cancel installation, you can still keep your equipment purchase subject to its own terms and Australian Consumer Law rights. A separate invoice or optional-install switch does not, by itself, decide the legal classification of the transaction.</p>
-            {withInstallation && day && (
-              <p className="mt-2">Your previous installation selection ({day} {windowChoice}) is a preference only and must be reconfirmed.</p>
-            )}
-          </div>
-        </div>
-      </section>
+          <section id="payment-help" className="mt-6 scroll-mt-20 rounded-2xl border border-[#E5DFD5] bg-white p-5 sm:p-8">
+            <h2 className="font-serif !text-2xl sm:!text-3xl">We'll confirm your options.</h2>
+            <p className="mt-2 text-sm leading-relaxed text-[#606064]">Leave your details. We'll confirm stock, the separate equipment sale, optional installation and which finance arrangements are available before requesting payment.</p>
+            <div className="mt-4">
+              <QuoteForm
+                key={modelId + ":" + withInstall + ":" + provider}
+                defaultService="Split System Installation"
+                defaultMessage={message}
+                submitLabel="Request Finance Options"
+                compact hidePhoto hidePreferredDate hideEmail hideCallButton includeAttribution
+              />
+            </div>
+            <a href={PHONE_TEL} className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8F6A34] underline"><Phone className="h-4 w-4" /> Call {PHONE}</a>
+          </section>
 
-      <section id="finance-enquiry" className="scroll-mt-24 bg-white px-4 py-10 sm:py-14">
-        <div className="mx-auto max-w-2xl">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#987544]">One last step</p>
-          <h2 className="mt-2 font-serif text-3xl text-[#171717]">We'll confirm your options.</h2>
-          <p className="mt-3 text-sm leading-relaxed text-[#555]">Tell us your name and number. We'll confirm stock, delivery or collection, equipment price, and any separate installation agreement. This is an enquiry, not a purchase or credit application.</p>
-          <div className="mt-5 rounded-xl border border-[#E9E4DC] bg-[#FAF9F6] p-4 sm:p-6">
-            <QuoteForm
-              defaultService="Split System Installation"
-              defaultMessage={enquiryMessage}
-              submitLabel="Request My Payment Options"
-              compact hidePhoto hidePreferredDate hideEmail hideCallButton includeAttribution
-              successTitle="Enquiry received"
-              successMessage="We'll contact you to discuss your purchase and financing choices."
-            />
-          </div>
-          <a href={PHONE_TEL} className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#8A662D] underline">
-            <Phone className="h-4 w-4" /> Equipment-only orders by phone: {PHONE}
-          </a>
-          <div className="mt-6">
-            <Link className="text-sm font-semibold text-[#8A662D] underline" to="/split-systems/rinnai-local-offer#installed-prices">Back to installed deals</Link>
-          </div>
+          <p className="mt-5 text-xs leading-relaxed text-[#6E6E73]">
+            Equipment-only sales are available by phone and do not require SplitsPro installation. Supply and optional installation are separate agreements only where genuinely offered and accepted. All consumer guarantees and statutory rights apply. Provider and NSW payment-rule eligibility must be confirmed before finance is activated.
+          </p>
+          <Link to="/split-systems/rinnai-local-offer#installed-prices" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#8F6A34] underline"><ArrowLeft className="h-4 w-4" /> Back to deals</Link>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }
