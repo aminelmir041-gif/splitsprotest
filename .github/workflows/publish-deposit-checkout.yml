@@ -6,6 +6,10 @@ on:
       - '.github/workflows/publish-deposit-checkout.yml'
       - 'src/pages/InstallationDepositCheckout.jsx'
   workflow_dispatch:
+concurrency:
+  group: splitspro-site-publish
+  cancel-in-progress: false
+
 permissions:
   contents: write
 jobs:
@@ -47,5 +51,6 @@ jobs:
             echo "Checkout already deployed"
           else
             git commit -m "Publish latest checkout with safe bundle loader"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
