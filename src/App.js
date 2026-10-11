@@ -31,6 +31,7 @@ import ZenaSpecial from "@/pages/ZenaSpecial";
 import InstallationBooking from "@/pages/InstallationBooking";
 import InstallationDepositCheckout from "@/pages/InstallationDepositCheckout";
 import GoogleAdsLanding from "@/pages/GoogleAdsLanding";
+import PaymentOptions from "@/pages/PaymentOptions";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -56,6 +57,7 @@ const AnimatedRoutes = () => {
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/payment-options" element={<PaymentOptions />} />
           <Route path="/deals" element={<Navigate to="/split-systems/rinnai-local-offer" replace />} />
           <Route path="/split-systems" element={<SplitSystems />} />
           <Route path="/split-systems/oran-park" element={<SplitSystems />} />
