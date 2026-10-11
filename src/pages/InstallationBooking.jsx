@@ -67,6 +67,7 @@ export default function InstallationBooking() {
   const [confirmed, setConfirmed] = useState(false);
   const [preferredDate, setPreferredDate] = useState("");
   const [timeWindow, setTimeWindow] = useState("");
+  const [paymentChoice, setPaymentChoice] = useState("deposit");
   const [slots, setSlots] = useState(() => readCachedBookingSlots());
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [slotsError, setSlotsError] = useState("");
@@ -396,15 +397,31 @@ export default function InstallationBooking() {
                 <p className="mt-2 text-[13px] leading-relaxed text-[#606064]">
                   {formatSlotDate(preferredDate)} · {timeWindow}
                 </p>
-                <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-[#55555A]">
-                  Next, we&apos;ll quickly explain how the installation deposit works, take your booking details, then send you through our secure payment checkout.
-                </p>
-                <Link
-                  to={`/secure-installation?product=${encodeURIComponent(productKey)}&size=${encodeURIComponent(size)}&date=${encodeURIComponent(preferredDate)}&window=${encodeURIComponent(timeWindow)}`}
-                  className="mt-5 flex h-12 w-full items-center justify-center rounded-sm bg-[#C8A46A] px-8 text-sm font-semibold uppercase tracking-wider text-white transition-transform duration-300 hover:scale-[1.01]"
-                >
-                  Continue to booking details
-                </Link>
+                <p className="mt-3 text-[13px] leading-relaxed text-[#55555A]">Choose how you'd like to pay before we take your booking details.</p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Payment option">
+                  <button type="button" role="radio" aria-checked={paymentChoice === "deposit"} onClick={() => setPaymentChoice("deposit")} className={`rounded-xl border p-4 text-left ${paymentChoice === "deposit" ? "border-[#C8A46A] bg-[#F8EFDE]" : "border-[#D8D4CB] bg-white"}`}>
+                    <span className="block text-sm font-bold">Book with a $300 deposit</span>
+                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Pay the deposit securely; the balance is due on installation day.</span>
+                  </button>
+                  <button type="button" role="radio" aria-checked={paymentChoice === "instalments"} onClick={() => setPaymentChoice("instalments")} className={`rounded-xl border p-4 text-left ${paymentChoice === "instalments" ? "border-[#C8A46A] bg-[#F8EFDE]" : "border-[#D8D4CB] bg-white"}`}>
+                    <span className="block text-sm font-bold">Pay in instalments</span>
+                    <span className="mt-2 block text-xs leading-relaxed text-[#555]">Explore paying the full installed price with an eligible instalment provider.</span>
+                  </button>
+                </div>
+                {paymentChoice === "deposit" ? (
+                  <Link
+                    to={`/secure-installation?product=${encodeURIComponent(productKey)}&size=${encodeURIComponent(size)}&date=${encodeURIComponent(preferredDate)}&window=${encodeURIComponent(timeWindow)}`}
+                    className="mt-5 flex h-12 w-full items-center justify-center rounded-sm bg-[#C8A46A] px-8 text-sm font-semibold uppercase tracking-wider text-white"
+                  >Continue to $300 deposit</Link>
+                ) : (
+                  <>
+                    <p className="mt-4 text-xs leading-relaxed text-[#555]">Full-price instalment checkout is being configured. We'll help you find an eligible option and confirm your booking only after payment arrangements are agreed.</p>
+                    <Link
+                      to={`/payment-options?mode=full&product=${encodeURIComponent(productKey)}&size=${encodeURIComponent(size)}&date=${encodeURIComponent(preferredDate)}&window=${encodeURIComponent(timeWindow)}#payment-help`}
+                      className="mt-4 flex h-12 w-full items-center justify-center rounded-sm bg-[#C8A46A] px-8 text-center text-sm font-semibold uppercase tracking-wider text-white"
+                    >Get full-price instalment options</Link>
+                  </>
+                )}
               </div>
             )}
 
