@@ -680,7 +680,7 @@ const BrandPage = ({ offerMode = null }) => {
                     <div className="rounded-xl border border-[#DED9D0] bg-white p-4">
                       <p className="text-sm font-bold text-[#181818]">Interested in paying in instalments?</p>
                       <p className="mt-1 text-xs leading-relaxed text-[#606064]">Klarna and Zip are supported by our Stripe payment provider. Availability, repayment terms and approval depend on the customer and transaction.</p>
-                      <p className="mt-2 text-xs font-semibold text-[#8F6A34]">Ask us about instalment options for the full installation price.</p>
+                      <p className="mt-2 text-xs font-semibold text-[#8F6A34]"><Link to="/payment-options" className="underline">Ask us about instalment options for the full installation price →</Link></p>
                     </div>
                   </div>
                   <p className="mt-3 text-[11px] leading-relaxed text-[#6E6E73]">Online booking currently collects a $300 deposit, not the full installed price. Any instalment option shown during secure checkout applies to the amount being charged. Finance eligibility and fees are determined by the provider; not every customer or purchase qualifies.</p>
