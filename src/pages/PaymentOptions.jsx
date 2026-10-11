@@ -13,7 +13,7 @@ export default function PaymentOptions() {
   const size = params.get("size");
   const selectedDate = params.get("date");
   const selectedWindow = params.get("window");
-  const packages = { "rinnai-local": { label: "Rinnai", prices: { "2.5kW": "$1,450", "3.5kW": "$1,550", "5.0kW": "$1,900", "7.0kW": "$2,300" } }, "daikin-lite-local": { label: "Daikin Cora", prices: { "2.5kW": "$1,550", "3.5kW": "$1,750", "5.0kW": "$2,150", "7.0kW": "$2,600" } } };
+  const packages = { "rinnai-local": { label: "Rinnai", prices: { "2.5kW": "$1,600", "3.5kW": "$1,700", "5.0kW": "$2,300", "7.0kW": "$2,600" } }, "daikin-lite-local": { label: "Daikin Cora", prices: { "2.5kW": "$1,850", "3.5kW": "$2,100", "5.0kW": "$2,500", "7.0kW": "$3,000" } } };
   const chosen = packages[product];
   const chosenPrice = chosen?.prices[size];
   const selectionLabel = chosen && chosenPrice ? `${chosen.label} ${size} — ${chosenPrice} installed` : "";
