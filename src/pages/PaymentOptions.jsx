@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ChevronDown, Check, CreditCard, Phone, ArrowLeft } from "lucide-react";
+import { ChevronDown, Phone, ArrowLeft } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
 import { PHONE, PHONE_TEL } from "../lib/data";
 import { api } from "../lib/api";
@@ -18,13 +18,10 @@ const DEALS = [
   { id: "daikin-lite-local:7.0kW", name: "Daikin Cora 7kW", installed: 3000 },
 ];
 const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
-const tile = (chosen) => "min-h-[78px] w-full rounded-xl border-2 p-3 text-left sm:p-4 " + (chosen ? "border-[#C8A46A] bg-[#FBF6EB]" : "border-[#E7E2DA] bg-white hover:border-[#C8A46A]");
+const paymentRow = (chosen) => "flex w-full items-center gap-3 border-b border-[#E7E2DA] px-1 py-3.5 text-left transition-colors " + (chosen ? "text-[#181818]" : "text-[#555] hover:bg-[#FAF9F7]");
 const PAYMENT_CHOICES = [
-  { id: "afterpay", label: "Afterpay", note: "Pay in 4, if eligible" },
-  { id: "klarna", label: "Klarna", note: "Eligible payment plans" },
-  { id: "zip", label: "Zip", note: "Zip Pay or Zip Money" },
-  { id: "paypal", label: "PayPal", note: "Pay in 4, if eligible" },
-  { id: "card", label: "Stripe card", note: "Pay by card" },
+  { id: "stripe", label: "Stripe", note: "Card, Afterpay, Klarna or Zip where available" },
+  { id: "paypal", label: "PayPal Pay in 4", note: "Pay in 4, subject to eligibility" },
 ];
 
 export default function PaymentOptions() {
@@ -32,7 +29,7 @@ export default function PaymentOptions() {
   const initial = (params.get("product") || "") + ":" + (params.get("size") || "");
   const [modelId, setModelId] = useState(DEALS.some((d) => d.id === initial) ? initial : DEALS[0].id);
   const [withInstall, setWithInstall] = useState(true);
-  const [provider, setProvider] = useState("afterpay");
+  const [provider, setProvider] = useState("stripe");
   const [catalog, setCatalog] = useState(null);
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -102,13 +99,13 @@ export default function PaymentOptions() {
   const connectedProvider = provider === "paypal" ? catalog?.paypal_ready : catalog?.stripe_ready;
   const canCheckout = !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices
     && (!withInstall || catalog?.installed_checkout_enabled));
-  const paymentName = PAYMENT_CHOICES.find((choice) => choice.id === provider)?.label || "Afterpay";
+  const paymentName = PAYMENT_CHOICES.find((choice) => choice.id === provider)?.label || "Stripe";
   const selectedDate = params.get("date");
   const selectedWindow = params.get("window");
   const validDate = selectedDate && selectedDate >= new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
 
   const message = "SplitsPro finance enquiry. " + model.name + ". " +
-    (withInstall ? "Customer selected separate equipment purchase and discounted SplitsPro standard installation (default selection). " : "Customer opted out of SplitsPro installation and wants an independent EQUIPMENT-ONLY sale by phone with collection or delivery and their own licensed installer. ") +
+    (withInstall ? "Customer selected separate equipment purchase and SplitsPro No More to Pay installation (default selection). " : "Customer opted out of SplitsPro installation and wants an independent EQUIPMENT-ONLY sale by phone with collection or delivery and their own licensed installer. ") +
     "Selected equipment payment provider: " + paymentName + (provider === "paypal" ? " Pay in 4" : "") + ". " +
     (hasSeparatePrices
       ? "Air conditioner price: " + money(retailAmount) + ". " + (withInstall ? "Optional installation price: " + money(installationAmount) + ". Combined installed total: " + money(installedAmount) + ". " : "No installation selected. ")
@@ -145,7 +142,7 @@ export default function PaymentOptions() {
             <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#967141]">SPLITSPRO · PAYMENT OPTIONS</p>
             <h1 className="mt-2 font-serif !text-[2rem] !leading-[1.13] tracking-tight sm:!text-[3rem]">Pay for your aircon over time.</h1>
             <p className="mt-3 text-sm leading-relaxed text-[#606064] sm:text-base">
-              Choose your unit, tick installation if needed, then go to Stripe or PayPal for your payment.
+              Choose your air conditioner and pay through Stripe or PayPal.
             </p>
           </header>
 
@@ -160,13 +157,13 @@ export default function PaymentOptions() {
             </div>
 
             <label htmlFor="finance-install" className="mt-5 flex cursor-pointer items-center justify-between gap-4 border-t border-[#E7E2DB] pt-5">
-              <span className="text-sm font-bold text-[#212121]">Include standard installation</span>
+              <span className="text-sm font-bold text-[#212121]">Include No More to Pay installation</span>
               <input id="finance-install" data-testid="finance-installation-checkbox" type="checkbox" checked={withInstall}
                 onChange={(event) => setWithInstall(event.target.checked)}
                 className="h-6 w-6 shrink-0 accent-[#B38B4D]" />
             </label>
             <p className="mt-2 text-xs leading-relaxed text-[#666]">
-              {withInstall ? "Installation is separately billed, not included in equipment financing." : "Unit only — no SplitsPro installation charge."}
+              {withInstall ? "Includes up to 3m pipework, 20m electrical circuit if required, wall bracket and isolator. Installation is billed separately." : "Unit only — no SplitsPro installation charge."}
             </p>
 
             <div className="mt-6 rounded-xl bg-[#F7F5F1] p-4 sm:p-5" data-testid="finance-price-summary">
@@ -186,35 +183,30 @@ export default function PaymentOptions() {
                   <p className="mt-3 text-sm leading-relaxed text-[#666]">{withInstall ? "Separate equipment and installation prices for this model will be provided in writing before any agreement." : "Call to confirm the equipment-only price, delivery or collection."} No unconfirmed amount will be charged.</p>
                 </>
               )}
-              {withInstall && <p className="mt-3 text-xs leading-relaxed text-[#666]">Standard installation retains the advertised inclusions and limits, including electrical work and pipework. Non-standard extras need separate approval.</p>}
+              {withInstall && <p className="mt-3 text-xs leading-relaxed text-[#666]">Our No More to Pay installation includes labour and commissioning, up to 3m refrigeration pipework, a standard wall bracket or suitable floor placement, an isolator and up to 20m electrical cable and circuit from the switchboard if required. Switchboard upgrades, difficult access and other non-standard work are quoted before proceeding.</p>}
               {validDate && withInstall && <p className="mt-2 text-xs font-semibold text-[#8F6A34]">Requested date: {selectedDate} · {selectedWindow || "time to confirm"} (not reserved)</p>}
             </div>
 
             <div className="mt-6 border-t border-[#E7E2DB] pt-5">
-              <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">3 · Choose how to pay for the air conditioner</p>
-              <p className="mt-2 text-xs leading-relaxed text-[#666]">All payment choices are shown for every model. Finance approval and available payment plans depend on the provider.</p>
-              <div className="mt-3 grid grid-cols-2 gap-3" role="radiogroup" aria-label="Equipment finance provider" data-testid="finance-payment-methods">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">3 · Choose how to pay</p>
+              <div className="mt-3 border-t border-[#E7E2DA]" role="radiogroup" aria-label="Equipment payment checkout" data-testid="finance-payment-methods">
                 {PAYMENT_CHOICES.map((choice) => (
                   <button key={choice.id} type="button" role="radio"
                     aria-checked={provider === choice.id}
                     onClick={() => setProvider(choice.id)}
-                    className={tile(provider === choice.id)}
+                    className={paymentRow(provider === choice.id)}
                     data-testid={"finance-method-" + choice.id}>
-                    <span className="flex items-center gap-2">
-                      <CreditCard className="h-4 w-4 shrink-0 text-[#8F6A34]" />
-                      <strong className="text-sm sm:text-base">{choice.label}</strong>
+                    <span aria-hidden="true" className={"flex h-4 w-4 shrink-0 items-center justify-center rounded-full border " + (provider === choice.id ? "border-[#B58C4E]" : "border-[#C7C1B9]")}>
+                      {provider === choice.id && <span className="h-2 w-2 rounded-full bg-[#B58C4E]" />}
                     </span>
-                    <span className="mt-1 block text-[11px] leading-snug text-[#666]">{choice.note}</span>
+                    <span className="flex-1">
+                      <strong className="block text-sm sm:text-base">{choice.label}</strong>
+                      <span className="mt-0.5 block text-xs leading-snug text-[#666]">{choice.note}</span>
+                    </span>
                   </button>
                 ))}
               </div>
-              {withInstall && <p className="mt-3 text-xs leading-relaxed text-[#666]">
-                SplitsPro installation is charged separately from the aircon purchase.
-                {hasSeparatePrices ? " The installation price for this model is " + money(installationAmount) + "." : " The separate installation charge for this model must be confirmed before payment."}
-              </p>}
-              <p className="mt-3 text-xs leading-relaxed text-[#666]">
-                The equipment price goes to {provider === "paypal" ? "your existing SplitsPro PayPal Business account" : "your existing SplitsPro Stripe account"}. Payment plans and approval depend on the provider.
-              </p>
+              <p className="mt-3 text-xs leading-relaxed text-[#666]">Available payment methods and Pay in 4 eligibility are confirmed in Stripe or PayPal checkout.</p>
             </div>
 
             {canCheckout ? (
