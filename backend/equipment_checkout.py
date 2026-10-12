@@ -143,7 +143,7 @@ class BuyerDetailsRequest(BaseModel):
     @classmethod
     def valid_email(cls, value):
         value = value.strip().lower()
-        if len(value) > 254 or not re.fullmatch(r"[^\\s@]+@[^\\s@]+\\.[^\\s@]+", value):
+        if len(value) > 254 or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", value):
             raise ValueError("Please enter a valid email address")
         return value
 
@@ -159,7 +159,7 @@ class BuyerDetailsRequest(BaseModel):
     @classmethod
     def valid_phone(cls, value):
         value = value.strip()
-        if not (8 <= len(re.sub(r"\\D", "", value)) <= 15) or len(value) > 32:
+        if not (8 <= len(re.sub(r"\D", "", value)) <= 15) or len(value) > 32:
             raise ValueError("Please enter a valid phone number")
         return value
 
