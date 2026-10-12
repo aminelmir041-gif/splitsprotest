@@ -1,9 +1,9 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, Droplets, ShieldCheck, Star, Wind } from "lucide-react";
-import QuoteForm from "../components/QuoteForm";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock3, Droplets, Loader2, ShieldCheck, Sun, Wind } from "lucide-react";
+import { getBookingSlots } from "../lib/api";
 import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
@@ -29,14 +29,70 @@ const FAQS = [
 ];
 
 export default function SplitSystemCleaning() {
+  const navigate = useNavigate();
   const [offerId, setOfferId] = useState("two");
   const [openFaq, setOpenFaq] = useState(0);
+  const [slots, setSlots] = useState([]);
+  const [slotsLoading, setSlotsLoading] = useState(true);
+  const [slotsError, setSlotsError] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedWindow, setSelectedWindow] = useState("");
+  const [showMoreSlots, setShowMoreSlots] = useState(false);
+  const [continuing, setContinuing] = useState(false);
   const chosen = CLEANING_OFFERS.find((offer) => offer.id === offerId) || CLEANING_OFFERS[1];
-  const choose = (id) => {
-    setOfferId(id);
-    document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
   const scrollBook = () => document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const choose = (id) => { setOfferId(id); scrollBook(); };
+
+  const refreshSlots = async () => {
+    setSlotsLoading(true);
+    setSlotsError("");
+    try {
+      // Same live opening picker as /book-installation. Server must re-check
+      // and reserve a cleaning slot when starting checkout; selecting is not a reservation.
+      const data = await getBookingSlots(12);
+      const next = (Array.isArray(data?.slots) ? data.slots : []).filter((s) => s?.date && ["Morning", "Afternoon"].includes(s?.window));
+      setSlots(next);
+      if (selectedDate && !next.some((s) => s.date === selectedDate && s.window === selectedWindow)) {
+        setSelectedDate("");
+        setSelectedWindow("");
+      }
+    } catch {
+      setSlots([]);
+      setSlotsError("We couldn't check live availability. Please try again.");
+    } finally {
+      setSlotsLoading(false);
+    }
+  };
+  useEffect(() => { refreshSlots(); }, []);
+  useEffect(() => {
+    const refresh = () => { if (document.visibilityState === "visible") refreshSlots(); };
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => { window.removeEventListener("focus", refresh); document.removeEventListener("visibilitychange", refresh); };
+  }, [selectedDate, selectedWindow]);
+
+  const formatDate = (day) => new Date(day + "T00:00:00").toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
+  const continueBooking = async () => {
+    if (!selectedDate || !selectedWindow || continuing) return;
+    setContinuing(true);
+    try {
+      const data = await getBookingSlots(12);
+      const fresh = (Array.isArray(data?.slots) ? data.slots : []);
+      if (!fresh.some((s) => s.date === selectedDate && s.window === selectedWindow)) {
+        setSelectedDate("");
+        setSelectedWindow("");
+        setSlots(fresh);
+        setSlotsError("That time has just filled. Choose another available time.");
+        return;
+      }
+      const q = new URLSearchParams({ package: offerId, date: selectedDate, window: selectedWindow });
+      navigate("/secure-cleaning?" + q.toString());
+    } catch {
+      setSlotsError("Unable to confirm the opening right now. Please retry.");
+    } finally {
+      setContinuing(false);
+    }
+  };
 
   return (
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
@@ -168,40 +224,56 @@ export default function SplitSystemCleaning() {
         </div>
       </section>
 
-      <section className="bg-[#081726] py-16 text-white sm:py-20" id="cleaning-booking" data-testid="cleaning-booking">
-        <div className="sp-container grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-16">
-          <div>
-            <p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#F4C620]">Book a SplitsPro clean</p>
-            <h2 className="mt-4 font-serif text-4xl leading-tight sm:text-5xl">We'll handle the dirty work.</h2>
-            <p className="mt-4 text-sm leading-relaxed text-white/75">Tell us where you are and which package you want. We'll contact you to confirm the appointment. This form is a booking request, not an instant confirmed time.</p>
-            <div className="mt-8 border-y border-white/15 py-5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/55">Your selected offer</p>
-              <div className="mt-2 flex items-center justify-between gap-4">
-                <p className="text-xl font-semibold">{chosen.name}</p><strong className="text-4xl font-black text-[#F4C620]">{chosen.price}</strong>
-              </div>
-              <p className="mt-2 text-xs text-white/55">{chosen.label}</p>
-              <button type="button" onClick={() => setOfferId(offerId === "two" ? "one" : "two")} className="mt-3 text-xs font-bold text-[#F4C620] underline underline-offset-4">Change package</button>
+
+      <section className="scroll-mt-24 bg-[#081726] py-16 text-white sm:py-20" id="cleaning-booking" data-testid="cleaning-booking">
+        <div className="sp-container mx-auto max-w-5xl">
+          <p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#F4C620]">1 · Choose your cleaning date</p>
+          <h2 className="mt-4 font-serif text-4xl leading-tight sm:text-5xl">Pick a day that works for you.</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70">Choose a live opening below, then continue to a separate page to enter your details and pay. Your date is not secured until the payment and booking are confirmed.</p>
+
+          <div className="mt-8 grid gap-7 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
+            <div className="border-t border-white/20 pt-5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/60">Your cleaning package</p>
+              {CLEANING_OFFERS.map((offer) => (
+                <button type="button" key={offer.id} onClick={() => setOfferId(offer.id)}
+                  aria-pressed={offer.id === offerId}
+                  className={"mt-3 flex w-full items-center justify-between gap-3 rounded-lg border p-4 text-left transition " + (offer.id === offerId ? "border-[#F4C620] bg-white/10" : "border-white/20 hover:border-white/50")}>
+                  <span><strong className="block text-base">{offer.name}</strong><span className="mt-1 block text-xs text-white/65">{offer.label}</span></span>
+                  <span className="text-2xl font-extrabold text-[#F4C620]">{offer.price}</span>
+                </button>
+              ))}
+              <p className="mt-4 text-xs leading-relaxed text-white/55">Two cleans must be at the same property and during the same visit. Standard-access wall-mounted units only.</p>
             </div>
-            <a href={PHONE_TEL} className="mt-5 inline-block text-xs font-bold text-white/80 underline underline-offset-4">Prefer to call us? 0414 698 435</a>
-          </div>
-          <div className="bg-white p-5 text-[#181818] shadow-[0_20px_60px_rgba(0,0,0,.16)] sm:p-8">
-            <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-[#97703D]">Request an appointment</p>
-            <QuoteForm
-              key={chosen.id}
-              defaultService={"Air Conditioner Cleaning | Split System | " + chosen.name + " | " + chosen.price + (chosen.id === "two" ? " | Same property" : "")}
-              defaultMessage={"Selected " + chosen.name + " at " + chosen.price + (chosen.id === "two" ? " for two units at the same address." : " for one unit.")}
-              submitLabel="Request My Cleaning"
-              successTitle="Cleaning request received"
-              successMessage="Thanks — we'll be in touch to confirm your cleaning appointment and any site details."
-              compact
-              hidePhoto
-              hideMessage
-              tight
-              requireAddress
-              hideCallButton
-              includeAttribution
-            />
-            <p className="mt-4 text-xs leading-relaxed text-[#6E7378]">Submitting this form requests a booking. We confirm availability and price conditions before an appointment is locked in. No payment is taken here.</p>
+
+            <div className="border-t border-white/20 pt-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#F4C620]">Live availability</p><h3 className="mt-2 font-serif text-2xl">Choose morning or afternoon.</h3></div>
+                <button type="button" onClick={refreshSlots} className="text-xs font-bold text-[#F4C620] underline underline-offset-4" disabled={slotsLoading}>Refresh dates</button>
+              </div>
+              {slotsLoading ? <div className="mt-5 flex items-center gap-2 text-sm text-white/65"><Loader2 className="h-4 w-4 animate-spin" /> Checking live dates…</div> : null}
+              {slotsError && <p role="alert" className="mt-4 border-l-2 border-[#F4C620] pl-3 text-xs leading-relaxed text-[#F4C620]">{slotsError}</p>}
+              {!slotsLoading && slots.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/70">No online openings are available right now. Call us to ask about a date.</p>}
+              <div className="mt-4 grid grid-cols-2 gap-2.5">
+                {(showMoreSlots ? slots : slots.slice(0, 4)).map((slot) => {
+                  const active = selectedDate === slot.date && selectedWindow === slot.window;
+                  return (
+                    <button type="button" key={slot.date + "-" + slot.window} aria-pressed={active}
+                      onClick={() => { setSelectedDate(slot.date); setSelectedWindow(slot.window); setSlotsError(""); }}
+                      className={"flex min-h-16 items-center justify-between gap-2 rounded-lg border p-3 text-left " + (active ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
+                      <span><strong className="block text-[13px]">{formatDate(slot.date)}</strong><span className="mt-1 block text-xs">{slot.window}</span></span>
+                      {slot.window === "Morning" ? <Sun className="h-4 w-4 shrink-0" /> : <Clock3 className="h-4 w-4 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+              {slots.length > 4 && <button className="mt-4 text-xs font-semibold text-[#F4C620] underline underline-offset-4" type="button" onClick={() => setShowMoreSlots(v => !v)}>{showMoreSlots ? "Show fewer dates" : "More available dates"}</button>}
+              {selectedDate && selectedWindow && <p className="mt-4 text-sm font-semibold text-white">Your choice: {formatDate(selectedDate)} · {selectedWindow}</p>}
+              <button type="button" onClick={continueBooking} disabled={!selectedDate || !selectedWindow || continuing || slotsLoading || !!slotsError}
+                className="mt-5 flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
+                {continuing ? "Rechecking the date…" : "Continue to details & payment"} <ArrowRight className="h-4 w-4" />
+              </button>
+              <p className="mt-3 text-xs leading-relaxed text-white/55">Your date will be checked again during secure checkout. A selection here does not reserve the slot.</p>
+            </div>
           </div>
         </div>
       </section>
