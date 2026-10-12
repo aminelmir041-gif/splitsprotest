@@ -331,14 +331,17 @@ export default function PaymentOptions() {
               </p>
             )}
             {canCheckout ? (
-              <button type="button" disabled={checkoutBusy} onClick={handleCheckout}
+              <button type="submit" disabled={checkoutBusy || !buyerDetailsComplete}
                 className="mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#C8A46A] px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-[#171717] disabled:opacity-50">
                 {checkoutBusy ? "Opening secure checkout…" : "Continue to " + (provider === "paypal" ? "PayPal" : "Stripe") + " checkout"}
               </button>
             ) : (
-              <a href="#payment-help" className="mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#C8A46A] px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-[#171717]">
-                Request my secure payment link
-              </a>
+              <p className="mt-6 rounded-lg border border-[#E5DFD5] bg-[#FAF9F7] p-3 text-center text-sm leading-relaxed text-[#606064]">
+                Secure checkout for this model isn't ready yet. Call <a href={PHONE_TEL} className="font-semibold underline">{PHONE}</a> for help.
+              </p>
+            )}
+            {canCheckout && !buyerDetailsComplete && (
+              <p className="mt-3 text-center text-xs text-[#6E6E73]">Complete all four fields above to continue to payment.</p>
             )}
             {checkoutError && <p className="mt-3 text-sm font-semibold text-red-700" role="alert">{checkoutError}</p>}
             <p className="mt-3 text-center text-xs text-[#777]">
