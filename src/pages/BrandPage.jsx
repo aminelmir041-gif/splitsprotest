@@ -188,8 +188,8 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     blurb: "Rinnai supplied-and-installed special pricing available Sydney-wide, plus the Central Coast and Wollongong. Choose the capacity that suits your room and book while installation spots are available.",
     image: SPLIT_BRANDS.find((b) => b.slug === "rinnai")?.ranges?.[0]?.image,
     prices: [
-      { kw: "2.5kW", price: "$1,600", localOfferPrice: "$1,600" },
-      { kw: "3.5kW", price: "$1,700", localOfferPrice: "$1,700" },
+      { kw: "2.5kW", price: "$1,700", localOfferPrice: "$1,700" },
+      { kw: "3.5kW", price: "$1,850", localOfferPrice: "$1,850" },
       { kw: "5.0kW", price: "$2,300", localOfferPrice: "$2,300" },
       { kw: "7.0kW", price: "$2,600", localOfferPrice: "$2,600" },
     ],
@@ -204,10 +204,10 @@ const RINNAI_LOCAL_OFFER_RANGES = [
     blurb: "Daikin Cora supplied and installed at a clear special price Sydney-wide, plus the Central Coast and Wollongong, with a 2-day installation guarantee, 5-year warranty and Blue Fin anti-corrosive coating for added protection in coastal areas.",
     image: SPLIT_BRANDS.find((b) => b.slug === "daikin")?.ranges?.find((r) => r.slug === "cora")?.image,
     prices: [
-      { kw: "2.5kW", price: "$1,850", localOfferPrice: "$1,850" },
-      { kw: "3.5kW", price: "$2,100", localOfferPrice: "$2,100" },
-      { kw: "5.0kW", price: "$2,500", localOfferPrice: "$2,500" },
-      { kw: "7.0kW", price: "$3,000", localOfferPrice: "$3,000" },
+      { kw: "2.5kW", price: "$2,000", localOfferPrice: "$2,000" },
+      { kw: "3.5kW", price: "$2,200", localOfferPrice: "$2,200" },
+      { kw: "5.0kW", price: "$2,650", localOfferPrice: "$2,650" },
+      { kw: "7.0kW", price: "$3,200", localOfferPrice: "$3,200" },
     ],
   },
 ];

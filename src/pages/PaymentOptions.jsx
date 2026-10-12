@@ -8,14 +8,14 @@ import { api } from "../lib/api";
 
 // Do not invent separate retail prices for units not yet priced independently.
 const DEALS = [
-  { id: "rinnai-local:2.5kW", name: "Rinnai 2.5kW", installed: 1600, equipment: 1200, installation: 400 },
-  { id: "rinnai-local:3.5kW", name: "Rinnai 3.5kW", installed: 1700 },
+  { id: "rinnai-local:2.5kW", name: "Rinnai PX 2.5kW", installed: 1700, equipment: 1200, installation: 500 },
+  { id: "rinnai-local:3.5kW", name: "Rinnai PX 3.5kW", installed: 1850 },
   { id: "rinnai-local:5.0kW", name: "Rinnai 5kW", installed: 2300 },
   { id: "rinnai-local:7.0kW", name: "Rinnai 7kW", installed: 2600 },
-  { id: "daikin-lite-local:2.5kW", name: "Daikin Cora 2.5kW", installed: 1850 },
-  { id: "daikin-lite-local:3.5kW", name: "Daikin Cora 3.5kW", installed: 2100 },
-  { id: "daikin-lite-local:5.0kW", name: "Daikin Cora 5kW", installed: 2500 },
-  { id: "daikin-lite-local:7.0kW", name: "Daikin Cora 7kW", installed: 3000 },
+  { id: "daikin-lite-local:2.5kW", name: "Daikin Cora 2.5kW", installed: 2000 },
+  { id: "daikin-lite-local:3.5kW", name: "Daikin Cora 3.5kW", installed: 2200 },
+  { id: "daikin-lite-local:5.0kW", name: "Daikin Cora 5kW", installed: 2650 },
+  { id: "daikin-lite-local:7.0kW", name: "Daikin Cora 7kW", installed: 3200 },
 ];
 const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
 const paymentRow = (chosen) => "flex w-full items-center gap-3 border-b border-[#E7E2DA] px-1 py-3.5 text-left transition-colors " + (chosen ? "text-[#181818]" : "text-[#555] hover:bg-[#FAF9F7]");
@@ -114,10 +114,14 @@ export default function PaymentOptions() {
   };
   const model = DEALS.find((d) => d.id === modelId) || DEALS[0];
   const serverModel = catalog?.products?.find((item) => item.id === modelId);
-  const retailAmount = Number.isFinite(serverModel?.equipment_cents) ? serverModel.equipment_cents / 100 : model.equipment;
-  const installationAmount = Number.isFinite(serverModel?.installation_cents) ? serverModel.installation_cents / 100 : model.installation;
-  const installedAmount = Number.isFinite(serverModel?.installed_cents) ? serverModel.installed_cents / 100 : model.installed;
-  const hasSeparatePrices = Number.isFinite(retailAmount) && Number.isFinite(installationAmount);
+  const retailAmount = Number.isFinite(model.equipment) ? model.equipment : (Number.isFinite(serverModel?.equipment_cents) ? serverModel.equipment_cents / 100 : undefined);
+  const installationAmount = Number.isFinite(model.installation) ? model.installation : (Number.isFinite(serverModel?.installation_cents) ? serverModel.installation_cents / 100 : undefined);
+  // The advertised installed deal is authoritative. Do not let an old remote catalogue
+  // overwrite the website price or display a split that does not add up.
+  const installedAmount = model.installed;
+  const hasSeparatePrices = Number.isFinite(retailAmount) && Number.isFinite(installationAmount)
+    && Math.round((retailAmount + installationAmount) * 100) === Math.round(installedAmount * 100);
+  const serverPriceCurrent = !Number.isFinite(serverModel?.installed_cents) || serverModel.installed_cents === model.installed * 100;
   const paypalPayIn4Eligible = Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount <= 2000;
   const availablePaymentChoices = PAYMENT_CHOICES.filter((choice) => choice.id !== "paypal" || paypalPayIn4Eligible);
   useEffect(() => {
@@ -134,7 +138,7 @@ export default function PaymentOptions() {
   const hasDirectPayPalCheckout = provider === "paypal" && paypalPayIn4Eligible && modelId === "rinnai-local:2.5kW";
   const canCheckout = (provider !== "paypal" || paypalPayIn4Eligible) && (
     hasHostedStripeCheckout || hasDirectPayPalCheckout
-    || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices
+    || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices && serverPriceCurrent
       && (!withInstall || catalog?.installed_checkout_enabled))
   );
   const paymentName = PAYMENT_CHOICES.find((choice) => choice.id === provider)?.label || "Stripe";

@@ -357,10 +357,10 @@ export const SPLIT_BRANDS = [
           { src: coraUserImage, alt: "Daikin Cora indoor unit" },
         ],
         prices: [
-          { kw: "2.5kW", model: "FTKM25WVMA", price: "$1,690" },
-          { kw: "3.5kW", model: "FTKM35WVMA", price: "$1,890" },
-          { kw: "5.0kW", model: "FTKM50WVMA", price: "$2,490" },
-          { kw: "7.1kW", model: "FTKM71WVMA", price: "$2,790" },
+          { kw: "2.5kW", model: "FTKM25WVMA", price: "$2,000" },
+          { kw: "3.5kW", model: "FTKM35WVMA", price: "$2,200" },
+          { kw: "5.0kW", model: "FTKM50WVMA", price: "$2,650" },
+          { kw: "7.1kW", model: "FTKM71WVMA", price: "$3,200" },
         ],
       },
       {
@@ -464,8 +464,8 @@ export const SPLIT_BRANDS = [
         features: ["Wi-Fi + Voice Control", "Human Sensor", "3D Airflow", "Humidity Control"],
         image: PRODUCT_IMAGES.rinnaiPx,
         prices: [
-          { kw: "2.5kW", price: "$1,590" },
-          { kw: "3.5kW", price: "$1,690" },
+          { kw: "2.5kW", price: "$1,700" },
+          { kw: "3.5kW", price: "$1,850" },
           { kw: "5.0kW", price: "$1,990" },
           { kw: "7.1kW", price: "$2,390" },
         ],
