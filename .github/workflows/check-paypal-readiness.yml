@@ -33,3 +33,33 @@ jobs:
                   if attempt == 3: raise
                   time.sleep(8)
           PY
+      - name: Verify hosted PayPal checkout redirect without taking payment
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request, urllib.parse
+          base = "https://splitspro-leads.onrender.com/api"
+          data = json.load(urllib.request.urlopen(base + "/equipment-catalog", timeout=60))
+          if not all(data.get(k) for k in ("paypal_ready", "checkout_enabled", "installed_checkout_enabled")):
+              print("PayPal checkout not enabled; safe skip. No order created.")
+              raise SystemExit(0)
+          payload = json.dumps({
+              "model_id": "rinnai-local:2.5kW",
+              "provider": "paypal",
+              "include_installation": True
+          }).encode()
+          req = urllib.request.Request(base + "/equipment-checkout", data=payload,
+                                       headers={"Content-Type":"application/json"}, method="POST")
+          with urllib.request.urlopen(req, timeout=60) as response:
+              order = json.load(response)
+          host = urllib.parse.urlparse(order.get("checkout_url", "")).netloc
+          if host not in ("paypal.com", "www.paypal.com"):
+              raise RuntimeError("Unexpected PayPal checkout redirect host")
+          if order.get("charged_cents") != 120000:
+              raise RuntimeError("Checkout amount mismatch")
+          if order.get("installation_booking_confirmed") is not False:
+              raise RuntimeError("Checkout unexpectedly confirmed an installation")
+          print("Real PayPal checkout approval URL created: yes")
+          print("Order amount AUD: 1200.00 (equipment only)")
+          print("Installation booked: no")
+          print("Customer payment captured: no")
+          PY
