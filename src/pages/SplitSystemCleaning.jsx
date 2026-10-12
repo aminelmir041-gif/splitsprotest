@@ -106,10 +106,10 @@ export default function SplitSystemCleaning() {
 
       {/* Approved full-width SplitsPro cleaning artwork; do not crop the logo,
           offer amounts or printed CTA. Live booking controls are below. */}
-      <section className="w-full overflow-hidden bg-[#061525] text-white" data-testid="cleaning-hero">
+      <section className="w-full overflow-hidden bg-[#061525] text-white" data-testid="cleaning-hero" style={{ paddingTop: "max(80px, calc(var(--sp-site-header-height, 152px) - 36px))" }}>
         <h1 className="sr-only">SplitsPro Split System Deep Cleaning — One for $220 or two at the same property for $300</h1>
         <img
-          src="/landing/splitspro-cleaning-hero.avif"
+          src="/landing/splitspro-cleaning-hero.webp"
           alt="SplitsPro cleaning campaign featuring an Aussie aircon cleaner, a dog, a dirty blower wheel, a before-and-after comparison, and the offers: 1 deep clean $220 or 2 for $300 at the same property."
           width={1536}
           height={1024}
