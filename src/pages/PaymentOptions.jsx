@@ -26,7 +26,10 @@ const PAYMENT_CHOICES = [
 // Existing live SplitsPro Stripe payment links. Prices are fixed by Stripe's own
 // Product/Price records, never by values supplied by a browser.
 const STRIPE_HOSTED_CHECKOUT = {
-  "rinnai-local:2.5kW": "https://buy.stripe.com/bJebJ38QO90id00cqJcs80b",
+  "rinnai-local:2.5kW": {
+    equipmentOnly: "https://buy.stripe.com/bJebJ38QO90id00cqJcs80b",
+    installationInterest: "https://buy.stripe.com/4gMbJ38QO6Sa3pq4Yhcs80c",
+  },
 };
 
 export default function PaymentOptions() {
@@ -85,7 +88,10 @@ export default function PaymentOptions() {
     try {
       // Go straight to the existing merchant's hosted Stripe Checkout for confirmed equipment prices.
       if (provider === "stripe" && STRIPE_HOSTED_CHECKOUT[modelId]) {
-        window.location.assign(STRIPE_HOSTED_CHECKOUT[modelId]);
+        const links = STRIPE_HOSTED_CHECKOUT[modelId];
+        // Both links charge only the Stripe product's equipment price. The
+        // selected installation preference is recorded, not charged/booked.
+        window.location.assign(withInstall ? links.installationInterest : links.equipmentOnly);
         return;
       }
       const response = await api.post("/equipment-checkout", {
@@ -222,7 +228,7 @@ export default function PaymentOptions() {
 
             {hasHostedStripeCheckout && (
               <p className="mt-4 text-xs leading-relaxed text-[#555]">
-                Stripe checkout charges {money(retailAmount)} for the air conditioner only. {withInstall ? "The selected installation is not charged or booked during this checkout and will be agreed and paid for separately." : "You are buying the unit without installation."}
+                Stripe checkout charges {money(retailAmount)} for the air conditioner only. {withInstall ? "We've noted your interest in installation; it is not charged or booked during checkout and requires a separate confirmed agreement." : "You are buying the unit without installation."}
               </p>
             )}
             {canCheckout ? (
