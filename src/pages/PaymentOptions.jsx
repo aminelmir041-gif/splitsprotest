@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ChevronDown, Check, CreditCard, Phone, ArrowLeft } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
 import { PHONE, PHONE_TEL } from "../lib/data";
+import { api } from "../lib/api";
 
 // Do not invent separate retail prices for units not yet priced independently.
 const DEALS = [
@@ -23,6 +24,7 @@ const PAYMENT_CHOICES = [
   { id: "klarna", label: "Klarna", note: "Eligible payment plans" },
   { id: "zip", label: "Zip", note: "Zip Pay or Zip Money" },
   { id: "paypal", label: "PayPal", note: "Pay in 4, if eligible" },
+  { id: "card", label: "Stripe card", note: "Pay by card" },
 ];
 
 export default function PaymentOptions() {
@@ -31,8 +33,75 @@ export default function PaymentOptions() {
   const [modelId, setModelId] = useState(DEALS.some((d) => d.id === initial) ? initial : DEALS[0].id);
   const [withInstall, setWithInstall] = useState(true);
   const [provider, setProvider] = useState("afterpay");
+  const [catalog, setCatalog] = useState(null);
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+  const [paymentResult, setPaymentResult] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    api.get("/equipment-catalog", { timeout: 16000 })
+      .then((response) => { if (active) setCatalog(response.data); })
+      .catch(() => { if (active) setCatalog({ checkout_enabled: false, products: [] }); });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const payment = params.get("equipment_payment");
+    const orderId = params.get("order_id");
+    if (payment === "cancelled") {
+      setPaymentResult({ status: "cancelled" });
+      return () => { active = false; };
+    }
+    if (payment !== "returned" || !orderId) return () => { active = false; };
+    setPaymentResult({ status: "processing" });
+    const capture = async () => {
+      try {
+        if (params.get("provider") === "paypal" && params.get("token")) {
+          await api.post("/equipment-paypal-capture", {
+            order_id: orderId,
+            paypal_order_id: params.get("token"),
+          });
+        }
+        const response = await api.get("/equipment-payment-status", {
+          params: { order_id: orderId }, timeout: 16000,
+        });
+        if (active) setPaymentResult(response.data);
+      } catch {
+        if (active) setPaymentResult({ status: "pending_confirmation" });
+      }
+    };
+    capture();
+    return () => { active = false; };
+  }, [params]);
+
+  const handleCheckout = async () => {
+    if (checkoutBusy) return;
+    setCheckoutError("");
+    setCheckoutBusy(true);
+    try {
+      const response = await api.post("/equipment-checkout", {
+        model_id: modelId,
+        provider,
+        include_installation: withInstall,
+      }, { timeout: 22000 });
+      if (!response.data?.checkout_url) throw new Error("No secure checkout URL returned");
+      window.location.assign(response.data.checkout_url);
+    } catch (err) {
+      setCheckoutError(err?.response?.data?.detail || "We could not open the secure checkout. Please request a payment link below.");
+      setCheckoutBusy(false);
+    }
+  };
   const model = DEALS.find((d) => d.id === modelId) || DEALS[0];
-  const hasSeparatePrices = Number.isFinite(model.equipment) && Number.isFinite(model.installation);
+  const serverModel = catalog?.products?.find((item) => item.id === modelId);
+  const retailAmount = Number.isFinite(serverModel?.equipment_cents) ? serverModel.equipment_cents / 100 : model.equipment;
+  const installationAmount = Number.isFinite(serverModel?.installation_cents) ? serverModel.installation_cents / 100 : model.installation;
+  const installedAmount = Number.isFinite(serverModel?.installed_cents) ? serverModel.installed_cents / 100 : model.installed;
+  const hasSeparatePrices = Number.isFinite(retailAmount) && Number.isFinite(installationAmount);
+  const connectedProvider = provider === "paypal" ? catalog?.paypal_ready : catalog?.stripe_ready;
+  const canCheckout = !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices
+    && (!withInstall || catalog?.installed_checkout_enabled));
   const paymentName = PAYMENT_CHOICES.find((choice) => choice.id === provider)?.label || "Afterpay";
   const selectedDate = params.get("date");
   const selectedWindow = params.get("window");
@@ -42,8 +111,8 @@ export default function PaymentOptions() {
     (withInstall ? "Customer selected separate equipment purchase and discounted SplitsPro standard installation (default selection). " : "Customer opted out of SplitsPro installation and wants an independent EQUIPMENT-ONLY sale by phone with collection or delivery and their own licensed installer. ") +
     "Selected equipment payment provider: " + paymentName + (provider === "paypal" ? " Pay in 4" : "") + ". " +
     (hasSeparatePrices
-      ? "Air conditioner price: " + money(model.equipment) + ". " + (withInstall ? "Optional installation price: " + money(model.installation) + ". Combined installed total: " + money(model.installed) + ". " : "No installation selected. ")
-      : "Published installed package: " + money(model.installed) + ". A separate equipment price and installation allocation must be confirmed and accepted before any finance checkout. ") +
+      ? "Air conditioner price: " + money(retailAmount) + ". " + (withInstall ? "Optional installation price: " + money(installationAmount) + ". Combined installed total: " + money(installedAmount) + ". " : "No installation selected. ")
+      : "Published installed package: " + money(installedAmount) + ". A separate equipment price and installation allocation must be confirmed and accepted before any finance checkout. ") +
     (validDate && withInstall ? "Requested date: " + selectedDate + " " + (selectedWindow || "") + " (not confirmed). " : "") +
     "Please call to confirm independent equipment sale, optional installation contract, stock, delivery, financing eligibility and all customer rights. Any selected installation is a separate charge payable at a lawful stage. No finance was charged through this enquiry.";
 
@@ -56,11 +125,27 @@ export default function PaymentOptions() {
 
       <div className="px-4 pb-14 pt-24 sm:px-6 sm:pb-20 sm:pt-36">
         <div className="mx-auto max-w-3xl">
+          {paymentResult && (
+            <div className="mb-5 rounded-xl border border-[#D7C9AC] bg-white p-4" role="status" data-testid="finance-payment-status">
+              <strong className="text-base">
+                {paymentResult.status === "paid" ? "Equipment payment received"
+                  : paymentResult.status === "cancelled" ? "Checkout cancelled"
+                  : paymentResult.status === "processing" ? "Checking your payment" : "Payment confirmation pending"}
+              </strong>
+              <p className="mt-2 text-sm text-[#555]">
+                {paymentResult.status === "paid"
+                  ? "Thanks. SplitsPro will contact you about equipment collection or delivery. Installation is not booked or paid for."
+                  : paymentResult.status === "cancelled"
+                    ? "No booking has been confirmed. You can choose another payment option."
+                    : "We are checking your transaction. Do not pay twice; contact SplitsPro if confirmation is delayed."}
+              </p>
+            </div>
+          )}
           <header className="mb-6 sm:mb-9">
             <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#967141]">SPLITSPRO · PAYMENT OPTIONS</p>
             <h1 className="mt-2 font-serif !text-[2rem] !leading-[1.13] tracking-tight sm:!text-[3rem]">Pay for your aircon over time.</h1>
             <p className="mt-3 text-sm leading-relaxed text-[#606064] sm:text-base">
-              Choose your air conditioner and see Afterpay, Klarna, Zip and PayPal. Installation is selected by default, or you can choose the unit only.
+              Choose your unit, tick installation if needed, then go to Stripe or PayPal for your payment.
             </p>
           </header>
 
@@ -74,34 +159,30 @@ export default function PaymentOptions() {
               <ChevronDown className="pointer-events-none absolute right-3 top-[18px] h-5 w-5 text-[#8F6A34]" />
             </div>
 
-            <div className="mt-6 border-t border-[#E7E2DB] pt-5">
-              <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">2 · Installation preference</p>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Installation preference">
-                <button type="button" role="radio" aria-checked={withInstall} onClick={() => setWithInstall(true)} className={tile(withInstall)}>
-                  <span className="flex items-center gap-2 font-bold"><Check className="h-4 w-4 text-[#8F6A34]" /> With installation</span>
-                  <span className="mt-1 block text-xs text-[#666]">Selected by default · separate installation charge</span>
-                </button>
-                <button type="button" role="radio" aria-checked={!withInstall} onClick={() => setWithInstall(false)} className={tile(!withInstall)}>
-                  <span className="block font-bold">Air conditioner only</span>
-                  <span className="mt-1 block text-xs text-[#666]">No installation charge · use your own licensed installer</span>
-                </button>
-              </div>
-            </div>
+            <label htmlFor="finance-install" className="mt-5 flex cursor-pointer items-center justify-between gap-4 border-t border-[#E7E2DB] pt-5">
+              <span className="text-sm font-bold text-[#212121]">Include standard installation</span>
+              <input id="finance-install" data-testid="finance-installation-checkbox" type="checkbox" checked={withInstall}
+                onChange={(event) => setWithInstall(event.target.checked)}
+                className="h-6 w-6 shrink-0 accent-[#B38B4D]" />
+            </label>
+            <p className="mt-2 text-xs leading-relaxed text-[#666]">
+              {withInstall ? "Installation is separately billed, not included in equipment financing." : "Unit only — no SplitsPro installation charge."}
+            </p>
 
             <div className="mt-6 rounded-xl bg-[#F7F5F1] p-4 sm:p-5" data-testid="finance-price-summary">
               {hasSeparatePrices ? (
                 <>
-                  <div className="flex justify-between gap-4 text-sm"><span>Air conditioner · equipment sale</span><strong>{money(model.equipment)}</strong></div>
-                  {withInstall && <div className="mt-3 flex justify-between gap-4 text-sm"><span>Discounted installation · separate agreement</span><strong>{money(model.installation)}</strong></div>}
+                  <div className="flex justify-between gap-4 text-sm"><span>Air conditioner · equipment sale</span><strong>{money(retailAmount)}</strong></div>
+                  {withInstall && <div className="mt-3 flex justify-between gap-4 text-sm"><span>Discounted installation · separate agreement</span><strong>{money(installationAmount)}</strong></div>}
                   <div className="mt-4 flex items-end justify-between gap-4 border-t border-[#DED8CE] pt-4">
                     <strong className="text-sm">{withInstall ? "Total installed" : "Aircon only"}</strong>
-                    <strong className="font-serif text-3xl text-[#8F6A34]">{money(withInstall ? model.installed : model.equipment)}</strong>
+                    <strong className="font-serif text-3xl text-[#8F6A34]">{money(withInstall ? installedAmount : retailAmount)}</strong>
                   </div>
-                  <p className="mt-3 text-xs leading-relaxed text-[#666]">Finance request for equipment: {money(model.equipment)} through {paymentName}. {withInstall ? "Installation is separately itemised and charged at the legally permitted stage, not through the equipment finance purchase." : "You can arrange another licensed installer; SplitsPro won't charge for installation."}</p>
+                  <p className="mt-3 text-xs leading-relaxed text-[#666]">Finance request for equipment: {money(retailAmount)} through {paymentName}. {withInstall ? "Installation is separately itemised and charged at the legally permitted stage, not through the equipment finance purchase." : "You can arrange another licensed installer; SplitsPro won't charge for installation."}</p>
                 </>
               ) : (
                 <>
-                  {withInstall && <div className="flex items-end justify-between gap-3"><strong className="text-sm">Advertised installed total</strong><strong className="font-serif text-3xl text-[#8F6A34]">{money(model.installed)}</strong></div>}
+                  {withInstall && <div className="flex items-end justify-between gap-3"><strong className="text-sm">Advertised installed total</strong><strong className="font-serif text-3xl text-[#8F6A34]">{money(installedAmount)}</strong></div>}
                   <p className="mt-3 text-sm leading-relaxed text-[#666]">{withInstall ? "Separate equipment and installation prices for this model will be provided in writing before any agreement." : "Call to confirm the equipment-only price, delivery or collection."} No unconfirmed amount will be charged.</p>
                 </>
               )}
@@ -129,15 +210,31 @@ export default function PaymentOptions() {
               </div>
               {withInstall && <p className="mt-3 text-xs leading-relaxed text-[#666]">
                 SplitsPro installation is charged separately from the aircon purchase.
-                {hasSeparatePrices ? " The installation price for this model is " + money(model.installation) + "." : " The separate installation charge for this model must be confirmed before payment."}
+                {hasSeparatePrices ? " The installation price for this model is " + money(installationAmount) + "." : " The separate installation charge for this model must be confirmed before payment."}
               </p>}
-              <p className="mt-3 text-xs leading-relaxed text-[#666]">This is not yet an active finance checkout. Equipment-only sales are available by phone. Each provider decides eligibility and transaction limits.</p>
+              <p className="mt-3 text-xs leading-relaxed text-[#666]">
+                The equipment price goes to {provider === "paypal" ? "your existing SplitsPro PayPal Business account" : "your existing SplitsPro Stripe account"}. Payment plans and approval depend on the provider.
+              </p>
             </div>
 
-            <a href="#payment-help" className="mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#C8A46A] px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-[#171717]">
-              Continue with my payment choice
-            </a>
-            <p className="mt-3 text-center text-xs text-[#777]">No payment or credit application happens until the sale and provider are confirmed.</p>
+            {canCheckout ? (
+              <button type="button" disabled={checkoutBusy} onClick={handleCheckout}
+                className="mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#C8A46A] px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-[#171717] disabled:opacity-50">
+                {checkoutBusy ? "Opening secure checkout…" : "Continue to " + (provider === "paypal" ? "PayPal" : "Stripe") + " checkout"}
+              </button>
+            ) : (
+              <a href="#payment-help" className="mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#C8A46A] px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-[#171717]">
+                Request my secure payment link
+              </a>
+            )}
+            {checkoutError && <p className="mt-3 text-sm font-semibold text-red-700" role="alert">{checkoutError}</p>}
+            <p className="mt-3 text-center text-xs text-[#777]">
+              {canCheckout
+                ? "The equipment price is calculated automatically and charged by your selected provider. Installation is separately billed."
+                : hasSeparatePrices
+                  ? "Secure checkout is being finalised. No payment is taken here until the existing merchant connection is enabled."
+                  : "The standalone retail price must be confirmed before checkout can be calculated."}
+            </p>
           </section>
 
           <section id="payment-help" className="mt-6 scroll-mt-20 rounded-2xl border border-[#E5DFD5] bg-white p-5 sm:p-8">
