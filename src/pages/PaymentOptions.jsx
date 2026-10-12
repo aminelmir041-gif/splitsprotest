@@ -348,21 +348,7 @@ export default function PaymentOptions() {
                   ? "Secure checkout is being finalised. No payment is taken here until the existing merchant connection is enabled."
                   : "The standalone retail price must be confirmed before checkout can be calculated."}
             </p>
-          </section>
-
-          <section id="payment-help" className="mt-6 scroll-mt-20 rounded-2xl border border-[#E5DFD5] bg-white p-5 sm:p-8">
-            <h2 className="font-serif !text-2xl sm:!text-3xl">We'll confirm your options.</h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#606064]">Leave your details. We'll confirm the equipment purchase, your chosen provider, stock and delivery, and any separate installation charge before sending a payment request.</p>
-            <div className="mt-4">
-              <QuoteForm
-                key={modelId + ":" + withInstall + ":" + provider}
-                defaultService="Split System Installation"
-                defaultMessage={message}
-                submitLabel="Request Finance Options"
-                compact hidePhoto hidePreferredDate hideEmail hideCallButton includeAttribution
-              />
-            </div>
-            <a href={PHONE_TEL} className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8F6A34] underline"><Phone className="h-4 w-4" /> Call {PHONE}</a>
+            </form>
           </section>
 
           <p className="mt-5 text-xs leading-relaxed text-[#6E6E73]">
