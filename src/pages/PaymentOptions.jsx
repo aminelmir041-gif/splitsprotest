@@ -85,8 +85,13 @@ export default function PaymentOptions() {
     return () => { active = false; };
   }, [params]);
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (event) => {
+    event.preventDefault();
     if (checkoutBusy) return;
+    if (!buyerDetailsComplete) {
+      setCheckoutError("Please complete your name, email, address and phone number first.");
+      return;
+    }
     // Never offer a PayPal Pay in 4 checkout for equipment priced over $2,000
     // or whose standalone retail price has not yet been confirmed.
     if (provider === "paypal" && !(Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount <= 2000)) {
@@ -96,6 +101,22 @@ export default function PaymentOptions() {
     setCheckoutError("");
     setCheckoutBusy(true);
     try {
+      // Do not start Stripe or PayPal until the backend has saved these details.
+      const details = await api.post("/equipment-buyer-details", {
+        model_id: modelId,
+        provider,
+        include_installation: withInstall,
+        name: buyer.name.trim(),
+        email: buyer.email.trim(),
+        address: buyer.address.trim(),
+        phone: buyer.phone.trim(),
+        page_url: window.location.href,
+        referrer: document.referrer || "",
+      }, { timeout: 55000 });
+      if (!details.data?.accepted || !details.data?.buyer_ref) {
+        throw new Error("We couldn't save your details. No payment has started.");
+      }
+      const buyerRef = details.data.buyer_ref;
       // Go straight to the existing merchant's hosted Stripe Checkout for confirmed equipment prices.
       if (provider === "stripe" && STRIPE_HOSTED_CHECKOUT[modelId]) {
         const links = STRIPE_HOSTED_CHECKOUT[modelId];
@@ -108,11 +129,12 @@ export default function PaymentOptions() {
         model_id: modelId,
         provider,
         include_installation: withInstall,
+        buyer_ref: buyerRef,
       }, { timeout: 55000 });
       if (!response.data?.checkout_url) throw new Error("No secure checkout URL returned");
       window.location.assign(response.data.checkout_url);
     } catch (err) {
-      setCheckoutError(err?.response?.data?.detail || "We could not open the secure checkout. Please request a payment link below.");
+      setCheckoutError((typeof err?.response?.data?.detail === "string" ? err.response.data.detail : err?.message) || "Checkout is unavailable. No payment has started.");
       setCheckoutBusy(false);
     }
   };
