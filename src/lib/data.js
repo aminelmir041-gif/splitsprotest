@@ -453,10 +453,11 @@ export const SPLIT_BRANDS = [
         features: ["Wi-Fi Control", "Self-Cleaning", "3D Airflow", "Quiet Operation"],
         image: PRODUCT_IMAGES.rinnaiPb,
         prices: [
-          { kw: "2.5kW", price: "$1,590" },
-          { kw: "3.5kW", price: "$1,690" },
-          { kw: "5.0kW", price: "$1,990" },
-          { kw: "7.0kW", price: "$2,390" },
+          { kw: "2.5kW", price: "$1,700" },
+          { kw: "3.5kW", price: "$1,850" },
+          { kw: "5.0kW", price: "$2,300" },
+          { kw: "7.0kW", price: "$2,600" },
+          { kw: "8.0kW", price: "$3,000" },
         ],
       },
       {
@@ -468,8 +469,8 @@ export const SPLIT_BRANDS = [
         prices: [
           { kw: "2.5kW", price: "$1,700" },
           { kw: "3.5kW", price: "$1,850" },
-          { kw: "5.0kW", price: "$1,990" },
-          { kw: "7.1kW", price: "$2,390" },
+          { kw: "5.0kW", price: "$2,300" },
+          { kw: "7.1kW", price: "$2,600" },
         ],
       },
     ],
