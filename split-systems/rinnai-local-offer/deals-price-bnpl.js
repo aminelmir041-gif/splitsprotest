@@ -13,7 +13,8 @@
   var currency = function (n) {return "$" + n.toLocaleString("en-AU");};
   var css = ".sp-deals-refresh{font-family:Inter,system-ui,-apple-system,sans-serif;background:#fff;color:#121923;padding:58px 0 40px;scroll-margin-top:110px}.sp-deals-refresh *{box-sizing:border-box}.sp-deals-refresh .wrap{width:min(1120px,calc(100% - 36px));margin:auto}.sp-deals-refresh .eyebrow{color:#83602b;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.16em}.sp-deals-refresh h2{font:600 clamp(32px,4.5vw,54px)/1.08 Georgia,serif;letter-spacing:-.03em;margin:9px 0 10px}.sp-deals-refresh .sub{font-size:15px;color:#4f5660;line-height:1.6;max-width:800px}.sp-deals-refresh .lead{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap}.sp-deals-refresh .lead a{background:#121923;color:#fff;padding:12px 18px;border-radius:6px;font-size:13px;font-weight:800}.sp-deals-refresh .lead a:hover{background:#303f56}.sp-deals-refresh .brands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:33px}.sp-deals-refresh .brand{border-top:4px solid #c8a46a;padding-top:16px}.sp-deals-refresh .brand-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}.sp-deals-refresh .brand h3{font:600 27px/1.15 Georgia,serif;margin:0}.sp-deals-refresh .brand .warranty{color:#666;font-size:11px;margin:8px 0 11px}.sp-deals-refresh .unit{border-bottom:1px solid #e5e1d9;padding:12px 0}.sp-deals-refresh .unit-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.sp-deals-refresh .size{font-size:15px;font-weight:750}.sp-deals-refresh .price{font-size:26px;letter-spacing:-.04em;font-weight:850;color:#101820;font-variant-numeric:tabular-nums}.sp-deals-refresh .unit-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;flex-wrap:wrap}.sp-deals-refresh .unit-actions a{font-size:12px;font-weight:800;text-decoration:none}.sp-deals-refresh .book{color:#8b642f}.sp-deals-refresh .finance{color:#08778d;text-decoration:underline!important;text-underline-offset:3px}.sp-deals-refresh a:focus-visible{outline:3px solid #088ca7;outline-offset:3px}.sp-deals-refresh .payments{background:#eef8fa;padding:20px 24px;margin-top:29px;border-left:4px solid #087d94}.sp-deals-refresh .payments strong{font-size:18px}.sp-deals-refresh .payments .method{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.sp-deals-refresh .payments .method span{font-size:12px;font-weight:800;background:white;border-radius:4px;padding:7px 10px;color:#163549}.sp-deals-refresh .payments p{font-size:12px;color:#374b55;line-height:1.55;margin:9px 0}.sp-deals-refresh .payments a{display:inline-block;color:#003f58;font-size:13px;font-weight:800;text-decoration:underline;text-underline-offset:3px}.sp-deals-refresh .conditions{font-size:12px;color:#5b6068;line-height:1.65;margin-top:18px}.sp-deals-refresh .conditions strong{color:#222}.sp-deals-refresh .legal{color:#717780;font-size:11px;line-height:1.55;margin-top:10px}@media(max-width:700px){.sp-deals-refresh{padding:35px 0}.sp-deals-refresh .brands{grid-template-columns:1fr;gap:34px;margin-top:24px}.sp-deals-refresh .brand h3{font-size:26px}.sp-deals-refresh .price{font-size:25px}.sp-deals-refresh .payments{padding:17px 15px}.sp-deals-refresh .lead a{width:100%;text-align:center}}";
   function mount() {
-    var old = document.querySelector('[data-testid="compact-installed-price-picker"]');
+    if (document.querySelector('[data-testid="current-installed-deals"]')) return;
+    var old = document.querySelector('[data-testid="compact-installed-price-picker"]') || document.getElementById("installed-prices");
     if (!old || document.querySelector('[data-live-revamp="1"]')) return;
     var style = document.createElement("style");
     style.id = "sp-live-deals-style";
@@ -59,6 +60,16 @@
     section.dataset.liveDealsRevamp = "1";
     // Keep a stable marker when the id belongs to the published anchor.
     section.setAttribute("data-live-revamp","1");
+    var clearance=document.querySelector('[data-testid="local-offer-mobile-header-clearance"]');
+    var hero=clearance && clearance.nextElementSibling;
+    if(hero && !document.getElementById("sp-deals-top-teaser")){
+      var teaser=document.createElement("div");
+      teaser.id="sp-deals-top-teaser";
+      teaser.setAttribute("data-testid","deals-top-price-payment-strip");
+      teaser.style.cssText="background:#e9f8fb;border-bottom:1px solid #cfebf0;padding:12px 18px;text-align:center;font:700 13px/1.5 system-ui,sans-serif;color:#173345";
+      teaser.innerHTML='Rinnai from <b>$1,700 installed</b> · Daikin Cora from <b>$2,000 installed</b> · <a href="#installed-prices" style="color:#00677e;text-decoration:underline;font-weight:800">See deals &amp; pay-later choices →</a>';
+      hero.after(teaser);
+    }
   }
   var tries=0;
   var watcher=new MutationObserver(function(){
