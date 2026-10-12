@@ -23,6 +23,11 @@ const PAYMENT_CHOICES = [
   { id: "stripe", label: "Stripe", note: "Card, Afterpay, Klarna or Zip where available" },
   { id: "paypal", label: "PayPal Pay in 4", note: "Pay in 4, subject to eligibility" },
 ];
+// Existing live SplitsPro Stripe payment links. Prices are fixed by Stripe's own
+// Product/Price records, never by values supplied by a browser.
+const STRIPE_HOSTED_CHECKOUT = {
+  "rinnai-local:2.5kW": "https://buy.stripe.com/bJebJ38QO90id00cqJcs80b",
+};
 
 export default function PaymentOptions() {
   const [params] = useSearchParams();
@@ -78,6 +83,11 @@ export default function PaymentOptions() {
     setCheckoutError("");
     setCheckoutBusy(true);
     try {
+      // Go straight to the existing merchant's hosted Stripe Checkout for confirmed equipment prices.
+      if (provider === "stripe" && STRIPE_HOSTED_CHECKOUT[modelId]) {
+        window.location.assign(STRIPE_HOSTED_CHECKOUT[modelId]);
+        return;
+      }
       const response = await api.post("/equipment-checkout", {
         model_id: modelId,
         provider,
@@ -97,7 +107,8 @@ export default function PaymentOptions() {
   const installedAmount = Number.isFinite(serverModel?.installed_cents) ? serverModel.installed_cents / 100 : model.installed;
   const hasSeparatePrices = Number.isFinite(retailAmount) && Number.isFinite(installationAmount);
   const connectedProvider = provider === "paypal" ? catalog?.paypal_ready : catalog?.stripe_ready;
-  const canCheckout = !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices
+  const hasHostedStripeCheckout = provider === "stripe" && !!STRIPE_HOSTED_CHECKOUT[modelId];
+  const canCheckout = hasHostedStripeCheckout || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices
     && (!withInstall || catalog?.installed_checkout_enabled));
   const paymentName = PAYMENT_CHOICES.find((choice) => choice.id === provider)?.label || "Stripe";
   const selectedDate = params.get("date");
@@ -209,6 +220,11 @@ export default function PaymentOptions() {
               <p className="mt-3 text-xs leading-relaxed text-[#666]">Available payment methods and Pay in 4 eligibility are confirmed in Stripe or PayPal checkout.</p>
             </div>
 
+            {hasHostedStripeCheckout && (
+              <p className="mt-4 text-xs leading-relaxed text-[#555]">
+                Stripe checkout charges {money(retailAmount)} for the air conditioner only. {withInstall ? "The selected installation is not charged or booked during this checkout and will be agreed and paid for separately." : "You are buying the unit without installation."}
+              </p>
+            )}
             {canCheckout ? (
               <button type="button" disabled={checkoutBusy} onClick={handleCheckout}
                 className="mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#C8A46A] px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-[#171717] disabled:opacity-50">
@@ -222,7 +238,7 @@ export default function PaymentOptions() {
             {checkoutError && <p className="mt-3 text-sm font-semibold text-red-700" role="alert">{checkoutError}</p>}
             <p className="mt-3 text-center text-xs text-[#777]">
               {canCheckout
-                ? "The equipment price is calculated automatically and charged by your selected provider. Installation is separately billed."
+                ? "Stripe or PayPal shows the actual payable equipment amount before you confirm. Installation, if selected, is a separate transaction."
                 : hasSeparatePrices
                   ? "Secure checkout is being finalised. No payment is taken here until the existing merchant connection is enabled."
                   : "The standalone retail price must be confirmed before checkout can be calculated."}
