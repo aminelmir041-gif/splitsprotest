@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ChevronDown, Phone, ArrowLeft } from "lucide-react";
-import QuoteForm from "../components/QuoteForm";
+import { ChevronDown, ArrowLeft } from "lucide-react";
+
 import { PHONE, PHONE_TEL } from "../lib/data";
 import { api } from "../lib/api";
 
@@ -42,6 +42,7 @@ export default function PaymentOptions() {
   const [withInstall, setWithInstall] = useState(true);
   const [provider, setProvider] = useState("stripe");
   const [catalog, setCatalog] = useState(null);
+  const [buyer, setBuyer] = useState({ name: "", email: "", address: "", phone: "" });
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
   const [paymentResult, setPaymentResult] = useState(null);
@@ -149,14 +150,6 @@ export default function PaymentOptions() {
   const selectedWindow = params.get("window");
   const validDate = selectedDate && selectedDate >= new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
 
-  const message = "SplitsPro finance enquiry. " + model.name + ". " +
-    (withInstall ? "Customer selected separate equipment purchase and SplitsPro No More to Pay installation (default selection). " : "Customer opted out of SplitsPro installation and wants an independent EQUIPMENT-ONLY sale by phone with collection or delivery and their own licensed installer. ") +
-    "Selected equipment payment provider: " + paymentName + (provider === "paypal" ? " Pay in 4" : "") + ". " +
-    (hasSeparatePrices
-      ? "Air conditioner price: " + money(retailAmount) + ". " + (withInstall ? "Optional installation price: " + money(installationAmount) + ". Combined installed total: " + money(installedAmount) + ". " : "No installation selected. ")
-      : "Published installed package: " + money(installedAmount) + ". A separate equipment price and installation allocation must be confirmed and accepted before any finance checkout. ") +
-    (validDate && withInstall ? "Requested date: " + selectedDate + " " + (selectedWindow || "") + " (not confirmed). " : "") +
-    "Please call to confirm independent equipment sale, optional installation contract, stock, delivery, financing eligibility and all customer rights. Any selected installation is a separate charge payable at a lawful stage. No finance was charged through this enquiry.";
 
   return (
     <div className="finance-page bg-[#F7F5F1] text-[#181818]" data-testid="finance-purchase-page">
