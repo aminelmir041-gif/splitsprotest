@@ -48,9 +48,22 @@ LABELS = {
     "daikin-lite-local:8.0kW": "Daikin Cora 8.0kW",
     "daikin-lite-local:9.0kW": "Daikin Cora 9.0kW",
 }
-# A retail price has only been agreed for one model. The remaining
-# prices must be supplied and configured by the business owner.
-CONFIRMED_RETAIL_CENTS = {"rinnai-local:2.5kW": 120000}
+# Real equipment-only purchase prices, with separately offered $600
+# installation for these 5kW-and-larger systems. Installed totals do not change.
+# Equipment-only sales remain independently available.
+INSTALLATION_600_MODELS = frozenset({
+    "rinnai-local:5.0kW",
+    "rinnai-local:7.0kW",
+    "rinnai-local:8.0kW",
+    "daikin-lite-local:5.0kW",
+    "daikin-lite-local:7.0kW",
+    "daikin-lite-local:8.0kW",
+    "daikin-lite-local:9.0kW",
+})
+CONFIRMED_RETAIL_CENTS = {
+    "rinnai-local:2.5kW": 120000,
+    **{model: INSTALLED_CENTS[model] - 60000 for model in INSTALLATION_600_MODELS},
+}
 PAYMENT_METHOD = {"stripe": None, "afterpay": "afterpay_clearpay", "klarna": "klarna",
                   "zip": "zip", "card": "card"}
 
@@ -74,6 +87,12 @@ def retail_catalog() -> dict:
                 cents = amount * 100
                 if cents != cents.to_integral_value():
                     raise ValueError("price may have up to two decimal places")
+                # Preserve the merchant's explicitly advertised $600 installation
+                # for 5kW+; ignore stale Render env retail overrides for these.
+                if model in INSTALLATION_600_MODELS:
+                    if int(cents) != CONFIRMED_RETAIL_CENTS[model]:
+                        logging.warning("Ignoring stale retail override for %s; $600 installation is fixed", model)
+                    continue
                 catalog[model] = int(cents)
         except Exception as exc:
             logging.error("Invalid EQUIPMENT_RETAIL_PRICES_JSON: %s", type(exc).__name__)
