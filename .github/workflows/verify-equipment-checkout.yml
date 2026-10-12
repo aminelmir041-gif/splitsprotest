@@ -1,0 +1,33 @@
+name: Verify equipment checkout safety
+on:
+  push:
+    branches: [crm-lead-routing]
+    paths:
+      - 'backend/equipment_checkout.py'
+      - 'backend/render_app.py'
+      - '.github/workflows/verify-equipment-checkout.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile equipment checkout and booking backend
+        run: |
+          python3 -m py_compile backend/equipment_checkout.py backend/render_app.py
+      - name: Confirm production charges are gated in source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          src = Path("backend/equipment_checkout.py").read_text()
+          assert 'enabled("EQUIPMENT_CHECKOUT_ENABLED")' in src
+          assert 'enabled("EQUIPMENT_WITH_INSTALL_CHECKOUT_ENABLED")' in src
+          assert '"rinnai-local:2.5kW": 120000' in src
+          assert 'STRIPE_SECRET_KEY' in src
+          assert 'PAYPAL_CLIENT_ID' in src
+          assert 'PAYPAL_CLIENT_SECRET' in src
+          assert 'equipment_cents' in src
+          print("Checkout gates and server-owned prices present")
+          PY
