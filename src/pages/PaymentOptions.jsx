@@ -21,7 +21,7 @@ const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currenc
 const paymentRow = (chosen) => "flex w-full items-center gap-3 border-b border-[#E7E2DA] px-1 py-3.5 text-left transition-colors " + (chosen ? "text-[#181818]" : "text-[#555] hover:bg-[#FAF9F7]");
 const PAYMENT_CHOICES = [
   { id: "stripe", label: "Stripe", note: "Card, Afterpay, Klarna or Zip where available" },
-  { id: "paypal", label: "PayPal Pay in 4", note: "Pay in 4, subject to eligibility" },
+  { id: "paypal", label: "PayPal Pay in 4", note: "For eligible buyers and purchases under $2,000" },
 ];
 // Existing live SplitsPro Stripe payment links. Prices are fixed by Stripe's own
 // Product/Price records, never by values supplied by a browser.
@@ -98,7 +98,7 @@ export default function PaymentOptions() {
         model_id: modelId,
         provider,
         include_installation: withInstall,
-      }, { timeout: 22000 });
+      }, { timeout: 55000 });
       if (!response.data?.checkout_url) throw new Error("No secure checkout URL returned");
       window.location.assign(response.data.checkout_url);
     } catch (err) {
@@ -114,8 +114,13 @@ export default function PaymentOptions() {
   const hasSeparatePrices = Number.isFinite(retailAmount) && Number.isFinite(installationAmount);
   const connectedProvider = provider === "paypal" ? catalog?.paypal_ready : catalog?.stripe_ready;
   const hasHostedStripeCheckout = provider === "stripe" && !!STRIPE_HOSTED_CHECKOUT[modelId];
-  const canCheckout = hasHostedStripeCheckout || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices
-    && (!withInstall || catalog?.installed_checkout_enabled));
+  // The confirmed Rinnai 2.5kW PayPal order is validated, priced and created by
+  // the backend. Keep a real checkout button visible even while a free Render
+  // service wakes up or the catalogue request is still loading.
+  const hasDirectPayPalCheckout = provider === "paypal" && modelId === "rinnai-local:2.5kW";
+  const canCheckout = hasHostedStripeCheckout || hasDirectPayPalCheckout
+    || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices
+      && (!withInstall || catalog?.installed_checkout_enabled));
   const paymentName = PAYMENT_CHOICES.find((choice) => choice.id === provider)?.label || "Stripe";
   const selectedDate = params.get("date");
   const selectedWindow = params.get("window");
