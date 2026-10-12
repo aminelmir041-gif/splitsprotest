@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
 import { NAV, PHONE, PHONE_TEL } from "../lib/data";
@@ -7,9 +7,33 @@ import Logo from "./Logo";
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef(null);
   const location = useLocation();
   const isFinancePage = location.pathname.startsWith("/payment-options");
   const solid = scrolled || open || isFinancePage;
+
+  // The payment announcement is part of the fixed header. Keep its largest
+  // measured height available to image-first landing pages so their artwork
+  // never sits underneath the announcement (including on narrow mobiles).
+  useEffect(() => {
+    const root = document.documentElement;
+    let tallestHeader = 0;
+    const measure = () => {
+      if (!headerRef.current) return;
+      tallestHeader = Math.max(tallestHeader, Math.ceil(headerRef.current.getBoundingClientRect().height));
+      root.style.setProperty("--sp-site-header-height", `${tallestHeader}px`);
+    };
+    const resizeObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    if (resizeObserver && headerRef.current) resizeObserver.observe(headerRef.current);
+    const onResize = () => { tallestHeader = 0; measure(); };
+    window.addEventListener("resize", onResize);
+    measure();
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", onResize);
+      root.style.removeProperty("--sp-site-header-height");
+    };
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -48,6 +72,7 @@ export const Navbar = () => {
 
   return (
     <header
+      ref={headerRef}
       data-testid="navbar"
       className={`fixed inset-x-0 top-0 z-[9998] transition-all duration-300 ${
         solid ? "border-b border-[#E5E5EA] bg-[#F8F7F5]/98 py-2 lg:py-0 backdrop-blur-xl" : "py-3 lg:py-0"
