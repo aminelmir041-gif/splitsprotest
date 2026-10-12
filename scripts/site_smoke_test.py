@@ -5,6 +5,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 import json
 import re
+import subprocess
 
 ROOT = Path(".")
 
@@ -125,6 +126,37 @@ def main() -> None:
     home = (ROOT / "index.html").read_text(encoding="utf-8")
     if home.count("async function sendEnquiry(e)") != 1:
         fail("homepage enquiry handler is missing or duplicated")
+
+    # A syntax error in an inline script can break the homepage hamburger,
+    # FAQ toggles and quote forms. Compile scripts before publishing.
+    inline_scripts = re.findall(
+        r'<script(?:\\s+[^>]*)?>(.*?)</script>',
+        home,
+        flags=re.I | re.S,
+    )
+    if not inline_scripts:
+        fail("homepage inline JavaScript is missing")
+    for index, script in enumerate(inline_scripts, 1):
+        check = subprocess.run(
+            ["node", "--check"],
+            input=script,
+            text=True,
+            capture_output=True,
+            timeout=15,
+            check=False,
+        )
+        if check.returncode:
+            fail(f"homepage inline script {index} contains invalid JavaScript: {check.stderr[:600]}")
+
+    nav_test = subprocess.run(
+        ["node", "scripts/test_home_menu.cjs"],
+        text=True,
+        capture_output=True,
+        timeout=15,
+        check=False,
+    )
+    if nav_test.returncode:
+        fail(f"homepage menu interaction test failed: {nav_test.stderr[:600]}")
 
     cleaning = (ROOT / "split-system-cleaning-offer/index.html").read_text(encoding="utf-8")
     if cleaning.count("async function bookClean(e)") != 1:
