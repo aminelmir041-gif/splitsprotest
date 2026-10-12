@@ -10,15 +10,15 @@ import { api } from "../lib/api";
 const DEALS = [
   { id: "rinnai-local:2.5kW", name: "Rinnai PX 2.5kW", installed: 1700, equipment: 1200, installation: 500 },
   { id: "rinnai-local:3.5kW", name: "Rinnai PX 3.5kW", installed: 1850 },
-  { id: "rinnai-local:5.0kW", name: "Rinnai 5kW", installed: 2300 },
-  { id: "rinnai-local:7.0kW", name: "Rinnai 7kW", installed: 2600 },
-  { id: "rinnai-local:8.0kW", name: "Rinnai 8kW", installed: 3000 },
+  { id: "rinnai-local:5.0kW", name: "Rinnai 5kW", installed: 2300, equipment: 1700, installation: 600 },
+  { id: "rinnai-local:7.0kW", name: "Rinnai 7kW", installed: 2600, equipment: 2000, installation: 600 },
+  { id: "rinnai-local:8.0kW", name: "Rinnai 8kW", installed: 3000, equipment: 2400, installation: 600 },
   { id: "daikin-lite-local:2.5kW", name: "Daikin Cora 2.5kW", installed: 2000 },
   { id: "daikin-lite-local:3.5kW", name: "Daikin Cora 3.5kW", installed: 2200 },
-  { id: "daikin-lite-local:5.0kW", name: "Daikin Cora 5kW", installed: 2650 },
-  { id: "daikin-lite-local:7.0kW", name: "Daikin Cora 7kW", installed: 3200 },
-  { id: "daikin-lite-local:8.0kW", name: "Daikin Cora 8kW", installed: 3650 },
-  { id: "daikin-lite-local:9.0kW", name: "Daikin Cora 9kW", installed: 4100 },
+  { id: "daikin-lite-local:5.0kW", name: "Daikin Cora 5kW", installed: 2650, equipment: 2050, installation: 600 },
+  { id: "daikin-lite-local:7.0kW", name: "Daikin Cora 7kW", installed: 3200, equipment: 2600, installation: 600 },
+  { id: "daikin-lite-local:8.0kW", name: "Daikin Cora 8kW", installed: 3650, equipment: 3050, installation: 600 },
+  { id: "daikin-lite-local:9.0kW", name: "Daikin Cora 9kW", installed: 4100, equipment: 3500, installation: 600 },
 ];
 const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
 const paymentRow = (chosen) => "flex w-full items-center gap-3 border-b border-[#E7E2DA] px-1 py-3.5 text-left transition-colors " + (chosen ? "text-[#181818]" : "text-[#555] hover:bg-[#FAF9F7]");
@@ -182,6 +182,13 @@ export default function PaymentOptions() {
   const hasSeparatePrices = Number.isFinite(retailAmount) && Number.isFinite(installationAmount)
     && Math.round((retailAmount + installationAmount) * 100) === Math.round(installedAmount * 100);
   const serverPriceCurrent = !Number.isFinite(serverModel?.installed_cents) || serverModel.installed_cents === model.installed * 100;
+  // Do not send the buyer to a backend checkout with an older supply-only price.
+  const serverEquipmentCurrent = !Number.isFinite(model.equipment) || (
+    Number.isFinite(serverModel?.equipment_cents)
+    && Number.isFinite(serverModel?.installation_cents)
+    && serverModel.equipment_cents === model.equipment * 100
+    && serverModel.installation_cents === model.installation * 100
+  );
   const paypalPayIn4Eligible = Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount < 2000 && model.installed <= 2000;
   const availablePaymentChoices = PAYMENT_CHOICES.filter((choice) => choice.id !== "paypal" || paypalPayIn4Eligible);
   useEffect(() => {
@@ -198,7 +205,7 @@ export default function PaymentOptions() {
   const hasDirectPayPalCheckout = provider === "paypal" && paypalPayIn4Eligible && modelId === "rinnai-local:2.5kW";
   const canCheckout = (provider !== "paypal" || paypalPayIn4Eligible) && (
     hasHostedStripeCheckout || hasDirectPayPalCheckout
-    || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices && serverPriceCurrent
+    || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices && serverPriceCurrent && serverEquipmentCurrent
       && (!withInstall || catalog?.installed_checkout_enabled))
   );
   const paymentName = PAYMENT_CHOICES.find((choice) => choice.id === provider)?.label || "Stripe";
