@@ -18,6 +18,7 @@ import SplitSystems from "@/pages/SplitSystems";
 import Ducted from "@/pages/Ducted";
 import Cleaning from "@/pages/Cleaning";
 import SplitSystemCleaning from "@/pages/SplitSystemCleaning";
+import CleaningCheckout from "@/pages/CleaningCheckout";
 import DuctedCleaning from "@/pages/DuctedCleaning";
 import Repairs from "@/pages/Repairs";
 import Servicing from "@/pages/Servicing";
@@ -76,6 +77,7 @@ const AnimatedRoutes = () => {
           <Route path="/ducted" element={<Ducted />} />
           <Route path="/cleaning" element={<Cleaning />} />
           <Route path="/split-system-cleaning" element={<SplitSystemCleaning />} />
+          <Route path="/secure-cleaning" element={<CleaningCheckout />} />
           <Route path="/ducted-cleaning" element={<DuctedCleaning />} />
           <Route path="/repairs" element={<Repairs />} />
           <Route path="/servicing" element={<Servicing />} />
