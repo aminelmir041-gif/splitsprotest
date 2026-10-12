@@ -297,7 +297,7 @@ export default function PaymentOptions() {
             <form onSubmit={handleCheckout} data-testid="finance-customer-checkout-form">
               <div className="mt-6 border-t border-[#E7E2DB] pt-5" data-testid="finance-customer-details">
                 <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">2 · Your details</p>
-                <h2 className="mt-2 font-serif text-2xl">Where can we reach you?</h2>
+                <h2 className="mt-2 font-serif text-2xl">Your contact details</h2>
                 <p className="mt-1 text-xs text-[#606064]">Your details are saved before you go to secure checkout.</p>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   <label className="block text-xs font-semibold text-[#555]">Full name
@@ -305,20 +305,20 @@ export default function PaymentOptions() {
                       name="name" autoComplete="name" placeholder="Your full name" value={buyer.name}
                       onChange={(e) => updateBuyer("name", e.target.value)} required minLength={2} maxLength={120} disabled={checkoutBusy} />
                   </label>
+                  <label className="block text-xs font-semibold text-[#555]">Phone number
+                    <input data-testid="finance-customer-phone" className={buyerFieldClass + " mt-1.5"} type="tel"
+                      name="tel" autoComplete="tel" placeholder="04xx xxx xxx" value={buyer.phone}
+                      onChange={(e) => updateBuyer("phone", e.target.value)} required minLength={8} maxLength={32} disabled={checkoutBusy} />
+                  </label>
                   <label className="block text-xs font-semibold text-[#555]">Email address
                     <input data-testid="finance-customer-email" className={buyerFieldClass + " mt-1.5"} type="email"
                       name="email" autoComplete="email" placeholder="you@example.com" value={buyer.email}
                       onChange={(e) => updateBuyer("email", e.target.value)} required maxLength={254} disabled={checkoutBusy} />
                   </label>
-                  <label className="block text-xs font-semibold text-[#555] sm:col-span-2">Installation or delivery address
+                  <label className="block text-xs font-semibold text-[#555]">Installation or delivery address
                     <input data-testid="finance-customer-address" className={buyerFieldClass + " mt-1.5"} type="text"
                       name="street-address" autoComplete="street-address" placeholder="Street address, suburb and postcode" value={buyer.address}
                       onChange={(e) => updateBuyer("address", e.target.value)} required minLength={6} maxLength={300} disabled={checkoutBusy} />
-                  </label>
-                  <label className="block text-xs font-semibold text-[#555] sm:col-span-2">Phone number
-                    <input data-testid="finance-customer-phone" className={buyerFieldClass + " mt-1.5"} type="tel"
-                      name="tel" autoComplete="tel" placeholder="04xx xxx xxx" value={buyer.phone}
-                      onChange={(e) => updateBuyer("phone", e.target.value)} required minLength={8} maxLength={32} disabled={checkoutBusy} />
                   </label>
                 </div>
               </div>
