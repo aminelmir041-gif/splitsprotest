@@ -94,8 +94,8 @@ export default function PaymentOptions() {
     }
     // Never offer a PayPal Pay in 4 checkout for equipment priced over $2,000
     // or whose standalone retail price has not yet been confirmed.
-    if (provider === "paypal" && !(Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount <= 2000)) {
-      setCheckoutError("PayPal Pay in 4 is only available for confirmed air-conditioner prices up to $2,000.");
+    if (provider === "paypal" && !(Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount < 2000 && model.installed <= 2000)) {
+      setCheckoutError("PayPal Pay in 4 is only available for eligible equipment transactions under $2,000, where the advertised installed deal is not above $2,000.");
       return;
     }
     setCheckoutError("");
@@ -182,7 +182,7 @@ export default function PaymentOptions() {
   const hasSeparatePrices = Number.isFinite(retailAmount) && Number.isFinite(installationAmount)
     && Math.round((retailAmount + installationAmount) * 100) === Math.round(installedAmount * 100);
   const serverPriceCurrent = !Number.isFinite(serverModel?.installed_cents) || serverModel.installed_cents === model.installed * 100;
-  const paypalPayIn4Eligible = Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount <= 2000;
+  const paypalPayIn4Eligible = Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount < 2000 && model.installed <= 2000;
   const availablePaymentChoices = PAYMENT_CHOICES.filter((choice) => choice.id !== "paypal" || paypalPayIn4Eligible);
   useEffect(() => {
     if (provider === "paypal" && !paypalPayIn4Eligible) {
@@ -344,7 +344,7 @@ export default function PaymentOptions() {
               <p className="mt-3 text-xs leading-relaxed text-[#666]">
                 {paypalPayIn4Eligible
                   ? "Available payment methods and Pay in 4 eligibility are confirmed in Stripe or PayPal checkout."
-                  : "PayPal Pay in 4 is shown only for air conditioners with a confirmed equipment price up to $2,000."}
+                  : "PayPal Pay in 4 is shown only for eligible equipment prices under $2,000 and installed deals no higher than $2,000."}
               </p>
             </div>
 
