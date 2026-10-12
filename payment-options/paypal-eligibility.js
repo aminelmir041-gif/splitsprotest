@@ -26,10 +26,9 @@
   var observer=new MutationObserver(sync);
   function start(){
     sync();
-    var form=document.querySelector('[data-testid="finance-purchase-page"]');
-    if(form)observer.observe(form,{childList:true,subtree:true,attributes:true,attributeFilter:["aria-checked"]});
-    var picker=document.getElementById("finance-model");
-    if(picker)picker.addEventListener("change",sync);
+    // React can mount after DOMContentLoaded, so watch the root for the selector.
+    observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["aria-checked"]});
+    document.addEventListener("change",function(event){if(event.target && event.target.id==="finance-model")sync();},true);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);
   else start();
