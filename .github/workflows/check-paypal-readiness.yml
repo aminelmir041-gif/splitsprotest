@@ -1,4 +1,5 @@
 name: Check live PayPal checkout readiness
+# Re-run after first deployment of the checkout API.
 on:
   push:
     branches: [crm-lead-routing]
