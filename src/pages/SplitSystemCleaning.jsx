@@ -104,42 +104,39 @@ export default function SplitSystemCleaning() {
         <meta property="og:description" content="Deep clean $220. Two deep cleans at the same property $300. See what we clean and request a booking." />
       </Helmet>
 
-      {/* Deals-page style: image-led dark hero, big statement, offer and immediate action. */}
-      <section className="relative isolate overflow-hidden bg-[#071523] text-white">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_32%,rgba(0,168,209,0.14),transparent_40%),radial-gradient(circle_at_6%_95%,rgba(200,164,106,0.19),transparent_39%)]" />
-        <div className="sp-container relative grid items-center gap-8 pb-12 pt-44 sm:pt-40 lg:min-h-[650px] lg:grid-cols-[1.06fr_0.94fr] lg:gap-12 lg:pb-20 lg:pt-44">
-          <div className="relative z-10">
-            <p className="inline-block border-l-4 border-[#F4C620] pl-3 text-[11px] font-black uppercase tracking-[0.18em] text-[#F4C620] sm:text-xs">SplitsPro · Split system deep cleaning</p>
-            <h1 className="mt-5 max-w-[760px] font-sans text-[clamp(2.7rem,6.5vw,5.7rem)] font-black uppercase leading-[0.98] tracking-[-0.045em]">
-              YOUR AIRCON'S <span className="text-[#F4C620]">HIDING</span> SOMETHING.
-            </h1>
-            <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-white/85">
-              You clean the filters. Good on ya. But what about the dirt hiding behind them? Give the inside of your split system a proper deep clean before the summer heat arrives.
-            </p>
-            <div className="mt-6 flex flex-wrap items-end gap-x-5 gap-y-3 border-y border-white/15 py-5">
-              <div><p className="text-[10px] font-bold uppercase tracking-[0.17em] text-white/60">One deep clean</p><p className="mt-1 font-sans text-[36px] font-black leading-none text-white">$220</p></div>
-              <div className="h-10 w-px bg-white/20" />
-              <div><p className="text-[10px] font-bold uppercase tracking-[0.17em] text-[#F4C620]">Two at one property</p><p className="mt-1 font-sans text-[36px] font-black leading-none text-[#F4C620]">$300</p></div>
-              <span className="pb-1 text-xs font-bold text-[#F4C620]">$150 each</span>
+      {/* Approved full-width SplitsPro cleaning artwork; do not crop the logo,
+          offer amounts or printed CTA. Live booking controls are below. */}
+      <section className="w-full overflow-hidden bg-[#061525] text-white" data-testid="cleaning-hero">
+        <h1 className="sr-only">SplitsPro Split System Deep Cleaning — One for $220 or two at the same property for $300</h1>
+        <img
+          src="/landing/splitspro-cleaning-hero.avif"
+          alt="SplitsPro cleaning campaign featuring an Aussie aircon cleaner, a dog, a dirty blower wheel, a before-and-after comparison, and the offers: 1 deep clean $220 or 2 for $300 at the same property."
+          width={1536}
+          height={1024}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          data-no-fallback="true"
+          className="block h-auto w-full max-w-none object-contain"
+        />
+        <div className="border-t border-white/15 bg-[#071523] py-4 sm:py-5">
+          <div className="sp-container flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center sm:gap-5">
+            <div className="text-center sm:text-left">
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-[#F4C620]">Book your deep clean</p>
+              <p className="mt-1 text-sm font-semibold text-white/85">1 deep clean $220 · 2 deep cleans $300 at the same property</p>
             </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button type="button" onClick={() => choose("two")} className="inline-flex min-h-12 items-center justify-center gap-3 rounded-md bg-[#F4C620] px-6 py-3 text-xs font-black uppercase tracking-[0.09em] text-[#101A27] transition hover:bg-[#FFE269]">
-                Get 2 Deep Cleans · $300 <ArrowRight className="h-4 w-4" />
-              </button>
-              <button type="button" onClick={() => choose("one")} className="inline-flex min-h-12 items-center justify-center rounded-md border border-white/40 px-5 py-3 text-xs font-extrabold uppercase tracking-wide text-white transition hover:bg-white/10">Just one · $220</button>
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0 sm:gap-3">
+              <button
+                type="button"
+                onClick={() => choose("one")}
+                className="min-h-12 rounded-md border border-white/45 bg-transparent px-4 py-3 text-[11px] font-extrabold uppercase tracking-wide text-white hover:bg-white/10 sm:text-xs"
+              >Book 1 · $220</button>
+              <button
+                type="button"
+                onClick={() => choose("two")}
+                className="min-h-12 rounded-md bg-[#F4C620] px-4 py-3 text-[11px] font-extrabold uppercase tracking-wide text-[#101A27] hover:bg-[#FFE269] sm:text-xs"
+              >Book 2 · $300 <ArrowRight className="ml-1 inline h-3.5 w-3.5" /></button>
             </div>
-            <p className="mt-5 text-xs font-semibold text-white/60">Local Western Sydney bookings · Clear inclusions · No surprise repairs</p>
-          </div>
-
-          <div className="relative z-0 mx-auto w-full max-w-[620px] lg:max-w-none">
-            <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-[#132736] shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
-              <img src="/installs/rinnai-indoor.webp" alt="A wall-mounted split system air conditioner; internal cleaning goes beyond the visible filters" className="block aspect-[5/4] w-full object-cover" loading="eager" />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#071523] via-[#071523]/85 to-transparent px-5 pb-6 pt-24 sm:px-8">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#F4C620]">A tidy cover isn't the whole story.</p>
-                <p className="mt-2 max-w-md font-sans text-2xl font-black uppercase leading-tight tracking-tight text-white sm:text-3xl">The tricky stuff's on the inside.</p>
-              </div>
-            </div>
-            <div className="pointer-events-none absolute -right-2 -top-4 rotate-6 rounded-md bg-[#F4C620] px-4 py-3 font-sans text-xs font-black uppercase tracking-wide text-[#0B1B2A] shadow-lg sm:-right-4 sm:text-sm">FILTERS: THE EASY BIT.</div>
           </div>
         </div>
       </section>
