@@ -33,6 +33,7 @@ REACT_ROUTES = (
     "ducted",
     "cleaning",
     "split-system-cleaning",
+    "secure-cleaning",
     "ducted-cleaning",
     "repairs",
     "servicing",
@@ -170,8 +171,14 @@ def main() -> None:
     cleaning_page = (ROOT / "src/pages/SplitSystemCleaning.jsx").read_text(encoding="utf-8")
     if "CLEANING_OFFERS" not in cleaning_page or '"$220"' not in cleaning_page or '"$300"' not in cleaning_page:
         fail("split system cleaning packages are not configured as $220 / 2 for $300")
-    if '<QuoteForm' not in cleaning_page:
-        fail("single cleaning landing page is missing its booking request form")
+    if "getBookingSlots" not in cleaning_page or "Continue to details & payment" not in cleaning_page:
+        fail("cleaning page must show live date slots before requesting details")
+    secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
+    if '"/cleaning-checkout"' not in secure_page or '"/cleaning-payment-status"' not in secure_page:
+        fail("cleaning checkout must verify payment through the server")
+    for field in ('name', 'address', 'phone', 'email'):
+        if field not in secure_page:
+            fail(f"cleaning checkout missing customer field {field}")
 
     # Never ship placeholder navigation/social links that only jump to the top.
     for source in list((ROOT / "src/pages").glob("*.jsx")) + list((ROOT / "src/components").glob("*.jsx")):
