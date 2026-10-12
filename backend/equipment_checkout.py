@@ -42,7 +42,7 @@ LABELS = {
 # A retail price has only been agreed for one model. The remaining
 # prices must be supplied and configured by the business owner.
 CONFIRMED_RETAIL_CENTS = {"rinnai-local:2.5kW": 120000}
-PAYMENT_METHOD = {"afterpay": "afterpay_clearpay", "klarna": "klarna",
+PAYMENT_METHOD = {"stripe": None, "afterpay": "afterpay_clearpay", "klarna": "klarna",
                   "zip": "zip", "card": "card"}
 
 def enabled(name: str) -> bool:
@@ -114,7 +114,7 @@ def get_catalog():
 
 class PurchaseRequest(BaseModel):
     model_id: str
-    provider: Literal["card", "afterpay", "klarna", "zip", "paypal"]
+    provider: Literal["stripe", "card", "afterpay", "klarna", "zip", "paypal"]
     include_installation: bool = True
 
     @field_validator("model_id")
@@ -136,13 +136,17 @@ def stripe_checkout(order):
         "client_reference_id": order["id"],
         "metadata[checkout_type]": "equipment_retail",
         "metadata[order_id]": order["id"],
-        "payment_method_types[0]": PAYMENT_METHOD[order["provider"]],
         "line_items[0][price_data][currency]": "aud",
         "line_items[0][price_data][unit_amount]": str(order["equipment_cents"]),
         "line_items[0][price_data][product_data][name]": LABELS[order["model_id"]] + " – supply only",
         "line_items[0][quantity]": "1",
         "billing_address_collection": "required",
     }
+    # Let the existing Stripe dashboard determine eligible checkout methods (card, BNPL, etc.).
+    # Legacy provider-specific API requests remain supported.
+    payment_method = PAYMENT_METHOD[order["provider"]]
+    if payment_method:
+        body["payment_method_types[0]"] = payment_method
     try:
         res = requests.post("https://api.stripe.com/v1/checkout/sessions",
                             headers={"Authorization": "Bearer " + secret},
