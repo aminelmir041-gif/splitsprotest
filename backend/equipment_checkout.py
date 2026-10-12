@@ -226,6 +226,8 @@ def create_equipment_checkout(payload: PurchaseRequest):
     retail = retail_catalog()
     if payload.model_id not in retail:
         raise HTTPException(status_code=409, detail="The standalone retail price for this model must be confirmed before checkout.")
+    if payload.provider == "paypal" and retail[payload.model_id] > 200000:
+        raise HTTPException(status_code=422, detail="PayPal Pay in 4 is only offered for air conditioners priced at $2,000 or less.")
     order = {
         "id": uuid.uuid4().hex,
         "model_id": payload.model_id,
