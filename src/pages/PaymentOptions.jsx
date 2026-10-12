@@ -129,7 +129,7 @@ export default function PaymentOptions() {
           email: buyerData.email,
           address: buyerData.address,
           phone: buyerData.phone,
-          suburb: buyerData.address,
+          suburb: "See address",
           service: "Air Conditioner Purchase",
           message: model.name + " · " + (withInstall ? "Installation selected" : "Equipment only") + " · " + provider,
           page_url: buyerData.page_url,
