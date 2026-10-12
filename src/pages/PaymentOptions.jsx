@@ -138,6 +138,17 @@ export default function PaymentOptions() {
       setCheckoutBusy(false);
     }
   };
+  const buyerDetailsComplete =
+    buyer.name.trim().length >= 2
+    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyer.email.trim())
+    && buyer.address.trim().length >= 6
+    && buyer.phone.replace(/\D/g, "").length >= 8
+    && buyer.phone.replace(/\D/g, "").length <= 15;
+  const updateBuyer = (field, value) => {
+    setBuyer((current) => ({ ...current, [field]: value }));
+    setCheckoutError("");
+  };
+  const buyerFieldClass = "h-12 w-full rounded-lg border border-[#D9D3CA] bg-[#FAF9F7] px-3 text-sm text-[#181818] outline-none focus:border-[#B58C4E] focus:ring-2 focus:ring-[#C8A46A]/20";
   const model = DEALS.find((d) => d.id === modelId) || DEALS[0];
   const serverModel = catalog?.products?.find((item) => item.id === modelId);
   const retailAmount = Number.isFinite(model.equipment) ? model.equipment : (Number.isFinite(serverModel?.equipment_cents) ? serverModel.equipment_cents / 100 : undefined);
