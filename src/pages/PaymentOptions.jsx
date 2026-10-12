@@ -221,7 +221,7 @@ export default function PaymentOptions() {
         <meta name="description" content="Explore aircon equipment finance through SplitsPro with installation selected by default or equipment-only by choice." />
       </Helmet>
 
-      <div id="splitspro-payment-hero-live" className="mx-auto max-w-[1120px] px-4 pt-5 sm:px-6 sm:pt-8">
+      <div id="splitspro-payment-hero-live" className="w-full max-w-none px-4 pt-5 sm:px-6 sm:pt-8 lg:px-0 lg:pt-0">
         <img
           src="/assets/splitspro-payment-hero.png"
           alt="SplitsPro: Get comfort now, pay it off your way. Flexible payment options for air conditioners."
