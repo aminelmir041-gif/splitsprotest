@@ -334,6 +334,14 @@ const BrandPage = ({ offerMode = null }) => {
         <meta property="og:image" content={brand.image} />
       </Helmet>
 
+      {isRinnaiLocalOffer && (
+        <div
+          aria-hidden="true"
+          data-testid="local-offer-mobile-header-clearance"
+          className="lg:hidden"
+          style={{ height: "max(0px, calc(var(--sp-site-header-height, 184px) - 36px))" }}
+        />
+      )}
       <PageHero
         overline={isRinnaiLocalOffer ? "Rinnai & Daikin Cora · Fast, Reliable Installation" : brand.brand}
         title={isRinnaiLocalOffer ? "When the heat takes over, get your home back — without turning your life upside down." : brand.h1}
