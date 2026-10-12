@@ -83,6 +83,12 @@ export default function PaymentOptions() {
 
   const handleCheckout = async () => {
     if (checkoutBusy) return;
+    // Never offer a PayPal Pay in 4 checkout for equipment priced over $2,000
+    // or whose standalone retail price has not yet been confirmed.
+    if (provider === "paypal" && !(Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount <= 2000)) {
+      setCheckoutError("PayPal Pay in 4 is only available for confirmed air-conditioner prices up to $2,000.");
+      return;
+    }
     setCheckoutError("");
     setCheckoutBusy(true);
     try {
@@ -112,15 +118,25 @@ export default function PaymentOptions() {
   const installationAmount = Number.isFinite(serverModel?.installation_cents) ? serverModel.installation_cents / 100 : model.installation;
   const installedAmount = Number.isFinite(serverModel?.installed_cents) ? serverModel.installed_cents / 100 : model.installed;
   const hasSeparatePrices = Number.isFinite(retailAmount) && Number.isFinite(installationAmount);
+  const paypalPayIn4Eligible = Number.isFinite(retailAmount) && retailAmount > 0 && retailAmount <= 2000;
+  const availablePaymentChoices = PAYMENT_CHOICES.filter((choice) => choice.id !== "paypal" || paypalPayIn4Eligible);
+  useEffect(() => {
+    if (provider === "paypal" && !paypalPayIn4Eligible) {
+      setProvider("stripe");
+      setCheckoutError("");
+    }
+  }, [provider, paypalPayIn4Eligible]);
   const connectedProvider = provider === "paypal" ? catalog?.paypal_ready : catalog?.stripe_ready;
   const hasHostedStripeCheckout = provider === "stripe" && !!STRIPE_HOSTED_CHECKOUT[modelId];
   // The confirmed Rinnai 2.5kW PayPal order is validated, priced and created by
   // the backend. Keep a real checkout button visible even while a free Render
   // service wakes up or the catalogue request is still loading.
-  const hasDirectPayPalCheckout = provider === "paypal" && modelId === "rinnai-local:2.5kW";
-  const canCheckout = hasHostedStripeCheckout || hasDirectPayPalCheckout
+  const hasDirectPayPalCheckout = provider === "paypal" && paypalPayIn4Eligible && modelId === "rinnai-local:2.5kW";
+  const canCheckout = (provider !== "paypal" || paypalPayIn4Eligible) && (
+    hasHostedStripeCheckout || hasDirectPayPalCheckout
     || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices
-      && (!withInstall || catalog?.installed_checkout_enabled));
+      && (!withInstall || catalog?.installed_checkout_enabled))
+  );
   const paymentName = PAYMENT_CHOICES.find((choice) => choice.id === provider)?.label || "Stripe";
   const selectedDate = params.get("date");
   const selectedWindow = params.get("window");
@@ -212,7 +228,7 @@ export default function PaymentOptions() {
             <div className="mt-6 border-t border-[#E7E2DB] pt-5">
               <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">3 · Choose how to pay</p>
               <div className="mt-3 border-t border-[#E7E2DA]" role="radiogroup" aria-label="Equipment payment checkout" data-testid="finance-payment-methods">
-                {PAYMENT_CHOICES.map((choice) => (
+                {availablePaymentChoices.map((choice) => (
                   <button key={choice.id} type="button" role="radio"
                     aria-checked={provider === choice.id}
                     onClick={() => setProvider(choice.id)}
@@ -228,7 +244,11 @@ export default function PaymentOptions() {
                   </button>
                 ))}
               </div>
-              <p className="mt-3 text-xs leading-relaxed text-[#666]">Available payment methods and Pay in 4 eligibility are confirmed in Stripe or PayPal checkout.</p>
+              <p className="mt-3 text-xs leading-relaxed text-[#666]">
+                {paypalPayIn4Eligible
+                  ? "Available payment methods and Pay in 4 eligibility are confirmed in Stripe or PayPal checkout."
+                  : "PayPal Pay in 4 is shown only for air conditioners with a confirmed equipment price up to $2,000."}
+              </p>
             </div>
 
             {hasHostedStripeCheckout && (
