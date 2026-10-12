@@ -158,9 +158,20 @@ def main() -> None:
     if nav_test.returncode:
         fail(f"homepage menu interaction test failed: {nav_test.stderr[:600]}")
 
+    # The old offer URL is deliberately a redirect to the SINGLE canonical
+    # React cleaning page. The booking form now lives there, not on the old page.
     cleaning = (ROOT / "split-system-cleaning-offer/index.html").read_text(encoding="utf-8")
-    if cleaning.count("async function bookClean(e)") != 1:
-        fail("cleaning-offer booking handler is missing or duplicated")
+    is_cleaning_redirect = (
+        'href="https://splitspro.com.au/split-system-cleaning/"' in cleaning
+        and 'window.location.replace("../split-system-cleaning/"' in cleaning
+    )
+    if not is_cleaning_redirect:
+        fail("old cleaning-offer URL must redirect to the main split-system-cleaning page")
+    cleaning_page = (ROOT / "src/pages/SplitSystemCleaning.jsx").read_text(encoding="utf-8")
+    if "CLEANING_OFFERS" not in cleaning_page or '"$220"' not in cleaning_page or '"$300"' not in cleaning_page:
+        fail("split system cleaning packages are not configured as $220 / 2 for $300")
+    if '<QuoteForm' not in cleaning_page:
+        fail("single cleaning landing page is missing its booking request form")
 
     # Never ship placeholder navigation/social links that only jump to the top.
     for source in list((ROOT / "src/pages").glob("*.jsx")) + list((ROOT / "src/components").glob("*.jsx")):
