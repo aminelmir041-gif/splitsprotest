@@ -31,8 +31,10 @@ from .lead_integrations import (
     valid_admin_key,
 )
 from .sms_gateway import log_sms_event, parse_webhook, send_sms, sms_configured
+from .equipment_checkout import router as equipment_checkout_router, confirm_stripe_equipment_payment
 
 app = FastAPI(title="SplitsPro Lead API")
+app.include_router(equipment_checkout_router)
 
 origins = [o.strip() for o in (os.environ.get("CORS_ORIGINS") or "https://splitspro.com.au,https://www.splitspro.com.au").split(",") if o.strip()]
 app.add_middleware(
@@ -857,6 +859,13 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks):
 
     event_type = event.get("type", "")
     session = ((event.get("data") or {}).get("object") or {})
+    # Equipment retail checkouts use the same trusted Stripe webhook but
+    # must NEVER be mistaken for an installation deposit or reserve a date.
+    if (session.get("metadata") or {}).get("checkout_type") == "equipment_retail":
+        if event_type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"}:
+            confirm_stripe_equipment_payment(session)
+        return Response(status_code=200)
+
     reference = session.get("client_reference_id") or ""
     session_id = session.get("id") or ""
 
