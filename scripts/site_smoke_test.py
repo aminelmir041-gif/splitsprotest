@@ -130,7 +130,7 @@ def main() -> None:
     # A syntax error in an inline script can break the homepage hamburger,
     # FAQ toggles and quote forms. Compile scripts before publishing.
     inline_scripts = re.findall(
-        r'<script(?:\\s+[^>]*)?>(.*?)</script>',
+        r'<script[^>]*>(.*?)</script>',
         home,
         flags=re.I | re.S,
     )
