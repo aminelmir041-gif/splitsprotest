@@ -102,7 +102,7 @@ export default function PaymentOptions() {
     setCheckoutBusy(true);
     try {
       // Do not start Stripe or PayPal until the backend has saved these details.
-      const details = await api.post("/equipment-buyer-details", {
+      const buyerData = {
         model_id: modelId,
         provider,
         include_installation: withInstall,
@@ -112,11 +112,34 @@ export default function PaymentOptions() {
         phone: buyer.phone.trim(),
         page_url: window.location.href,
         referrer: document.referrer || "",
-      }, { timeout: 55000 });
-      if (!details.data?.accepted || !details.data?.buyer_ref) {
-        throw new Error("We couldn't save your details. No payment has started.");
+      };
+      let buyerRef = "";
+      try {
+        const details = await api.post("/equipment-buyer-details", buyerData, { timeout: 55000 });
+        if (!details.data?.accepted || !details.data?.buyer_ref) {
+          throw new Error("We couldn't save your details. No payment has started.");
+        }
+        buyerRef = details.data.buyer_ref;
+      } catch (saveError) {
+        // Backwards-compatible path while Render deploys the upgraded endpoint.
+        // Require a confirmed CRM save, rather than accepting an unpersisted form.
+        if (saveError?.response?.status !== 404) throw saveError;
+        const lead = await api.post("/quotes", {
+          name: buyerData.name,
+          email: buyerData.email,
+          address: buyerData.address,
+          phone: buyerData.phone,
+          suburb: buyerData.address,
+          service: "Air Conditioner Purchase",
+          message: model.name + " · " + (withInstall ? "Installation selected" : "Equipment only") + " · " + provider,
+          page_url: buyerData.page_url,
+          landing_page: buyerData.page_url,
+          referrer: buyerData.referrer,
+        }, { timeout: 55000 });
+        if (!lead.data?.crm_saved) {
+          throw new Error("We couldn't confirm your details were saved. No payment has started.");
+        }
       }
-      const buyerRef = details.data.buyer_ref;
       // Go straight to the existing merchant's hosted Stripe Checkout for confirmed equipment prices.
       if (provider === "stripe" && STRIPE_HOSTED_CHECKOUT[modelId]) {
         const links = STRIPE_HOSTED_CHECKOUT[modelId];
@@ -129,7 +152,7 @@ export default function PaymentOptions() {
         model_id: modelId,
         provider,
         include_installation: withInstall,
-        buyer_ref: buyerRef,
+        ...(buyerRef ? { buyer_ref: buyerRef } : {}),
       }, { timeout: 55000 });
       if (!response.data?.checkout_url) throw new Error("No secure checkout URL returned");
       window.location.assign(response.data.checkout_url);
