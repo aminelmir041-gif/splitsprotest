@@ -11,7 +11,7 @@ const Deals = () => {
     {
       brand: "Rinnai",
       title: "Rinnai Installed Deals",
-      copy: "See the current Rinnai 2.5kW, 3.5kW, 5.0kW and 7.0kW supplied-and-installed specials.",
+      copy: "See the current Rinnai 2.5kW, 3.5kW, 5.0kW, 7.0kW and 8.0kW supplied-and-installed specials.",
       warranty: "7-year manufacturer warranty",
       image: rinnaiImage,
       to: "/split-systems/rinnai-local-offer#range-rinnai-local",
@@ -19,7 +19,7 @@ const Deals = () => {
     {
       brand: "Daikin",
       title: "Daikin Cora Installed Deals",
-      copy: "See the current Daikin Cora 2.5kW, 3.5kW, 5.0kW and 7.0kW supplied-and-installed specials.",
+      copy: "See the current Daikin Cora 2.5kW, 3.5kW, 5.0kW, 7.0kW, 8.0kW and 9.0kW supplied-and-installed specials.",
       warranty: "5-year manufacturer warranty",
       image: daikinImage,
       to: "/split-systems/rinnai-local-offer#range-daikin-lite-local",

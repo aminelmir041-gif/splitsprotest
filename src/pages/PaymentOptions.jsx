@@ -12,10 +12,13 @@ const DEALS = [
   { id: "rinnai-local:3.5kW", name: "Rinnai PX 3.5kW", installed: 1850 },
   { id: "rinnai-local:5.0kW", name: "Rinnai 5kW", installed: 2300 },
   { id: "rinnai-local:7.0kW", name: "Rinnai 7kW", installed: 2600 },
+  { id: "rinnai-local:8.0kW", name: "Rinnai 8kW", installed: 3000 },
   { id: "daikin-lite-local:2.5kW", name: "Daikin Cora 2.5kW", installed: 2000 },
   { id: "daikin-lite-local:3.5kW", name: "Daikin Cora 3.5kW", installed: 2200 },
   { id: "daikin-lite-local:5.0kW", name: "Daikin Cora 5kW", installed: 2650 },
   { id: "daikin-lite-local:7.0kW", name: "Daikin Cora 7kW", installed: 3200 },
+  { id: "daikin-lite-local:8.0kW", name: "Daikin Cora 8kW", installed: 3650 },
+  { id: "daikin-lite-local:9.0kW", name: "Daikin Cora 9kW", installed: 4100 },
 ];
 const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
 const paymentRow = (chosen) => "flex w-full items-center gap-3 border-b border-[#E7E2DA] px-1 py-3.5 text-left transition-colors " + (chosen ? "text-[#181818]" : "text-[#555] hover:bg-[#FAF9F7]");

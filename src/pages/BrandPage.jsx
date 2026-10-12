@@ -192,6 +192,7 @@ const RINNAI_LOCAL_OFFER_RANGES = [
       { kw: "3.5kW", price: "$1,850", localOfferPrice: "$1,850" },
       { kw: "5.0kW", price: "$2,300", localOfferPrice: "$2,300" },
       { kw: "7.0kW", price: "$2,600", localOfferPrice: "$2,600" },
+      { kw: "8.0kW", price: "$3,000", localOfferPrice: "$3,000" },
     ],
   },
   {
@@ -208,6 +209,8 @@ const RINNAI_LOCAL_OFFER_RANGES = [
       { kw: "3.5kW", price: "$2,200", localOfferPrice: "$2,200" },
       { kw: "5.0kW", price: "$2,650", localOfferPrice: "$2,650" },
       { kw: "7.0kW", price: "$3,200", localOfferPrice: "$3,200" },
+      { kw: "8.0kW", price: "$3,650", localOfferPrice: "$3,650" },
+      { kw: "9.0kW", price: "$4,100", localOfferPrice: "$4,100" },
     ],
   },
 ];
@@ -658,7 +661,7 @@ const BrandPage = ({ offerMode = null }) => {
                   <span className="rounded-full bg-[#FFF3D6] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Supplied &amp; installed</span>
                 </div>
 
-                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {activeOfferRange.prices.map((row) => {
                     const price = row.localOfferPrice || getRinnaiLocalSalePrice(row.price);
                     return (

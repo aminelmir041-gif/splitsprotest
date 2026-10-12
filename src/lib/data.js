@@ -361,6 +361,8 @@ export const SPLIT_BRANDS = [
           { kw: "3.5kW", model: "FTKM35WVMA", price: "$2,200" },
           { kw: "5.0kW", model: "FTKM50WVMA", price: "$2,650" },
           { kw: "7.1kW", model: "FTKM71WVMA", price: "$3,200" },
+          { kw: "8.0kW", price: "$3,650" },
+          { kw: "9.0kW", price: "$4,100" },
         ],
       },
       {
