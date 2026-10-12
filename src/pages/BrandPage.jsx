@@ -355,6 +355,17 @@ const BrandPage = ({ offerMode = null }) => {
         desktopBrand
       />
 
+      {isRinnaiLocalOffer && (
+        <div className="border-b border-[#DCE1E3] bg-[#EDF9FB] py-3" data-testid="deals-hero-price-payment-strip">
+          <div className="sp-container flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
+            <span className="font-bold text-[#173345]">Rinnai from $1,700 installed · Daikin Cora from $2,000 installed</span>
+            <a href="#installed-prices" className="font-extrabold text-[#00677E] underline underline-offset-4">See prices & pay-later options →</a>
+          </div>
+        </div>
+      )}
+
+
+
 
 
 
@@ -622,83 +633,58 @@ const BrandPage = ({ offerMode = null }) => {
         </>
       )}
 
-      {isRinnaiLocalOffer && activeOfferRange && (
-        <section id="installed-prices" className="scroll-mt-24 bg-white py-10 sm:py-12" data-testid="compact-installed-price-picker">
+
+      {isRinnaiLocalOffer && (
+        <section id="installed-prices" className="scroll-mt-24 bg-white py-10 sm:py-16" data-testid="current-installed-deals">
           <div className="sp-container">
-            <div className="mx-auto max-w-5xl">
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mx-auto max-w-6xl">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">SplitsPro · Current installed deals</p>
+              <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A46A]">Choose your system</p>
-                  <h2 className="mt-2 font-serif text-3xl font-medium tracking-tight text-[#0B0B0B] sm:text-4xl">Pick a brand. Pick a size. See the installed price.</h2>
+                  <h2 className="font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-5xl">New installed prices. More ways to pay.</h2>
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#606064]">Choose a Rinnai or Daikin Cora system. Book at the installed price, or explore payment options for the equipment you choose.</p>
                 </div>
-                <div className="inline-flex self-start rounded-full border border-[#E5E5EA] bg-[#F8F7F4] p-1" role="tablist" aria-label="Choose air conditioner brand">
-                  {displayRanges.map((range) => {
-                    const active = range.slug === activeOfferRange.slug;
-                    return (
-                      <button
-                        key={range.slug}
-                        type="button"
-                        onClick={() => setActiveOfferSlug(range.slug)}
-                        className={`rounded-full px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] transition-all sm:px-5 ${active ? "bg-[#0B0B0B] text-white shadow-sm" : "text-[#5F5F63]"}`}
-                        aria-selected={active}
-                        role="tab"
-                      >
-                        {range.tabLabel || range.name}
-                      </button>
-                    );
-                  })}
-                </div>
+                <a href="#pay-later-deals" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">See pay-later choices ↓</a>
               </div>
-
-              <div className="mt-5 rounded-2xl border border-[#E5E5EA] bg-[#FBFAF8] p-4 sm:p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="font-serif text-2xl text-[#0B0B0B]">{activeOfferRange.displayName}</p>
-                    <p className="mt-1 text-xs text-[#6E6E73]">
-                      {activeOfferRange.localBrand === "Rinnai" ? "7-year manufacturer warranty" : "5-year manufacturer warranty"} · Installation guarantee · Installations within 2 days
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-[#FFF3D6] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7B5A28]">Supplied &amp; installed</span>
-                </div>
-
-                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {activeOfferRange.prices.map((row) => {
-                    const price = row.localOfferPrice || getRinnaiLocalSalePrice(row.price);
-                    return (
-                      <button
-                        key={row.kw}
-                        type="button"
-                        onClick={() => handleBook(activeOfferRange, row)}
-                        className="group rounded-xl border border-[#E2DED7] bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[#C8A46A] hover:shadow-md"
-                      >
-                        <span className="block text-xs font-bold uppercase tracking-[0.12em] text-[#6E6E73]">{row.kw}</span>
-                        <span className="mt-1 block font-serif text-2xl text-[#0B0B0B]">{price}</span>
-                        <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#8A8A8E]">Installed</span>
-                        <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#8F6A34]">Choose <ArrowUpRight className="h-3.5 w-3.5" /></span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-5 border-t border-[#E5E0D7] pt-5" data-testid="payment-options">
-                  <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Flexible ways to pay</p>
-                  <h3 className="mt-1 font-serif text-2xl text-[#0B0B0B]">Get the comfort sorted. Choose how you pay.</h3>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-xl border border-[#DED9D0] bg-white p-4">
-                      <p className="text-sm font-bold text-[#181818]">Book with a 10% deposit</p>
-                      <p className="mt-1 text-xs leading-relaxed text-[#606064]">Secure your installation date now. The booking deposit is 10% of your chosen installed price and comes off the final bill. The remaining balance is payable at the agreed stage.</p>
+              <div className="mt-8 grid gap-8 lg:grid-cols-2">
+                {displayRanges.map((range) => (
+                  <div key={range.slug} className="border-t-4 border-[#C8A46A] pt-4" id={"range-" + range.slug}>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="font-serif text-2xl text-[#0B0B0B] sm:text-3xl">{range.displayName}</h3>
+                      <span className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#8F6A34]">Installed</span>
                     </div>
-                    <div className="rounded-xl border border-[#DED9D0] bg-white p-4">
-                      <p className="text-sm font-bold text-[#181818]">Interested in paying in instalments?</p>
-                      <p className="mt-1 text-xs leading-relaxed text-[#606064]">Choose Afterpay, Klarna, Zip or PayPal Pay in 4 as a preferred equipment-payment option. Discounted SplitsPro installation is selected by default, with an equipment-only choice.</p>
-                      <p className="mt-2 text-xs font-semibold text-[#8F6A34]"><Link to="/payment-options?mode=full" className="underline">See equipment finance and installation choices →</Link></p>
+                    <p className="mt-2 text-xs text-[#666]">{range.localBrand === "Rinnai" ? "7-year manufacturer warranty" : "5-year manufacturer warranty"} · Installation guarantee · 2-day installation offer*</p>
+                    <div className="mt-3">
+                      {range.prices.map((row) => {
+                        const price = row.localOfferPrice || getRinnaiLocalSalePrice(row.price);
+                        return (
+                          <div key={row.kw} className="border-b border-[#E5E0D7] py-3" data-testid={"deal-price-" + range.slug + "-" + row.kw}>
+                            <div className="flex items-baseline justify-between gap-3">
+                              <span className="text-sm font-bold text-[#1C232A]">{row.kw}</span>
+                              <span className="font-sans text-2xl font-extrabold tracking-tight text-[#0B0B0B]">{price}</span>
+                            </div>
+                            <div className="mt-2 flex items-center justify-between gap-3">
+                              <button type="button" onClick={() => handleBook(range, row)} className="text-xs font-bold text-[#8F6A34] underline underline-offset-4">Book installed ↗</button>
+                              <Link className="text-xs font-bold text-[#08778D] underline underline-offset-4"
+                                to={"/payment-options?product=" + encodeURIComponent(range.slug) + "&size=" + encodeURIComponent(row.kw)}>
+                                Pay-later options →
+                              </Link>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                  <p className="mt-3 text-[11px] leading-relaxed text-[#6E6E73]">Standard booking takes a 10% installation deposit. Separate equipment finance is an enquiry until stock, sale terms and provider eligibility are confirmed; payment is not taken on the finance options page.</p>
-                </div>
-                <p className="mt-4 text-[11px] leading-relaxed text-[#6E6E73]">Standard-install pricing shown. If your home genuinely needs extra work, we tell you what it is and the price before it starts.</p>
-
+                ))}
               </div>
+              <div id="pay-later-deals" className="mt-8 border-l-4 border-[#087D94] bg-[#EEF8FA] p-5 sm:p-7" data-testid="payment-options">
+                <h3 className="font-serif text-2xl text-[#0B0B0B]">Buy now. Pay later. Stay cool.</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#374B55]">Available Stripe checkout methods may include <strong>Afterpay, Klarna and Zip</strong>, plus cards. <strong>PayPal Pay in 4</strong> uses a separate PayPal checkout and is only shown for eligible air conditioners where the installed deal is $2,000 or less and the equipment price qualifies.</p>
+                <p className="mt-3 text-xs leading-relaxed text-[#374B55]">Choose your unit first. No More to Pay installation is pre-selected on the payment page, or you can choose the air conditioner only. Equipment and installation are separately priced and charged where available. Approval and payment methods depend on the provider.</p>
+                <Link to="/payment-options?product=rinnai-local&size=2.5kW" className="mt-3 inline-block text-sm font-bold text-[#00556D] underline underline-offset-4">Explore secure payment options →</Link>
+              </div>
+              <p className="mt-5 text-xs leading-relaxed text-[#525960]"><strong>Our No More to Pay installation model</strong> includes supply, installation labour and commissioning, up to 3m of refrigeration pipework, a suitable wall bracket or floor placement, an isolator, and up to 20m of electrical cable and a dedicated circuit from the switchboard where required. Non-standard extras are quoted before work proceeds.</p>
+              <p className="mt-2 text-[11px] leading-relaxed text-[#777]">*Subject to appointment availability, service area and qualifying standard installation terms. Finance availability and individual eligibility are checked by Stripe or PayPal at checkout. The installed total is not the equipment-only finance amount.</p>
             </div>
           </div>
         </section>
