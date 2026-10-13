@@ -18,7 +18,8 @@ const WHAT_WE_CLEAN = [
   { title: "Filters and indoor covers", copy: "Wash washable filters and service-accessible indoor surfaces, with surrounding areas protected." },
   { title: "Evaporator coil", copy: "Clean accessible coil surfaces where dust and grime can collect out of sight." },
   { title: "Blower wheel and airflow path", copy: "Clean the accessible fan barrel and airflow path to help remove buildup that can restrict circulation." },
-  { title: "Drain tray and accessible drain", copy: "Clean accessible drain areas and check drainage where the system allows." }
+  { title: "Drain tray and accessible drain", copy: "Clean accessible drain areas and check drainage where the system allows." },
+  { title: "Suitable surface treatment", copy: "Where compatible with the unit and the product label, apply a protective coating intended to discourage mould-related buildup on approved surfaces." }
 ];
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
@@ -145,7 +146,7 @@ export default function SplitSystemCleaning() {
             A clean home shouldn't stop at what you can see.
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#5E6267] sm:text-lg">
-            You wipe the benches, mop the floors and wash the bedding. You pick up pet hair. And with little ones around, everything seems to end up in their mouths. But what about the air conditioner circulating air around the room? Behind that spotless white cover, dust, pet dander and moisture-related grime can build up on the fan, coil and drainage areas. It's one part of the home that's easy to forget — whether you're looking after children, pets or older loved ones.
+            You wipe the benches because little hands touch everything. You mop the floor because the baby puts anything they find straight into their mouth. You wash the bedding because you want your family sleeping comfortably. You even chase pet hair around the couch. But what if the room still smells musty, someone's sensitive airways are irritated, or the house never feels as fresh as it looks? One overlooked place worth checking is the air conditioner: it recirculates room air, and dust, dander and moisture-related grime can collect on its hidden fan, coil and drain areas. Cleaning the surfaces matters — but so does cleaning the machine that moves air around your loved ones.
           </p>
 
           {/* Three editorial punchlines within the page's existing three-column benefits layout. */}
@@ -159,14 +160,14 @@ export default function SplitSystemCleaning() {
             <article className="min-w-0">
               <img src="https://images.pexels.com/photos/16592625/pexels-photo-16592625.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Illustrative photograph of a wall-mounted split-system air conditioner" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">02 · Behind the white cover</p>
-              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">Looks clean. So does the top of the fridge.</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">Until you actually look. Dust, pet dander and moisture-related grime can build up on hidden internal components even when the cover looks spotless. Not every dirty aircon contains mould, but damp buildup deserves inspection.</p>
+              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">You cleaned the bench. But what's circulating through the room?</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">Wiping a surface doesn't remove dirt trapped inside your split system. When internal parts get damp, grime and sometimes mould can grow. Cleaning those accessible components can remove a potential source of contamination — without claiming every dusty aircon is making the family sick.</p>
             </article>
             <article className="min-w-0">
               
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">03 · Time to go deeper</p>
-              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">You bought an aircon. Not a dust collector with a remote.</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">A filter rinse only goes so far. A proper deep clean removes accessible internal buildup that may restrict airflow, contribute to musty smells, create some noises or obstruct drainage.</p>
+              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">Your loved ones deserve more than a filter rinse.</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">We carefully strip back accessible parts, wash away grime with specialist aircon cleaning products and, when suitable, apply a compatible protective coating. The aim is a cleaner unit, fewer musty smells and better airflow where dirt was the problem.</p>
             </article>
           </div>
 
@@ -174,7 +175,7 @@ export default function SplitSystemCleaning() {
 
           <div className="mt-10 max-w-5xl" data-testid="cleaning-personal-impact">
             <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">What that hidden grime means for your home</p>
-            <h3 className="mt-3 max-w-4xl font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">The problem isn't just what you can see. It's what you live with.</h3>
+            <h3 className="mt-3 max-w-4xl font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">You're doing everything to keep them comfortable. So why does the room still feel less than fresh?</h3>
             <div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">
               <div className="border-t border-[#E4DFD6] pt-4">
                 <h4 className="text-base font-bold text-[#162332]">For children and sensitive airways</h4>
@@ -203,8 +204,8 @@ export default function SplitSystemCleaning() {
         <div className="sp-container grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">The SplitsPro solution · deeper than a filter wash</p>
-            <h2 className="mt-3 font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">We get into the bits your filter rinse misses.</h2>
-            <p className="mt-4 text-sm leading-relaxed text-[#606469]">We protect your home, open the unit and remove service-accessible parts where the manufacturer's design allows. Then we clean the blower wheel, cooling coil, filters, covers and accessible drainage areas — not just the pieces you can reach from the front. We reassemble and test the unit. Suitable cleaners or disinfectants are used only as labelled; any optional mould-inhibiting treatment depends on verified product claims and material compatibility. We can show you the hidden buildup, without promising a medical cure or a brand-new aircon.</p>
+            <h2 className="mt-3 font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">We strip it back, deep-clean it and protect what we can.</h2>
+            <p className="mt-4 text-sm leading-relaxed text-[#606469]">We don't just rinse your filters and walk away. We protect your home, open the indoor unit and carefully strip it back to its service-accessible parts — as close to its bones as the manufacturer's design safely allows. Then we deep-clean the blower wheel, cooling coil, filters, covers and accessible drainage areas using specialist air-conditioning cleaning products suited to each surface. Where suitable, we finish with a compatible protective coating to help discourage future mould-related buildup, but only when the actual product label supports that use. We reassemble and test the system, and show you what came out. It's a thorough clean, not a claim to sterilise the whole house or cure illness.</p>
             <button type="button" onClick={() => document.getElementById("cleaning-prices")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="mt-6 inline-flex items-center gap-2 border-b-2 border-[#C8A46A] pb-1 text-sm font-bold text-[#1D2329]">See the deep-clean offer <ArrowRight className="h-4 w-4" /></button>
           </div>
           <div className="border-t border-[#E5E0D7]">
