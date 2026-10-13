@@ -107,39 +107,21 @@ export default function SplitSystemCleaning() {
       </Helmet>
 
 
-      {/* Same existing landing page, new bright image-led hero. Prices are only below. */}
-      <section className="relative overflow-hidden bg-[#FCFBF8] text-[#0A2540]" data-testid="cleaning-hero"
+      {/* Existing cleaning landing page: approved no-logo, no-price family hero in the same hero position. */}
+      <section className="w-full overflow-hidden bg-[#FCFBF8]" data-testid="cleaning-hero"
         style={{ paddingTop: "max(90px, calc(var(--sp-site-header-height, 152px) - 22px))" }}>
-        <div className="sp-container grid items-center gap-0 lg:min-h-[640px] lg:grid-cols-[.95fr_1.05fr]">
-          <div className="relative z-10 py-8 pr-0 sm:py-14 lg:py-16 lg:pr-10">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#9B753E]">
-              A clean home shouldn't stop at what you can see.
-            </p>
-            <h1 className="mt-5 max-w-[700px] text-[clamp(2.7rem,6.1vw,5.5rem)] font-black uppercase leading-[.94] tracking-[-.055em] text-[#0A2540]">
-              You clean everything they touch.
-              <span className="mt-3 block text-[#0C2742]">
-                <span className="box-decoration-clone bg-[#FFE04B] px-2 py-0.5 leading-[1.17]">What about the aircon they breathe around?</span>
-              </span>
-            </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-[#314252] sm:text-lg">
-              For mums, dads, pet owners and families caring for older loved ones. Dust, dander and damp grime can hide inside a split system that looks perfectly clean from outside. Our deep clean goes beyond the filters.
-            </p>
-            <p className="mt-5 max-w-xl font-semibold text-[#0B6480]">
-              You bought an aircon. Not a dust collector with a remote.
-            </p>
-          </div>
-          <div className="relative -mx-5 min-h-[290px] sm:-mx-6 sm:min-h-[400px] lg:mx-0 lg:h-full lg:min-h-[640px]">
-            <img
-              src="https://images.pexels.com/photos/4545948/pexels-photo-4545948.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt="Family relaxing together with their dog on a sofa in a sunlit home"
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-[#FCFBF8] via-[#FCFBF8]/5 to-transparent lg:block" />
-          </div>
-        </div>
+        <h1 className="sr-only">You clean everything they touch. What about the aircon they breathe around?</h1>
+        <img
+          src="/landing/splitspro-cleaning-family-hero.svg"
+          alt="You clean everything they touch. What about the aircon they breathe around? Bright family home with a child, parents, grandparent, dog and a dusty air conditioner."
+          width={1536}
+          height={1024}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          data-no-fallback="true"
+          className="block h-auto w-full object-contain"
+        />
       </section>
 
       <section className="border-b border-[#E5E0D7] bg-white py-5" data-testid="cleaning-social-proof">
@@ -157,7 +139,7 @@ export default function SplitSystemCleaning() {
         <div className="sp-container">
           <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">For mums, dads, pet owners and families caring for older loved ones</p>
           <h2 className="mt-3 max-w-4xl font-serif text-4xl leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">
-            You clean everything they touch. What about the aircon they breathe around?
+            A clean home shouldn\u0027t stop at what you can see.
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#5E6267] sm:text-lg">
             You wipe the benches, mop the floors, wash the bedding and pick pet hair off the sofa. Children touch everything. Dogs find every crumb. And when you care for an older loved one, home comfort matters even more. So what about the machine circulating air through the room? Behind its clean white cover, dust and moisture-related grime can accumulate on the coil, blower and drainage areas.
