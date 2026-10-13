@@ -6,7 +6,7 @@ import { PHONE_TEL } from "../lib/data";
 
 export const FloatingCTA = () => {
   const location = useLocation();
-  const hideOnLocalOffer = location.pathname === "/split-systems/rinnai-local-offer" || location.pathname === "/book-installation" || location.pathname === "/secure-installation" || location.pathname === "/split-system-installation-sydney" || location.pathname === "/split-system-cleaning" || location.pathname === "/secure-cleaning" || location.pathname === "/colony-forming-units";
+  const hideOnLocalOffer = location.pathname === "/split-systems/rinnai-local-offer" || location.pathname === "/book-installation" || location.pathname === "/secure-installation" || location.pathname === "/split-system-installation-sydney" || location.pathname === "/split-system-cleaning" || location.pathname === "/secure-cleaning" || location.pathname === "/colony-forming-units" || location.pathname === "/aircon-colony-forming-units";
   const [show, setShow] = useState(false);
 
   useEffect(() => {
