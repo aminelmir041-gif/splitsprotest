@@ -106,39 +106,38 @@ export default function SplitSystemCleaning() {
         <meta property="og:description" content="For mums, dads, pet owners and families with older loved ones: see what your aircon might be hiding. Deep clean $220, or two at the same property for $300." />
       </Helmet>
 
-      {/* Approved full-width SplitsPro cleaning artwork; do not crop the logo,
-          offer amounts or printed CTA. Live booking controls are below. */}
-      <section className="w-full overflow-hidden bg-[#061525] text-white" data-testid="cleaning-hero" style={{ paddingTop: "max(80px, calc(var(--sp-site-header-height, 152px) - 36px))" }}>
-        <h1 className="sr-only">SplitsPro Split System Deep Cleaning — One for $220 or two at the same property for $300</h1>
-        <img
-          src="/landing/splitspro-cleaning-hero.webp"
-          alt="SplitsPro cleaning campaign featuring an Aussie aircon cleaner, a dog, a dirty blower wheel, a before-and-after comparison, and the offers: 1 deep clean $220 or 2 for $300 at the same property."
-          width={1536}
-          height={1024}
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-          data-no-fallback="true"
-          className="block h-auto w-full max-w-none object-contain"
-        />
-        <div className="border-t border-white/15 bg-[#071523] py-4 sm:py-5">
-          <div className="sp-container flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center sm:gap-5">
-            <div className="text-center sm:text-left">
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-[#F4C620]">Book your deep clean</p>
-              <p className="mt-1 text-sm font-semibold text-white/85">1 deep clean $220 · 2 deep cleans $300 at the same property</p>
-            </div>
-            <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0 sm:gap-3">
-              <button
-                type="button"
-                onClick={() => choose("one")}
-                className="min-h-12 rounded-md border border-white/45 bg-transparent px-4 py-3 text-[11px] font-extrabold uppercase tracking-wide text-white hover:bg-white/10 sm:text-xs"
-              >Book 1 · $220</button>
-              <button
-                type="button"
-                onClick={() => choose("two")}
-                className="min-h-12 rounded-md bg-[#F4C620] px-4 py-3 text-[11px] font-extrabold uppercase tracking-wide text-[#101A27] hover:bg-[#FFE269] sm:text-xs"
-              >Book 2 · $300 <ArrowRight className="ml-1 inline h-3.5 w-3.5" /></button>
-            </div>
+
+      {/* Same existing landing page, new bright image-led hero. Prices are only below. */}
+      <section className="relative overflow-hidden bg-[#FCFBF8] text-[#0A2540]" data-testid="cleaning-hero"
+        style={{ paddingTop: "max(90px, calc(var(--sp-site-header-height, 152px) - 22px))" }}>
+        <div className="sp-container grid items-center gap-0 lg:min-h-[640px] lg:grid-cols-[.95fr_1.05fr]">
+          <div className="relative z-10 py-8 pr-0 sm:py-14 lg:py-16 lg:pr-10">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#9B753E]">
+              A clean home shouldn't stop at what you can see.
+            </p>
+            <h1 className="mt-5 max-w-[700px] text-[clamp(2.7rem,6.1vw,5.5rem)] font-black uppercase leading-[.94] tracking-[-.055em] text-[#0A2540]">
+              You clean everything they touch.
+              <span className="mt-3 block text-[#0C2742]">
+                <span className="box-decoration-clone bg-[#FFE04B] px-2 py-0.5 leading-[1.17]">What about the aircon they breathe around?</span>
+              </span>
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-[#314252] sm:text-lg">
+              For mums, dads, pet owners and families caring for older loved ones. Dust, dander and damp grime can hide inside a split system that looks perfectly clean from outside. Our deep clean goes beyond the filters.
+            </p>
+            <p className="mt-5 max-w-xl font-semibold text-[#0B6480]">
+              You bought an aircon. Not a dust collector with a remote.
+            </p>
+          </div>
+          <div className="relative -mx-5 min-h-[290px] sm:-mx-6 sm:min-h-[400px] lg:mx-0 lg:h-full lg:min-h-[640px]">
+            <img
+              src="https://images.pexels.com/photos/4545948/pexels-photo-4545948.jpeg?auto=compress&cs=tinysrgb&w=1600"
+              alt="Family relaxing together with their dog on a sofa in a sunlit home"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-[#FCFBF8] via-[#FCFBF8]/5 to-transparent lg:block" />
           </div>
         </div>
       </section>
@@ -167,25 +166,26 @@ export default function SplitSystemCleaning() {
           {/* Three editorial punchlines within the page's existing three-column benefits layout. */}
           <div className="mt-9 grid gap-6 border-y border-[#E7E3DD] py-7 md:grid-cols-3" data-testid="cleaning-three-punchlines">
             <article className="min-w-0">
-              <img src="https://images.pexels.com/photos/31152751/pexels-photo-31152751.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1000" alt="Illustrative photograph of a young boy playing with a toy in a home" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
+              <img src="https://images.pexels.com/photos/31137016/pexels-photo-31137016.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Baby chewing a colourful teething toy in a bright home" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">01 · The family-home test</p>
-              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">If it's on the floor, someone's probably tasting it.</h3>
+              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">If it's not nailed down, apparently it's food.</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">From toddlers' toys to the dog's favourite spot on the rug, we put so much effort into clean surfaces. The aircon circulating air around the room deserves attention too.</p>
             </article>
             <article className="min-w-0">
-              <img src="https://images.pexels.com/photos/16592625/pexels-photo-16592625.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1000" alt="Illustrative photograph of a wall-mounted split-system air conditioner" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
+              <img src="https://images.pexels.com/photos/16592625/pexels-photo-16592625.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Illustrative photograph of a wall-mounted split-system air conditioner" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">02 · Behind the white cover</p>
               <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">Looks clean. So does the top of the fridge.</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">Until you actually look. Dust, pet dander and moisture-related grime can build up on hidden internal components even when the cover looks spotless. Not every dirty aircon contains mould, but damp buildup deserves inspection.</p>
             </article>
             <article className="min-w-0">
-              <img src="https://images.pexels.com/photos/32588555/pexels-photo-32588555.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1000" alt="Illustrative photograph of a technician servicing an indoor air conditioner" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
+              <img src="https://images.pexels.com/photos/32588555/pexels-photo-32588555.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Technician inspecting an air conditioner during maintenance" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">03 · Time to go deeper</p>
               <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">You bought an aircon. Not a dust collector with a remote.</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">A filter rinse only goes so far. A proper deep clean removes accessible internal buildup that may restrict airflow, contribute to musty smells, create some noises or obstruct drainage.</p>
             </article>
           </div>
 
+          <p className="mt-3 text-[11px] text-[#6A7178]">Illustrative photos. Ask us to show the condition of your own aircon before and after your clean.</p>
           <div className="mt-9 grid gap-7 lg:grid-cols-[1.1fr_.9fr] lg:items-start">
             <div>
               <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">Why it matters — especially for sensitive airways</p>
