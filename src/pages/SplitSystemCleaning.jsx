@@ -120,7 +120,7 @@ export default function SplitSystemCleaning() {
           <h1 className="mt-3 max-w-xl font-serif text-[clamp(2rem,8.5vw,3rem)] leading-[1.1] tracking-tight text-[#0B0B0B]">
             You clean everything they touch. <span className="text-[#805F2F]">What about the aircon they breathe around?</span>
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-[#555D63]">It can look spotless on the outside while hiding dust and grime behind the cover.</p>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-[#555D63]">The floors sparkle. The benches shine. But one of the hardest-working things in the house can still be hiding grime where you can't see it.</p>
         </div>
         <div className="relative w-full overflow-hidden md:hidden" style={{ aspectRatio: "936 / 1024" }}>
           <img
@@ -149,14 +149,15 @@ export default function SplitSystemCleaning() {
         </div>
       </section>
 
+      <section className="bg-[#EAF7FC] py-10 sm:py-14" data-testid="cleaning-guardian-story"><div className="sp-container grid items-center gap-7 md:grid-cols-2"><img src="/landing/splitspro-cleaning-family-hero.webp" alt="Bright family home with a little one and an older loved one" loading="lazy" className="h-72 w-full rounded-xl object-cover object-right sm:h-96"/><div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#147BA6]">Care you can see. Care you can't.</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#102C43] sm:text-4xl">The baby's toys. Grandpa's favourite chair. And the aircon quietly working above it all.</h2><p className="mt-4 text-base leading-relaxed text-[#53616B]">A cared-for home is built from small everyday habits. We help you look after one easy-to-miss part of it — without scare tactics or dramatic promises.</p></div></div></section>
       <section className="bg-white py-14 sm:py-20" data-testid="cleaning-benefits">
         <div className="sp-container">
           <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">For mums, dads, pet owners and families caring for older loved ones</p>
           <h2 className="mt-3 max-w-4xl font-serif text-4xl leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">
-            A clean home shouldn't stop at what you can see.
+            You look after everyone. Who's looking after the aircon?
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#5E6267] sm:text-lg">
-            You wipe the benches because little hands touch everything. You mop the floor because the baby puts anything they find straight into their mouth. You wash the bedding because you want your family sleeping comfortably. You even chase pet hair around the couch. But what if the room still smells musty, someone's sensitive airways are irritated, or the house never feels as fresh as it looks? One overlooked place worth checking is the air conditioner: it recirculates room air, and dust, dander and moisture-related grime can collect on its hidden fan, coil and drain areas. Cleaning the surfaces matters — but so does cleaning the machine that moves air around your loved ones.
+            Little hands grab everything. Babies explore the world by putting ordinary things in their mouths. You wipe the benches, wash the toys, mop the floor and keep an eye on what matters. And when an older loved one is enjoying a quiet afternoon, you want them comfortable too. Yet there is one hardworking appliance that is easy to overlook: the aircon. Its filter might look clean while the fan, coil and drain areas behind it collect dust and grime over time. That is not a reason to panic. It is simply one more part of your home worth caring for.
           </p>
 
           {/* Three editorial punchlines within the page's existing three-column benefits layout. */}
@@ -164,19 +165,19 @@ export default function SplitSystemCleaning() {
             <article className="min-w-0">
               
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">01 · The family-home test</p>
-              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">If it's not nailed down, apparently it's food.</h3>
+              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">If it's within crawling distance, apparently it's lunch.</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">From toddlers' toys to the dog's favourite spot on the rug, we put so much effort into clean surfaces. The aircon circulating air around the room deserves attention too.</p>
             </article>
             <article className="min-w-0">
               <img src="https://images.pexels.com/photos/16592625/pexels-photo-16592625.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Illustrative photograph of a wall-mounted split-system air conditioner" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">02 · Behind the white cover</p>
-              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">You cleaned the bench. But what's circulating through the room?</h3>
+              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">The outside looks spotless. But what about behind the cover?</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">Wiping a surface doesn't remove dirt trapped inside your split system. When internal parts get damp, grime and sometimes mould can grow. Cleaning those accessible components can remove a potential source of contamination — without claiming every dusty aircon is making the family sick.</p>
             </article>
             <article className="min-w-0">
               
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">03 · Time to go deeper</p>
-              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">Your loved ones deserve more than a filter rinse.</h3>
+              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">Because a filter rinse can't reach everything.</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">We carefully strip back accessible parts, wash away grime with specialist aircon cleaning products and, when suitable, apply a compatible protective coating. The aim is a cleaner unit, fewer musty smells and better airflow where dirt was the problem.</p>
             </article>
           </div>
@@ -184,11 +185,11 @@ export default function SplitSystemCleaning() {
           <p className="mt-3 text-[11px] text-[#6A7178]">Illustrative imagery, not a diagnosis of mould in your particular aircon. Ask us to show you what we find in yours.</p>
 
           <div className="mt-10 max-w-5xl" data-testid="cleaning-personal-impact">
-            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">What that hidden grime means for your home</p>
-            <h3 className="mt-3 max-w-4xl font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">You're doing everything to keep them comfortable. So why does the room still feel less than fresh?</h3>
+            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">It's about the everyday moments</p>
+            <h3 className="mt-3 max-w-4xl font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">Clean surfaces are only one part of a well-looked-after home.</h3>
             <div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">
               <div className="border-t border-[#E4DFD6] pt-4">
-                <h4 className="text-base font-bold text-[#162332]">For children and sensitive airways</h4>
+                <h4 className="text-base font-bold text-[#162332]">For the little explorers</h4>
                 <p className="mt-2 text-sm leading-relaxed text-[#606469]">Mould can release spores that trigger coughing, wheezing and asthma symptoms in susceptible people. Dirty equipment may be one source of buildup, though not every dirty unit contains mould.</p>
               </div>
               <div className="border-t border-[#E4DFD6] pt-4">
@@ -196,7 +197,7 @@ export default function SplitSystemCleaning() {
                 <p className="mt-2 text-sm leading-relaxed text-[#606469]">Fur, dander and household dust can collect around filters and inside accessible air paths. Washing the filters alone may leave grime further in.</p>
               </div>
               <div className="border-t border-[#E4DFD6] pt-4">
-                <h4 className="text-base font-bold text-[#162332]">For older loved ones and anyone who values comfort</h4>
+                <h4 className="text-base font-bold text-[#162332]">For older loved ones</h4>
                 <p className="mt-2 text-sm leading-relaxed text-[#606469]">Musty smells, weaker airflow and rooms that take longer to cool are especially frustrating when someone relies on the aircon to stay comfortable.</p>
               </div>
               <div className="border-t border-[#E4DFD6] pt-4">
@@ -214,9 +215,9 @@ export default function SplitSystemCleaning() {
         <div className="sp-container grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">The SplitsPro solution · deeper than a filter wash</p>
-            <h2 className="mt-3 font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">We strip it back, deep-clean it and protect what we can.</h2>
+            <h2 className="mt-3 font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">We go past the filter. Right into the places you can't reach.</h2>
             <p className="mt-4 text-sm leading-relaxed text-[#606469]">We don't just rinse your filters and walk away. We protect your home, open the indoor unit and carefully strip it back to its service-accessible parts — as close to its bones as the manufacturer's design safely allows. Then we deep-clean the blower wheel, cooling coil, filters, covers and accessible drainage areas using specialist air-conditioning cleaning products suited to each surface. Where suitable, we finish with a compatible protective coating to help discourage future mould-related buildup, but only when the actual product label supports that use. We reassemble and test the system, and show you what came out. It's a thorough clean, not a claim to sterilise the whole house or cure illness.</p>
-            <button type="button" onClick={() => document.getElementById("cleaning-prices")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="mt-6 inline-flex items-center gap-2 border-b-2 border-[#C8A46A] pb-1 text-sm font-bold text-[#1D2329]">See the deep-clean offer <ArrowRight className="h-4 w-4" /></button>
+            <button type="button" onClick={() => document.getElementById("cleaning-prices")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="mt-6 inline-flex items-center gap-2 border-b-2 border-[#C8A46A] pb-1 text-sm font-bold text-[#1D2329]">See the full cleaning process <ArrowRight className="h-4 w-4" /></button>
           </div>
           <div className="border-t border-[#E5E0D7]">
             {WHAT_WE_CLEAN.map((item, index) => (
@@ -234,10 +235,10 @@ export default function SplitSystemCleaning() {
       <section className="bg-white py-14 sm:py-20" data-testid="cleaning-authority">
         <div className="sp-container max-w-6xl">
           <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">Why trust SplitsPro?</p>
-          <h2 className="mt-3 max-w-5xl font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">Don't just take our word for it. See the clean. See the evidence.</h2>
+          <h2 className="mt-3 max-w-5xl font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">Good care is something you should be able to see.</h2>
           <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:gap-14">
             <div className="border-t border-[#E6E0D7] pt-5">
-              <h3 className="font-serif text-2xl text-[#18232F]">Real customer feedback. Clear workmanship.</h3>
+              <h3 className="font-serif text-2xl text-[#18232F]">Respect for your home. Proof of our work.</h3>
               <div className="mt-4"><GoogleRating /></div>
               <p className="mt-4 text-sm leading-relaxed text-[#606469]">See SplitsPro's customer reviews and the steps involved in our deep clean. We explain what is accessible on your particular system, protect the work area, and check operation after reassembly. Ask to see the dirt removed from your unit.</p>
               <Link to="/reviews" className="mt-4 inline-block text-sm font-bold text-[#8E6733] underline underline-offset-4">Read SplitsPro customer reviews ↗</Link>
@@ -255,9 +256,9 @@ export default function SplitSystemCleaning() {
 
       <section className="bg-[#F7F6F2] py-14 sm:py-20" id="cleaning-prices" data-testid="cleaning-prices">
         <div className="sp-container max-w-6xl">
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">Your clean-home offer · clear upfront pricing</p>
-          <h2 className="mt-3 font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">One deep clean. Or two for less.</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#606469]">You've seen the hidden problem, the health considerations and what a proper clean involves. Now here's the simple deal: $220 for one unit, or get two deep cleans for $300 at the same property — saving $140 compared with booking two single cleans.</p>
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">Now for the part you've been waiting for</p>
+          <h2 className="mt-3 font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">A proper deep clean. A surprisingly simple deal.</h2>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#606469]">You look after the visible parts of the home. We'll help take care of what's hiding inside your split system. Here's our straightforward cleaning offer, with an even better deal when you book two units at the same property.</p>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {CLEANING_OFFERS.map((offer) => {
               const featured = offer.id === "two";
