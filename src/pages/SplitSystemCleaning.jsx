@@ -107,21 +107,19 @@ export default function SplitSystemCleaning() {
       </Helmet>
 
 
-      {/* Existing cleaning landing page: approved no-logo, no-price family hero in the same hero position. */}
-      <section className="w-full overflow-hidden bg-[#FCFBF8]" data-testid="cleaning-hero"
+      {/* Keep the established cleaning hero and hook, without the family photo. */}
+      <section className="w-full bg-[#FCFBF8]" data-testid="cleaning-hero"
         style={{ paddingTop: "max(90px, calc(var(--sp-site-header-height, 152px) - 22px))" }}>
-        <h1 className="sr-only">You clean everything they touch. What about the aircon they breathe around?</h1>
-        <img
-          src="/landing/splitspro-cleaning-family-hero.svg"
-          alt="You clean everything they touch. What about the aircon they breathe around? Bright family home with a child, parents, grandparent, dog and a dusty air conditioner."
-          width={1536}
-          height={1024}
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-          data-no-fallback="true"
-          className="block h-auto w-full object-contain"
-        />
+        <div className="sp-container py-9 sm:py-16">
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">For families, pet owners and older loved ones</p>
+          <h1 className="mt-4 max-w-5xl font-serif text-4xl leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl lg:text-6xl">
+            You clean everything they touch.
+            <span className="mt-2 block text-[#805F2F]">But what about the aircon they breathe around?</span>
+          </h1>
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#5E6267] sm:text-lg">
+            You look after the floors, furniture and bedding. We'll help you tackle the dust and grime hiding inside your split system.
+          </p>
+        </div>
       </section>
 
       <section className="border-b border-[#E5E0D7] bg-white py-5" data-testid="cleaning-social-proof">
