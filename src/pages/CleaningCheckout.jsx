@@ -138,6 +138,7 @@ export default function CleaningCheckout() {
               <label className={labelStyle}>Street address<input required type="text" autoComplete="street-address" value={customer.address} onChange={(e) => update("address", e.target.value)} className={inputStyle} placeholder="Street, suburb and postcode" minLength={6} maxLength={300} /></label>
               <label className={labelStyle}>Phone number<input required type="tel" autoComplete="tel" value={customer.phone} onChange={(e) => update("phone", e.target.value)} className={inputStyle} placeholder="04xx xxx xxx" minLength={8} maxLength={32} /></label>
               <label className={labelStyle}>Email address<input required type="email" autoComplete="email" value={customer.email} onChange={(e) => update("email", e.target.value)} className={inputStyle} placeholder="you@example.com" maxLength={254} /></label>
+              <p className="text-xs leading-relaxed text-[#676B70]">Prefer to pay later? Your existing Stripe or PayPal checkout may show eligible instalment options where enabled. The payment provider determines availability and approval; no instalment plan is guaranteed.</p>
               <fieldset className="border-t border-[#E5E0D8] pt-5">
                 <legend className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#676B70]">Choose payment method</legend>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
