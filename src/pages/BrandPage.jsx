@@ -355,15 +355,6 @@ const BrandPage = ({ offerMode = null }) => {
         desktopBrand
       />
 
-      {isRinnaiLocalOffer && (
-        <div className="border-b border-[#DCE1E3] bg-[#EDF9FB] py-3" data-testid="deals-hero-price-payment-strip">
-          <div className="sp-container flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
-            <span className="font-bold text-[#173345]">Rinnai from $1,700 installed · Daikin Cora from $2,000 installed</span>
-            <a href="#installed-prices" className="font-extrabold text-[#00677E] underline underline-offset-4">See prices & pay-later options →</a>
-          </div>
-        </div>
-      )}
-
 
 
 
