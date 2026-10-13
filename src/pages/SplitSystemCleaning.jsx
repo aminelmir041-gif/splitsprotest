@@ -137,16 +137,16 @@ export default function SplitSystemCleaning() {
         <div className="sp-container">
           <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">For mums, dads, pet owners and families caring for older loved ones</p>
           <h2 className="mt-3 max-w-4xl font-serif text-4xl leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">
-            A clean home shouldn\u0027t stop at what you can see.
+            A clean home shouldn't stop at what you can see.
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#5E6267] sm:text-lg">
-            You wipe the benches, mop the floors, wash the bedding and pick pet hair off the sofa. Children touch everything. Dogs find every crumb. And when you care for an older loved one, home comfort matters even more. So what about the machine circulating air through the room? Behind its clean white cover, dust and moisture-related grime can accumulate on the coil, blower and drainage areas.
+            You wipe the benches, mop the floors and wash the bedding. You pick up pet hair. And with little ones around, everything seems to end up in their mouths. But what about the air conditioner circulating air around the room? Behind that spotless white cover, dust, pet dander and moisture-related grime can build up on the fan, coil and drainage areas. It's one part of the home that's easy to forget — whether you're looking after children, pets or older loved ones.
           </p>
 
           {/* Three editorial punchlines within the page's existing three-column benefits layout. */}
           <div className="mt-9 grid gap-6 border-y border-[#E7E3DD] py-7 md:grid-cols-3" data-testid="cleaning-three-punchlines">
             <article className="min-w-0">
-              <img src="https://images.pexels.com/photos/31137016/pexels-photo-31137016.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Baby chewing a colourful teething toy in a bright home" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
+              
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">01 · The family-home test</p>
               <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">If it's not nailed down, apparently it's food.</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">From toddlers' toys to the dog's favourite spot on the rug, we put so much effort into clean surfaces. The aircon circulating air around the room deserves attention too.</p>
@@ -158,7 +158,7 @@ export default function SplitSystemCleaning() {
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">Until you actually look. Dust, pet dander and moisture-related grime can build up on hidden internal components even when the cover looks spotless. Not every dirty aircon contains mould, but damp buildup deserves inspection.</p>
             </article>
             <article className="min-w-0">
-              <img src="https://images.pexels.com/photos/32588555/pexels-photo-32588555.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Technician inspecting an air conditioner during maintenance" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
+              
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">03 · Time to go deeper</p>
               <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">You bought an aircon. Not a dust collector with a remote.</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">A filter rinse only goes so far. A proper deep clean removes accessible internal buildup that may restrict airflow, contribute to musty smells, create some noises or obstruct drainage.</p>
