@@ -10,7 +10,7 @@ export const Navbar = () => {
   const headerRef = useRef(null);
   const location = useLocation();
   const isFinancePage = location.pathname.startsWith("/payment-options");
-  const isCleaningPage = location.pathname === "/split-system-cleaning" || location.pathname === "/secure-cleaning";
+  const isCleaningPage = location.pathname === "/split-system-cleaning" || location.pathname === "/secure-cleaning" || location.pathname === "/colony-forming-units";
   const solid = scrolled || open || isFinancePage || isCleaningPage;
 
   // The payment announcement is part of the fixed header. Keep its largest

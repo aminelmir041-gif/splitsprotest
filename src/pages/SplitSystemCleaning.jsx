@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock3, Droplets, Loader2, ShieldCheck, Sun, Wind } from "lucide-react";
 import { getBookingSlots } from "../lib/api";
 import { GoogleRating } from "../components/sections";
@@ -34,6 +34,16 @@ const FAQS = [
 
 export default function SplitSystemCleaning() {
   const navigate = useNavigate();
+  const location = useLocation();
+  // Scroll guide visitors directly to this page's EXISTING live date picker.
+  // Route fade-in and the global ScrollToTop run before this delayed scroll.
+  useEffect(() => {
+    if (location.hash !== "#cleaning-booking") return undefined;
+    const timeout = window.setTimeout(() => {
+      document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 650);
+    return () => window.clearTimeout(timeout);
+  }, [location.hash]);
   const [offerId, setOfferId] = useState("two");
   const [openFaq, setOpenFaq] = useState(0);
   const [slots, setSlots] = useState([]);
