@@ -110,21 +110,31 @@ export default function SplitSystemCleaning() {
 
 
 
-      {/* Existing hero placement restored with the previously approved image; no logo, price or CTA baked into artwork. */}
+      {/* Keep the approved desktop artwork. On mobile display only the right-hand
+          family and aircon photograph to avoid repeating/cropping the headline
+          already rendered as accessible HTML above it. */}
       <section className="w-full overflow-hidden bg-[#FCFBF8]" data-testid="cleaning-hero"
-        style={{ paddingTop: "max(80px, calc(var(--sp-site-header-height, 152px) - 36px))" }}>
+        style={{ paddingTop: "max(52px, calc(var(--sp-site-header-height, 104px) - 36px))" }}>
         <div className="sp-container pb-5 pt-7 md:hidden">
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#9B753E]">For mums, dads, pet owners and older loved ones</p>
-          <h1 className="mt-3 font-serif text-4xl leading-tight text-[#0B0B0B]">
+          <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] leading-relaxed text-[#9B753E]">For mums, dads, pet owners and older loved ones</p>
+          <h1 className="mt-3 max-w-xl font-serif text-[clamp(2rem,8.5vw,3rem)] leading-[1.1] tracking-tight text-[#0B0B0B]">
             You clean everything they touch. <span className="text-[#805F2F]">What about the aircon they breathe around?</span>
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-[#555D63]">It can look spotless on the outside while hiding dust and grime behind the cover.</p>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-[#555D63]">It can look spotless on the outside while hiding dust and grime behind the cover.</p>
+        </div>
+        <div className="relative w-full overflow-hidden md:hidden" style={{ aspectRatio: "936 / 1024" }}>
+          <img
+            src="/landing/splitspro-cleaning-family-hero.webp"
+            alt="Family with a young child, dog and older loved one beneath an air conditioner with visible hidden grime"
+            width={1536} height={1024} loading="eager" decoding="async" fetchPriority="high" data-no-fallback="true"
+            style={{ position: "absolute", top: 0, left: "-64.1026%", height: "100%", width: "164.1026%", maxWidth: "none" }}
+          />
         </div>
         <img
           src="/landing/splitspro-cleaning-family-hero.webp"
-          alt="Bright Australian family home with a child, pet and older loved one beside an air conditioner showing hidden dirt; you clean everything they touch, what about the aircon they breathe around?"
-          width={1536} height={1024} loading="eager" decoding="async" fetchPriority="high" data-no-fallback="true"
-          className="block h-[300px] w-full object-cover object-[76%_center] md:h-auto md:max-w-none md:object-contain"
+          alt="You clean everything they touch — what about the aircon they breathe around? A family with a dog and an elderly relative next to a dirty split-system aircon."
+          width={1536} height={1024} loading="eager" decoding="async" data-no-fallback="true"
+          className="hidden h-auto w-full md:block"
         />
       </section>
 

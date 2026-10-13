@@ -10,7 +10,8 @@ export const Navbar = () => {
   const headerRef = useRef(null);
   const location = useLocation();
   const isFinancePage = location.pathname.startsWith("/payment-options");
-  const solid = scrolled || open || isFinancePage;
+  const isCleaningPage = location.pathname === "/split-system-cleaning" || location.pathname === "/secure-cleaning";
+  const solid = scrolled || open || isFinancePage || isCleaningPage;
 
   // The payment announcement is part of the fixed header. Keep its largest
   // measured height available to image-first landing pages so their artwork
@@ -141,7 +142,7 @@ export const Navbar = () => {
         </div>
       </nav>
 
-      {!isFinancePage && (
+      {!isFinancePage && !isCleaningPage && (
         <div data-testid="site-instalments-banner" className="relative border-t border-[#D9C7A4] bg-[#F4E9D5] text-[#28221A]">
           <div className="sp-container flex min-h-[36px] items-center justify-center gap-2 py-1 text-center text-[11px] font-semibold leading-snug sm:text-xs">
             <span><strong>FLEXIBLE PAYMENTS:</strong> Instalments &amp; tailored options. Subject to eligibility.</span>
