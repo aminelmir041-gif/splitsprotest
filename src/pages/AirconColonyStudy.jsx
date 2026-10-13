@@ -32,25 +32,22 @@ export default function AirconColonyStudy() {
         <meta property="og:description" content="What is a colony forming unit? Why does it matter, and what difference did deep cleaning make in published research?" />
       </Helmet>
 
-      <section className="bg-[#FCFBF8] pb-14 pt-32 sm:pb-20 sm:pt-40" data-testid="colony-hero">
+      {/* The approved native ad artwork is the single hero headline. Do not repeat
+          the large words in HTML or introduce an extra CTA over the graphic. */}
+      <section className="bg-[#FCFBF8] pt-24 pb-6 sm:pt-32 sm:pb-10" data-testid="colony-hero">
+        <h1 className="sr-only">What is a colony forming unit?</h1>
         <div className="sp-container">
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">The dirty secret hiding behind the white cover</p>
-          <h1 className="mt-5 max-w-5xl font-serif text-[clamp(2.55rem,6.2vw,5.45rem)] leading-[1.06] tracking-tight text-[#0B0B0B]">
-            They found something growing inside air conditioners.
-            <span className="mt-2 block text-[#805F2F]">And they counted it.</span>
-          </h1>
-          <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#575F65] sm:text-xl">
-            Scientists have a name for the living microbial growth they count in laboratory samples: colony forming units. And a published cleaning study found something worth knowing.
-          </p>
-          <p className="mt-4 max-w-3xl text-base font-bold text-[#19364D] sm:text-lg">
-            If you've got kids, pets, asthma in the family or older loved ones, here's why cleaning beyond the aircon filters deserves a look.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-6">
-            <a href="#the-homeowner" className="inline-flex min-h-12 items-center gap-2 border-b-2 border-[#C8A46A] text-sm font-extrabold text-[#143044]">
-              Learn what they found <ArrowRight className="h-4 w-4" />
-            </a>
-            <BookingLink>See cleaning dates</BookingLink>
-          </div>
+          <img
+            src="/landing/aircon-colony-hero.webp"
+            alt="SplitsPro: What is a colony forming unit? Blue gloved hand showing microbial colonies growing on a laboratory culture plate against a bright Australian living room with air conditioning."
+            width={1122}
+            height={1402}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            data-no-fallback="true"
+            className="mx-auto block h-auto w-full max-w-[900px] rounded-md object-contain"
+          />
         </div>
       </section>
 
