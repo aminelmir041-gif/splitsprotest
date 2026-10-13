@@ -25,7 +25,9 @@ const FAQS = [
   { q: "Can I get 2 deep cleans for $300 at different properties?", a: "The $300 deal is for two standard wall-mounted split systems at the same property, during the same visit." },
   { q: "Do you have to remove the whole air conditioner?", a: "Normally no. We protect the area, open or remove suitable service-accessible covers and clean the accessible indoor components. We won't dismantle sealed refrigerant components as part of a cleaning job." },
   { q: "Can cleaning repair an air conditioner that isn't cooling?", a: "Cleaning can help when dirt is affecting airflow, but it won't fix a refrigerant leak, electrical fault or failed part. If we find a likely fault, we'll discuss the next step before any separate repair work." },
-  { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." }
+  { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." },
+  { q: "Can a deep clean help if we have children, pets or older relatives at home?", a: "Cleaning removes accessible dirt, dander and other buildup from inside the unit. If contamination is present, cleaning those surfaces can reduce a possible source of irritants and musty odours. It cannot guarantee better health, prevent infections, or replace asthma treatment, good ventilation or dealing with dampness." },
+  { q: "Will the aircon run like new, use less electricity or sound quieter?", a: "Cleaning may restore airflow and reduce certain noises or inefficiency when the cause is dirt. Results depend on the starting condition, and cleaning does not repair worn bearings, electrical problems, refrigerant leaks or other faults." }
 ];
 
 export default function SplitSystemCleaning() {
@@ -98,10 +100,10 @@ export default function SplitSystemCleaning() {
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
         <title>Split System Deep Cleaning | $220 or 2 for $300 | SplitsPro Sydney</title>
-        <meta name="description" content="Your aircon's hiding something. Professional wall-mounted split system deep cleaning: $220 for one or 2 deep cleans for $300 at the same property. Book with SplitsPro." />
+        <meta name="description" content="You clean everything they touch. But what about the aircon they breathe around? SplitsPro deep cleaning for homes with children, pets and older loved ones. $220 for one, $300 for two at the same property." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
-        <meta property="og:title" content="Your Aircon's Hiding Something | SplitsPro Deep Cleaning" />
-        <meta property="og:description" content="Deep clean $220. Two deep cleans at the same property $300. See what we clean and request a booking." />
+        <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
+        <meta property="og:description" content="For mums, dads, pet owners and families with older loved ones: see what your aircon might be hiding. Deep clean $220, or two at the same property for $300." />
       </Helmet>
 
       {/* Approved full-width SplitsPro cleaning artwork; do not crop the logo,
@@ -154,12 +156,12 @@ export default function SplitSystemCleaning() {
 
       <section className="bg-white py-14 sm:py-20" data-testid="cleaning-benefits">
         <div className="sp-container">
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">The part of a clean home we often forget</p>
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">For mums, dads, pet owners and families caring for older loved ones</p>
           <h2 className="mt-3 max-w-4xl font-serif text-4xl leading-tight tracking-tight text-[#0B0B0B] sm:text-5xl">
-            You clean everything they touch. But what about the aircon?
+            You clean everything they touch. What about the aircon they breathe around?
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#5E6267] sm:text-lg">
-            The benches are wiped, the floors are mopped and the bedding is washed. Yet the unit circulating air around the room might be hiding years of dust and moisture-related grime behind a perfectly clean-looking cover.
+            You wipe the benches, mop the floors, wash the bedding and pick pet hair off the sofa. Children touch everything. Dogs find every crumb. And when you care for an older loved one, home comfort matters even more. So what about the machine circulating air through the room? Behind its clean white cover, dust and moisture-related grime can accumulate on the coil, blower and drainage areas.
           </p>
 
           {/* Three editorial punchlines within the page's existing three-column benefits layout. */}
@@ -167,32 +169,32 @@ export default function SplitSystemCleaning() {
             <article className="min-w-0">
               <img src="https://images.pexels.com/photos/31152751/pexels-photo-31152751.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1000" alt="Illustrative photograph of a young boy playing with a toy in a home" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">01 · The family-home test</p>
-              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">If it's not nailed down, apparently it's food.</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">Little ones explore everything. We put so much effort into clean surfaces — shouldn't the aircon get the same attention?</p>
+              <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">If it's on the floor, someone's probably tasting it.</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">From toddlers' toys to the dog's favourite spot on the rug, we put so much effort into clean surfaces. The aircon circulating air around the room deserves attention too.</p>
             </article>
             <article className="min-w-0">
               <img src="https://images.pexels.com/photos/16592625/pexels-photo-16592625.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1000" alt="Illustrative photograph of a wall-mounted split-system air conditioner" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">02 · Behind the white cover</p>
               <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">Looks clean. So does the top of the fridge.</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">Until you actually look. Dust, moisture and grime can build up on the hidden blower wheel, coil and drain areas — even when the cover looks spotless.</p>
+              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">Until you actually look. Dust, pet dander and moisture-related grime can build up on hidden internal components even when the cover looks spotless. Not every dirty aircon contains mould, but damp buildup deserves inspection.</p>
             </article>
             <article className="min-w-0">
               <img src="https://images.pexels.com/photos/32588555/pexels-photo-32588555.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1000" alt="Illustrative photograph of a technician servicing an indoor air conditioner" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-md object-cover" />
               <p className="mt-4 text-[10px] font-black uppercase tracking-[0.16em] text-[#9B753E]">03 · Time to go deeper</p>
               <h3 className="mt-2 font-serif text-[1.65rem] leading-tight text-[#152535]">You bought an aircon. Not a dust collector with a remote.</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">A filter rinse only goes so far. A deep clean tackles accessible internal buildup that may restrict airflow, contribute to musty smells and block drainage.</p>
+              <p className="mt-3 text-sm leading-relaxed text-[#5F6368]">A filter rinse only goes so far. A proper deep clean removes accessible internal buildup that may restrict airflow, contribute to musty smells, create some noises or obstruct drainage.</p>
             </article>
           </div>
 
           <div className="mt-9 grid gap-7 lg:grid-cols-[1.1fr_.9fr] lg:items-start">
             <div>
               <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">Why it matters — especially for sensitive airways</p>
-              <h3 className="mt-3 font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">A cleaner machine is part of a cleaner home.</h3>
+              <h3 className="mt-3 font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">Clean the things you can see. Don't forget the things you can't.</h3>
               <p className="mt-4 text-sm leading-relaxed text-[#5E6267] sm:text-base">
-                Mould can grow in damp places and release spores into the air. NSW Health says inhaling mould spores can trigger wheezing and asthma symptoms in susceptible people. Children and older family members with asthma or allergies deserve particular care when managing indoor dampness and irritants.
+                Mould can grow in damp parts of a home and release spores that become airborne. NSW Health notes that mould exposure may trigger wheezing and asthma symptoms in susceptible people. For parents, pet owners and families caring for older relatives, reducing indoor dust, dampness and potential mould sources can be a sensible part of home maintenance. Pet fur and dander can also add to dust around a unit.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-[#5E6267] sm:text-base">
-                Cleaning a contaminated unit removes a potential source of buildup; it does not sterilise your home, cure coughs, or guarantee that nobody gets sick. A split system recirculates indoor air, so ventilation and moisture control still matter.
+                A deep clean removes contamination from the accessible surfaces treated. It does not prevent infections, cure asthma, guarantee a better night's sleep or remove every airborne particle from the house. A split system mostly recirculates indoor air: managing moisture, ventilating appropriately and addressing other sources of dampness still matter.
               </p>
               <a href="https://www.health.nsw.gov.au/environment/factsheets/Pages/mould.aspx" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-sm font-bold text-[#8E6733] underline underline-offset-4">Read NSW Health's mould guidance ↗</a>
             </div>
@@ -239,7 +241,7 @@ export default function SplitSystemCleaning() {
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">Not just the filters. The bits behind them.</p>
             <h2 className="mt-3 font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">A proper deep clean. Not a quick rinse and goodbye.</h2>
-            <p className="mt-4 text-sm leading-relaxed text-[#606469]">We protect your home and carefully open or remove service-accessible parts, as the manufacturer's design allows. We clean the blower wheel, coil, filters, covers and accessible drainage areas, reassemble and check operation. Where appropriate, compatible cleaning or disinfecting products may be used according to their directions. Ask us about any optional mould-inhibiting treatment: compatibility and product claims must be checked first.</p>
+            <p className="mt-4 text-sm leading-relaxed text-[#606469]">We protect the home and carefully remove suitable service-accessible indoor components, following the unit manufacturer's instructions. We clean the blower wheel, coil, filters, covers and accessible drain areas, then reassemble and test the system. Where appropriate, we use compatible cleaning or disinfecting products exactly as labelled. An optional mould-inhibiting coating is offered only if its label authorises the use and the aircon materials are compatible. We show you the grime removed rather than promising a medical result or a brand-new machine.</p>
             <button type="button" onClick={scrollBook} className="mt-6 inline-flex items-center gap-2 border-b-2 border-[#C8A46A] pb-1 text-sm font-bold text-[#1D2329]">Request my deep clean <ArrowRight className="h-4 w-4" /></button>
           </div>
           <div className="border-t border-[#E5E0D7]">
@@ -258,7 +260,7 @@ export default function SplitSystemCleaning() {
         <div className="sp-container mx-auto max-w-5xl">
           <p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#F4C620]">1 · Choose your cleaning date</p>
           <h2 className="mt-4 font-serif text-4xl leading-tight sm:text-5xl">Pick a day that works for you.</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70">Your floors get cleaned. Your bedsheets get washed. Now it's your aircon's turn. Choose a live opening, then enter your details and pay on the next page. Your booking is secured only after payment is confirmed.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70">You clean up after the kids, brush the dog and look after everyone at home. Now give the aircon some attention. Pick a live opening, then enter your details and pay on the next page. Your booking is secured only after payment is confirmed.</p>
 
           <div className="mt-8 grid gap-7 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
             <div className="border-t border-white/20 pt-5">
