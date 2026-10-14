@@ -301,7 +301,7 @@ export default function SplitSystemCleaning() {
             FILTERS OUT. COVERS OFF. DRAIN PAN ACCESSED. COIL, FAN AND HIDDEN AREAS CLEANED. PROTECTION APPLIED WHERE SUITABLE. THEN IT ALL GOES BACK TOGETHER.
           </p>
           <p className="mt-5 max-w-4xl text-xs leading-relaxed text-[#AFC8D5]">
-            Actual SplitsPro job photographs, with the removed-cover presentation background edited for clarity. Access and dismantling depend on the unit design. Protective treatments are used only where compatible with the product instructions and agreed service scope.
+            Access and dismantling depend on the unit design. Protective treatments are used only where compatible with the product instructions and agreed service scope.
           </p>
         </div>
       </section>
