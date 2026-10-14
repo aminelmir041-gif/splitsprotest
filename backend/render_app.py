@@ -32,9 +32,14 @@ from .lead_integrations import (
 )
 from .sms_gateway import log_sms_event, parse_webhook, send_sms, sms_configured
 from .equipment_checkout import router as equipment_checkout_router, confirm_stripe_equipment_payment
+from .cleaning_bookings import (
+    router as cleaning_router, cleaning_blocks_installation, day_lock_key,
+    confirm_stripe_cleaning_payment, expire_cleaning_stripe_hold,
+)
 
 app = FastAPI(title="SplitsPro Lead API")
 app.include_router(equipment_checkout_router)
+app.include_router(cleaning_router)
 
 origins = [o.strip() for o in (os.environ.get("CORS_ORIGINS") or "https://splitspro.com.au,https://www.splitspro.com.au").split(",") if o.strip()]
 app.add_middleware(
@@ -582,7 +587,7 @@ def _available_booking_slots(limit: int = 8):
             if key in blocked:
                 continue
             used = _slot_count(client, *key)
-            if used >= BOOKING_SLOT_CAPACITY:
+            if used >= BOOKING_SLOT_CAPACITY or cleaning_blocks_installation(client, *key):
                 continue
             slots.append(
                 {
@@ -699,11 +704,12 @@ def create_booking_checkout(payload: BookingCreate):
 
     try:
         with client.lock(
-            _slot_lock_key(payload.booking_date, payload.booking_window),
+            day_lock_key(payload.booking_date),
             timeout=10,
             blocking_timeout=5,
         ):
-            if _slot_count(client, payload.booking_date, payload.booking_window) >= BOOKING_SLOT_CAPACITY:
+            if (_slot_count(client, payload.booking_date, payload.booking_window) >= BOOKING_SLOT_CAPACITY
+                or cleaning_blocks_installation(client, payload.booking_date, payload.booking_window)):
                 try:
                     alternatives = _available_booking_slots(6)
                 except Exception:
@@ -795,9 +801,9 @@ def _complete_paid_booking(reference: str, session_id: str, background_tasks: Ba
     deposit_cents = int(hold.get("deposit_cents", 30000))
     total_cents = int(hold.get("total_cents", 0))
 
-    with client.lock(_slot_lock_key(booking_date, booking_window), timeout=10, blocking_timeout=5):
+    with client.lock(day_lock_key(booking_date), timeout=30, blocking_timeout=10):
         confirmed = int(client.get(_slot_key(booking_date, booking_window)) or 0)
-        if confirmed >= BOOKING_SLOT_CAPACITY:
+        if confirmed >= BOOKING_SLOT_CAPACITY or cleaning_blocks_installation(client, booking_date, booking_window):
             status = "needs_reschedule"
         else:
             client.incr(_slot_key(booking_date, booking_window))
@@ -859,6 +865,16 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks):
 
     event_type = event.get("type", "")
     session = ((event.get("data") or {}).get("object") or {})
+    # Full-prepaid cleaning uses this verified Stripe webhook too. Never treat
+    # a cleaning payment as an installation deposit.
+    if (session.get("metadata") or {}).get("checkout_type") == "cleaning":
+        if event_type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"}:
+            if event_type != "checkout.session.completed" or session.get("payment_status") == "paid":
+                confirm_stripe_cleaning_payment(session, background_tasks)
+        elif event_type in {"checkout.session.expired", "checkout.session.async_payment_failed"}:
+            expire_cleaning_stripe_hold(session)
+        return Response(status_code=200)
+
     # Equipment retail checkouts use the same trusted Stripe webhook but
     # must NEVER be mistaken for an installation deposit or reserve a date.
     if (session.get("metadata") or {}).get("checkout_type") == "equipment_retail":
