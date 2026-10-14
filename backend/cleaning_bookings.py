@@ -44,6 +44,15 @@ AFTERNOON = (12 * 60 + 30, CLOSING_MINUTE)
 BOOKING_TTL = 60 * 60 * 24 * 90
 
 
+def booking_enabled():
+    return (os.environ.get("SPLITSPRO_CLEANING_BOOKING_ENABLED") or "").strip().lower() in {"1", "true", "yes"}
+
+
+def require_booking_enabled():
+    if not booking_enabled():
+        raise HTTPException(status_code=503, detail="Timed cleaning bookings are temporarily unavailable")
+
+
 def price_cents(quantity: int) -> int:
     if type(quantity) is not int or not 1 <= quantity <= MAX_SYSTEMS:
         raise ValueError("Choose between 1 and 7 split systems")
@@ -201,7 +210,7 @@ def validate_date(value: str):
 def cleaning_config(response: Response):
     response.headers["Cache-Control"] = "no-store"
     return {
-        "currency": "AUD", "first_system": FIRST_CLEAN_CENTS / 100,
+        "currency": "AUD", "enabled": booking_enabled(), "first_system": FIRST_CLEAN_CENTS / 100,
         "each_additional_system": ADDITIONAL_CLEAN_CENTS / 100,
         "max_systems": MAX_SYSTEMS,
         "stripe_ready": bool((os.environ.get("STRIPE_SECRET_KEY") or "").strip()),
@@ -214,6 +223,7 @@ def cleaning_config(response: Response):
 def cleaning_slots(response: Response, quantity: int = 1, limit: int = 70):
     response.headers["Cache-Control"] = "no-store, max-age=0"
     response.headers["Pragma"] = "no-cache"
+    require_booking_enabled()
     try:
         price_cents(quantity)
     except ValueError as exc:
@@ -367,6 +377,7 @@ def _create_paypal_checkout(hold):
 
 @router.post("/api/cleaning-checkout")
 def create_cleaning_checkout(payload: CleaningCheckoutRequest):
+    require_booking_enabled()
     validate_date(payload.booking_date)
     cents = price_cents(payload.quantity)
     if parse_time(payload.start_time) + SLOT_MINUTES * payload.quantity > CLOSING_MINUTE:
