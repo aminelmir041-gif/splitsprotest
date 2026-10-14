@@ -1,0 +1,34 @@
+name: Verify live cleaning booking readiness
+on:
+  push:
+    branches: [crm-lead-routing]
+    paths: [".github/workflows/verify-live-cleaning-readiness.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  read-only-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check deployed API and payment readiness without creating a booking
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request
+          base="https://splitspro-leads.onrender.com/api/"
+          for endpoint in ("", "cleaning-checkout-config"):
+              url=base+endpoint
+              response=urllib.request.urlopen(url, timeout=75)
+              assert response.status == 200
+              result=json.load(response)
+              if endpoint:
+                  print("Cleaning calendar enabled:", result.get("enabled"))
+                  print("Stripe configured:", result.get("stripe_ready"))
+                  print("PayPal configured:", result.get("paypal_ready"))
+                  print("First system:", result.get("first_system"))
+                  print("Additional system:", result.get("each_additional_system"))
+                  assert result.get("first_system") == 300
+                  assert result.get("each_additional_system") == 150
+              else:
+                  print("Health:", result.get("status"))
+          PY
