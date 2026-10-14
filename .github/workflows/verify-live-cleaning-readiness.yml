@@ -29,6 +29,22 @@ jobs:
                   print("Additional system:", result.get("each_additional_system"))
                   assert result.get("first_system") == 300
                   assert result.get("each_additional_system") == 150
+                  assert result.get("enabled") is True, "Timed cleaning booking rollout is still disabled"
+          for quantity in (1, 2, 7):
+              with urllib.request.urlopen(base + "cleaning-slots?quantity=" + str(quantity) + "&limit=8", timeout=75) as response:
+                  assert response.status == 200
+                  slots=json.load(response)
+                  assert slots.get("quantity") == quantity
+                  assert isinstance(slots.get("slots"), list)
+                  for slot in slots["slots"]:
+                      assert slot["duration_minutes"] == 90 * quantity
+                      assert slot["date"] and slot["time"] and slot["end_time"]
+                  print("Live slots available for", quantity, "systems:", len(slots["slots"]))
+          with urllib.request.urlopen(base + "booking-slots?limit=6", timeout=75) as response:
+              assert response.status == 200
+              installs=json.load(response)
+              assert isinstance(installs.get("slots"), list)
+              print("Installation calendar accessible:", len(installs["slots"]), "openings")
               else:
                   print("Health:", result.get("status"))
           PY
