@@ -308,44 +308,49 @@ export default function SplitSystemCleaning() {
 
       <section className="bg-white py-16 sm:py-24" id="cleaning-trust" data-testid="cleaning-trust">
         <div className="sp-container">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#008DB8]">WHY SPLITSPRO?</p>
-          <h2 className="mt-4 max-w-5xl text-4xl font-black uppercase leading-[1.05] tracking-tight text-[#0B2641] sm:text-5xl">
-            PLENTY OF PEOPLE CAN SAY "DEEP CLEAN."
-            <span className="mt-2 block text-[#008DB8]">WE SHOW YOU WHAT THAT MEANS.</span>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#008DB8]">WHY HOMEOWNERS CHOOSE SPLITSPRO</p>
+          <h2 className="mt-4 max-w-5xl text-[clamp(2.5rem,5.2vw,4.7rem)] font-black uppercase leading-[1.02] tracking-tight text-[#0B2641]">
+            YOU'RE TRUSTING US WITH YOUR HOME.
+            <span className="mt-2 block text-[#008DB8]">WE TAKE THAT SERIOUSLY.</span>
           </h2>
-          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#526171]">
-            You're letting someone work inside your home. You deserve to know what they're doing, how they'll look after your place, and what you're getting — before you book.
+          <p className="mt-6 max-w-3xl text-lg font-medium leading-relaxed text-[#39566A] sm:text-xl">
+            A proper deep clean isn't just about getting dirt out. It's knowing the person doing the job cares about your home, understands the equipment and shows you what they've done.
           </p>
-          <div className="mt-10 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
-            <div className="border-t-4 border-[#F4C620] pt-6">
-              <p className="text-xs font-black uppercase tracking-[0.15em] text-[#008DB8]">REAL CUSTOMER FEEDBACK</p>
-              <div className="mt-5"><GoogleRating /></div>
-              <p className="mt-4 text-sm leading-relaxed text-[#53616D]">
-                Read genuine feedback about SplitsPro's air-conditioning work. You can check the reviews yourself rather than relying on a made-up testimonial.
+          <div className="mt-11 grid gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16">
+            <div className="border-t-[5px] border-[#F4C620] pt-6">
+              <p className="text-sm font-black uppercase tracking-widest text-[#007FA4]">DON'T JUST TAKE OUR WORD FOR IT</p>
+              <h3 className="mt-4 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">REAL REVIEWS.<span className="block text-[#008DB8]">REAL LOCAL WORK.</span></h3>
+              <div className="mt-6"><GoogleRating /></div>
+              <p className="mt-5 text-base font-medium leading-relaxed text-[#475F6F]">
+                See customer feedback for SplitsPro's air-conditioning work. We prefer genuine reviews and actual job photos over promises you can't check.
               </p>
-              <Link to="/reviews" className="mt-5 inline-flex items-center gap-2 text-base font-extrabold text-[#086D93] underline underline-offset-4">
-                Read our customer reviews <ArrowUpRight className="h-4 w-4"/>
+              <Link to="/reviews" className="mt-6 inline-flex min-h-12 items-center gap-2 border-b-[3px] border-[#F4C620] text-base font-black uppercase text-[#085E7E]">
+                READ CUSTOMER REVIEWS <ArrowUpRight className="h-5 w-5"/>
               </Link>
             </div>
-            <div className="border-t-4 border-[#36BCE4] pt-6">
-              <p className="text-xs font-black uppercase tracking-[0.15em] text-[#008DB8]">OUR STANDARDS IN YOUR HOME</p>
-              <div className="mt-5 divide-y divide-[#E6EBEE]">
+            <div className="border-t-[5px] border-[#36BCE4] pt-6">
+              <p className="text-sm font-black uppercase tracking-widest text-[#007FA4]">THE STANDARDS YOU SHOULD EXPECT</p>
+              <div className="mt-5 divide-y-2 divide-[#E3EAF0]">
                 {[
-                  {title:"We look after the room, not just the machine.",body:"We protect the surrounding area and work carefully around your furniture and walls."},
-                  {title:"We explain what we're actually cleaning.",body:"We tell you which service-accessible parts can be cleaned on your particular unit, rather than promise impossible dismantling."},
-                  {title:"We don't hide surprise extra work.",body:"If heavy contamination, access issues or repairs need more work, we discuss and quote them before going ahead."},
-                  {title:"We check it before we leave.",body:"We reassemble and check the aircon's operation after the cleaning work."}
+                  {title:"WE STRIP IT BACK — NOT JUST WIPE IT OVER.",body:"Filters, covers and accessible drain parts come off, letting us reach areas a quick filter rinse simply doesn't touch."},
+                  {title:"YOUR HOME GETS LOOKED AFTER.",body:"We protect the surrounding area and take care around your walls, floors and furniture."},
+                  {title:"YOU CAN SEE THE EXTENT OF THE WORK.",body:"Our process gallery shows the real unit opened up, the exposed coil and the removable parts cleaned separately."},
+                  {title:"NO SURPRISE EXTRA WORK.",body:"If access, heavy contamination or a separate repair changes the scope, we explain and quote it before proceeding."},
+                  {title:"WE REASSEMBLE AND CHECK IT.",body:"The work isn't finished when the cleaning stops. We put the unit back together and check its operation."}
                 ].map((item) => (
-                  <div className="py-4" key={item.title}>
-                    <h3 className="flex gap-2 text-base font-extrabold text-[#142D42]"><ShieldCheck className="h-5 w-5 shrink-0 text-[#008DB8]"/>{item.title}</h3>
-                    <p className="mt-2 pl-7 text-sm leading-relaxed text-[#53616D]">{item.body}</p>
+                  <div className="py-5" key={item.title}>
+                    <h3 className="flex items-start gap-3 text-xl font-black uppercase leading-tight text-[#0B2641] sm:text-2xl">
+                      <ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#009AC6]" aria-hidden="true"/>
+                      <span>{item.title}</span>
+                    </h3>
+                    <p className="mt-3 pl-9 text-base leading-relaxed text-[#425D6D]">{item.body}</p>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-          <p className="mt-7 max-w-4xl border-l-[3px] border-[#F4C620] pl-4 text-sm leading-relaxed text-[#51616D]">
-            No service can promise a sterile house or guarantee a health outcome. What we can offer is a clear, careful cleaning process and honest expectations.
+          <p className="mt-10 max-w-5xl border-l-[5px] border-[#F4C620] pl-5 text-base font-semibold leading-relaxed text-[#233C4D]">
+            A thorough, honest cleaning process — not an unrealistic promise to make the entire house sterile or guarantee a health outcome.
           </p>
         </div>
       </section>
