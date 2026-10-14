@@ -1,3 +1,4 @@
+import PayLaterReminder from "../components/PayLaterReminder";
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -198,6 +199,11 @@ export default function CleaningCheckout() {
               <label className={fieldLabel}>Cleaning address<input className={fieldInput} required autoComplete="street-address" value={details.address} onChange={(e) => update("address", e.target.value)} placeholder="Street address, suburb and postcode" /></label>
               <label className={fieldLabel}>Mobile number<input className={fieldInput} required type="tel" autoComplete="tel" value={details.phone} onChange={(e) => update("phone", e.target.value)} placeholder="04xx xxx xxx" /></label>
               <label className={fieldLabel}>Email<input className={fieldInput} required type="email" autoComplete="email" value={details.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" /></label>
+              <div className="border-t border-[#DEE6EC] pt-4" data-testid="cleaning-payment-pay-later-reminder">
+                <PayLaterReminder kind="cleaning"
+                  stripeReady={settings?.stripe_ready}
+                  paypalReady={settings?.paypal_ready} />
+              </div>
               <fieldset className="border-t border-[#DEE6EC] pt-5">
                 <legend className="text-sm font-black uppercase tracking-wide">PAYMENT METHOD</legend>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
