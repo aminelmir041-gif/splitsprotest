@@ -1,3 +1,4 @@
+import PayLaterReminder from "../components/PayLaterReminder";
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -283,6 +284,11 @@ export default function InstallationBooking() {
                   <Check className="h-3.5 w-3.5 text-[#C8A46A]" /> Installation guarantee
                 </span>
               </div>
+            </div>
+
+            <div className="my-4" data-testid="installation-booking-pay-later-reminder">
+              <PayLaterReminder kind="equipment"
+                equipmentHref={"/payment-options?product=" + encodeURIComponent(productKey) + "&size=" + encodeURIComponent(size)} />
             </div>
 
             <div className="py-6">
