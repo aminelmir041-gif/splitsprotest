@@ -1,3 +1,4 @@
+import PayLaterReminder from "../components/PayLaterReminder";
 
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -430,7 +431,7 @@ export default function SplitSystemCleaning() {
             Standard-access wall-mounted splits only. Additional-system pricing applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-[#566D7B]">
-            The full cleaning total is paid upfront through Stripe or PayPal. Eligible instalment options may appear if supported by your payment provider; availability and approval depend on the provider.
+            The complete cleaning price is paid to SplitsPro upfront using an available secure checkout. PayPal Pay in 4 may be available to eligible customers; Afterpay, Klarna and Zip require a connected Stripe checkout. Any instalment arrangement is between you and the payment provider.
           </p>
         </div>
       </section>
@@ -444,6 +445,9 @@ export default function SplitSystemCleaning() {
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/75">
             One simple dropdown, live 90-minute appointment times and a secure full-payment checkout. Booked installation and cleaning times are removed from these openings.
           </p>
+          <div className="mt-6" data-testid="cleaning-booking-pay-later-reminder">
+            <PayLaterReminder kind="cleaning" theme="dark" />
+          </div>
           <div className="mt-9 grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
             <div className="border-t-[3px] border-[#45C6E7] pt-6">
               <label htmlFor="cleaning-unit-quantity" className="block text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">How many split systems need cleaning?</label>
