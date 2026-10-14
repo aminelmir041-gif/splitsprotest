@@ -306,6 +306,10 @@ export default function PaymentOptions() {
             </div>
 
 
+            <div className="mt-6 border-t border-[#E7E2DB] pt-4" data-testid="finance-before-customer-form-pay-later-reminder">
+              <PayLaterReminder kind="equipment" compact />
+            </div>
+
             <form onSubmit={handleCheckout} data-testid="finance-customer-checkout-form">
               <div className="mt-6 border-t border-[#E7E2DB] pt-5" data-testid="finance-customer-details">
                 <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">2 · Your details</p>
