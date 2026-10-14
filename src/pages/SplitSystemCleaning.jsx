@@ -14,13 +14,6 @@ const CLEANING_OFFERS = [
   { id: "two", name: "2 Deep Cleans", label: "Same property · $150 each", price: "$300", description: "Two wall-mounted split systems deep cleaned during one visit at the same property." }
 ];
 
-const WHAT_WE_CLEAN = [
-  { title: "Filters, covers and removable drain pan", copy: "Remove washable filters and covers, and remove the drain pan where safely accessible; clean these parts and protect the work area." },
-  { title: "Indoor cooling coil and the area behind it", copy: "Clean accessible cooling-coil surfaces and reach behind the coil where the model permits without disturbing the sealed refrigerant circuit." },
-  { title: "Blower wheel and airflow path", copy: "Clean the accessible fan barrel and airflow path to help remove buildup that can restrict circulation." },
-  { title: "Drain pan and accessible drain", copy: "Remove and clean the pan when its design allows and check the accessible drain path." },
-  { title: "Anti-mould and anti-corrosion protection", copy: "Use compatible protective products only on approved surfaces. Outdoor and PCB-enclosure treatments depend on job scope, manufacturer guidance and electrical safety." }
-];
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
   { q: "Can I get 2 deep cleans for $300 at different properties?", a: "The $300 deal is for two standard wall-mounted split systems at the same property, during the same visit." },
@@ -230,61 +223,86 @@ export default function SplitSystemCleaning() {
       <section className="bg-[#081C2B] py-16 text-white sm:py-24" id="cleaning-solution" data-testid="cleaning-solution">
         <div className="sp-container">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-[#40C9EE]">THE SPLITSPRO SOLUTION</p>
-          <div className="mt-5 max-w-5xl">
-            <h2 className="max-w-5xl text-4xl font-black uppercase leading-[1.03] tracking-tight sm:text-5xl xl:text-6xl">
-              A FILTER WASH IS A START.
-              <span className="mt-2 block text-[#45C6E7]">WE GO DEEPER.</span>
-            </h2>
-            <p className="mt-7 max-w-4xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
-              Imagine knowing the hidden parts of your aircon have had some proper attention, too. Not just the removable filter — the coil, fan, drain pan and areas behind the covers where dust and grime collect out of sight.
-            </p>
-            <p className="mt-5 max-w-4xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
-              We take out the filters, strip off the front cover and remove the drain pan when the unit allows. Then we clean the cover, accessible internal surfaces and behind the indoor cooling coil where it can be safely reached. We don't just spray what you can see and walk away.
-            </p>
-            <p className="mt-5 max-w-4xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
-              Once everything is properly cleaned, we apply suitable anti-mould treatment and anti-corrosion protection where compatible. That can include approved surfaces of indoor and outdoor units and appropriate treatment around PCB enclosures — using products specifically safe for the material and electronics, not spraying exposed live circuitry.
-            </p>
-            <p className="mt-6 max-w-4xl border-l-[3px] border-[#F4C620] pl-5 text-base font-extrabold leading-relaxed text-white">
-              WE STRIP IT BACK. CLEAN THE HIDDEN PARTS. PROTECT WHAT WE CAN. THEN REASSEMBLE AND CHECK IT.
-            </p>
-            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#B6D6E5]">
-              Exact dismantling and coating application depend on the manufacturer's design and product instructions. Outdoor-unit or PCB-area treatment is only included when suitable and agreed for the job.
-            </p>
+          <h2 className="mt-5 max-w-5xl text-4xl font-black uppercase leading-[1.03] tracking-tight sm:text-5xl xl:text-6xl">
+            A FILTER WASH IS A START.
+            <span className="mt-2 block text-[#45C6E7]">WE GO DEEPER.</span>
+          </h2>
+          <p className="mt-6 max-w-4xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
+            Anyone can pull out a filter and give it a rinse. We take the time to open the unit, get the covers and accessible drain pan out of the way, and reach the grime a filter wash leaves behind. Here's what that actually looks like.
+          </p>
+
+          <div className="mt-10 grid gap-9 md:grid-cols-3" data-testid="cleaning-real-process-gallery">
+            <figure className="min-w-0">
+              <div className="relative overflow-hidden rounded-lg bg-[#E9F5FB]">
+                <img
+                  src="/landing/splitspro-process-filter.png"
+                  alt="Real SplitsPro cleaning photo showing the split system opened for filter and cover removal"
+                  width={387} height={515} loading="lazy" decoding="async"
+                  className="aspect-[4/5] w-full object-cover"
+                />
+                <span className="absolute left-4 top-4 bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#081C2B]">01 · OPEN IT UP</span>
+              </div>
+              <figcaption className="mt-5">
+                <h3 className="text-2xl font-extrabold uppercase leading-tight text-white">More than the filters.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#CBDFE9] sm:text-base">
+                  We open the indoor unit, remove the washable filters and carefully strip back the cover. We also remove the drain pan where the model allows, exposing areas you'd never reach during ordinary household cleaning.
+                </p>
+              </figcaption>
+            </figure>
+
+            <figure className="min-w-0">
+              <div className="relative overflow-hidden rounded-lg bg-[#E9F5FB]">
+                <img
+                  src="/landing/splitspro-process-coil.png"
+                  alt="Real SplitsPro job photograph showing the indoor cooling coil and internal components exposed after cover removal"
+                  width={387} height={516} loading="lazy" decoding="async"
+                  className="aspect-[4/5] w-full object-cover"
+                />
+                <span className="absolute left-4 top-4 bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#081C2B]">02 · REACH THE HIDDEN PARTS</span>
+              </div>
+              <figcaption className="mt-5">
+                <h3 className="text-2xl font-extrabold uppercase leading-tight text-white">Right into the inside.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#CBDFE9] sm:text-base">
+                  We clean accessible cooling-coil surfaces, behind the coil wherever access safely allows, the fan barrel, airflow path and drain areas. That's where dust and grime can build up behind a perfectly ordinary-looking white cover.
+                </p>
+              </figcaption>
+            </figure>
+
+            <figure className="min-w-0">
+              <div className="relative overflow-hidden rounded-lg bg-[#E9F5FB]">
+                <img
+                  src="/landing/splitspro-process-covers.png"
+                  alt="Removed white split-system cover and trim presented neatly on blue professional microfiber towels after cleaning"
+                  width={400} height={499} loading="lazy" decoding="async"
+                  className="aspect-[4/5] w-full object-cover"
+                />
+                <span className="absolute left-4 top-4 bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#081C2B]">03 · WASH WHAT WE REMOVE</span>
+              </div>
+              <figcaption className="mt-5">
+                <h3 className="text-2xl font-extrabold uppercase leading-tight text-white">The covers get cleaned too.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#CBDFE9] sm:text-base">
+                  Front covers, filters, accessible drain-pan surfaces and removable parts get their own attention — including the backs and awkward corners. We protect the surrounding work area and handle the parts with care.
+                </p>
+              </figcaption>
+            </figure>
           </div>
-          <div className="mt-12 border-t border-white/20 pt-9 sm:mt-16">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#45C6E7]">HOW WE LOOK AFTER YOUR AIRCON</p>
-            <div className="mt-6 grid gap-7 md:grid-cols-3">
-              <article className="border-t-[3px] border-[#F4C620] pt-5">
-                <span className="text-4xl font-black text-[#45C6E7]">01</span>
-                <h3 className="mt-3 text-2xl font-extrabold">Strip it back properly.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">We protect your home, take out the washable filters, remove the front cover and take out the drain pan where the model allows.</p>
-              </article>
-              <article className="border-t-[3px] border-[#F4C620] pt-5">
-                <span className="text-4xl font-black text-[#45C6E7]">02</span>
-                <h3 className="mt-3 text-2xl font-extrabold">Clean what a filter rinse misses.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">We wash the covers and accessible internal parts, including the blower, drain areas, coil surfaces and behind the coil wherever safe access allows.</p>
-              </article>
-              <article className="border-t-[3px] border-[#F4C620] pt-5">
-                <span className="text-4xl font-black text-[#45C6E7]">03</span>
-                <h3 className="mt-3 text-2xl font-extrabold">Protect, reassemble and test.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">We apply compatible anti-mould and anti-corrosion protection where suitable, including appropriate indoor and outdoor surfaces when agreed. We then reassemble and check operation.</p>
-              </article>
+
+          <div className="mt-12 flex flex-col gap-5 border-t border-white/20 pt-8 sm:flex-row sm:items-start sm:gap-8" data-testid="cleaning-protective-finish">
+            <span className="w-fit shrink-0 bg-[#F4C620] px-4 py-3 text-2xl font-black text-[#081C2B]">04</span>
+            <div className="max-w-4xl">
+              <h3 className="text-2xl font-extrabold uppercase leading-tight text-white sm:text-3xl">Protect it. Put it back. Check it.</h3>
+              <p className="mt-3 text-base leading-relaxed text-[#CBDFE9]">
+                Once the parts are clean, we apply compatible anti-mould and anti-corrosion protective products where suitable. Depending on the unit and agreed scope, that can include approved indoor and outdoor surfaces and appropriate PCB-area protection. We then reassemble the unit and check it operates correctly.
+              </p>
             </div>
           </div>
-          <div className="mt-12 grid gap-5 border-t border-white/20 pt-8 md:grid-cols-[0.7fr_1.3fr]">
-            <div>
-              <h3 className="text-2xl font-extrabold">What actually gets cleaned?</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#C4D9E4]">This is the detail behind the deep-clean promise. Exact access varies by system.</p>
-            </div>
-            <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-              {WHAT_WE_CLEAN.map((item) => (
-                <div key={item.title} className="border-t border-white/20 pt-3">
-                  <h4 className="flex items-center gap-2 font-bold"><Check className="h-4 w-4 shrink-0 text-[#F4C620]"/>{item.title}</h4>
-                  <p className="mt-2 text-sm leading-relaxed text-[#C4D9E4]">{item.copy}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+
+          <p className="mt-9 max-w-5xl border-l-[3px] border-[#F4C620] pl-5 text-base font-extrabold uppercase leading-relaxed text-white sm:text-lg">
+            FILTERS OUT. COVERS OFF. DRAIN PAN ACCESSED. COIL, FAN AND HIDDEN AREAS CLEANED. PROTECTION APPLIED WHERE SUITABLE. THEN IT ALL GOES BACK TOGETHER.
+          </p>
+          <p className="mt-5 max-w-4xl text-xs leading-relaxed text-[#AFC8D5]">
+            Actual SplitsPro job photographs, with the removed-cover presentation background edited for clarity. Access and dismantling depend on the unit design. Protective treatments are used only where compatible with the product instructions and agreed service scope.
+          </p>
         </div>
       </section>
 
