@@ -186,6 +186,38 @@ def main() -> None:
         if field not in secure_page:
             fail(f"cleaning checkout missing customer field {field}")
 
+    # SplitsPro standing sales rule: surface payment flexibility BEFORE booking,
+    # customer-detail forms and payment buttons, not only at the last checkout step.
+    pay_later_positions = (
+        ("src/pages/SplitSystemCleaning.jsx",
+         "cleaning-before-booking-cta-pay-later-reminder",
+         '<button type="button" onClick={() => choose(1)}'),
+        ("src/pages/SplitSystemCleaning.jsx",
+         "cleaning-booking-pay-later-reminder",
+         'cleaning-unit-quantity'),
+        ("src/pages/CleaningCheckout.jsx",
+         "cleaning-checkout-before-payment-reminder",
+         'PAY {money(price)} IN FULL'),
+        ("src/pages/CleaningCheckout.jsx",
+         "cleaning-before-customer-form-pay-later-reminder",
+         '<form onSubmit={pay}'),
+        ("src/pages/InstallationBooking.jsx",
+         "installation-booking-pay-later-reminder",
+         'Quick standard-install check'),
+        ("src/pages/InstallationDepositCheckout.jsx",
+         "installation-deposit-pay-later-reminder",
+         '<QuoteForm'),
+        ("src/pages/PaymentOptions.jsx",
+         "finance-before-customer-form-pay-later-reminder",
+         '<form onSubmit={handleCheckout}'),
+    )
+    for source_path, reminder, next_action in pay_later_positions:
+        source = (ROOT / source_path).read_text(encoding="utf-8")
+        reminder_at = source.find(reminder)
+        action_at = source.find(next_action)
+        if reminder_at < 0 or action_at < 0 or reminder_at >= action_at:
+            fail(f"{source_path}: pay-later reminder must come before {next_action}")
+
     # Never ship placeholder navigation/social links that only jump to the top.
     for source in list((ROOT / "src/pages").glob("*.jsx")) + list((ROOT / "src/components").glob("*.jsx")):
         source_text = source.read_text(encoding="utf-8")
