@@ -6,7 +6,10 @@ import { PHONE_TEL } from "../lib/data";
 
 export const FloatingCTA = () => {
   const location = useLocation();
-  const hideOnLocalOffer = location.pathname === "/split-systems/rinnai-local-offer" || location.pathname === "/book-installation" || location.pathname === "/secure-installation" || location.pathname === "/split-system-installation-sydney" || location.pathname === "/split-system-cleaning" || location.pathname === "/secure-cleaning" || location.pathname === "/colony-forming-units" || location.pathname === "/aircon-colony-forming-units";
+  const path = location.pathname.replace(/\/+$/, "") || "/";
+  // Landing-page checkouts must not be covered by floating call/quote buttons,
+  // including when the incoming URL has a trailing slash.
+  const hideOnLocalOffer = ["/split-systems/rinnai-local-offer", "/book-installation", "/secure-installation", "/split-system-installation-sydney", "/cleaning", "/split-system-cleaning", "/split-system-cleaning-offer", "/secure-cleaning", "/colony-forming-units", "/aircon-colony-forming-units"].includes(path);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
