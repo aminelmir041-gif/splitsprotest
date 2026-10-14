@@ -159,14 +159,18 @@ export default function SplitSystemCleaning() {
             Little hands grab everything. Babies explore the world by putting ordinary things in their mouths. You wipe the benches, wash the toys, mop the floor and keep an eye on what matters. And when an older loved one is enjoying a quiet afternoon, you want them comfortable too. Yet there is one hardworking appliance that is easy to overlook: the aircon. Its filter might look clean while the fan, coil and drain areas behind it collect dust and grime over time. That is not a reason to panic. It is simply one more part of your home worth caring for.
           </p>
 
-          <div className="mt-9 border-y-2 border-[#DBE7EA] py-8 sm:py-10" data-testid="cleaning-bench-sneeze-punchline">
-            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#007DA5]">Think about it for a second…</p>
+          <div className="mt-9 border-y-2 border-[#DBE7EA] py-8 sm:py-10" data-testid="cleaning-benchtop-airflow-punchline">
+            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#007DA5]">THE PART YOUR CLOTH CAN'T REACH</p>
             <h3 className="mt-3 max-w-5xl text-[clamp(1.75rem,4.8vw,3.8rem)] font-black uppercase leading-[1.06] tracking-tight text-[#082743]">
-              A DIRTY AIRCON IS LIKE SOMEONE{" "}
-              <span className="bg-[#F4C620] px-1 text-[#081F34]">SNEEZING OVER YOUR BENCHTOP</span>{" "}
-              RIGHT AFTER YOU'VE WIPED IT.
+              YOU'VE JUST WIPED YOUR BENCHTOP SPOTLESS.{" "}
+              <span className="bg-[#F4C620] px-1 text-[#081F34]">THEN YOU SWITCH ON YOUR DIRTY AIRCON.</span>
             </h3>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#52616C]">You put care into the surfaces you can see. The hard-to-reach parts of the aircon deserve attention too.</p>
+            <p className="mt-5 max-w-4xl text-lg font-bold leading-relaxed text-[#173C54] sm:text-xl">
+              If dust or mould is building up inside, airflow can carry particles back into the room — including onto surfaces you've just cleaned.
+            </p>
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#52616C]">
+              Not every dirty aircon contains mould, and cleaning does not make a home sterile. But the parts behind the cover deserve attention as much as the benchtop does.
+            </p>
           </div>
 
           {/* Three editorial punchlines within the page's existing three-column benefits layout. */}
