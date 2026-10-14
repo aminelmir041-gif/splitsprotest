@@ -30,6 +30,8 @@ jobs:
                   assert result.get("first_system") == 300
                   assert result.get("each_additional_system") == 150
                   assert result.get("enabled") is True, "Timed cleaning booking rollout is still disabled"
+              else:
+                  print("Health:", result.get("status"))
           for quantity in (1, 2, 7):
               with urllib.request.urlopen(base + "cleaning-slots?quantity=" + str(quantity) + "&limit=8", timeout=75) as response:
                   assert response.status == 200
@@ -45,6 +47,4 @@ jobs:
               installs=json.load(response)
               assert isinstance(installs.get("slots"), list)
               print("Installation calendar accessible:", len(installs["slots"]), "openings")
-              else:
-                  print("Health:", result.get("status"))
           PY
