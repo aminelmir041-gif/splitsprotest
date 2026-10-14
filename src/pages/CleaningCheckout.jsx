@@ -186,6 +186,11 @@ export default function CleaningCheckout() {
               <p className="text-lg font-bold">{count} wall-mounted split system{count > 1 ? "s" : ""}</p>
               <p className="mt-3 text-5xl font-black text-[#007FA4]">{money(price)}</p>
               <p className="mt-2 text-sm font-semibold text-[#496070]">Paid in full upfront — no booking deposit or balance owing.</p>
+              <div className="mt-5 border-t border-[#D3E2EB] pt-4" data-testid="cleaning-checkout-before-payment-reminder">
+                <PayLaterReminder kind="cleaning" compact
+                  stripeReady={settings?.stripe_ready}
+                  paypalReady={settings?.paypal_ready} />
+              </div>
               <p className="mt-5 text-lg font-extrabold">{formatDate(day)} · {formatTime(time)}</p>
               <p className="mt-2 text-sm text-[#596E7B]">Allow approximately {Math.floor(totalDuration / 60)}h {totalDuration % 60 ? "30m" : ""} for the full visit.</p>
             </div>
@@ -194,16 +199,17 @@ export default function CleaningCheckout() {
           <div className="border border-[#D5E3EC] bg-white p-6 shadow-sm sm:p-9">
             <h2 className="text-2xl font-black uppercase">YOUR BOOKING DETAILS</h2>
             <p className="mt-3 text-sm text-[#526677]">Name, address, phone and email. Then pay securely through your selected provider.</p>
+            <div className="mt-5 border-t border-[#DEE6EC] pt-4" data-testid="cleaning-before-customer-form-pay-later-reminder">
+              <PayLaterReminder kind="cleaning" compact
+                stripeReady={settings?.stripe_ready}
+                paypalReady={settings?.paypal_ready} />
+            </div>
             <form onSubmit={pay} className="mt-7 space-y-5">
               <label className={fieldLabel}>Full name<input className={fieldInput} required autoComplete="name" value={details.name} onChange={(e) => update("name", e.target.value)} placeholder="Full name" /></label>
               <label className={fieldLabel}>Cleaning address<input className={fieldInput} required autoComplete="street-address" value={details.address} onChange={(e) => update("address", e.target.value)} placeholder="Street address, suburb and postcode" /></label>
               <label className={fieldLabel}>Mobile number<input className={fieldInput} required type="tel" autoComplete="tel" value={details.phone} onChange={(e) => update("phone", e.target.value)} placeholder="04xx xxx xxx" /></label>
               <label className={fieldLabel}>Email<input className={fieldInput} required type="email" autoComplete="email" value={details.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" /></label>
-              <div className="border-t border-[#DEE6EC] pt-4" data-testid="cleaning-payment-pay-later-reminder">
-                <PayLaterReminder kind="cleaning"
-                  stripeReady={settings?.stripe_ready}
-                  paypalReady={settings?.paypal_ready} />
-              </div>
+
               <fieldset className="border-t border-[#DEE6EC] pt-5">
                 <legend className="text-sm font-black uppercase tracking-wide">PAYMENT METHOD</legend>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
