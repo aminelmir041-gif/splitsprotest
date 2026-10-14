@@ -1,4 +1,5 @@
 import json
+from contextlib import nullcontext
 from datetime import timedelta, datetime
 
 import fakeredis
@@ -11,6 +12,9 @@ from backend import cleaning_bookings as cb
 def calendar(monkeypatch, tmp_path):
     store = fakeredis.FakeRedis(decode_responses=True)
     monkeypatch.setattr(cb, "client", lambda: store)
+    # fakeredis without optional Lua does not implement Redis lock release scripts.
+    # Production uses real Redis locks; these tests exercise availability rules.
+    monkeypatch.setattr(store, "lock", lambda *args, **kwargs: nullcontext())
     blocks = tmp_path / "booking_blocks.json"
     blocks.write_text('{"blocked": []}')
     monkeypatch.setattr(cb, "BOOKING_BLOCKS_FILE", blocks)
