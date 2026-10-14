@@ -42,7 +42,7 @@ def test_installation_and_cleaning_share_availability(monkeypatch):
     assert m._slot_is_free(c, day, "12:30", 1)
     c.data.pop("splitspro:booking:" + day + ":morning")
     c.data[m.hold_key("a" * 32)] = json.dumps({
-        "booking_date": day, "start_time": "09:30", "quantity": 2
+        "booking_date": day, "start_time": "08:00", "quantity": 4
     })
     assert not m._slot_is_free(c, day, "08:00", 1)
     assert not m._slot_is_free(c, day, "12:30", 1)
