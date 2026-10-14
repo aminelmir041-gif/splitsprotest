@@ -11,6 +11,7 @@ export default function PayLaterReminder({
   stripeReady,
   paypalReady,
   equipmentHref,
+  compact = false,
 }) {
   const dark = theme === "dark";
   const stripe = stripeReady !== false;
@@ -30,7 +31,13 @@ export default function PayLaterReminder({
       <p className={"text-sm font-black uppercase tracking-[0.08em] sm:text-base " + headingColor}>
         WANT TO SPREAD THE PAYMENTS?
       </p>
-      {kind === "cleaning" ? (
+      {kind === "cleaning" && compact ? (
+        <p className={"mt-2 text-sm font-semibold leading-relaxed " + bodyColor}>
+          <strong>PayPal Pay in 4</strong> may be offered to eligible customers{paypalReady === false ? " when PayPal becomes available" : ""}.
+          {" "}<strong>Afterpay, Klarna and Zip</strong> may appear through Stripe{stripeReady === false ? " once Stripe checkout is connected" : " where enabled and eligible"}.
+          <span className="mt-1 block text-xs font-normal">SplitsPro receives the full service amount upfront. Approved instalments are repaid to the payment provider under its terms.</span>
+        </p>
+      ) : kind === "cleaning" ? (
         <>
           <p className={"mt-2 text-sm font-medium leading-relaxed " + bodyColor}>
             {paypal && <><strong>PayPal Pay in 4</strong> may be offered to eligible customers through PayPal. </>}
