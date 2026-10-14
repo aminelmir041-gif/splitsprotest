@@ -57,7 +57,7 @@ export default function AirconColonyStudy() {
           <h2 className="mt-4 max-w-5xl font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">What is a colony forming unit?</h2>
           <p className="mt-6 max-w-4xl text-lg leading-relaxed text-[#58616A] sm:text-xl">Imagine taking a tiny sample of grime and putting it in a laboratory dish. Some living bacteria or fungi in that sample can multiply and grow into little visible spots called <strong>colonies</strong>.</p>
           <p className="mt-4 max-w-4xl text-lg leading-relaxed text-[#58616A] sm:text-xl">Each spot that grows counts as <strong>one colony forming unit</strong>. It might have started from one living microbe or a small group of them. Scientists count those colonies to estimate how many microbes capable of growing were in the sample.</p>
-          <p className="mt-5 max-w-4xl text-base font-bold leading-relaxed text-[#18364B] sm:text-lg">Put simply: it's a way of counting certain living germs in a lab test — not a germ itself, and not a disease.</p>
+          <p className="mt-5 max-w-4xl text-base font-bold leading-relaxed text-[#18364B] sm:text-lg">Put simply: it's a way of counting certain living germs in a lab test.</p>
 
           <div className="mt-9 grid gap-8 border-y border-[#E7E2D9] py-8 md:grid-cols-2 md:gap-14">
             <div>
