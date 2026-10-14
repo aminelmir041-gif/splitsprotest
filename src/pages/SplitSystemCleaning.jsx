@@ -11,12 +11,12 @@ import { PHONE_TEL } from "../lib/data";
 // This is the ONE consumer sales landing page for split-system cleaning.
 // No separate cleaning funnel; the old /split-system-cleaning-offer/ URL redirects here.
 const CLEANING_QUANTITIES = Array.from({ length: 7 }, (_, index) => index + 1);
-const cleaningPrice = (count) => 300 + Math.max(0, count - 1) * 150;
+const cleaningPrice = (count) => 300 + Math.max(0, count - 1) * 200;
 const money = (value) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(value);
 
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
-  { q: "How much do additional air conditioners cost?", a: "The first complete deep clean is $300. Every additional standard split system is $150 when cleaned at the same address and on the same visit. Two systems cost $450, three cost $600. The full total is paid upfront at checkout." },
+  { q: "How much do additional air conditioners cost?", a: "The first complete deep clean is $300. Every additional standard split system is $200 when cleaned at the same address and on the same visit. Two systems cost $500, three cost $700. Your total is shown before you choose a secure payment method. Eligible pay-later options may be available." },
   { q: "Do you have to remove the whole air conditioner?", a: "Normally no. We protect the area, open or remove suitable service-accessible covers and clean the accessible indoor components. We won't dismantle sealed refrigerant components as part of a cleaning job." },
   { q: "Can cleaning repair an air conditioner that isn't cooling?", a: "Cleaning can help when dirt is affecting airflow, but it won't fix a refrigerant leak, electrical fault or failed part. If we find a likely fault, we'll discuss the next step before any separate repair work." },
   { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." },
@@ -125,10 +125,10 @@ export default function SplitSystemCleaning() {
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
         <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | $300 | SplitsPro Sydney</title>
-        <meta name="description" content="SplitsPro complete split-system deep cleaning: $300 first system, $150 for each extra system at the same address, fully prepaid online. Protective treatments where suitable." />
+        <meta name="description" content="SplitsPro complete split-system deep cleaning: $300 first system, $200 for each extra system at the same address, fully prepaid online. Protective treatments where suitable." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
-        <meta property="og:description" content="Deep clean and suitable protective treatments. $300 first system, each extra split system $150 at the same property. Choose a live 90-minute start time." />
+        <meta property="og:description" content="Deep clean and suitable protective treatments. $300 first system, each extra split system $200 at the same property. Choose a live 90-minute start time." />
       </Helmet>
 
 
@@ -409,7 +409,7 @@ export default function SplitSystemCleaning() {
             <h3 className="mt-3 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">PROFESSIONAL DEEP CLEAN. ANTI-MOULD. ANTI-CORROSION.</h3>
             <strong className="mt-4 block text-[clamp(5rem,16vw,9rem)] font-black leading-none tracking-tighter text-[#0B2641]">$300</strong>
             <p className="mt-4 text-xl font-black uppercase text-[#008DB8]">ONE VISIT. THREE SERVICES. ONE CRACKING DEAL.</p>
-            <p className="mt-4 text-lg font-bold text-[#0B2641]">Got more than one aircon at the same property? <span className="text-[#007EA7]">Every additional complete clean is just $150.</span> Two systems are $450, three are $600.</p>
+            <p className="mt-4 text-lg font-bold text-[#0B2641]">Got more than one aircon at the same property? <span className="text-[#007EA7]">Every additional complete clean is just $200.</span> Two systems are $500, three are $700.</p>
           </div>
 
           <div className="mt-8 border-y border-[#C7DDE7] py-6" data-testid="cleaning-deal-sweetener">
@@ -428,7 +428,7 @@ export default function SplitSystemCleaning() {
 
           <div className="mt-10 border-t-[5px] border-[#F4C620] bg-white px-6 py-7 sm:px-10" data-testid="cleaning-booking-invitation">
             <p className="text-xs font-black uppercase tracking-[0.14em] text-[#007EA7]">MORE THAN ONE AIRCON?</p>
-            <h3 className="mt-2 text-2xl font-black uppercase text-[#0B2641] sm:text-3xl">EVERY EXTRA SYSTEM IS JUST $150.</h3>
+            <h3 className="mt-2 text-2xl font-black uppercase text-[#0B2641] sm:text-3xl">EVERY EXTRA SYSTEM IS JUST $200.</h3>
             <p className="mt-3 max-w-3xl text-base leading-relaxed text-[#4A6272]">
               All cleaned at the same property, on the same visit. Choose how many you have and see the total before paying.
             </p>
@@ -474,7 +474,7 @@ export default function SplitSystemCleaning() {
               </select>
               <div className="mt-6 border-y border-white/20 py-5">
                 <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>$300</strong></div>
-                {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $150</span><strong>{money((quantity - 1) * 150)}</strong></div>}
+                {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $200</span><strong>{money((quantity - 1) * 200)}</strong></div>}
                 <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-5">
                   <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total</span>
                   <strong className="text-4xl font-black text-[#F4C620]">{money(cleaningPrice(quantity))}</strong>
