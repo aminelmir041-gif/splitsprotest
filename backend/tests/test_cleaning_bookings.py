@@ -28,9 +28,9 @@ def future_date():
 
 def test_server_calculates_full_upfront_price():
     assert cb.price_cents(1) == 30000
-    assert cb.price_cents(2) == 50000
-    assert cb.price_cents(3) == 70000
-    assert cb.price_cents(7) == 150000
+    assert cb.price_cents(2) == 45000
+    assert cb.price_cents(3) == 60000
+    assert cb.price_cents(7) == 120000
     for q in (0, 8, -1, 1.0, "2"):
         with pytest.raises(ValueError):
             cb.price_cents(q)
@@ -103,7 +103,7 @@ def test_payment_confirmation_stores_booking_and_is_idempotent(calendar):
     reference = "a" * 32
     record = {
         "reference": reference, "booking_date": d,
-        "start_time": "09:30", "quantity": 2, "total_cents": 50000,
+        "start_time": "09:30", "quantity": 2, "total_cents": 45000,
         "lead": {"name": "Test Client", "email": "example@example.com"},
     }
     store.set(cb.hold_key(reference), json.dumps(record), ex=1000)
@@ -111,7 +111,7 @@ def test_payment_confirmation_stores_booking_and_is_idempotent(calendar):
     second = cb._finalize_paid_cleaning(store, record)
     assert first == second
     assert first["status"] == "confirmed"
-    assert first["total_amount"] == 500
+    assert first["total_amount"] == 450
     assert store.exists(cb.confirmed_key(reference))
     assert not store.exists(cb.hold_key(reference))
     assert not cb._slot_is_free(store, d, "09:30", 1)
