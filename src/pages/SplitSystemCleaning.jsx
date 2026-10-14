@@ -393,52 +393,66 @@ export default function SplitSystemCleaning() {
           <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#50616D] sm:text-lg">
             Some cleaners wash away the grime, pack up and call it a day. We go further. After cleaning those hard-to-reach indoor components, we apply compatible anti-mould treatment where suitable, and anti-corrosion protection to suitable outdoor components. Then we reassemble and check the system.
           </p>
-          <div className="mt-10 border-y-2 border-[#C7DDE7] py-9" data-testid="cleaning-competitor-prices">
-            <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">WHAT IT CAN COST ELSEWHERE</p>
-            <div className="mt-7 grid gap-8 sm:grid-cols-2">
-              <div><p className="text-sm font-extrabold uppercase tracking-wider text-[#38576A]">SYDNEY DEEP CLEAN FROM</p><strong className="mt-2 block text-[clamp(4.5rem,12vw,7rem)] font-black leading-none tracking-tight text-[#0B2641]">$385</strong></div>
-              <div><p className="text-sm font-extrabold uppercase tracking-wider text-[#38576A]">ANTI-CORROSION TREATMENT UP TO</p><strong className="mt-2 block text-[clamp(4.5rem,12vw,7rem)] font-black leading-none tracking-tight text-[#0B2641]">$250</strong></div>
+          <div className="mt-8 border-y-[6px] border-[#F4C620] bg-[#08263E] px-5 py-8 text-white sm:px-10 sm:py-11" data-testid="cleaning-300-complete-offer">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#50D3F3]">THE COMPLETE SPLITSPRO CLEAN</p>
+            <div className="mt-4 grid items-start gap-7 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12">
+              <div>
+                <h3 className="max-w-xl text-3xl font-black uppercase leading-[1.04] tracking-tight sm:text-4xl">
+                  THE FULL DEEP CLEAN. <span className="text-[#F4C620]">NOT A FILTER RINSE.</span>
+                </h3>
+                <p className="mt-4 max-w-xl text-base leading-relaxed text-[#D6E7EF]">
+                  We strip back accessible covers and drain parts, clean hidden coil, blower and air-path surfaces, then apply compatible anti-mould and anti-corrosion treatments on suitable indoor and outdoor surfaces.
+                </p>
+                <p className="mt-4 border-l-[3px] border-[#45C6E7] pl-4 text-sm font-extrabold leading-relaxed text-white">
+                  Includes a cleaning certificate listing the work done, plus photos from your service.
+                </p>
+              </div>
+              <div className="border-t border-white/25 pt-5 lg:border-l lg:border-t-0 lg:pl-9 lg:pt-0">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">FIRST SPLIT SYSTEM</p>
+                <strong className="mt-1 block text-[clamp(5.2rem,15vw,8rem)] font-black leading-[1] tracking-tighter text-white">$300</strong>
+                <p className="mt-3 text-[clamp(1.55rem,4vw,2.45rem)] font-black uppercase leading-tight text-[#F4C620]">
+                  + $200 EACH EXTRA SYSTEM
+                </p>
+                <p className="mt-2 text-sm font-bold leading-relaxed text-[#D2E6F0]">Same property. Same visit. Same complete clean.</p>
+                <p className="mt-4 border-t border-white/20 pt-4 text-sm font-extrabold text-white sm:text-base">
+                  2 systems <span className="text-[#F4C620]">$500</span> <span className="mx-2 text-white/45">|</span> 3 systems <span className="text-[#F4C620]">$700</span>
+                </p>
+              </div>
             </div>
-            <p className="mt-8 text-sm font-black uppercase tracking-[0.13em] text-[#38576A]">TWO SEPARATE SERVICES CAN ADD UP TO</p>
-            <strong className="mt-1 block text-[clamp(5rem,15vw,9rem)] font-black leading-none tracking-tighter text-[#008DB8]">$635</strong>
-            <p className="mt-4 text-lg font-extrabold text-[#0B2641]">And we're throwing in the anti-mould protective treatment with our complete clean.</p>
-            <p className="mt-6 max-w-4xl text-xs leading-relaxed text-[#607581]">Comparison of separately published prices, not one competitor's quote: A Grade Air Con advertises a Signature Split System Deep Clean from $385 including anti-mould treatment. Denali Air advertises coastal anti-corrosion protection priced as high as $250+ depending on scope. Inclusions and services may differ. <a className="underline" href="https://agradeaircon.com.au/services/air-conditioning-maintenance/" target="_blank" rel="noopener noreferrer">Deep-clean pricing</a> · <a className="underline" href="https://www.denaliair.com.au/services/air-conditioning-service-nowra" target="_blank" rel="noopener noreferrer">Corrosion-treatment pricing</a>.</p>
-          </div>
-          <div className="mt-10 border-l-[6px] border-[#F4C620] pl-5 sm:pl-8" data-testid="cleaning-300-complete-offer">
-            <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">SO HERE'S THE SPLITSPRO DEAL</p>
-            <h3 className="mt-3 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">PROFESSIONAL DEEP CLEAN. ANTI-MOULD. ANTI-CORROSION.</h3>
-            <strong className="mt-4 block text-[clamp(5rem,16vw,9rem)] font-black leading-none tracking-tighter text-[#0B2641]">$300</strong>
-            <p className="mt-4 text-xl font-black uppercase text-[#008DB8]">ONE VISIT. THREE SERVICES. ONE CRACKING DEAL.</p>
-            <p className="mt-4 text-lg font-bold text-[#0B2641]">Got more than one aircon at the same property? <span className="text-[#007EA7]">Every additional complete clean is just $200.</span> Two systems are $500, three are $700.</p>
+            <div className="mt-7 border-t border-white/20 pt-5" data-testid="cleaning-booking-invitation">
+              <div className="mb-4" data-testid="cleaning-before-booking-cta-pay-later-reminder">
+                <PayLaterReminder kind="cleaning" compact theme="dark" stripeReady={paymentReadiness.stripe_ready} paypalReady={paymentReadiness.paypal_ready} />
+              </div>
+              <button type="button" onClick={() => choose(1)}
+                className="flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42] sm:text-lg">
+                Choose systems &amp; booking time <ArrowRight className="h-5 w-5" />
+              </button>
+              <p className="mt-3 text-sm text-white/70">See available times and your exact total before paying. No separate deposit.</p>
+            </div>
           </div>
 
-          <div className="mt-8 border-y border-[#C7DDE7] py-6" data-testid="cleaning-deal-sweetener">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">THE VALUE IS IN WHAT'S INCLUDED</p>
-            <div className="mt-5 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-7 border-y border-[#C7DDE7] py-6" data-testid="cleaning-deal-sweetener">
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#007EA7]">WHAT YOUR COMPLETE CLEAN INCLUDES</p>
+            <div className="mt-4 grid gap-x-7 gap-y-3 sm:grid-cols-2">
               {[
-                "Accessible internal coil and blower cleaning",
-                "Compatible anti-mould treatment on suitable indoor surfaces",
-                "Suitable outdoor anti-corrosion protective treatment",
-                "Reassembly and operation check"
+                "Indoor coil, fan and drainage cleaning where accessible",
+                "Anti-mould protective treatment on compatible surfaces",
+                "Outdoor anti-corrosion treatment where compatible and in scope",
+                "Reassembly, operation check, certificate and job photos"
               ].map((value) => (
-                <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-[#153249]" key={value}><Check className="mt-0.5 h-5 w-5 shrink-0 text-[#007FA4]"/>{value}</p>
+                <p key={value} className="flex items-start gap-2 text-sm font-bold leading-relaxed text-[#153249] sm:text-base">
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#007FA4]" aria-hidden="true"/>{value}
+                </p>
               ))}
             </div>
           </div>
 
-          <div className="mt-10 border-t-[5px] border-[#F4C620] bg-white px-6 py-7 sm:px-10" data-testid="cleaning-booking-invitation">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#007EA7]">MORE THAN ONE AIRCON?</p>
-            <h3 className="mt-2 text-2xl font-black uppercase text-[#0B2641] sm:text-3xl">EVERY EXTRA SYSTEM IS JUST $200.</h3>
-            <p className="mt-3 max-w-3xl text-base leading-relaxed text-[#4A6272]">
-              All cleaned at the same property, on the same visit. Choose how many you have and see the total before paying.
+          <div className="mt-5 border-b border-[#C7DDE7] pb-5" data-testid="cleaning-competitor-prices">
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#426173]">WHY THIS IS GOOD VALUE</p>
+            <p className="mt-2 text-sm leading-relaxed text-[#456173]">
+              For context, separately advertised services include a deep clean from <strong>$385</strong> (A Grade Air Con) and coastal anti-corrosion treatment up to <strong>$250+</strong> (Denali Air).
+              These are different providers, scopes and inclusions — not one combined competitor quote or a like-for-like comparison.
             </p>
-            <div className="mt-5 mb-4" data-testid="cleaning-before-booking-cta-pay-later-reminder">
-              <PayLaterReminder kind="cleaning" compact />
-            </div>
-            <button type="button" onClick={() => choose(1)}
-              className="mt-4 flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-6 py-3 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42]">
-              Choose systems &amp; booking time <ArrowRight className="h-5 w-5"/>
-            </button>
           </div>
           <p className="mt-5 text-sm leading-relaxed text-[#566D7B]">
             Standard-access wall-mounted splits only. Additional-system pricing applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
