@@ -72,7 +72,6 @@ export default function AirconColonyStudy() {
             </div>
           </div>
           <p className="mt-6 max-w-4xl text-sm leading-relaxed text-[#6B7074]">A colony count does not identify all the species present, prove that any are dangerous, tell us how many spores entered the room or predict whether someone will get sick. Not every dirty aircon contains harmful mould.</p>
-          <a href="https://www.health.nsw.gov.au/environment/factsheets/Pages/mould.aspx" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8F6B37] underline underline-offset-4">Read NSW Health's mould guidance <ArrowUpRight className="h-4 w-4" /></a>
           <p className="mt-8 font-serif text-2xl leading-snug text-[#1C3A4D] sm:text-3xl">Now think about the people in your home — and the places everyday cleaning cannot reach.</p>
         </div>
       </section>
@@ -105,9 +104,6 @@ export default function AirconColonyStudy() {
             <p className="mt-3 text-base leading-relaxed text-[#606469]">Certain moulds release spores that can become airborne. NSW Health says mould exposure can trigger irritation, coughing, wheezing and asthma symptoms in susceptible people.</p>
             <p className="mt-3 text-base leading-relaxed text-[#606469]">Think about your little ones, older relatives and anyone with asthma or sensitive airways. The point isn't to frighten them. It's to understand one overlooked source of indoor buildup.</p>
             <p className="mt-3 text-xs leading-relaxed text-[#76797C]">Not every dirty air conditioner contains mould or causes illness. Looking at an image cannot tell you how many microorganisms are present or how much someone has inhaled.</p>
-            <a href="https://www.health.nsw.gov.au/environment/factsheets/Pages/mould.aspx" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8F6B37] underline underline-offset-4">
-              NSW Health's mould information <ArrowUpRight className="h-4 w-4" />
-            </a>
           </div>
         </div>
       </section>
@@ -129,9 +125,6 @@ export default function AirconColonyStudy() {
               <div className="mt-2 h-4 w-full bg-[#E1E4E6]"><div className="h-full min-w-[3px] bg-[#0C97B4]" style={{width:"0.973%"}} /></div>
               <p className="mt-5 text-sm font-semibold text-[#233B4E]">Colony forming units per square centimetre of sampled cooling fins.</p>
               <p className="mt-3 text-xs leading-relaxed text-[#6D7176]">This is evidence of reduced culturable fungal contamination on those surfaces. It does not mean 99% fewer airborne spores or illnesses, and it is not a guaranteed SplitsPro cleaning result.</p>
-              <a href="https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2024.1429626/full" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8F6B37] underline underline-offset-4">
-                See the published 2024 study <ArrowUpRight className="h-4 w-4" />
-              </a>
             </div>
           </div>
           <p className="mt-6 max-w-4xl font-serif text-2xl text-[#172F44] sm:text-3xl">That's why cleaning deeper than the filters is worth understanding.</p>

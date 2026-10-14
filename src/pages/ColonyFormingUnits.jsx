@@ -65,7 +65,6 @@ export default function ColonyFormingUnits() {
             <p className="mt-5 text-base leading-relaxed text-[#5F6368]">Inside a split system, dust and dander can collect on the fan and coil. Moisture can add to the buildup. In some units, mould can grow on damp surfaces.</p>
             <p className="mt-3 text-base leading-relaxed text-[#5F6368]">Airborne mould spores may trigger coughing, wheezing and asthma symptoms in people who are sensitive to them. That matters when you're looking after little ones or relatives with breathing problems.</p>
             <p className="mt-3 text-sm leading-relaxed text-[#62666B]">Not every dirty aircon contains mould or is causing illness. A photograph cannot identify microbes.</p>
-            <a href="https://www.health.nsw.gov.au/environment/factsheets/Pages/mould.aspx" rel="noopener noreferrer" target="_blank" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#926D34] underline underline-offset-4">NSW Health on mould and breathing <ArrowUpRight className="h-4 w-4"/></a>
           </div>
         </div>
       </section>
@@ -89,7 +88,6 @@ export default function ColonyFormingUnits() {
               <div className="mt-2 h-4 w-full bg-[#EDE8DE]"><div className="h-full min-w-[3px] bg-[#0D9AB8]" style={{width:"0.973%"}}/></div>
               <p className="mt-5 text-sm font-semibold text-[#1B3446]">Colony forming units per square centimetre of tested cooling fins.</p>
               <p className="mt-3 text-xs leading-relaxed text-[#747779]">The study measured sampled surfaces, not airborne spores or illness rates. These are not SplitsPro results and cannot be promised for every unit.</p>
-              <a href="https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2024.1429626/full" rel="noopener noreferrer" target="_blank" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#906A33] underline underline-offset-4">Read the 2024 study <ArrowUpRight className="h-4 w-4"/></a>
             </div>
           </div>
         </div>

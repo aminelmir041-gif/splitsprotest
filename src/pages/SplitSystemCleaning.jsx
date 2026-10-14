@@ -211,7 +211,7 @@ export default function SplitSystemCleaning() {
             </div>
           </div>
           <div className="mt-7 max-w-4xl text-xs leading-relaxed text-[#667781]">
-            Cleaning does not guarantee sterile air, prevent illness or replace mould-remediation and moisture control. <a href="https://www.health.nsw.gov.au/environment/factsheets/Pages/mould.aspx" target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-2">NSW Health on mould and breathing ↗</a>
+            Cleaning does not guarantee sterile air, prevent illness or replace mould-remediation and moisture control.
           </div>
         </div>
       </section>
