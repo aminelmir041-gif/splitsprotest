@@ -1,3 +1,4 @@
+import PayLaterReminder from "../components/PayLaterReminder";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Check, CreditCard, ShieldCheck } from "lucide-react";
@@ -160,6 +161,11 @@ export default function InstallationDepositCheckout() {
             </div>
 
               </div>
+            </div>
+
+            <div className="mx-auto w-full max-w-2xl pt-2 pb-6" data-testid="installation-deposit-pay-later-reminder">
+              <PayLaterReminder kind="deposit"
+                equipmentHref={"/payment-options?product=" + encodeURIComponent(productKey) + "&size=" + encodeURIComponent(size)} />
             </div>
 
             <div className="mx-auto w-full max-w-2xl border-t border-[#DDD8CF] py-7">
