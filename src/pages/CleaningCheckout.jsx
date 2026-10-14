@@ -1,161 +1,226 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, CreditCard, Loader2, ShieldCheck } from "lucide-react";
-import { api, getBookingSlots } from "../lib/api";
+import { ArrowLeft, ArrowRight, CreditCard, Loader2, ShieldCheck } from "lucide-react";
+import { api } from "../lib/api";
 
-const OFFERS = {
-  one: { title: "Complete Deep Clean + Protective Treatments", price: 300, note: "One wall-mounted split system — deep clean, anti-mould and suitable anti-corrosion treatment" },
-  two: { title: "2 Complete Deep Cleans + Protective Treatments", price: 500, note: "Two systems at one property, same visit — $300 first, $200 second" },
-};
+const FIRST_PRICE = 300;
+const EXTRA_PRICE = 150;
+const MAX_UNITS = 7;
 const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
-const labelStyle = "block text-xs font-bold uppercase tracking-wide text-[#5D6064]";
-const inputStyle = "mt-2 h-12 w-full rounded-md border border-[#D9D5CD] bg-white px-4 text-sm text-[#171717] outline-none focus:border-[#9C753A]";
+const fieldLabel = "block text-xs font-black uppercase tracking-wide text-[#516072]";
+const fieldInput = "mt-2 h-12 w-full rounded-md border border-[#D1DBE3] bg-white px-4 text-base text-[#142E43] outline-none focus:border-[#009AC6]";
 const formatDate = (s) => new Date(s + "T00:00:00").toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long" });
+const formatTime = (time) => new Date("2000-01-01T" + time + ":00").toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit", hour12: true });
 
 export default function CleaningCheckout() {
   const [params] = useSearchParams();
-  const packageId = params.get("package") || "";
-  const bookingDate = params.get("date") || "";
-  const bookingWindow = params.get("window") || "";
-  const selectedOffer = OFFERS[packageId];
-  const validDate = /^\d{4}-\d{2}-\d{2}$/.test(bookingDate) && bookingDate >= new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
-  const validWindow = ["Morning", "Afternoon"].includes(bookingWindow);
-  const [customer, setCustomer] = useState({ name: "", address: "", phone: "", email: "" });
+  const count = Number(params.get("count") || "");
+  const day = params.get("date") || "";
+  const time = params.get("time") || "";
+  const checkoutRef = params.get("checkout_ref") || "";
+  const paymentReturn = params.get("cleaning_payment") === "returned";
+  const paymentCancelled = params.get("cleaning_payment") === "cancelled";
+  const paymentProvider = params.get("provider") || "";
+  const validCount = Number.isInteger(count) && count >= 1 && count <= MAX_UNITS;
+  const validTime = ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00"].includes(time);
+  const localToday = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
+  const validDate = /^\d{4}-\d{2}-\d{2}$/.test(day) && day >= localToday;
+  const price = validCount ? FIRST_PRICE + EXTRA_PRICE * (count - 1) : FIRST_PRICE;
+  const totalDuration = count * 90;
+  const backUrl = "/split-system-cleaning/#cleaning-booking";
+
+  const [details, setDetails] = useState({ name: "", address: "", phone: "", email: "" });
   const [provider, setProvider] = useState("stripe");
-  const [submitting, setSubmitting] = useState(false);
+  const [settings, setSettings] = useState(null);
+  const [settingsError, setSettingsError] = useState("");
+  const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState(null);
-  const finished = params.get("payment") === "success" || params.get("cleaning_payment") === "returned";
-  const cancelled = ["cancel", "cancelled"].includes(params.get("payment")) || params.get("cleaning_payment") === "cancelled";
-  const checkoutRef = params.get("checkout_ref") || params.get("order_id") || params.get("session_id") || "";
-  const backHref = "/split-system-cleaning/#cleaning-booking";
+  const [paymentStatus, setPaymentStatus] = useState({ status: "processing" });
+  const paypalCaptureStarted = useRef(false);
 
   useEffect(() => {
-    if (!finished || !checkoutRef) return undefined;
+    if (paymentReturn || !validCount) return undefined;
+    let live = true;
+    api.get("/cleaning-checkout-config", { timeout: 18000 })
+      .then(({ data }) => { if (live) {
+        setSettings(data);
+        if (!data.stripe_ready && data.paypal_ready) setProvider("paypal");
+        if (!data.stripe_ready && !data.paypal_ready) setSettingsError("Secure full-payment checkout is temporarily unavailable. Please contact SplitsPro.");
+      }})
+      .catch(() => { if (live) setSettingsError("Couldn't connect to secure booking checkout. Please try again."); });
+    return () => { live = false; };
+  }, [paymentReturn, validCount]);
+
+  useEffect(() => {
+    if (!paymentReturn || !checkoutRef) return undefined;
     let stopped = false;
-    let timeout;
+    let pendingTimer = null;
     let tries = 0;
-    const check = async () => {
+    const poll = async () => {
+      if (stopped) return;
       tries += 1;
       try {
-        const response = await api.get("/cleaning-payment-status", { params: { checkout_ref: checkoutRef }, timeout: 15000 });
+        const result = await api.get("/cleaning-payment-status", { params: { checkout_ref: checkoutRef }, timeout: 16000 });
         if (stopped) return;
-        const next = response.data;
-        setPaymentStatus(next);
-        if (next?.status === "processing" && tries < 12) timeout = setTimeout(check, 1200);
+        setPaymentStatus(result.data);
+        if (result.data?.status === "confirmed" || result.data?.status === "needs_reschedule") return;
       } catch {
-        if (!stopped) setPaymentStatus({ status: "pending_confirmation" });
+        if (!stopped) setPaymentStatus({ status: "processing" });
       }
+      if (tries < 16 && !stopped) pendingTimer = window.setTimeout(poll, 1700);
     };
-    check();
-    return () => { stopped = true; clearTimeout(timeout); };
-  }, [finished, checkoutRef]);
-
-  if (!selectedOffer || !validDate || !validWindow) return <Navigate to={backHref} replace />;
-
-  const update = (key, value) => { setCustomer((old) => ({ ...old, [key]: value })); setError(""); };
-  const isComplete = customer.name.trim().length >= 2
-    && customer.address.trim().length >= 6
-    && customer.phone.replace(/\D/g, "").length >= 8
-    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email.trim());
-
-  const submit = async (event) => {
-    event.preventDefault();
-    if (submitting || !isComplete) return;
-    setError("");
-    setSubmitting(true);
-    try {
-      // The server, not browser parameters, MUST set the amount, save the
-      // customer and hold this slot atomically before returning a checkout.
-      const available = await getBookingSlots(12);
-      if (!(available?.slots || []).some((s) => s.date === bookingDate && s.window === bookingWindow)) {
-        throw new Error("That time is no longer available. Go back and choose another date.");
+    const begin = async () => {
+      if (paymentProvider === "paypal" && !paypalCaptureStarted.current) {
+        paypalCaptureStarted.current = true;
+        try {
+          const capture = await api.post("/cleaning-paypal-capture", { checkout_ref: checkoutRef }, { timeout: 42000 });
+          if (stopped) return;
+          setPaymentStatus(capture.data);
+          if (capture.data?.status === "confirmed" || capture.data?.status === "needs_reschedule") return;
+        } catch {
+          if (!stopped) {
+            setError("PayPal payment confirmation is taking longer than expected. Do not pay twice; contact SplitsPro if it doesn't confirm.");
+          }
+        }
       }
+      await poll();
+    };
+    begin();
+    return () => { stopped = true; if (pendingTimer) window.clearTimeout(pendingTimer); };
+  }, [paymentReturn, checkoutRef, paymentProvider]);
+
+  if (!validCount || (!paymentReturn && (!validDate || !validTime))) {
+    return <Navigate to={backUrl} replace />;
+  }
+
+  const update = (key, value) => {
+    setDetails((previous) => ({ ...previous, [key]: value }));
+    setError("");
+  };
+  const formReady = details.name.trim().length >= 2
+    && details.address.trim().length >= 6
+    && details.phone.replace(/\D/g, "").length >= 8
+    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email.trim());
+
+  const pay = async (event) => {
+    event.preventDefault();
+    if (!formReady || processing || settingsError || !settings) return;
+    if (provider === "stripe" && !settings.stripe_ready) return;
+    if (provider === "paypal" && !settings.paypal_ready) return;
+    setProcessing(true);
+    setError("");
+    try {
+      const available = await api.get("/cleaning-slots",
+        { params: { quantity: count, limit: 100 }, timeout: 35000 });
+      const stillFree = (available.data?.slots || []).some((s) => s.date === day && s.time === time);
+      if (!stillFree) throw new Error("That appointment has just filled. Please choose another time.");
       const response = await api.post("/cleaning-checkout", {
-        package_id: packageId,
-        booking_date: bookingDate,
-        booking_window: bookingWindow,
+        quantity: count,
+        booking_date: day,
+        start_time: time,
         payment_provider: provider,
-        name: customer.name.trim(),
-        address: customer.address.trim(),
-        phone: customer.phone.trim(),
-        email: customer.email.trim(),
+        name: details.name.trim(),
+        address: details.address.trim(),
+        phone: details.phone.trim(),
+        email: details.email.trim(),
         page_url: window.location.href,
         referrer: document.referrer || "",
       }, { timeout: 55000 });
-      const url = response.data?.checkout_url;
-      if (!url || !/^https:\/\//.test(url)) throw new Error("Secure checkout is not available for this booking. No payment has started.");
-      window.location.assign(url);
+      if (!response.data?.checkout_url || !/^https:\/\//.test(response.data.checkout_url)) {
+        throw new Error("Secure checkout is temporarily unavailable. No payment has started.");
+      }
+      if (Number(response.data.total_amount) !== price) {
+        throw new Error("The booking total couldn't be verified. No payment was taken.");
+      }
+      window.location.assign(response.data.checkout_url);
     } catch (e) {
-      const status = e?.response?.status;
-      const serverMessage = typeof e?.response?.data?.detail === "string" ? e.response.data.detail : "";
-      setError(status === 404 || status === 501
-        ? "Cleaning payment checkout is not connected yet. No payment was taken — please call SplitsPro to book."
-        : status === 409 ? "That date has filled up. Go back and choose another available time."
-        : serverMessage || e?.message || "Could not start secure payment. Nothing has been charged.");
-      setSubmitting(false);
+      const serverDetail = e?.response?.data?.detail;
+      const message = typeof serverDetail === "string" ? serverDetail
+        : typeof serverDetail?.message === "string" ? serverDetail.message
+        : e?.message || "Could not start payment. Nothing has been charged.";
+      setError(message);
+      setProcessing(false);
     }
   };
 
-  if (finished) {
-    const confirmed = paymentStatus?.status === "confirmed";
-    return <section className="min-h-[60vh] bg-[#F7F5F1] px-4 pb-20 pt-36">
-      <div className="mx-auto max-w-xl border-t-4 border-[#C8A46A] bg-white p-7">
-        <ShieldCheck className="h-9 w-9 text-[#C8A46A]" />
-        <h1 className="mt-4 font-serif text-3xl">{confirmed ? "Cleaning booking confirmed" : "Checking your payment"}</h1>
-        <p className="mt-3 text-sm leading-relaxed text-[#5B6066]">{confirmed
-          ? "Your " + selectedOffer.title + " is booked for " + formatDate(bookingDate) + " · " + bookingWindow + "."
-          : "We're checking the payment with your provider. Please don't pay twice. Your date is not confirmed until our payment system verifies it."}</p>
-        <Link to="/split-system-cleaning/" className="mt-6 inline-flex text-sm font-semibold text-[#906932] underline">Back to cleaning</Link>
-      </div>
-    </section>;
+  if (paymentReturn) {
+    const status = paymentStatus?.status || "processing";
+    const confirmed = status === "confirmed";
+    const needsHelp = status === "needs_reschedule";
+    return (
+      <section className="min-h-[70vh] bg-[#F4F9FC] px-4 pb-20 pt-36 text-[#102A41]">
+        <div className="mx-auto max-w-2xl border-t-[6px] border-[#05A4CD] bg-white p-7 shadow-sm sm:p-10">
+          {confirmed ? <ShieldCheck className="h-12 w-12 text-[#0E9C83]" /> : <Loader2 className="h-9 w-9 text-[#0699C8]" />}
+          <h1 className="mt-6 text-3xl font-black uppercase sm:text-4xl">
+            {confirmed ? "FULLY PAID. YOUR CLEAN IS BOOKED." : needsHelp ? "PAYMENT RECEIVED — TIME NEEDS CONFIRMING." : "VERIFYING YOUR FULL PAYMENT"}
+          </h1>
+          <p className="mt-4 text-base leading-relaxed text-[#405768]">
+            {confirmed
+              ? "Your " + count + " system cleaning appointment is confirmed for " + formatDate(day) + " at " + formatTime(time) + ". Total paid: " + money(price) + "."
+              : needsHelp
+                ? "Your payment was received, but that time requires rescheduling. Please contact SplitsPro; don't pay again."
+                : "Your payment provider has returned you to SplitsPro. We're verifying full payment and the booking. Please do not pay again while confirmation is processing."}
+          </p>
+          {error && <p className="mt-5 border-l-4 border-[#F4C620] pl-4 text-sm font-semibold text-[#6E4C16]">{error}</p>}
+          <a className="mt-7 inline-block text-base font-bold text-[#007DA5] underline" href="tel:0414698435">Call SplitsPro · 0414 698 435</a>
+          <div><Link to="/split-system-cleaning/" className="mt-5 inline-block text-sm underline">Back to cleaning page</Link></div>
+        </div>
+      </section>
+    );
   }
 
   return (
-    <div className="bg-[#F7F5F1] pb-20 pt-32 text-[#171717]" data-testid="cleaning-secure-checkout">
-      <Helmet><title>Secure Cleaning Booking | SplitsPro</title><meta name="robots" content="noindex,follow" /></Helmet>
-      <div className="sp-container mx-auto max-w-4xl">
-        <Link to={backHref} className="inline-flex items-center gap-2 py-2 text-xs font-bold uppercase tracking-[0.1em] text-[#92703C]"><ArrowLeft className="h-4 w-4" /> Back to cleaning dates</Link>
-        <div className="mt-5 grid gap-9 lg:grid-cols-[.85fr_1.15fr] lg:gap-12">
+    <div className="bg-[#F4F9FC] pb-20 pt-32 text-[#102A41]" data-testid="cleaning-secure-checkout">
+      <Helmet><title>Pay in Full & Book Your Cleaning | SplitsPro</title><meta name="robots" content="noindex,follow" /></Helmet>
+      <div className="sp-container mx-auto max-w-5xl">
+        <Link to={backUrl} className="inline-flex items-center gap-2 text-sm font-bold text-[#007FA4]">
+          <ArrowLeft className="h-4 w-4" /> Change your cleaning time
+        </Link>
+        <div className="mt-7 grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
-            <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[#946C35]">2 · Your details and secure payment</p>
-            <h1 className="mt-4 font-serif text-4xl leading-tight">Nearly there. Let's lock it in.</h1>
-            <div className="mt-7 border-y border-[#DBD6CD] py-5">
-              <p className="text-sm font-bold">{selectedOffer.title}</p>
-              <p className="mt-1 text-xs text-[#5E646A]">{selectedOffer.note}</p>
-              <p className="mt-3 text-4xl font-extrabold text-[#8F6A34]">{money(selectedOffer.price)}</p>
-              <p className="mt-4 text-sm font-bold">{formatDate(bookingDate)} · {bookingWindow}</p>
+            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#078EBA]">STEP 2 · SECURE FULL PAYMENT</p>
+            <h1 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">ONE PAYMENT. YOUR CLEAN SORTED.</h1>
+            <div className="mt-7 border-y-2 border-[#CDDCE5] py-6">
+              <p className="text-lg font-bold">{count} wall-mounted split system{count > 1 ? "s" : ""}</p>
+              <p className="mt-3 text-5xl font-black text-[#007FA4]">{money(price)}</p>
+              <p className="mt-2 text-sm font-semibold text-[#496070]">Paid in full upfront — no booking deposit or balance owing.</p>
+              <p className="mt-5 text-lg font-extrabold">{formatDate(day)} · {formatTime(time)}</p>
+              <p className="mt-2 text-sm text-[#596E7B]">Allow approximately {Math.floor(totalDuration / 60)}h {totalDuration % 60 ? "30m" : ""} for the full visit.</p>
             </div>
-            <p className="mt-4 text-xs leading-relaxed text-[#686D73]">The date is a requested opening until checkout is paid and confirmed. Final availability is rechecked before payment.</p>
-            <a href="tel:0414698435" className="mt-4 inline-flex text-sm font-bold text-[#8F6A34] underline underline-offset-4">Need help? Call 0414 698 435</a>
+            <p className="mt-4 text-sm leading-relaxed text-[#596E7B]">We'll recheck that the time is still available before starting payment. Your booking is confirmed after we verify payment in full.</p>
           </div>
-          <div className="border border-[#E3DED5] bg-white p-5 shadow-sm sm:p-8">
-            <h2 className="font-serif text-2xl">Your booking details</h2>
-            <p className="mt-2 text-xs text-[#63676D]">Just four details, then checkout in your existing Stripe or PayPal account.</p>
-            <form className="mt-6 space-y-4" onSubmit={submit}>
-              <label className={labelStyle}>Full name<input required type="text" autoComplete="name" value={customer.name} onChange={(e) => update("name", e.target.value)} className={inputStyle} placeholder="Full name" minLength={2} maxLength={120} /></label>
-              <label className={labelStyle}>Street address<input required type="text" autoComplete="street-address" value={customer.address} onChange={(e) => update("address", e.target.value)} className={inputStyle} placeholder="Street, suburb and postcode" minLength={6} maxLength={300} /></label>
-              <label className={labelStyle}>Phone number<input required type="tel" autoComplete="tel" value={customer.phone} onChange={(e) => update("phone", e.target.value)} className={inputStyle} placeholder="04xx xxx xxx" minLength={8} maxLength={32} /></label>
-              <label className={labelStyle}>Email address<input required type="email" autoComplete="email" value={customer.email} onChange={(e) => update("email", e.target.value)} className={inputStyle} placeholder="you@example.com" maxLength={254} /></label>
-              <p className="text-xs leading-relaxed text-[#676B70]">Prefer to pay later? Stripe may offer Afterpay, Klarna or Zip where enabled and eligible; PayPal may offer Pay in 4 separately. The payment provider determines availability and approval. Check the options shown at checkout; no instalment plan is guaranteed.</p>
-              <fieldset className="border-t border-[#E5E0D8] pt-5">
-                <legend className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#676B70]">Choose payment method</legend>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  {[{ id: "stripe", title: "Stripe", detail: "Card or eligible pay-later options" }, { id: "paypal", title: "PayPal", detail: "PayPal or eligible Pay in 4" }].map((choice) => (
-                    <label key={choice.id} className={"flex cursor-pointer items-start gap-3 rounded-lg border p-3 " + (provider === choice.id ? "border-[#C8A46A] bg-[#FBF5E8]" : "border-[#E3DED5]")}>
-                      <input type="radio" className="mt-1 accent-[#C8A46A]" name="cleaning-provider" value={choice.id} checked={provider === choice.id} onChange={() => setProvider(choice.id)} />
-                      <span><strong className="block text-sm">{choice.title}</strong><span className="mt-0.5 block text-xs text-[#676B70]">{choice.detail}</span></span>
+          <div className="border border-[#D5E3EC] bg-white p-6 shadow-sm sm:p-9">
+            <h2 className="text-2xl font-black uppercase">YOUR BOOKING DETAILS</h2>
+            <p className="mt-3 text-sm text-[#526677]">Name, address, phone and email. Then pay securely through your selected provider.</p>
+            <form onSubmit={pay} className="mt-7 space-y-5">
+              <label className={fieldLabel}>Full name<input className={fieldInput} required autoComplete="name" value={details.name} onChange={(e) => update("name", e.target.value)} placeholder="Full name" /></label>
+              <label className={fieldLabel}>Cleaning address<input className={fieldInput} required autoComplete="street-address" value={details.address} onChange={(e) => update("address", e.target.value)} placeholder="Street address, suburb and postcode" /></label>
+              <label className={fieldLabel}>Mobile number<input className={fieldInput} required type="tel" autoComplete="tel" value={details.phone} onChange={(e) => update("phone", e.target.value)} placeholder="04xx xxx xxx" /></label>
+              <label className={fieldLabel}>Email<input className={fieldInput} required type="email" autoComplete="email" value={details.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" /></label>
+              <fieldset className="border-t border-[#DEE6EC] pt-5">
+                <legend className="text-sm font-black uppercase tracking-wide">PAYMENT METHOD</legend>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {[
+                    { id: "stripe", title: "Stripe", note: "Card or eligible pay-later methods", enabled: settings?.stripe_ready },
+                    { id: "paypal", title: "PayPal", note: "PayPal or eligible Pay in 4", enabled: settings?.paypal_ready },
+                  ].map((method) => (
+                    <label key={method.id} className={"flex items-start gap-3 border p-4 " + (provider === method.id ? "border-[#00A1CF] bg-[#EFFAFE]" : "border-[#D6E0E7]") + (!method.enabled ? " opacity-50" : "")}>
+                      <input type="radio" name="cleaning-provider" disabled={!method.enabled || processing} checked={provider === method.id} onChange={() => setProvider(method.id)} />
+                      <span><strong className="block text-sm">{method.title}</strong><small className="mt-1 block text-xs text-[#586D7D]">{method.enabled ? method.note : "Currently unavailable"}</small></span>
                     </label>
                   ))}
                 </div>
               </fieldset>
-              <button type="submit" disabled={!isComplete || submitting} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#C8A46A] px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-[#111] disabled:cursor-not-allowed disabled:opacity-40">
-                {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Starting secure checkout…</> : <><CreditCard className="h-4 w-4" /> Continue to {provider === "stripe" ? "Stripe" : "PayPal"} · {money(selectedOffer.price)}</>}
+              <button type="submit" disabled={!formReady || !settings || !!settingsError || processing || !(provider === "stripe" ? settings?.stripe_ready : settings?.paypal_ready)}
+                className="flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] p-4 text-base font-black uppercase text-[#09243B] disabled:opacity-40">
+                {processing ? <><Loader2 className="h-5 w-5 animate-spin"/>Checking & opening payment…</>
+                  : <><CreditCard className="h-5 w-5"/>PAY {money(price)} IN FULL <ArrowRight className="h-5 w-5"/></>}
               </button>
-              {error && <p role="alert" className="border-l-2 border-red-600 pl-3 text-sm leading-relaxed text-red-700">{error}</p>}
-              {cancelled && <p role="status" className="text-sm text-[#816329]">Payment was cancelled. No booking was confirmed; try again when ready.</p>}
-              <p className="text-center text-[11px] leading-relaxed text-[#777]">No payment is taken on this page. Your payment provider displays the final amount before you confirm.</p>
+              {settingsError && <p role="alert" className="text-sm font-semibold text-[#9A441C]">{settingsError}</p>}
+              {error && <p role="alert" className="border-l-4 border-[#EDBD42] pl-4 text-sm font-semibold text-[#834E11]">{error}</p>}
+              {paymentCancelled && <p role="status" className="text-sm font-semibold">Payment was cancelled. Nothing was confirmed; you can try again.</p>}
+              <p className="text-xs leading-relaxed text-[#627888]">Full payment is required to confirm. Eligible instalment methods, where offered by Stripe or PayPal, are subject to their own eligibility and terms. No payment is taken directly on this page.</p>
             </form>
           </div>
         </div>
