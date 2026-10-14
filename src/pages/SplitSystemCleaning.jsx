@@ -448,7 +448,7 @@ export default function SplitSystemCleaning() {
                 <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>$300</strong></div>
                 {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $150</span><strong>{money((quantity - 1) * 150)}</strong></div>}
                 <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-5">
-                  <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total paid upfront</span>
+                  <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total</span>
                   <strong className="text-4xl font-black text-[#F4C620]">{money(cleaningPrice(quantity))}</strong>
                 </div>
               </div>
