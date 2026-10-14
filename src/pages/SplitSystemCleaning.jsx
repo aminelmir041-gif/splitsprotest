@@ -10,13 +10,13 @@ import { PHONE_TEL } from "../lib/data";
 // This is the ONE consumer sales landing page for split-system cleaning.
 // No separate cleaning funnel; the old /split-system-cleaning-offer/ URL redirects here.
 const CLEANING_OFFERS = [
-  { id: "one", name: "1 Deep Clean", label: "One split system", price: "$220", description: "A deep clean of service-accessible indoor components — beyond a simple filter rinse." },
-  { id: "two", name: "2 Deep Cleans", label: "Same property · $150 each", price: "$300", description: "Two wall-mounted split systems deep cleaned during one visit at the same property." }
+  { id: "one", name: "1 Complete Deep Clean", label: "One split system", price: "$300", description: "Deep cleaning plus compatible anti-mould and outdoor anti-corrosion protective treatments." },
+  { id: "two", name: "2 Complete Deep Cleans", label: "Same visit · second aircon $200", price: "$500", description: "Two complete deep cleans with protective treatments at the same property and during the same visit." }
 ];
 
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
-  { q: "Can I get 2 deep cleans for $300 at different properties?", a: "The $300 deal is for two standard wall-mounted split systems at the same property, during the same visit." },
+  { q: "How much is a second aircon at my property?", a: "The first complete deep clean is $300. The second is $200 extra at the same property and on the same visit, making $500 for both. For three or more units please ask us for a quote." },
   { q: "Do you have to remove the whole air conditioner?", a: "Normally no. We protect the area, open or remove suitable service-accessible covers and clean the accessible indoor components. We won't dismantle sealed refrigerant components as part of a cleaning job." },
   { q: "Can cleaning repair an air conditioner that isn't cooling?", a: "Cleaning can help when dirt is affecting airflow, but it won't fix a refrigerant leak, electrical fault or failed part. If we find a likely fault, we'll discuss the next step before any separate repair work." },
   { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." },
@@ -37,7 +37,7 @@ export default function SplitSystemCleaning() {
     }, 650);
     return () => window.clearTimeout(timeout);
   }, [location.hash]);
-  const [offerId, setOfferId] = useState("two");
+  const [offerId, setOfferId] = useState("one");
   const [openFaq, setOpenFaq] = useState(0);
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(true);
@@ -46,7 +46,7 @@ export default function SplitSystemCleaning() {
   const [selectedWindow, setSelectedWindow] = useState("");
   const [showMoreSlots, setShowMoreSlots] = useState(false);
   const [continuing, setContinuing] = useState(false);
-  const chosen = CLEANING_OFFERS.find((offer) => offer.id === offerId) || CLEANING_OFFERS[1];
+  const chosen = CLEANING_OFFERS.find((offer) => offer.id === offerId) || CLEANING_OFFERS[0];
   const scrollBook = () => document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
   const choose = (id) => { setOfferId(id); scrollBook(); };
 
@@ -104,11 +104,11 @@ export default function SplitSystemCleaning() {
   return (
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
-        <title>Split System Deep Cleaning | $220 or 2 for $300 | SplitsPro Sydney</title>
-        <meta name="description" content="You clean everything they touch. But what about the aircon they breathe around? SplitsPro deep cleaning for homes with children, pets and older loved ones. $220 for one, $300 for two at the same property." />
+        <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | $300 | SplitsPro Sydney</title>
+        <meta name="description" content="You clean everything they touch. But what about the aircon they breathe around? SplitsPro complete deep clean with anti-mould and suitable anti-corrosion protective treatment. $300 for one, second aircon at the same property $200 more." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
-        <meta property="og:description" content="For mums, dads, pet owners and families with older loved ones: see what your aircon might be hiding. Deep clean $220, or two at the same property for $300." />
+        <meta property="og:description" content="For mums, dads, pet owners and families with older loved ones: see what your aircon might be hiding. Complete deep clean and protective treatments $300; two for $500 at the same property." />
       </Helmet>
 
 
@@ -354,39 +354,58 @@ export default function SplitSystemCleaning() {
         <div className="sp-container">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007EA7]">NOW, HERE'S THE DEAL</p>
           <h2 className="mt-4 max-w-5xl text-4xl font-black uppercase leading-[1.04] tracking-tight text-[#0B2641] sm:text-5xl">
-            A PROPER DEEP CLEAN.
-            <span className="mt-2 block text-[#008DB8]">WITHOUT PAYING FOR WHAT YOU DON'T NEED.</span>
+            NOT ALL DEEP CLEANS ARE CREATED EQUAL.
+            <span className="mt-2 block text-[#008DB8]">THE DIFFERENCE IS WHAT HAPPENS AFTER THE CLEAN.</span>
           </h2>
           <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#50616D] sm:text-lg">
-            You're getting more than a filter rinse: careful internal cleaning, attention to the accessible hard-to-reach areas, protection for your home and an operational check when we're done.
+            Some cleaners wash away the grime, pack up and call it a day. We go further. After cleaning those hard-to-reach indoor components, we apply compatible anti-mould treatment where suitable, and anti-corrosion protection to suitable outdoor components. Then we reassemble and check the system.
           </p>
+          <div className="mt-10 border-y-2 border-[#C7DDE7] py-9" data-testid="cleaning-competitor-prices">
+            <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">WHAT IT CAN COST ELSEWHERE</p>
+            <div className="mt-7 grid gap-8 sm:grid-cols-2">
+              <div><p className="text-sm font-extrabold uppercase tracking-wider text-[#38576A]">SYDNEY DEEP CLEAN FROM</p><strong className="mt-2 block text-[clamp(4.5rem,12vw,7rem)] font-black leading-none tracking-tight text-[#0B2641]">$385</strong></div>
+              <div><p className="text-sm font-extrabold uppercase tracking-wider text-[#38576A]">ANTI-CORROSION TREATMENT UP TO</p><strong className="mt-2 block text-[clamp(4.5rem,12vw,7rem)] font-black leading-none tracking-tight text-[#0B2641]">$250</strong></div>
+            </div>
+            <p className="mt-8 text-sm font-black uppercase tracking-[0.13em] text-[#38576A]">TWO SEPARATE SERVICES CAN ADD UP TO</p>
+            <strong className="mt-1 block text-[clamp(5rem,15vw,9rem)] font-black leading-none tracking-tighter text-[#008DB8]">$635</strong>
+            <p className="mt-4 text-lg font-extrabold text-[#0B2641]">And we're throwing in the anti-mould protective treatment with our complete clean.</p>
+            <p className="mt-6 max-w-4xl text-xs leading-relaxed text-[#607581]">Comparison of separately published prices, not one competitor's quote: A Grade Air Con advertises a Signature Split System Deep Clean from $385 including anti-mould treatment. Denali Air advertises coastal anti-corrosion protection for $120–$250+ depending on scope. Inclusions and services may differ. <a className="underline" href="https://agradeaircon.com.au/services/air-conditioning-maintenance/" target="_blank" rel="noopener noreferrer">Deep-clean pricing</a> · <a className="underline" href="https://www.denaliair.com.au/services/air-conditioning-service-nowra" target="_blank" rel="noopener noreferrer">Corrosion-treatment pricing</a>.</p>
+          </div>
+          <div className="mt-10 border-l-[6px] border-[#F4C620] pl-5 sm:pl-8" data-testid="cleaning-300-complete-offer">
+            <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">SO HERE'S THE SPLITSPRO DEAL</p>
+            <h3 className="mt-3 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">PROFESSIONAL DEEP CLEAN. ANTI-MOULD. ANTI-CORROSION.</h3>
+            <strong className="mt-4 block text-[clamp(5rem,16vw,9rem)] font-black leading-none tracking-tighter text-[#0B2641]">$300</strong>
+            <p className="mt-4 text-xl font-black uppercase text-[#008DB8]">ONE VISIT. THREE SERVICES. ONE CRACKING DEAL.</p>
+            <p className="mt-4 text-lg font-bold text-[#0B2641]">Got another aircon at the same property? The second complete clean is just <span className="text-[#007EA7]">$200 extra.</span></p>
+          </div>
+
           <div className="mt-8 border-y border-[#C7DDE7] py-6" data-testid="cleaning-deal-sweetener">
             <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">THE VALUE IS IN WHAT'S INCLUDED</p>
             <div className="mt-5 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                "Accessible internal coil and blower attention",
-                "Work area protected during the clean",
-                "Reassembly and operation check",
-                "Clear quote before any non-standard work"
+                "Accessible internal coil and blower cleaning",
+                "Compatible anti-mould treatment on suitable indoor surfaces",
+                "Suitable outdoor anti-corrosion protective treatment",
+                "Reassembly and operation check"
               ].map((value) => (
                 <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-[#153249]" key={value}><Check className="mt-0.5 h-5 w-5 shrink-0 text-[#007FA4]"/>{value}</p>
               ))}
             </div>
           </div>
-          <h3 className="mt-10 text-2xl font-black uppercase text-[#0B2641] sm:text-3xl">CHOOSE THE CLEAN THAT SUITS YOUR HOME.</h3>
+          <h3 className="mt-10 text-2xl font-black uppercase text-[#0B2641] sm:text-3xl">CHOOSE YOUR COMPLETE CLEAN PACKAGE.</h3>
           <div className="mt-6 grid gap-5 md:grid-cols-2">
             {CLEANING_OFFERS.map((offer) => {
               const featured = offer.id === "two";
               return (
                 <div key={offer.id} className={"border-t-[5px] bg-white px-6 pb-7 pt-6 sm:px-8 " + (featured ? "border-[#F4C620] shadow-[0_12px_30px_rgba(9,56,81,0.08)]" : "border-[#008DB8]")}>
-                  {featured && <p className="mb-4 inline-block bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#09243A]">Best value — save $140 vs two single cleans</p>}
+                  {featured && <p className="mb-4 inline-block bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#09243A]">Second aircon just $200 — save $100 vs two separate visits</p>}
                   <p className="text-sm font-black uppercase tracking-[0.12em] text-[#007FA4]">{offer.label}</p>
                   <div className="mt-3 flex items-end justify-between gap-3">
                     <h4 className="text-2xl font-black uppercase text-[#0B2641]">{offer.name}</h4>
                     <strong className="text-4xl font-black tracking-tight text-[#0B2641] sm:text-5xl">{offer.price}</strong>
                   </div>
                   <p className="mt-5 min-h-[3rem] text-sm leading-relaxed text-[#5C6A73]">{offer.description}</p>
-                  {featured && <p className="mt-3 font-bold text-[#007FA4]">That's $150 per unit when we clean both at the same property.</p>}
+                  {featured && <p className="mt-3 font-bold text-[#007FA4]">That's $300 for the first and $200 for the second.</p>}
                   <button type="button" onClick={() => choose(offer.id)} className={"mt-6 flex min-h-14 w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-base font-black uppercase " + (featured ? "bg-[#F4C620] text-[#081D2F] hover:bg-[#FBDD42]" : "bg-[#007FA4] text-white hover:bg-[#006F91]")}>
                     Choose my date <ArrowRight className="h-5 w-5"/>
                   </button>
@@ -395,10 +414,10 @@ export default function SplitSystemCleaning() {
             })}
           </div>
           <p className="mt-5 text-sm leading-relaxed text-[#566D7B]">
-            Standard-access wall-mounted splits only. The two-unit offer applies to one address during one visit. Any additional work is quoted before it starts.
+            Standard-access wall-mounted splits only. The second-aircon offer applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-[#566D7B]">
-            Choose your date and continue to Stripe or PayPal checkout. Eligible payment methods or instalments, where offered, are shown by the provider at checkout and are subject to approval.
+            Buy now, pay later may be available: Stripe may show Afterpay, Klarna or Zip if enabled and you are eligible; PayPal may show Pay in 4 separately. Choose your date, enter your details and select your payment provider. All instalment plans are subject to availability and approval.
           </p>
         </div>
       </section>
@@ -420,7 +439,7 @@ export default function SplitSystemCleaning() {
                   <span className="text-2xl font-extrabold text-[#F4C620]">{offer.price}</span>
                 </button>
               ))}
-              <p className="mt-4 text-xs leading-relaxed text-white/55">Two cleans must be at the same property and during the same visit. Standard-access wall-mounted units only.</p>
+              <p className="mt-4 text-xs leading-relaxed text-white/55">The second aircon is $200 extra at the same property and during the same visit. Standard-access wall-mounted units only.</p>
             </div>
 
             <div className="border-t border-white/20 pt-5">
