@@ -50,6 +50,12 @@ export default function PayLaterReminder({
             Options depend on provider availability, spending limits and approval. Fees, interest and repayment terms vary; review the provider's terms before paying.
           </p>
         </>
+      ) : kind === "equipment" && compact ? (
+        <p className={"mt-2 text-sm font-semibold leading-relaxed " + bodyColor}>
+          Eligible equipment purchases may offer <strong>Afterpay, Klarna or Zip through Stripe</strong>, or
+          {" "}<strong>PayPal Pay in 4</strong> for qualifying smaller units.
+          <span className="mt-1 block text-xs font-normal">Availability, spending limits and approval are confirmed at the provider checkout. Installation is separately charged where applicable.</span>
+        </p>
       ) : kind === "deposit" ? (
         <>
           <p className={"mt-2 text-sm font-medium leading-relaxed " + bodyColor}>
