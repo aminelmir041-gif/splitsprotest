@@ -203,7 +203,7 @@ def main() -> None:
          'cleaning-unit-quantity'),
         ("src/pages/CleaningCheckout.jsx",
          "cleaning-checkout-before-payment-reminder",
-         'PAY {money(price)} IN FULL'),
+         'CONTINUE TO'),
         ("src/pages/CleaningCheckout.jsx",
          "cleaning-before-customer-form-pay-later-reminder",
          '<form onSubmit={pay}'),
