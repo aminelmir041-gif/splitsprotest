@@ -54,6 +54,24 @@ export const getCleaningSlots = async (quantity = 1, limit = 70) => {
   throw lastError;
 };
 
+export const getCleaningCheckoutConfig = async () => {
+  let lastError;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const response = await api.get("/cleaning-checkout-config", {
+        timeout: 30000,
+        headers: { "Cache-Control": "no-cache" },
+      });
+      return response.data;
+    } catch (error) {
+      lastError = error;
+      if (error?.response?.status && error.response.status < 500) throw error;
+      if (attempt < 2) await sleep((attempt + 1) * 850);
+    }
+  }
+  throw lastError;
+};
+
 export const submitBooking = (data) => api.post("/bookings", data).then((r) => r.data);
 export const createBookingCheckout = (data) => api.post("/booking-checkout", data).then((r) => r.data);
 export const getBookingPaymentStatus = (sessionId) =>
