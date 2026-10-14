@@ -94,6 +94,10 @@ def paid_key(ref):
     return "splitspro:cleaning-paid:" + ref
 
 
+def order_key(ref):
+    return "splitspro:cleaning-order:" + ref
+
+
 def _get_json(connection, key):
     raw = connection.get(key)
     return json.loads(raw) if raw else None
@@ -407,6 +411,9 @@ def create_cleaning_checkout(payload: CleaningCheckoutRequest):
         checkout_url = (_create_stripe_checkout(hold) if payload.payment_provider == "stripe"
                         else _create_paypal_checkout(hold))
         connection.set(hold_key(reference), json.dumps(hold), ex=HOLD_SECONDS)
+        # Preserve verified payment identity after a temporary slot hold expires.
+        # A late successful payment must be recorded and offered rescheduling.
+        connection.set(order_key(reference), json.dumps(hold), ex=BOOKING_TTL)
         return {"checkout_url": checkout_url, "checkout_ref": reference, "currency": "AUD",
                 "quantity": payload.quantity, "total_amount": cents / 100, "paid_upfront": True}
     except Exception:
@@ -475,9 +482,9 @@ def confirm_stripe_cleaning_payment(session: dict, background_tasks: BackgroundT
     paid = _get_json(connection, paid_key(ref))
     if paid:
         return True
-    hold = _get_json(connection, hold_key(ref))
+    hold = _get_json(connection, hold_key(ref)) or _get_json(connection, order_key(ref))
     if not hold:
-        logging.error("Paid cleaning Stripe event with expired/missing hold: %s", ref)
+        logging.error("Paid cleaning Stripe event without a saved order: %s", ref)
         return True
     if (hold.get("payment_provider") != "stripe"
         or session.get("id") != hold.get("stripe_session_id")
@@ -516,7 +523,8 @@ def capture_cleaning_paypal(payload: CapturePaypalCleaning, background_tasks: Ba
     paid = _get_json(connection, paid_key(payload.checkout_ref))
     if paid:
         return paid
-    hold = _get_json(connection, hold_key(payload.checkout_ref))
+    hold = (_get_json(connection, hold_key(payload.checkout_ref))
+            or _get_json(connection, order_key(payload.checkout_ref)))
     if not hold or hold.get("payment_provider") != "paypal" or not hold.get("paypal_order_id"):
         raise HTTPException(status_code=409, detail="PayPal payment could not be matched to a current booking")
     token = paypal_token()
