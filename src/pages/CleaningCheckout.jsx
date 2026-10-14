@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, ArrowRight, CreditCard, Loader2, ShieldCheck } from "lucide-react";
-import { api } from "../lib/api";
+import { api, getCleaningCheckoutConfig } from "../lib/api";
 
 const FIRST_PRICE = 300;
 const EXTRA_PRICE = 150;
@@ -24,7 +24,8 @@ export default function CleaningCheckout() {
   const paymentCancelled = params.get("cleaning_payment") === "cancelled";
   const paymentProvider = params.get("provider") || "";
   const validCount = Number.isInteger(count) && count >= 1 && count <= MAX_UNITS;
-  const validTime = ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00"].includes(time);
+  const validTime = ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00"].includes(time)
+    && ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00"].indexOf(time) + count <= 7;
   const localToday = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(day) && day >= localToday;
   const price = validCount ? FIRST_PRICE + EXTRA_PRICE * (count - 1) : FIRST_PRICE;
@@ -35,6 +36,8 @@ export default function CleaningCheckout() {
   const [provider, setProvider] = useState("stripe");
   const [settings, setSettings] = useState(null);
   const [settingsError, setSettingsError] = useState("");
+  const [paymentRefreshKey, setPaymentRefreshKey] = useState(0);
+  const [settingsLoading, setSettingsLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
   const [paymentStatus, setPaymentStatus] = useState({ status: "processing" });
@@ -43,15 +46,18 @@ export default function CleaningCheckout() {
   useEffect(() => {
     if (paymentReturn || !validCount) return undefined;
     let live = true;
-    api.get("/cleaning-checkout-config", { timeout: 18000 })
+    setSettingsLoading(true);
+    setSettingsError("");
+    getCleaningCheckoutConfig()
       .then(({ data }) => { if (live) {
         setSettings(data);
+        setSettingsLoading(false);
         if (!data.stripe_ready && data.paypal_ready) setProvider("paypal");
         if (!data.stripe_ready && !data.paypal_ready) setSettingsError("Secure full-payment checkout is temporarily unavailable. Please contact SplitsPro.");
       }})
-      .catch(() => { if (live) setSettingsError("Couldn't connect to secure booking checkout. Please try again."); });
+      .catch(() => { if (live) { setSettingsLoading(false); setSettingsError("Payment options could not load. Try again below."); } });
     return () => { live = false; };
-  }, [paymentReturn, validCount]);
+  }, [paymentReturn, validCount, paymentRefreshKey]);
 
   useEffect(() => {
     if (!paymentReturn || !checkoutRef) return undefined;
@@ -112,10 +118,7 @@ export default function CleaningCheckout() {
     setProcessing(true);
     setError("");
     try {
-      const available = await api.get("/cleaning-slots",
-        { params: { quantity: count, limit: 100 }, timeout: 35000 });
-      const stillFree = (available.data?.slots || []).some((s) => s.date === day && s.time === time);
-      if (!stillFree) throw new Error("That appointment has just filled. Please choose another time.");
+      // Server checks live availability and holds the slot atomically.
       const response = await api.post("/cleaning-checkout", {
         quantity: count,
         booking_date: day,
@@ -172,14 +175,14 @@ export default function CleaningCheckout() {
   }
 
   return (
-    <div className="bg-[#F4F9FC] pb-20 pt-32 text-[#102A41]" data-testid="cleaning-secure-checkout">
+    <div className="bg-[#F4F9FC] pb-20 pt-28 text-[#102A41]" data-testid="cleaning-secure-checkout">
       <Helmet><title>Secure Cleaning Checkout & Pay Later Options | SplitsPro</title><meta name="robots" content="noindex,follow" /></Helmet>
       <div className="sp-container mx-auto max-w-5xl">
         <Link to={backUrl} className="inline-flex items-center gap-2 text-sm font-bold text-[#007FA4]">
           <ArrowLeft className="h-4 w-4" /> Change your cleaning time
         </Link>
-        <div className="mt-7 grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
-          <div>
+        <div className="mt-5 grid gap-5 lg:mt-7 lg:grid-cols-[0.85fr_1.15fr] lg:gap-10">
+          <div className="hidden lg:block">
             <p className="text-sm font-black uppercase tracking-[0.16em] text-[#078EBA]">STEP 2 · SECURE FULL PAYMENT</p>
             <h1 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">YOUR CLEAN. YOUR WAY TO PAY.</h1>
             <div className="mt-7 border-y-2 border-[#CDDCE5] py-6">
@@ -197,6 +200,14 @@ export default function CleaningCheckout() {
             <p className="mt-4 text-sm leading-relaxed text-[#596E7B]">We'll recheck that the time is still available before starting payment. Your booking is confirmed after we verify payment in full.</p>
           </div>
           <div className="border border-[#D5E3EC] bg-white p-6 shadow-sm sm:p-9">
+            <div className="mb-6 border-b border-[#D7E5ED] pb-5 lg:hidden" data-testid="cleaning-mobile-payment-summary">
+              <p className="text-xs font-black uppercase tracking-[0.13em] text-[#007FA4]">YOUR SELECTED CLEAN</p>
+              <div className="mt-2 flex items-end justify-between gap-4">
+                <div><p className="font-black text-[#0B2641]">{count} split {count === 1 ? "system" : "systems"}</p><p className="mt-1 text-sm text-[#526677]">{formatDate(day)} · {formatTime(time)}</p></div>
+                <strong className="text-4xl font-black text-[#007FA4]">{money(price)}</strong>
+              </div>
+              <p className="mt-2 text-xs text-[#526677]">Full cleaning total at secure checkout; eligible provider instalments may be offered.</p>
+            </div>
             <h2 className="text-2xl font-black uppercase">YOUR BOOKING DETAILS</h2>
             <p className="mt-3 text-sm text-[#526677]">Name, address, phone and email. Then pay securely through your selected provider.</p>
             <div className="mt-5 border-t border-[#DEE6EC] pt-4" data-testid="cleaning-before-customer-form-pay-later-reminder">
@@ -226,10 +237,11 @@ export default function CleaningCheckout() {
               </fieldset>
               <button type="submit" disabled={!formReady || !settings || !!settingsError || processing || !(provider === "stripe" ? settings?.stripe_ready : settings?.paypal_ready)}
                 className="flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] p-4 text-base font-black uppercase text-[#09243B] disabled:opacity-40">
-                {processing ? <><Loader2 className="h-5 w-5 animate-spin"/>Checking & opening payment…</>
-                  : <><CreditCard className="h-5 w-5"/>PAY {money(price)} IN FULL <ArrowRight className="h-5 w-5"/></>}
+                {processing ? <><Loader2 className="h-5 w-5 animate-spin"/>Opening secure payment…</>
+                  : <><CreditCard className="h-5 w-5"/>CONTINUE TO {provider === "paypal" ? "PAYPAL" : "STRIPE"} · {money(price)} <ArrowRight className="h-5 w-5"/></>}
               </button>
-              {settingsError && <p role="alert" className="text-sm font-semibold text-[#9A441C]">{settingsError}</p>}
+              {settingsLoading && <p role="status" className="text-sm font-medium text-[#526677]">Checking available payment methods...</p>}
+              {settingsError && <div role="alert" className="border-l-[3px] border-[#F4C620] pl-3"><p className="text-sm font-semibold text-[#9A441C]">{settingsError}</p><button type="button" onClick={() => setPaymentRefreshKey((value) => value + 1)} className="mt-2 text-sm font-black text-[#007FA4] underline underline-offset-2">Retry payment connection</button></div>}
               {error && <p role="alert" className="border-l-4 border-[#EDBD42] pl-4 text-sm font-semibold text-[#834E11]">{error}</p>}
               {paymentCancelled && <p role="status" className="text-sm font-semibold">Payment was cancelled. Nothing was confirmed; you can try again.</p>}
               <p className="text-xs leading-relaxed text-[#627888]">Full payment is required to confirm. Eligible instalment methods, where offered by Stripe or PayPal, are subject to their own eligibility and terms. No payment is taken directly on this page.</p>
