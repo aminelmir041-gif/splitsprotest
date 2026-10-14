@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, CreditCard, Loader2, ShieldCheck } from "lucide-
 import { api } from "../lib/api";
 
 const FIRST_PRICE = 300;
-const EXTRA_PRICE = 150;
+const EXTRA_PRICE = 200;
 const MAX_UNITS = 7;
 const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
 const fieldLabel = "block text-xs font-black uppercase tracking-wide text-[#516072]";
