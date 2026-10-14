@@ -179,9 +179,15 @@ def main() -> None:
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
         '"/cleaning-checkout-config"', 'start_time: time', 'quantity: count',
-        'api.get("/cleaning-slots"', "PAY {money(price)} IN FULL",
+        'api.get("/cleaning-slots"', "CONTINUE TO {provider === \"paypal\" ? \"PAYPAL\" : \"STRIPE\"} · {money(price)}",
     )):
         fail("cleaning checkout must verify live availability, full payment and quantity with the server")
+    # Full checkout uses the booking server's one atomic availability-and-hold
+    # request; no redundant calendar call that might reject later valid dates.
+    if 'api.get("/cleaning-slots"' in secure_page:
+        fail("cleaning checkout must not fetch the entire calendar before the atomic checkout request")
+    if "cleaning-mobile-payment-summary" not in secure_page:
+        fail("mobile checkout must show date and price above customer details")
     for field in ('name', 'address', 'phone', 'email'):
         if field not in secure_page:
             fail(f"cleaning checkout missing customer field {field}")
