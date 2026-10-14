@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock3, Droplets, Loader2, ShieldCheck, Sun, Wind } from "lucide-react";
-import { getCleaningSlots } from "../lib/api";
+import { api, getCleaningSlots } from "../lib/api";
 import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
@@ -46,6 +46,7 @@ export default function SplitSystemCleaning() {
   const [selectedTime, setSelectedTime] = useState("");
   const [showMoreSlots, setShowMoreSlots] = useState(false);
   const [continuing, setContinuing] = useState(false);
+  const [paymentReadiness, setPaymentReadiness] = useState({ stripe_ready: false, paypal_ready: false });
   const requestId = useRef(0);
   const scrollBook = () => document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
   const choose = (count) => { setQuantity(count); scrollBook(); };
@@ -63,10 +64,11 @@ export default function SplitSystemCleaning() {
         (slot) => slot?.date && /^\d{2}:\d{2}$/.test(slot?.time || "")
       );
       setSlots(next);
-      if (selectedDate && selectedTime &&
-          !next.some((slot) => slot.date === selectedDate && slot.time === selectedTime)) {
-        setSelectedDate("");
-        setSelectedTime("");
+      // Highlight an actual live opening by default, keeping a prior choice if still free.
+      if (!next.some((slot) => slot.date === selectedDate && slot.time === selectedTime)) {
+        const defaultSlot = next.find((slot) => slot.date === selectedDate) || next[0];
+        setSelectedDate(defaultSlot?.date || "");
+        setSelectedTime(defaultSlot?.time || "");
       }
     } catch {
       if (token !== requestId.current) return;
@@ -92,6 +94,19 @@ export default function SplitSystemCleaning() {
     };
   }, [quantity, selectedDate, selectedTime]);
 
+  useEffect(() => {
+    let active = true;
+    api.get("/cleaning-checkout-config", { timeout: 20000 })
+      .then(({ data }) => {
+        if (active) setPaymentReadiness({
+          stripe_ready: Boolean(data?.stripe_ready),
+          paypal_ready: Boolean(data?.paypal_ready),
+        });
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
+
   const formatDate = (day) => new Date(day + "T00:00:00").toLocaleDateString(
     "en-AU", { weekday: "short", day: "numeric", month: "short" });
   const formatTime = (time) => new Date("2026-01-01T" + time + ":00").toLocaleTimeString(
@@ -102,15 +117,8 @@ export default function SplitSystemCleaning() {
     if (!selectedDate || !selectedTime || continuing) return;
     setContinuing(true);
     try {
-      const data = await getCleaningSlots(quantity, 100);
-      const fresh = Array.isArray(data?.slots) ? data.slots : [];
-      if (!fresh.some((slot) => slot.date === selectedDate && slot.time === selectedTime)) {
-        setSelectedDate("");
-        setSelectedTime("");
-        setSlots(fresh);
-        setSlotsError("That time has just booked out. Choose another opening.");
-        return;
-      }
+      // The checkout server performs the authoritative conflict check under
+      // the shared day lock; a second page-side calendar request only delays buyers.
       navigate("/secure-cleaning?" + new URLSearchParams({
         count: String(quantity), date: selectedDate, time: selectedTime
       }).toString());
@@ -508,10 +516,11 @@ export default function SplitSystemCleaning() {
               {slotsLoading && <p className="mt-5 flex items-center gap-2 text-sm text-white/75"><Loader2 className="h-4 w-4 animate-spin"/> Checking live bookings...</p>}
               {slotsError && <p className="mt-5 border-l-[3px] border-[#F4C620] pl-3 text-sm font-semibold text-[#F4C620]" role="alert">{slotsError}</p>}
               {!slotsLoading && availableDays.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/80">No online openings are available for {quantity} systems right now. Call 0414 698 435 to ask about another date.</p>}
+              <p className="mt-4 text-xs text-white/65">Soonest available opening is selected automatically. Choose another date or time if you prefer.</p>
               <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {(showMoreSlots ? availableDays : availableDays.slice(0, 6)).map((day) => (
                   <button type="button" key={day} aria-pressed={selectedDate === day}
-                    onClick={() => { setSelectedDate(day); setSelectedTime(""); setSlotsError(""); }}
+                    onClick={() => { const first = slots.find((slot) => slot.date === day); setSelectedDate(day); setSelectedTime(first?.time || ""); setSlotsError(""); }}
                     className={"min-h-14 rounded-md border px-3 py-3 text-sm font-bold transition " + (selectedDate === day ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
                     {formatDate(day)}
                   </button>
@@ -534,7 +543,7 @@ export default function SplitSystemCleaning() {
               <button type="button" onClick={continueBooking}
                 disabled={!selectedDate || !selectedTime || continuing || slotsLoading || !!slotsError}
                 className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
-                {continuing ? "Rechecking your time..." : "Continue to details & full payment"} <ArrowRight className="h-5 w-5"/>
+                {continuing ? "Opening secure booking..." : "Continue to details & full payment"} <ArrowRight className="h-5 w-5"/>
               </button>
               <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when secure checkout begins. The booking is confirmed only once full payment is verified.</p>
             </div>
