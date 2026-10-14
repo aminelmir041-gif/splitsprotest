@@ -15,11 +15,11 @@ const CLEANING_OFFERS = [
 ];
 
 const WHAT_WE_CLEAN = [
-  { title: "Filters and indoor covers", copy: "Wash washable filters and service-accessible indoor surfaces, with surrounding areas protected." },
-  { title: "Evaporator coil", copy: "Clean accessible coil surfaces where dust and grime can collect out of sight." },
+  { title: "Filters, covers and removable drain pan", copy: "Remove washable filters and covers, and remove the drain pan where safely accessible; clean these parts and protect the work area." },
+  { title: "Indoor cooling coil and the area behind it", copy: "Clean accessible cooling-coil surfaces and reach behind the coil where the model permits without disturbing the sealed refrigerant circuit." },
   { title: "Blower wheel and airflow path", copy: "Clean the accessible fan barrel and airflow path to help remove buildup that can restrict circulation." },
-  { title: "Drain tray and accessible drain", copy: "Clean accessible drain areas and check drainage where the system allows." },
-  { title: "Suitable surface treatment", copy: "Where compatible with the unit and the product label, apply a protective coating intended to discourage mould-related buildup on approved surfaces." }
+  { title: "Drain pan and accessible drain", copy: "Remove and clean the pan when its design allows and check the accessible drain path." },
+  { title: "Anti-mould and anti-corrosion protection", copy: "Use compatible protective products only on approved surfaces. Outdoor and PCB-enclosure treatments depend on job scope, manufacturer guidance and electrical safety." }
 ];
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
@@ -230,44 +230,44 @@ export default function SplitSystemCleaning() {
       <section className="bg-[#081C2B] py-16 text-white sm:py-24" id="cleaning-solution" data-testid="cleaning-solution">
         <div className="sp-container">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-[#40C9EE]">THE SPLITSPRO SOLUTION</p>
-          <div className="mt-5 grid items-center gap-8 lg:grid-cols-[1.04fr_0.96fr] lg:gap-14">
-            <div>
-              <h2 className="max-w-3xl text-4xl font-black uppercase leading-[1.03] tracking-tight sm:text-5xl xl:text-6xl">
-                A FILTER WASH IS A START.
-                <span className="mt-2 block text-[#45C6E7]">WE GO DEEPER.</span>
-              </h2>
-              <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
-                Imagine knowing the hidden parts have had some proper attention too. Not just the removable filter — the accessible blower, cooling coil, drain tray and air path where dust and grime can build up.
-              </p>
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#D5E6EF]">
-                That's the difference between giving an aircon a quick once-over and booking a professional deep clean. We work carefully inside the unit, using cleaning products suitable for its parts, then put everything back and check operation.
-              </p>
-              <p className="mt-5 border-l-[3px] border-[#F4C620] pl-4 text-sm font-semibold leading-relaxed text-white">
-                Less hidden buildup to wonder about. A cleaner machine to rely on. No scare tactics — just the care you'd expect in your home.
-              </p>
-            </div>
-            <figure className="overflow-hidden rounded-xl bg-[#EAF8FC]">
-              <img src="/landing/cfu-professional-clean.webp" alt="Illustrative close-up of internal split-system air-conditioner cleaning" loading="lazy" decoding="async" className="aspect-[5/4] w-full object-cover"/>
-              <figcaption className="px-4 py-3 text-xs leading-relaxed text-[#355568]">Illustrative process image. The parts we can safely reach depend on the model and condition of your unit.</figcaption>
-            </figure>
+          <div className="mt-5 max-w-5xl">
+            <h2 className="max-w-5xl text-4xl font-black uppercase leading-[1.03] tracking-tight sm:text-5xl xl:text-6xl">
+              A FILTER WASH IS A START.
+              <span className="mt-2 block text-[#45C6E7]">WE GO DEEPER.</span>
+            </h2>
+            <p className="mt-7 max-w-4xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
+              Imagine knowing the hidden parts of your aircon have had some proper attention, too. Not just the removable filter — the coil, fan, drain pan and areas behind the covers where dust and grime collect out of sight.
+            </p>
+            <p className="mt-5 max-w-4xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
+              We take out the filters, strip off the front cover and remove the drain pan when the unit allows. Then we clean the cover, accessible internal surfaces and behind the indoor cooling coil where it can be safely reached. We don't just spray what you can see and walk away.
+            </p>
+            <p className="mt-5 max-w-4xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
+              Once everything is properly cleaned, we apply suitable anti-mould treatment and anti-corrosion protection where compatible. That can include approved surfaces of indoor and outdoor units and appropriate treatment around PCB enclosures — using products specifically safe for the material and electronics, not spraying exposed live circuitry.
+            </p>
+            <p className="mt-6 max-w-4xl border-l-[3px] border-[#F4C620] pl-5 text-base font-extrabold leading-relaxed text-white">
+              WE STRIP IT BACK. CLEAN THE HIDDEN PARTS. PROTECT WHAT WE CAN. THEN REASSEMBLE AND CHECK IT.
+            </p>
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#B6D6E5]">
+              Exact dismantling and coating application depend on the manufacturer's design and product instructions. Outdoor-unit or PCB-area treatment is only included when suitable and agreed for the job.
+            </p>
           </div>
           <div className="mt-12 border-t border-white/20 pt-9 sm:mt-16">
             <p className="text-xs font-black uppercase tracking-[0.16em] text-[#45C6E7]">HOW WE LOOK AFTER YOUR AIRCON</p>
             <div className="mt-6 grid gap-7 md:grid-cols-3">
               <article className="border-t-[3px] border-[#F4C620] pt-5">
                 <span className="text-4xl font-black text-[#45C6E7]">01</span>
-                <h3 className="mt-3 text-2xl font-extrabold">Protect the home.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">Protect the surrounding work area. Open the indoor unit and remove service-accessible covers and filters without unnecessary disruption.</p>
+                <h3 className="mt-3 text-2xl font-extrabold">Strip it back properly.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">We protect your home, take out the washable filters, remove the front cover and take out the drain pan where the model allows.</p>
               </article>
               <article className="border-t-[3px] border-[#F4C620] pt-5">
                 <span className="text-4xl font-black text-[#45C6E7]">02</span>
-                <h3 className="mt-3 text-2xl font-extrabold">Get into the grime.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">Deep-clean accessible coil, blower wheel, airflow and drain surfaces with appropriate products — the places a quick filter rinse cannot reach.</p>
+                <h3 className="mt-3 text-2xl font-extrabold">Clean what a filter rinse misses.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">We wash the covers and accessible internal parts, including the blower, drain areas, coil surfaces and behind the coil wherever safe access allows.</p>
               </article>
               <article className="border-t-[3px] border-[#F4C620] pt-5">
                 <span className="text-4xl font-black text-[#45C6E7]">03</span>
-                <h3 className="mt-3 text-2xl font-extrabold">Finish it properly.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">Apply a compatible protective treatment where suitable, reassemble the unit, check operation and explain what was cleaned.</p>
+                <h3 className="mt-3 text-2xl font-extrabold">Protect, reassemble and test.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#D5E6EF]">We apply compatible anti-mould and anti-corrosion protection where suitable, including appropriate indoor and outdoor surfaces when agreed. We then reassemble and check operation.</p>
               </article>
             </div>
           </div>
