@@ -349,6 +349,38 @@ export default function SplitSystemCleaning() {
               </div>
             </div>
           </div>
+          <div className="mt-12 border-y-[5px] border-[#008DB8] bg-[#F0F9FC] px-5 py-8 sm:px-9 sm:py-10" data-testid="cleaning-certificate-trust">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
+              <div className="max-w-3xl">
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#007EA7]">PROOF OF THE JOB — INCLUDED WITH YOUR CLEAN</p>
+                <h3 className="mt-3 text-3xl font-black uppercase leading-[1.07] tracking-tight text-[#0B2641] sm:text-4xl">
+                  DON'T JUST TAKE OUR WORD FOR IT.
+                  <span className="mt-2 block text-[#008DB8]">TAKE HOME THE PROOF.</span>
+                </h3>
+                <p className="mt-5 text-base font-medium leading-relaxed text-[#3B596B] sm:text-lg">
+                  After your service, we'll provide a SplitsPro Cleaning Completion Certificate showing which parts of your actual aircon were cleaned, which protective treatments were applied and before-and-after job photos. So you can see the work for yourself — no guesswork, no vague promises.
+                </p>
+              </div>
+              <div className="min-w-0 border-l-[4px] border-[#F4C620] pl-5 lg:w-[19rem] lg:shrink-0">
+                <p className="text-base font-black uppercase tracking-wide text-[#0B2641]">YOUR CERTIFICATE RECORDS</p>
+                <div className="mt-4 space-y-3">
+                  {[
+                    "Your service date and system details",
+                    "An itemised checklist of areas actually cleaned",
+                    "Anti-mould and anti-corrosion treatments applied",
+                    "Before-and-after photos from your service"
+                  ].map((item) => (
+                    <p key={item} className="flex items-start gap-3 text-sm font-bold leading-relaxed text-[#244254]">
+                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#008DB8]" aria-hidden="true" />{item}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p className="mt-6 text-xs leading-relaxed text-[#637680]">
+              The certificate records work completed on your unit, not a warranty against future mould, corrosion or refrigerant leaks. Photos and treatment entries reflect what was accessible and actually carried out.
+            </p>
+          </div>
           <p className="mt-10 max-w-5xl border-l-[5px] border-[#F4C620] pl-5 text-base font-semibold leading-relaxed text-[#233C4D]">
             A thorough, honest cleaning process — not an unrealistic promise to make the entire house sterile or guarantee a health outcome.
           </p>
