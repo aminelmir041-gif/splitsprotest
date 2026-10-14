@@ -1,3 +1,4 @@
+import PayLaterReminder from "../components/PayLaterReminder";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -258,6 +259,10 @@ export default function PaymentOptions() {
               Choose your air conditioner and pay through Stripe or PayPal.
             </p>
           </header>
+
+          <div className="mb-6" data-testid="equipment-finance-pay-later-reminder">
+            <PayLaterReminder kind="equipment" />
+          </div>
 
           <section className="rounded-2xl border border-[#E5DFD5] bg-white p-5 shadow-[0_10px_30px_rgba(0,0,0,0.04)] sm:p-8" id="choose-package">
             <label htmlFor="finance-model" className="block text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#8F6A34]">1 · Choose your air conditioner</label>
