@@ -178,8 +178,8 @@ def main() -> None:
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
-        '"/cleaning-checkout-config"', '"start_time"', '"quantity"',
-        "PAY {money(price)} IN FULL",
+        '"/cleaning-checkout-config"', 'start_time: time', 'quantity: count',
+        'api.get("/cleaning-slots"', "PAY {money(price)} IN FULL",
     )):
         fail("cleaning checkout must verify live availability, full payment and quantity with the server")
     for field in ('name', 'address', 'phone', 'email'):
