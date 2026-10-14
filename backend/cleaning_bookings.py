@@ -33,7 +33,10 @@ WORKDAYS = {
 }
 HOLD_SECONDS = max(600, min(7200, int(os.environ.get("BOOKING_HOLD_SECONDS", "3600"))))
 FIRST_CLEAN_CENTS = 30000
-ADDITIONAL_CLEAN_CENTS = 15000
+ADDITIONAL_CLEAN_CENTS = 20000
+# Existing LIVE Stripe prices owned by the connected SplitsPro merchant account.
+STRIPE_FIRST_CLEAN_PRICE = "price_1UQOyqPpUx7EUhdNSOh3J3j6"
+STRIPE_ADDITIONAL_CLEAN_PRICE = "price_1UQOz4PpUx7EUhdNAPUmJVd4"
 MAX_SYSTEMS = 7
 SLOT_MINUTES = 90
 START_MINUTE = 8 * 60
@@ -213,7 +216,8 @@ def cleaning_config(response: Response):
         "currency": "AUD", "enabled": booking_enabled(), "first_system": FIRST_CLEAN_CENTS / 100,
         "each_additional_system": ADDITIONAL_CLEAN_CENTS / 100,
         "max_systems": MAX_SYSTEMS,
-        "stripe_ready": bool((os.environ.get("STRIPE_SECRET_KEY") or "").strip()),
+        "stripe_ready": bool((os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+                             and (os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()),
         "paypal_ready": bool((os.environ.get("PAYPAL_CLIENT_ID") or "").strip()
                              and (os.environ.get("PAYPAL_CLIENT_SECRET") or "").strip()),
     }
@@ -313,18 +317,21 @@ def _create_stripe_checkout(hold):
         "cancel_url": _return_params(hold, "cancelled"),
         "metadata[checkout_type]": "cleaning",
         "metadata[cleaning_ref]": hold["reference"],
-        "line_items[0][price_data][currency]": "aud",
-        "line_items[0][price_data][unit_amount]": str(hold["total_cents"]),
-        "line_items[0][price_data][product_data][name]": (
-            f'SplitsPro complete air conditioner deep cleaning — {hold["quantity"]} system(s)'
-        ),
+        # Prices are configured in the merchant's actual Stripe Dashboard,
+        # not made up or supplied by the buyer's browser.
+        "line_items[0][price]": STRIPE_FIRST_CLEAN_PRICE,
         "line_items[0][quantity]": "1",
+        "metadata[quantity]": str(hold["quantity"]),
         "billing_address_collection": "required",
     }
+    if hold["quantity"] > 1:
+        body["line_items[1][price]"] = STRIPE_ADDITIONAL_CLEAN_PRICE
+        body["line_items[1][quantity]"] = str(hold["quantity"] - 1)
     try:
         res = requests.post(
             "https://api.stripe.com/v1/checkout/sessions",
-            headers={"Authorization": "Bearer " + secret},
+            headers={"Authorization": "Bearer " + secret,
+                     "Idempotency-Key": "cleaning-" + hold["reference"]},
             data=body, timeout=25,
         )
         res.raise_for_status()
@@ -382,8 +389,11 @@ def create_cleaning_checkout(payload: CleaningCheckoutRequest):
     cents = price_cents(payload.quantity)
     if parse_time(payload.start_time) + SLOT_MINUTES * payload.quantity > CLOSING_MINUTE:
         raise HTTPException(status_code=422, detail="There is not enough time for that many systems")
-    if payload.payment_provider == "stripe" and not (os.environ.get("STRIPE_SECRET_KEY") or "").strip():
-        raise HTTPException(status_code=503, detail="Stripe payment is not configured yet")
+    if payload.payment_provider == "stripe" and not (
+        (os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+        and (os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()
+    ):
+        raise HTTPException(status_code=503, detail="Secure Stripe payment confirmation is not configured yet")
     if payload.payment_provider == "paypal" and not (
         (os.environ.get("PAYPAL_CLIENT_ID") or "").strip()
         and (os.environ.get("PAYPAL_CLIENT_SECRET") or "").strip()
