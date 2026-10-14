@@ -1,22 +1,21 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock3, Droplets, Loader2, ShieldCheck, Sun, Wind } from "lucide-react";
-import { getBookingSlots } from "../lib/api";
+import { getCleaningSlots } from "../lib/api";
 import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
 // This is the ONE consumer sales landing page for split-system cleaning.
 // No separate cleaning funnel; the old /split-system-cleaning-offer/ URL redirects here.
-const CLEANING_OFFERS = [
-  { id: "one", name: "1 Complete Deep Clean", label: "One split system", price: "$300", description: "Deep cleaning plus compatible anti-mould and outdoor anti-corrosion protective treatments." },
-  { id: "two", name: "2 Complete Deep Cleans", label: "Same visit · second aircon $200", price: "$500", description: "Two complete deep cleans with protective treatments at the same property and during the same visit." }
-];
+const CLEANING_QUANTITIES = Array.from({ length: 7 }, (_, index) => index + 1);
+const cleaningPrice = (count) => 300 + Math.max(0, count - 1) * 150;
+const money = (value) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(value);
 
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
-  { q: "How much is a second aircon at my property?", a: "The first complete deep clean is $300. The second is $200 extra at the same property and on the same visit, making $500 for both. For three or more units please ask us for a quote." },
+  { q: "How much do additional air conditioners cost?", a: "The first complete deep clean is $300. Every additional standard split system is $150 when cleaned at the same address and on the same visit. Two systems cost $450, three cost $600. The full total is paid upfront at checkout." },
   { q: "Do you have to remove the whole air conditioner?", a: "Normally no. We protect the area, open or remove suitable service-accessible covers and clean the accessible indoor components. We won't dismantle sealed refrigerant components as part of a cleaning job." },
   { q: "Can cleaning repair an air conditioner that isn't cooling?", a: "Cleaning can help when dirt is affecting airflow, but it won't fix a refrigerant leak, electrical fault or failed part. If we find a likely fault, we'll discuss the next step before any separate repair work." },
   { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." },
@@ -37,65 +36,85 @@ export default function SplitSystemCleaning() {
     }, 650);
     return () => window.clearTimeout(timeout);
   }, [location.hash]);
-  const [offerId, setOfferId] = useState("one");
+  const [quantity, setQuantity] = useState(1);
   const [openFaq, setOpenFaq] = useState(0);
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [slotsError, setSlotsError] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedWindow, setSelectedWindow] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   const [showMoreSlots, setShowMoreSlots] = useState(false);
   const [continuing, setContinuing] = useState(false);
-  const chosen = CLEANING_OFFERS.find((offer) => offer.id === offerId) || CLEANING_OFFERS[0];
+  const requestId = useRef(0);
   const scrollBook = () => document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  const choose = (id) => { setOfferId(id); scrollBook(); };
+  const choose = (count) => { setQuantity(count); scrollBook(); };
 
-  const refreshSlots = async () => {
+  const refreshSlots = async (requestedQuantity = quantity) => {
+    const token = ++requestId.current;
     setSlotsLoading(true);
     setSlotsError("");
     try {
-      // Same live opening picker as /book-installation. Server must re-check
-      // and reserve a cleaning slot when starting checkout; selecting is not a reservation.
-      const data = await getBookingSlots(12);
-      const next = (Array.isArray(data?.slots) ? data.slots : []).filter((s) => s?.date && ["Morning", "Afternoon"].includes(s?.window));
+      // Availability is server-filtered against both cleaning and installation
+      // holds/bookings. A checkout creates an atomic hold under a shared day lock.
+      const data = await getCleaningSlots(requestedQuantity, 85);
+      if (token !== requestId.current) return;
+      const next = (Array.isArray(data?.slots) ? data.slots : []).filter(
+        (slot) => slot?.date && /^\d{2}:\d{2}$/.test(slot?.time || "")
+      );
       setSlots(next);
-      if (selectedDate && !next.some((s) => s.date === selectedDate && s.window === selectedWindow)) {
+      if (selectedDate && selectedTime &&
+          !next.some((slot) => slot.date === selectedDate && slot.time === selectedTime)) {
         setSelectedDate("");
-        setSelectedWindow("");
+        setSelectedTime("");
       }
     } catch {
+      if (token !== requestId.current) return;
       setSlots([]);
-      setSlotsError("We couldn't check live availability. Please try again.");
+      setSlotsError("We couldn't check live availability. Refresh and try again.");
     } finally {
-      setSlotsLoading(false);
+      if (token === requestId.current) setSlotsLoading(false);
     }
   };
-  useEffect(() => { refreshSlots(); }, []);
   useEffect(() => {
-    const refresh = () => { if (document.visibilityState === "visible") refreshSlots(); };
+    setSelectedDate("");
+    setSelectedTime("");
+    setShowMoreSlots(false);
+    refreshSlots(quantity);
+  }, [quantity]);
+  useEffect(() => {
+    const refresh = () => { if (document.visibilityState === "visible") refreshSlots(quantity); };
     window.addEventListener("focus", refresh);
     document.addEventListener("visibilitychange", refresh);
-    return () => { window.removeEventListener("focus", refresh); document.removeEventListener("visibilitychange", refresh); };
-  }, [selectedDate, selectedWindow]);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [quantity, selectedDate, selectedTime]);
 
-  const formatDate = (day) => new Date(day + "T00:00:00").toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" });
+  const formatDate = (day) => new Date(day + "T00:00:00").toLocaleDateString(
+    "en-AU", { weekday: "short", day: "numeric", month: "short" });
+  const formatTime = (time) => new Date("2026-01-01T" + time + ":00").toLocaleTimeString(
+    "en-AU", { hour: "numeric", minute: "2-digit" });
+  const availableDays = [...new Set(slots.map((slot) => slot.date))];
+  const availableTimes = slots.filter((slot) => slot.date === selectedDate);
   const continueBooking = async () => {
-    if (!selectedDate || !selectedWindow || continuing) return;
+    if (!selectedDate || !selectedTime || continuing) return;
     setContinuing(true);
     try {
-      const data = await getBookingSlots(12);
-      const fresh = (Array.isArray(data?.slots) ? data.slots : []);
-      if (!fresh.some((s) => s.date === selectedDate && s.window === selectedWindow)) {
+      const data = await getCleaningSlots(quantity, 100);
+      const fresh = Array.isArray(data?.slots) ? data.slots : [];
+      if (!fresh.some((slot) => slot.date === selectedDate && slot.time === selectedTime)) {
         setSelectedDate("");
-        setSelectedWindow("");
+        setSelectedTime("");
         setSlots(fresh);
-        setSlotsError("That time has just filled. Choose another available time.");
+        setSlotsError("That time has just booked out. Choose another opening.");
         return;
       }
-      const q = new URLSearchParams({ package: offerId, date: selectedDate, window: selectedWindow });
-      navigate("/secure-cleaning?" + q.toString());
+      navigate("/secure-cleaning?" + new URLSearchParams({
+        count: String(quantity), date: selectedDate, time: selectedTime
+      }).toString());
     } catch {
-      setSlotsError("Unable to confirm the opening right now. Please retry.");
+      setSlotsError("Unable to verify that time right now. Please try again.");
     } finally {
       setContinuing(false);
     }
@@ -105,10 +124,10 @@ export default function SplitSystemCleaning() {
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
         <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | $300 | SplitsPro Sydney</title>
-        <meta name="description" content="You clean everything they touch. But what about the aircon they breathe around? SplitsPro complete deep clean with anti-mould and suitable anti-corrosion protective treatment. $300 for one, second aircon at the same property $200 more." />
+        <meta name="description" content="SplitsPro complete split-system deep cleaning: $300 first system, $150 for each extra system at the same address, fully prepaid online. Protective treatments where suitable." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
-        <meta property="og:description" content="For mums, dads, pet owners and families with older loved ones: see what your aircon might be hiding. Complete deep clean and protective treatments $300; two for $500 at the same property." />
+        <meta property="og:description" content="Deep clean and suitable protective treatments. $300 first system, each extra split system $150 at the same property. Choose a live 90-minute start time." />
       </Helmet>
 
 
@@ -381,7 +400,7 @@ export default function SplitSystemCleaning() {
             <h3 className="mt-3 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">PROFESSIONAL DEEP CLEAN. ANTI-MOULD. ANTI-CORROSION.</h3>
             <strong className="mt-4 block text-[clamp(5rem,16vw,9rem)] font-black leading-none tracking-tighter text-[#0B2641]">$300</strong>
             <p className="mt-4 text-xl font-black uppercase text-[#008DB8]">ONE VISIT. THREE SERVICES. ONE CRACKING DEAL.</p>
-            <p className="mt-4 text-lg font-bold text-[#0B2641]">Got another aircon at the same property? The second complete clean is just <span className="text-[#007EA7]">$200 extra.</span></p>
+            <p className="mt-4 text-lg font-bold text-[#0B2641]">Got more than one aircon at the same property? <span className="text-[#007EA7]">Every additional complete clean is just $150.</span> Two systems are $450, three are $600.</p>
           </div>
 
           <div className="mt-8 border-y border-[#C7DDE7] py-6" data-testid="cleaning-deal-sweetener">
@@ -397,84 +416,96 @@ export default function SplitSystemCleaning() {
               ))}
             </div>
           </div>
-          <h3 className="mt-10 text-2xl font-black uppercase text-[#0B2641] sm:text-3xl">CHOOSE YOUR COMPLETE CLEAN PACKAGE.</h3>
-          <div className="mt-6 grid gap-5 md:grid-cols-2">
-            {CLEANING_OFFERS.map((offer) => {
-              const featured = offer.id === "two";
-              return (
-                <div key={offer.id} className={"border-t-[5px] bg-white px-6 pb-7 pt-6 sm:px-8 " + (featured ? "border-[#F4C620] shadow-[0_12px_30px_rgba(9,56,81,0.08)]" : "border-[#008DB8]")}>
-                  {featured && <p className="mb-4 inline-block bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#09243A]">Second aircon just $200 — save $100 vs two separate visits</p>}
-                  <p className="text-sm font-black uppercase tracking-[0.12em] text-[#007FA4]">{offer.label}</p>
-                  <div className="mt-3 flex items-end justify-between gap-3">
-                    <h4 className="text-2xl font-black uppercase text-[#0B2641]">{offer.name}</h4>
-                    <strong className="text-4xl font-black tracking-tight text-[#0B2641] sm:text-5xl">{offer.price}</strong>
-                  </div>
-                  <p className="mt-5 min-h-[3rem] text-sm leading-relaxed text-[#5C6A73]">{offer.description}</p>
-                  {featured && <p className="mt-3 font-bold text-[#007FA4]">That's $300 for the first and $200 for the second.</p>}
-                  <button type="button" onClick={() => choose(offer.id)} className={"mt-6 flex min-h-14 w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-base font-black uppercase " + (featured ? "bg-[#F4C620] text-[#081D2F] hover:bg-[#FBDD42]" : "bg-[#007FA4] text-white hover:bg-[#006F91]")}>
-                    Choose my date <ArrowRight className="h-5 w-5"/>
-                  </button>
-                </div>
-              );
-            })}
+          <div className="mt-10 border-t-[5px] border-[#F4C620] bg-white px-6 py-8 sm:px-10">
+            <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">COMPLETE CLEANING, SIMPLE PRICING</p>
+            <h3 className="mt-3 text-3xl font-black uppercase text-[#0B2641] sm:text-4xl">$300 FIRST SYSTEM.</h3>
+            <p className="mt-2 text-2xl font-black uppercase text-[#008DB8] sm:text-3xl">$150 FOR EACH EXTRA ONE.</p>
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#4A6272]">All at the same property during one visit, with the complete deep-clean process and compatible treatments included. Choose the number of systems below and see the full total before checkout.</p>
+            <button type="button" onClick={() => choose(1)}
+              className="mt-6 flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-6 py-3 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42]">
+              Choose systems &amp; booking time <ArrowRight className="h-5 w-5"/>
+            </button>
           </div>
           <p className="mt-5 text-sm leading-relaxed text-[#566D7B]">
-            Standard-access wall-mounted splits only. The second-aircon offer applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
+            Standard-access wall-mounted splits only. Additional-system pricing applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-[#566D7B]">
-            Buy now, pay later may be available: Stripe may show Afterpay, Klarna or Zip if enabled and you are eligible; PayPal may show Pay in 4 separately. Choose your date, enter your details and select your payment provider. All instalment plans are subject to availability and approval.
+            The full cleaning total is paid upfront through Stripe or PayPal. Eligible instalment options may appear if supported by your payment provider; availability and approval depend on the provider.
           </p>
         </div>
       </section>
 
       <section className="scroll-mt-24 bg-[#081726] py-16 text-white sm:py-20" id="cleaning-booking" data-testid="cleaning-booking">
         <div className="sp-container mx-auto max-w-5xl">
-          <p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#F4C620]">1 · Choose your cleaning date</p>
-          <h2 className="mt-4 font-serif text-4xl leading-tight sm:text-5xl">Pick a day that works for you.</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70">Your choice is nearly sorted. Select a live morning or afternoon opening, then enter your contact details and pay securely on the next page. Your booking is secured after payment confirmation.</p>
-
-          <div className="mt-8 grid gap-7 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
-            <div className="border-t border-white/20 pt-5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/60">Your cleaning package</p>
-              {CLEANING_OFFERS.map((offer) => (
-                <button type="button" key={offer.id} onClick={() => setOfferId(offer.id)}
-                  aria-pressed={offer.id === offerId}
-                  className={"mt-3 flex w-full items-center justify-between gap-3 rounded-lg border p-4 text-left transition " + (offer.id === offerId ? "border-[#F4C620] bg-white/10" : "border-white/20 hover:border-white/50")}>
-                  <span><strong className="block text-base">{offer.name}</strong><span className="mt-1 block text-xs text-white/65">{offer.label}</span></span>
-                  <span className="text-2xl font-extrabold text-[#F4C620]">{offer.price}</span>
-                </button>
-              ))}
-              <p className="mt-4 text-xs leading-relaxed text-white/55">The second aircon is $200 extra at the same property and during the same visit. Standard-access wall-mounted units only.</p>
+          <p className="text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">CHOOSE YOUR COMPLETE CLEAN</p>
+          <h2 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">
+            PICK THE SYSTEMS. <span className="text-[#45C6E7]">PICK THE TIME.</span>
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/75">
+            One simple dropdown, live 90-minute appointment times and a secure full-payment checkout. Booked installation and cleaning times are removed from these openings.
+          </p>
+          <div className="mt-9 grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
+            <div className="border-t-[3px] border-[#45C6E7] pt-6">
+              <label htmlFor="cleaning-unit-quantity" className="block text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">How many split systems need cleaning?</label>
+              <select id="cleaning-unit-quantity" data-testid="cleaning-unit-count"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                className="mt-3 min-h-14 w-full rounded-md border border-white/25 bg-white px-4 py-3 text-lg font-extrabold text-[#082337]">
+                {CLEANING_QUANTITIES.map((count) => (
+                  <option key={count} value={count}>{count} split {count === 1 ? "system" : "systems"}</option>
+                ))}
+              </select>
+              <div className="mt-6 border-y border-white/20 py-5">
+                <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>$300</strong></div>
+                {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $150</span><strong>{money((quantity - 1) * 150)}</strong></div>}
+                <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-5">
+                  <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total paid upfront</span>
+                  <strong className="text-4xl font-black text-[#F4C620]">{money(cleaningPrice(quantity))}</strong>
+                </div>
+              </div>
+              <p className="mt-5 text-sm leading-relaxed text-white/70">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
             </div>
-
-            <div className="border-t border-white/20 pt-5">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#F4C620]">Live availability</p><h3 className="mt-2 font-serif text-2xl">Choose morning or afternoon.</h3></div>
-                <button type="button" onClick={refreshSlots} className="text-xs font-bold text-[#F4C620] underline underline-offset-4" disabled={slotsLoading}>Refresh dates</button>
+            <div className="border-t-[3px] border-[#F4C620] pt-6">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">Live calendar</p>
+                  <h3 className="mt-2 text-2xl font-black uppercase sm:text-3xl">Choose a date</h3>
+                </div>
+                <button type="button" onClick={() => refreshSlots(quantity)} disabled={slotsLoading}
+                  className="text-sm font-bold text-[#F4C620] underline underline-offset-4 disabled:opacity-50">Refresh openings</button>
               </div>
-              {slotsLoading ? <div className="mt-5 flex items-center gap-2 text-sm text-white/65"><Loader2 className="h-4 w-4 animate-spin" /> Checking live dates…</div> : null}
-              {slotsError && <p role="alert" className="mt-4 border-l-2 border-[#F4C620] pl-3 text-xs leading-relaxed text-[#F4C620]">{slotsError}</p>}
-              {!slotsLoading && slots.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/70">No online openings are available right now. Call us to ask about a date.</p>}
-              <div className="mt-4 grid grid-cols-2 gap-2.5">
-                {(showMoreSlots ? slots : slots.slice(0, 4)).map((slot) => {
-                  const active = selectedDate === slot.date && selectedWindow === slot.window;
-                  return (
-                    <button type="button" key={slot.date + "-" + slot.window} aria-pressed={active}
-                      onClick={() => { setSelectedDate(slot.date); setSelectedWindow(slot.window); setSlotsError(""); }}
-                      className={"flex min-h-16 items-center justify-between gap-2 rounded-lg border p-3 text-left " + (active ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
-                      <span><strong className="block text-[13px]">{formatDate(slot.date)}</strong><span className="mt-1 block text-xs">{slot.window}</span></span>
-                      {slot.window === "Morning" ? <Sun className="h-4 w-4 shrink-0" /> : <Clock3 className="h-4 w-4 shrink-0" />}
+              {slotsLoading && <p className="mt-5 flex items-center gap-2 text-sm text-white/75"><Loader2 className="h-4 w-4 animate-spin"/> Checking live bookings...</p>}
+              {slotsError && <p className="mt-5 border-l-[3px] border-[#F4C620] pl-3 text-sm font-semibold text-[#F4C620]" role="alert">{slotsError}</p>}
+              {!slotsLoading && availableDays.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/80">No online openings are available for {quantity} systems right now. Call 0414 698 435 to ask about another date.</p>}
+              <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {(showMoreSlots ? availableDays : availableDays.slice(0, 6)).map((day) => (
+                  <button type="button" key={day} aria-pressed={selectedDate === day}
+                    onClick={() => { setSelectedDate(day); setSelectedTime(""); setSlotsError(""); }}
+                    className={"min-h-14 rounded-md border px-3 py-3 text-sm font-bold transition " + (selectedDate === day ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
+                    {formatDate(day)}
+                  </button>
+                ))}
+              </div>
+              {availableDays.length > 6 && <button type="button" onClick={() => setShowMoreSlots(!showMoreSlots)} className="mt-3 text-sm font-bold text-[#F4C620] underline underline-offset-4">{showMoreSlots ? "Show fewer dates" : "See more dates"}</button>}
+              {selectedDate && <div className="mt-7 border-t border-white/20 pt-5">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#F4C620]">Available start times · {formatDate(selectedDate)}</p>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {availableTimes.map((slot) => (
+                    <button type="button" key={slot.time} aria-pressed={selectedTime === slot.time}
+                      onClick={() => { setSelectedTime(slot.time); setSlotsError(""); }}
+                      className={"min-h-14 rounded-md border px-3 py-3 text-sm font-extrabold " + (selectedTime === slot.time ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
+                      <Clock3 className="mr-2 inline h-4 w-4"/> {formatTime(slot.time)}
                     </button>
-                  );
-                })}
-              </div>
-              {slots.length > 4 && <button className="mt-4 text-xs font-semibold text-[#F4C620] underline underline-offset-4" type="button" onClick={() => setShowMoreSlots(v => !v)}>{showMoreSlots ? "Show fewer dates" : "More available dates"}</button>}
-              {selectedDate && selectedWindow && <p className="mt-4 text-sm font-semibold text-white">Your choice: {formatDate(selectedDate)} · {selectedWindow}</p>}
-              <button type="button" onClick={continueBooking} disabled={!selectedDate || !selectedWindow || continuing || slotsLoading || !!slotsError}
-                className="mt-5 flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
-                {continuing ? "Rechecking the date…" : "Continue to details & payment"} <ArrowRight className="h-4 w-4" />
+                  ))}
+                </div>
+              </div>}
+              {selectedDate && selectedTime && <p className="mt-5 text-sm font-bold text-[#FFFFFF]">Your booking: {formatDate(selectedDate)} at {formatTime(selectedTime)} · {quantity} {quantity === 1 ? "system" : "systems"}</p>}
+              <button type="button" onClick={continueBooking}
+                disabled={!selectedDate || !selectedTime || continuing || slotsLoading || !!slotsError}
+                className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
+                {continuing ? "Rechecking your time..." : "Continue to details & full payment"} <ArrowRight className="h-5 w-5"/>
               </button>
-              <p className="mt-3 text-xs leading-relaxed text-white/55">Your date will be checked again during secure checkout. A selection here does not reserve the slot.</p>
+              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when secure checkout begins. The booking is confirmed only once full payment is verified.</p>
             </div>
           </div>
         </div>
