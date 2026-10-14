@@ -173,7 +173,7 @@ export default function CleaningCheckout() {
 
   return (
     <div className="bg-[#F4F9FC] pb-20 pt-32 text-[#102A41]" data-testid="cleaning-secure-checkout">
-      <Helmet><title>Pay in Full & Book Your Cleaning | SplitsPro</title><meta name="robots" content="noindex,follow" /></Helmet>
+      <Helmet><title>Secure Cleaning Checkout & Pay Later Options | SplitsPro</title><meta name="robots" content="noindex,follow" /></Helmet>
       <div className="sp-container mx-auto max-w-5xl">
         <Link to={backUrl} className="inline-flex items-center gap-2 text-sm font-bold text-[#007FA4]">
           <ArrowLeft className="h-4 w-4" /> Change your cleaning time
@@ -181,11 +181,11 @@ export default function CleaningCheckout() {
         <div className="mt-7 grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.16em] text-[#078EBA]">STEP 2 · SECURE FULL PAYMENT</p>
-            <h1 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">ONE PAYMENT. YOUR CLEAN SORTED.</h1>
+            <h1 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">YOUR CLEAN. YOUR WAY TO PAY.</h1>
             <div className="mt-7 border-y-2 border-[#CDDCE5] py-6">
               <p className="text-lg font-bold">{count} wall-mounted split system{count > 1 ? "s" : ""}</p>
               <p className="mt-3 text-5xl font-black text-[#007FA4]">{money(price)}</p>
-              <p className="mt-2 text-sm font-semibold text-[#496070]">Paid in full upfront — no booking deposit or balance owing.</p>
+              <p className="mt-2 text-sm font-semibold text-[#496070]">No deposit or balance owing to SplitsPro. Eligible pay-later plans are arranged with the payment provider.</p>
               <div className="mt-5 border-t border-[#D3E2EB] pt-4" data-testid="cleaning-checkout-before-payment-reminder">
                 <PayLaterReminder kind="cleaning" compact
                   stripeReady={settings?.stripe_ready}
