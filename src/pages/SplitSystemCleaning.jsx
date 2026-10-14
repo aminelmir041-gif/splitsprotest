@@ -208,10 +208,6 @@ export default function SplitSystemCleaning() {
                   <p className="mt-1 text-sm leading-relaxed text-[#4B6170]">Grime in the blower, coil or drain can affect airflow, efficiency or drainage. Cleaning may help when dirt is the cause.</p>
                 </div>
               </div>
-              <a href="#cleaning-solution"
-                className="mt-6 inline-flex min-h-12 items-center gap-2 border-b-[3px] border-[#F4C620] text-base font-black uppercase text-[#087FA4]">
-                See the real SplitsPro cleaning process <ArrowRight className="h-5 w-5" />
-              </a>
             </div>
           </div>
           <div className="mt-7 max-w-4xl text-xs leading-relaxed text-[#667781]">
