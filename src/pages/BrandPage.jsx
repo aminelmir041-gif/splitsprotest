@@ -1,3 +1,4 @@
+import PayLaterReminder from "../components/PayLaterReminder";
 import { useEffect, useState } from "react";
 import { useParams, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -637,6 +638,9 @@ const BrandPage = ({ offerMode = null }) => {
                 </div>
                 <a href="#pay-later-deals" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">See pay-later choices ↓</a>
               </div>
+              <div className="mt-6" data-testid="installation-offer-pay-later-reminder">
+                <PayLaterReminder kind="equipment" equipmentHref="/payment-options?product=rinnai-local&size=2.5kW" />
+              </div>
               <div className="mt-8 grid gap-8 lg:grid-cols-2">
                 {displayRanges.map((range) => (
                   <div key={range.slug} className="border-t-4 border-[#C8A46A] pt-4" id={"range-" + range.slug}>
@@ -888,6 +892,7 @@ const BrandPage = ({ offerMode = null }) => {
               )}
             </div>
 
+            <div className="mt-6"><PayLaterReminder kind="equipment" /></div>
             <p className="mt-7 text-xs font-semibold uppercase tracking-[0.22em] text-[#6E6E73]">Supplied &amp; Installed</p>
             <div className="mt-3 overflow-hidden rounded-2xl border border-[#E5E5EA] bg-white soft-shadow-sm">
               {range.prices.map((row, i) => (
