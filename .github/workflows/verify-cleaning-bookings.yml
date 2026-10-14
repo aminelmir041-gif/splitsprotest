@@ -1,0 +1,26 @@
+name: Verify Shared Cleaning Booking Calendar
+on:
+  push:
+    branches: [crm-lead-routing]
+    paths:
+      - 'backend/cleaning_bookings.py'
+      - 'backend/render_app.py'
+      - 'backend/tests/test_timed_cleaning.py'
+      - '.github/workflows/verify-cleaning-bookings.yml'
+  workflow_dispatch:
+jobs:
+  test-cleaning-booking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/render_requirements.txt pytest
+      - name: Compile and test shared booking logic
+        run: |
+          python -m compileall -q backend
+          python -m pytest -q backend/tests/test_timed_cleaning.py
