@@ -49,7 +49,7 @@ export default function CleaningCheckout() {
     setSettingsLoading(true);
     setSettingsError("");
     getCleaningCheckoutConfig()
-      .then(({ data }) => { if (live) {
+      .then((data) => { if (live) {
         setSettings(data);
         setSettingsLoading(false);
         if (!data.stripe_ready && data.paypal_ready) setProvider("paypal");
