@@ -178,8 +178,8 @@ def main() -> None:
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
-        '"/cleaning-checkout-config"', 'start_time: time', 'quantity: count',
-        'api.get("/cleaning-slots"', "CONTINUE TO {provider === \"paypal\" ? \"PAYPAL\" : \"STRIPE\"} · {money(price)}",
+        'getCleaningCheckoutConfig', 'start_time: time', 'quantity: count',
+        'api.post("/cleaning-checkout"', "CONTINUE TO {provider === \"paypal\" ? \"PAYPAL\" : \"STRIPE\"} · {money(price)}",
     )):
         fail("cleaning checkout must verify live availability, full payment and quantity with the server")
     # Full checkout uses the booking server's one atomic availability-and-hold
