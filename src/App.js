@@ -8,7 +8,6 @@ import { Toaster } from "@/components/ui/sonner";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import FloatingCTA from "@/components/FloatingCTA";
 import CustomCursor from "@/components/CustomCursor";
 import { LOGO } from "@/lib/data";
 
@@ -130,7 +129,6 @@ function App() {
               <AnimatedRoutes />
             </main>
             <Footer />
-            <FloatingCTA />
             <Toaster position="top-center" richColors />
           </BrowserRouter>
         </ReactLenis>
