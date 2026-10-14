@@ -1,0 +1,40 @@
+name: Publish SplitsPro guardian section image
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-cleaning-guardian-petri-artwork.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  copy-approved-image:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download approved petri-dish artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/landing landing
+          curl --fail --location --retry 4 --max-time 120 -o public/landing/splitspro-guardian-petri-approved.png 'https://media.canva.com/v2/document-image/hash:-399614911/height:387/id:DAHX8sWpE4Q/type:B/width:516?brand=BAFvr7TpwKQ&csig=AAAAAAAAAAAAAAAAAAAAAOLA3Gydz0hFTvMKFzAhVe7V63fbND9J8pVQP4XtIard&disableexport=T&exp=1791946117&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2FWpE4Q%2FDAHX8sWpE4Q%2F1%2Fthumbnail%2F0001.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHTDF2ZFFQ%252F20261013%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261013T142209Z%26X-Amz-Expires%3D47488%26X-Amz-Signature%3Dddc816d94f40a924d4d459ca9da3fc071b20ae73d361c20ea25a786392ad3037%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DWed%252C%252014%2520Oct%25202026%252003%253A33%253A37%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAOUvMfDUdeTTnscKWcUAL_MEnSZ5PJe-Ujetwtzz0iGn&page=1&signed=brand%2Cdisableexport%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=1'
+          test $(wc -c < public/landing/splitspro-guardian-petri-approved.png) -gt 15000
+          python3 - <<'PY'
+          from pathlib import Path
+          d=Path('public/landing/splitspro-guardian-petri-approved.png').read_bytes()
+          assert d[:8] == bytes([137,80,78,71,13,10,26,10]), 'not a PNG'
+          print('Verified PNG bytes', len(d))
+          PY
+          cp public/landing/splitspro-guardian-petri-approved.png landing/splitspro-guardian-petri-approved.png
+      - name: Commit approved image assets
+        run: |
+          git config user.name 'SplitsPro Website Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/landing/splitspro-guardian-petri-approved.png landing/splitspro-guardian-petri-approved.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Add approved petri dish artwork for guardian section'
+          git pull --rebase origin main
+          git push
