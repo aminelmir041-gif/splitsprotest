@@ -1,0 +1,46 @@
+name: Publish SplitsPro Real Cleaning Photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-splitspro-process-photos.yml'
+permissions:
+  contents: write
+jobs:
+  publish-photos:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download approved SplitsPro cleaning photos
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/landing landing
+          curl --fail --location --retry 4 --retry-delay 2 --max-time 120 -o public/landing/splitspro-process-filter.png 'https://media.canva.com/v2/document-image/hash:-957172402/height:515/id:DAHX8wr__uE/type:B/width:387?brand=BAFvr7TpwKQ&csig=AAAAAAAAAAAAAAAAAAAAAC7xt-JApZdGaBuxqee2rBn4zUpSHsERt7FXGWhW6hOF&disableexport=T&exp=1791948600&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2Fr__uE%2FDAHX8wr__uE%2F1%2Fthumbnail%2F0001.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHTDF2ZFFQ%252F20261013%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261013T130840Z%26X-Amz-Expires%3D54380%26X-Amz-Signature%3D3af9b88729864a5b891c2d742812c2f463adc7e5c805b43b8616a041fa422351%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DWed%252C%252014%2520Oct%25202026%252004%253A15%253A00%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAAYQ0lxcxv7Dva2CZGpnhGHJVaBkQY9KufilVuBD2U7B&page=1&signed=brand%2Cdisableexport%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=1'
+          test "$(wc -c < public/landing/splitspro-process-filter.png)" -gt 10000
+          cp public/landing/splitspro-process-filter.png landing/splitspro-process-filter.png
+          curl --fail --location --retry 4 --retry-delay 2 --max-time 120 -o public/landing/splitspro-process-coil.png 'https://media.canva.com/v2/document-image/hash:805751305/height:516/id:DAHX88I_eQI/type:B/width:387?brand=BAFvr7TpwKQ&csig=AAAAAAAAAAAAAAAAAAAAAJvU5FC9MmZJezdm1B2atdszR7l16_RMMOrr1yxcumfs&disableexport=T&exp=1791948600&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2FI_eQI%2FDAHX88I_eQI%2F1%2Fthumbnail%2F0001.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHTDF2ZFFQ%252F20261013%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261013T132029Z%26X-Amz-Expires%3D53671%26X-Amz-Signature%3D5b2402b600d6b4feddd060b866d9380c5973aa819c9434c70ef9394d8f6ea2f4%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DWed%252C%252014%2520Oct%25202026%252004%253A15%253A00%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAM6SWnJVJUwEEgvYPNjWNzAoDbBDTCEOYeVmOa8nhymY&page=1&signed=brand%2Cdisableexport%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=1'
+          test "$(wc -c < public/landing/splitspro-process-coil.png)" -gt 10000
+          cp public/landing/splitspro-process-coil.png landing/splitspro-process-coil.png
+          curl --fail --location --retry 4 --retry-delay 2 --max-time 120 -o public/landing/splitspro-process-covers.png 'https://media.canva.com/v2/document-image/hash:1269630573/height:499/id:DAHX86fp-ss/type:B/width:400?brand=BAFvr7TpwKQ&csig=AAAAAAAAAAAAAAAAAAAAADpUwhDesC4xcxMdiJOx_fPq2HxqDC89ldBgACo8WVA6&disableexport=T&exp=1791948600&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2Ffp-ss%2FDAHX86fp-ss%2F1%2Fthumbnail%2F0001.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUHTDF2ZFFQ%252F20261013%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20261013T064419Z%26X-Amz-Expires%3D77441%26X-Amz-Signature%3D5a870181cf7a1253dbdfce11c305309ae6dae049c6ef9152a2889abee886725a%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DWed%252C%252014%2520Oct%25202026%252004%253A15%253A00%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAJJaOv5Fhba1FPdclYUkILr-_rvJz9KDi9nkzFJ305Qh&page=1&signed=brand%2Cdisableexport%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=1'
+          test "$(wc -c < public/landing/splitspro-process-covers.png)" -gt 10000
+          cp public/landing/splitspro-process-covers.png landing/splitspro-process-covers.png
+          python3 - <<'PY'
+          from pathlib import Path
+          for name in ["filter","coil","covers"]:
+              data=Path("public/landing/splitspro-process-"+name+".png").read_bytes()
+              assert data[:8] == b"\x89PNG\r\n\x1a\n", "Invalid PNG: "+name
+              print(name, len(data), "bytes")
+          PY
+      - name: Commit website assets
+        run: |
+          git config user.name 'SplitsPro Website Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/landing/splitspro-process-*.png landing/splitspro-process-*.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Publish three real cleaning process photographs'
+          git pull --rebase origin main
+          git push
