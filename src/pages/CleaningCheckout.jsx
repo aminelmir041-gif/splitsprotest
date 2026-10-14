@@ -5,8 +5,8 @@ import { ArrowLeft, CreditCard, Loader2, ShieldCheck } from "lucide-react";
 import { api, getBookingSlots } from "../lib/api";
 
 const OFFERS = {
-  one: { title: "1 Deep Clean", price: 220, note: "One wall-mounted split system" },
-  two: { title: "2 Deep Cleans", price: 300, note: "Two systems, same property and visit" },
+  one: { title: "Complete Deep Clean + Protective Treatments", price: 300, note: "One wall-mounted split system — deep clean, anti-mould and suitable anti-corrosion treatment" },
+  two: { title: "2 Complete Deep Cleans + Protective Treatments", price: 500, note: "Two systems at one property, same visit — $300 first, $200 second" },
 };
 const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
 const labelStyle = "block text-xs font-bold uppercase tracking-wide text-[#5D6064]";
@@ -138,11 +138,11 @@ export default function CleaningCheckout() {
               <label className={labelStyle}>Street address<input required type="text" autoComplete="street-address" value={customer.address} onChange={(e) => update("address", e.target.value)} className={inputStyle} placeholder="Street, suburb and postcode" minLength={6} maxLength={300} /></label>
               <label className={labelStyle}>Phone number<input required type="tel" autoComplete="tel" value={customer.phone} onChange={(e) => update("phone", e.target.value)} className={inputStyle} placeholder="04xx xxx xxx" minLength={8} maxLength={32} /></label>
               <label className={labelStyle}>Email address<input required type="email" autoComplete="email" value={customer.email} onChange={(e) => update("email", e.target.value)} className={inputStyle} placeholder="you@example.com" maxLength={254} /></label>
-              <p className="text-xs leading-relaxed text-[#676B70]">Prefer to pay later? Your existing Stripe or PayPal checkout may show eligible instalment options where enabled. The payment provider determines availability and approval; no instalment plan is guaranteed.</p>
+              <p className="text-xs leading-relaxed text-[#676B70]">Prefer to pay later? Stripe may offer Afterpay, Klarna or Zip where enabled and eligible; PayPal may offer Pay in 4 separately. The payment provider determines availability and approval. Check the options shown at checkout; no instalment plan is guaranteed.</p>
               <fieldset className="border-t border-[#E5E0D8] pt-5">
                 <legend className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#676B70]">Choose payment method</legend>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  {[{ id: "stripe", title: "Stripe", detail: "Pay securely by card" }, { id: "paypal", title: "PayPal", detail: "Use PayPal checkout" }].map((choice) => (
+                  {[{ id: "stripe", title: "Stripe", detail: "Card or eligible pay-later options" }, { id: "paypal", title: "PayPal", detail: "PayPal or eligible Pay in 4" }].map((choice) => (
                     <label key={choice.id} className={"flex cursor-pointer items-start gap-3 rounded-lg border p-3 " + (provider === choice.id ? "border-[#C8A46A] bg-[#FBF5E8]" : "border-[#E3DED5]")}>
                       <input type="radio" className="mt-1 accent-[#C8A46A]" name="cleaning-provider" value={choice.id} checked={provider === choice.id} onChange={() => setProvider(choice.id)} />
                       <span><strong className="block text-sm">{choice.title}</strong><span className="mt-0.5 block text-xs text-[#676B70]">{choice.detail}</span></span>
