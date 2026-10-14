@@ -1,0 +1,43 @@
+name: Confirm Live SplitsPro Cleaning Checkout
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/confirm-live-cleaning-checkout.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check-read-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify payment configuration and cleaning openings without charging anyone
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request
+          base="https://splitspro-leads.onrender.com/api/"
+          def query(path):
+              with urllib.request.urlopen(base+path, timeout=90) as res:
+                  assert res.status == 200, f'{path}: HTTP {res.status}'
+                  return json.load(res)
+          cfg=query("cleaning-checkout-config")
+          print("Booking enabled:", cfg.get("enabled"))
+          print("Stripe available:", cfg.get("stripe_ready"))
+          print("PayPal available:", cfg.get("paypal_ready"))
+          print("First system:", cfg.get("first_system"))
+          print("Additional system:", cfg.get("each_additional_system"))
+          assert cfg.get("enabled") is True
+          assert cfg.get("first_system") == 300
+          assert cfg.get("each_additional_system") == 150
+          assert cfg.get("paypal_ready") or cfg.get("stripe_ready"), "No checkout methods connected"
+          for units in (1,2,3):
+              result=query(f"cleaning-slots?quantity={units}&limit=3")
+              print("Quantity", units, "opens", len(result.get("slots", [])), "timezone", result.get("timezone"))
+              assert result.get("quantity") == units
+              for slot in result.get("slots", []):
+                  assert slot["time"] in {"08:00","09:30","11:00","12:30","14:00","15:30","17:00"}
+          booking=query("booking-slots?limit=3")
+          assert isinstance(booking.get("slots"), list)
+          print("Existing installation calendar checked")
+          PY
