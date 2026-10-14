@@ -169,13 +169,19 @@ def main() -> None:
     if not is_cleaning_redirect:
         fail("old cleaning-offer URL must redirect to the main split-system-cleaning page")
     cleaning_page = (ROOT / "src/pages/SplitSystemCleaning.jsx").read_text(encoding="utf-8")
-    if "CLEANING_OFFERS" not in cleaning_page or '"$220"' not in cleaning_page or '"$300"' not in cleaning_page:
-        fail("split system cleaning packages are not configured as $220 / 2 for $300")
-    if "getBookingSlots" not in cleaning_page or "Continue to details & payment" not in cleaning_page:
-        fail("cleaning page must show live date slots before requesting details")
+    if not all(token in cleaning_page for token in (
+        "CLEANING_QUANTITIES", "300 + Math.max(0, count - 1) * 150",
+        "getCleaningSlots", 'data-testid="cleaning-unit-count"',
+        "Continue to details & full payment",
+    )):
+        fail("cleaning page must show the $300 first + $150 extra offer and timed booking before full payment")
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
-    if '"/cleaning-checkout"' not in secure_page or '"/cleaning-payment-status"' not in secure_page:
-        fail("cleaning checkout must verify payment through the server")
+    if not all(token in secure_page for token in (
+        '"/cleaning-checkout"', '"/cleaning-payment-status"',
+        '"/cleaning-checkout-config"', '"start_time"', '"quantity"',
+        "PAY {money(price)} IN FULL",
+    )):
+        fail("cleaning checkout must verify live availability, full payment and quantity with the server")
     for field in ('name', 'address', 'phone', 'email'):
         if field not in secure_page:
             fail(f"cleaning checkout missing customer field {field}")
