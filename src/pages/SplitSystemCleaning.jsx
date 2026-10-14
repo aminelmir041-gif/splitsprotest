@@ -422,6 +422,9 @@ export default function SplitSystemCleaning() {
             <h3 className="mt-3 text-3xl font-black uppercase text-[#0B2641] sm:text-4xl">$300 FIRST SYSTEM.</h3>
             <p className="mt-2 text-2xl font-black uppercase text-[#008DB8] sm:text-3xl">$150 FOR EACH EXTRA ONE.</p>
             <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#4A6272]">All at the same property during one visit, with the complete deep-clean process and compatible treatments included. Choose the number of systems below and see the full total before checkout.</p>
+            <div className="mt-6 mb-5" data-testid="cleaning-before-booking-cta-pay-later-reminder">
+              <PayLaterReminder kind="cleaning" compact />
+            </div>
             <button type="button" onClick={() => choose(1)}
               className="mt-6 flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-6 py-3 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42]">
               Choose systems &amp; booking time <ArrowRight className="h-5 w-5"/>
