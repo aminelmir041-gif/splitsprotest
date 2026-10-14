@@ -160,16 +160,17 @@ export default function SplitSystemCleaning() {
           </p>
 
           <div className="mt-9 border-y-2 border-[#DBE7EA] py-8 sm:py-10" data-testid="cleaning-benchtop-airflow-punchline">
-            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#007DA5]">THE PART YOUR CLOTH CAN'T REACH</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#007DA5]">YOU WOULDN'T PUT UP WITH THIS...</p>
             <h3 className="mt-3 max-w-5xl text-[clamp(1.75rem,4.8vw,3.8rem)] font-black uppercase leading-[1.06] tracking-tight text-[#082743]">
-              YOU'VE JUST WIPED YOUR BENCHTOP SPOTLESS.{" "}
-              <span className="bg-[#F4C620] px-1 text-[#081F34]">THEN YOU SWITCH ON YOUR DIRTY AIRCON.</span>
+              YOU WOULDN'T LET SOMEONE{" "}
+              <span className="bg-[#F4C620] px-1 text-[#081F34]">SNEEZE ALL OVER YOUR BENCHTOP</span>{" "}
+              JUST AFTER YOU'VE WIPED IT DOWN.
             </h3>
             <p className="mt-5 max-w-4xl text-lg font-bold leading-relaxed text-[#173C54] sm:text-xl">
-              If dust or mould is building up inside, airflow can carry particles back into the room — including onto surfaces you've just cleaned.
+              So why overlook what your dirty aircon could blow back around the room — and onto surfaces you've just cleaned?
             </p>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#52616C]">
-              Not every dirty aircon contains mould, and cleaning does not make a home sterile. But the parts behind the cover deserve attention as much as the benchtop does.
+              If dust or mould has built up inside the unit, airflow can carry particles into the room. Not every dirty aircon contains mould, and cleaning can't guarantee sterile air — but looking after those hidden components makes sense.
             </p>
           </div>
 
