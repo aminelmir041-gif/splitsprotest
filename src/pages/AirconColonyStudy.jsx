@@ -26,7 +26,7 @@ export default function AirconColonyStudy() {
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="aircon-colony-study">
       <Helmet>
         <title>Colony Forming Units in Aircons: What Cleaning Research Found | SplitsPro</title>
-        <meta name="description" content="Researchers measured colony forming units inside household air conditioners before and after deep cleaning. Learn what the findings mean for your home, then book SplitsPro's professional split system clean." />
+        <meta name="description" content="Learn what a colony forming unit is, what mould and bacteria can mean for the people in your home, and how much contamination researchers measured before and after an aircon deep clean." />
         <link rel="canonical" href="https://splitspro.com.au/aircon-colony-forming-units/" />
         <meta property="og:title" content="They Found Something Growing Inside Aircons. And Counted It. | SplitsPro" />
         <meta property="og:description" content="What is a colony forming unit? Why does it matter, and what difference did deep cleaning make in published research?" />
@@ -50,6 +50,34 @@ export default function AirconColonyStudy() {
           />
         </div>
       </section>
+
+      <section className="bg-white py-14 sm:py-20" id="what-is-a-colony-forming-unit" data-testid="colony-explainer">
+        <div className="sp-container max-w-5xl">
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">The simple answer · no science degree needed</p>
+          <h2 className="mt-4 max-w-5xl font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">What is a colony forming unit?</h2>
+          <p className="mt-6 max-w-4xl text-lg leading-relaxed text-[#58616A] sm:text-xl">Imagine taking a tiny sample of grime and putting it in a laboratory dish. Some living bacteria or fungi in that sample can multiply and grow into little visible spots called <strong>colonies</strong>.</p>
+          <p className="mt-4 max-w-4xl text-lg leading-relaxed text-[#58616A] sm:text-xl">Each spot that grows counts as <strong>one colony forming unit</strong>. It might have started from one living microbe or a small group of them. Scientists count those colonies to estimate how many microbes capable of growing were in the sample.</p>
+          <p className="mt-5 max-w-4xl text-base font-bold leading-relaxed text-[#18364B] sm:text-lg">Put simply: it's a way of counting certain living germs in a lab test — not a germ itself, and not a disease.</p>
+
+          <div className="mt-9 grid gap-8 border-y border-[#E7E2D9] py-8 md:grid-cols-2 md:gap-14">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#99713B]">So what's the potential harm?</p>
+              <h3 className="mt-3 font-serif text-3xl leading-tight text-[#0B0B0B]">It's what some microbes can do that matters.</h3>
+              <p className="mt-4 text-base leading-relaxed text-[#5E666B]">Many microorganisms are harmless. But some types of mould release spores that can irritate sensitive airways, triggering coughing, wheezing or asthma symptoms. Certain bacteria can cause illness in some circumstances.</p>
+            </div>
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#99713B]">Why would they be in an aircon?</p>
+              <h3 className="mt-3 font-serif text-3xl leading-tight text-[#0B0B0B]">Dust and moisture can collect out of sight.</h3>
+              <p className="mt-4 text-base leading-relaxed text-[#5E666B]">A split system recirculates indoor air. Its hidden fan, coil and drain areas can collect dust and stay damp. In some units, that creates conditions where microbial buildup can develop.</p>
+            </div>
+          </div>
+          <p className="mt-6 max-w-4xl text-sm leading-relaxed text-[#6B7074]">A colony count does not identify all the species present, prove that any are dangerous, tell us how many spores entered the room or predict whether someone will get sick. Not every dirty aircon contains harmful mould.</p>
+          <a href="https://www.health.nsw.gov.au/environment/factsheets/Pages/mould.aspx" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8F6B37] underline underline-offset-4">Read NSW Health's mould guidance <ArrowUpRight className="h-4 w-4" /></a>
+          <p className="mt-8 font-serif text-2xl leading-snug text-[#1C3A4D] sm:text-3xl">Now think about the people in your home — and the places everyday cleaning cannot reach.</p>
+        </div>
+      </section>
+
+
 
       <section id="the-homeowner" className="scroll-mt-24 bg-white py-14 sm:py-20" data-testid="colony-punchline-one">
         <div className="sp-container grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
@@ -81,16 +109,6 @@ export default function AirconColonyStudy() {
               NSW Health's mould information <ArrowUpRight className="h-4 w-4" />
             </a>
           </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-14 sm:py-20" data-testid="colony-explainer">
-        <div className="sp-container max-w-5xl">
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9B753E]">A laboratory term explained like normal English</p>
-          <h2 className="mt-4 font-serif text-4xl leading-tight text-[#0B0B0B] sm:text-5xl">What on earth is a colony forming unit?</h2>
-          <p className="mt-6 max-w-4xl text-base leading-relaxed text-[#606469]">Imagine a scientist takes a sample from inside an aircon and puts it on a laboratory plate. Some living bacteria or fungi in that sample grow into visible colonies.</p>
-          <p className="mt-3 max-w-4xl text-base leading-relaxed text-[#606469]">Each colony counted is called a <strong>colony forming unit</strong>. A colony can grow from a single microbe or a group of them. That gives scientists a way to compare certain types of microbial contamination before and after cleaning.</p>
-          <p className="mt-4 max-w-4xl font-semibold text-[#16344C]">More colony forming units on a tested surface can indicate more culturable microorganisms in the sample. It doesn't automatically mean a greater risk of illness.</p>
         </div>
       </section>
 
