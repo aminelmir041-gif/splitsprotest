@@ -1,6 +1,8 @@
 name: Publish Original SplitsPro Pages
 
 # Rebuild all React routes together so every page references the same current asset bundle.
+# This is the ONLY workflow allowed to commit shared /static and route HTML.
+# The partial cleaning publisher is retired to prevent overlapping bundle writes.
 on:
   workflow_dispatch:
   push:
