@@ -8,7 +8,6 @@ const SERVICE_CARDS = [
     href: "/split-system-cleaning",
     eyebrow: "Wall-mounted units",
     title: "Split System Cleaning",
-    price: "Deep cleans from $220",
     cheeky: "One proper deep clean. A better price when you book two.",
     body: "Deep clean one wall-mounted split for $220, or book two deep cleans at the same property for $300 ($150 each). See exactly what is cleaned before requesting your appointment.",
     icons: [Bug, Sparkles, Wind],
@@ -62,9 +61,11 @@ const Cleaning = () => (
                     <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">{service.eyebrow}</p>
                     <h3 className="mt-3 font-serif text-3xl font-medium leading-tight text-[#1D1D1F] sm:text-4xl">{service.title}</h3>
                   </div>
-                  <span className="shrink-0 rounded-full border border-[#DCD7CE] bg-white px-3 py-1.5 text-xs font-semibold text-[#1D1D1F]">
-                    {service.price}
-                  </span>
+                  {service.price && (
+                    <span className="shrink-0 rounded-full border border-[#DCD7CE] bg-white px-3 py-1.5 text-xs font-semibold text-[#1D1D1F]">
+                      {service.price}
+                    </span>
+                  )}
                 </div>
 
                 <p className="relative mt-5 text-base font-semibold text-[#1D1D1F]">{service.cheeky}</p>

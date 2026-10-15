@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'src/pages/SplitSystemCleaning.jsx'
+      - 'src/pages/Cleaning.jsx'
       - '.github/workflows/publish-cleaning-page-changes.yml'
 permissions:
   contents: write
