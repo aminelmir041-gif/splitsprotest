@@ -266,3 +266,68 @@ def test_live_config_advertises_book_200_default():
     assert result["each_additional_system"] == 150
     assert result["booking_payment"] == 200
     assert result["default_payment_choice"] == "booking"
+
+def test_stripe_return_verifies_payment_directly_when_webhook_is_delayed(calendar, monkeypatch):
+    store, _ = calendar
+    ref = "e" * 32
+    session_id = "cs_live_a1verified"
+    day = future_date()
+    order = {
+        "reference": ref, "booking_date": day, "start_time": "08:00",
+        "quantity": 1, "total_cents": 30000, "payment_cents": 20000,
+        "balance_cents": 10000, "payment_choice": "booking",
+        "payment_provider": "stripe", "stripe_session_id": session_id,
+        "lead": {"name": "Customer", "email": "example@example.com"},
+    }
+    store.set(cb.hold_key(ref), json.dumps(order), ex=1000)
+    monkeypatch.setenv("STRIPE_SECRET_KEY", "sk_test_fixture")
+
+    class FakeStripeResponse:
+        def raise_for_status(self): pass
+        def json(self):
+            return {
+                "metadata": {"checkout_type": "cleaning", "cleaning_ref": ref},
+                "id": session_id, "client_reference_id": ref,
+                "amount_total": 20000, "currency": "aud", "payment_status": "paid",
+            }
+
+    def fake_get(url, headers, timeout):
+        assert url.endswith(session_id)
+        assert headers["Authorization"] == "Bearer sk_test_fixture"
+        return FakeStripeResponse()
+
+    monkeypatch.setattr(cb.requests, "get", fake_get)
+    paid = cb.cleaning_payment_status(Response(), checkout_ref=ref, session_id=session_id)
+    assert paid["status"] == "confirmed"
+    assert paid["amount_paid"] == 200
+    assert paid["balance_amount"] == 100
+    assert cb._get_json(store, cb.confirmed_key(ref))
+
+
+def test_stripe_return_rejects_unverified_or_mismatched_session(calendar, monkeypatch):
+    store, _ = calendar
+    ref = "f" * 32
+    session_id = "cs_live_a1verified"
+    order = {
+        "reference": ref, "booking_date": future_date(), "start_time": "08:00",
+        "quantity": 1, "total_cents": 30000, "payment_cents": 20000,
+        "payment_provider": "stripe", "stripe_session_id": session_id,
+        "lead": {},
+    }
+    store.set(cb.hold_key(ref), json.dumps(order), ex=1000)
+    monkeypatch.setenv("STRIPE_SECRET_KEY", "sk_test_fixture")
+    called = []
+    class WrongAmount:
+        def raise_for_status(self): pass
+        def json(self):
+            return {
+                "metadata": {"checkout_type": "cleaning", "cleaning_ref": ref},
+                "id": session_id, "client_reference_id": ref,
+                "amount_total": 30000, "currency": "aud", "payment_status": "paid",
+            }
+    monkeypatch.setattr(cb.requests, "get", lambda *a, **kw: (called.append(1), WrongAmount())[1])
+    assert cb.cleaning_payment_status(Response(), checkout_ref=ref, session_id="cs_live_wrong")["status"] == "processing"
+    assert not called
+    assert cb.cleaning_payment_status(Response(), checkout_ref=ref, session_id=session_id)["status"] == "processing"
+    assert len(called) == 1
+    assert not store.exists(cb.paid_key(ref))
