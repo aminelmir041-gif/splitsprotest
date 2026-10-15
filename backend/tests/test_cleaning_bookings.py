@@ -119,7 +119,7 @@ def test_payment_confirmation_stores_booking_and_is_idempotent(calendar):
     assert not cb._slot_is_free(store, d, "09:30", 1)
 
 
-def test_expired_payment_hold_never_overbooks(calendar):
+def test_expired_payment_hold_confirms_only_if_still_free(calendar):
     store, _ = calendar
     d = future_date()
     reference = "b" * 32
@@ -128,9 +128,14 @@ def test_expired_payment_hold_never_overbooks(calendar):
         "quantity": 1, "total_cents": 30000, "lead": {},
     }
     result = cb._finalize_paid_cleaning(store, record)
-    assert result["status"] == "needs_reschedule"
-    assert not store.exists(cb.confirmed_key(reference))
+    assert result["status"] == "confirmed"
+    assert store.exists(cb.confirmed_key(reference))
     assert store.exists(cb.paid_key(reference))
+
+    other = {**record, "reference": "c" * 32}
+    result2 = cb._finalize_paid_cleaning(store, other)
+    assert result2["status"] == "needs_reschedule"
+    assert not store.exists(cb.confirmed_key(other["reference"]))
 
 
 @pytest.mark.parametrize("quantity,total,book_due,balance", [
@@ -258,6 +263,12 @@ def test_stripe_checkout_uses_existing_active_prices_by_payment_choice(monkeypat
     assert full["line_items[1][quantity]"] == "1"
     assert "billing_address_collection" not in deposit
     assert "billing_address_collection" not in full
+    for item in (deposit, full):
+        assert item["payment_method_configuration"] == "pmc_1UNgZ0PpUx7EUhdNwdVqO3md"
+        assert "payment_method_types" not in item
+        assert "payment_method_collection" not in item
+        assert int(item["expires_at"]) > int(cb.time.time())
+        assert int(item["expires_at"]) - int(cb.time.time()) <= 32 * 60
 
 
 def test_live_config_advertises_book_200_default():
@@ -331,3 +342,41 @@ def test_stripe_return_rejects_unverified_or_mismatched_session(calendar, monkey
     assert cb.cleaning_payment_status(Response(), checkout_ref=ref, session_id=session_id)["status"] == "processing"
     assert len(called) == 1
     assert not store.exists(cb.paid_key(ref))
+
+def test_cancel_unpaid_stripe_checkout_expires_session_and_reopens_slot(calendar, monkeypatch):
+    store, _ = calendar
+    ref = "9" * 32
+    date = future_date()
+    hold = {"reference": ref, "booking_date": date, "start_time": "08:00",
+            "quantity": 1, "payment_provider": "stripe",
+            "stripe_session_id": "cs_live_canceltest"}
+    store.set(cb.hold_key(ref), json.dumps(hold), ex=1000)
+    assert not cb._slot_is_free(store, date, "08:00", 1)
+    monkeypatch.setenv("STRIPE_SECRET_KEY", "sk_test_dummy")
+    requests_seen = []
+
+    class Expired:
+        def raise_for_status(self): pass
+        def json(self): return {"status": "expired"}
+
+    def expire(url, headers, timeout):
+        requests_seen.append(url)
+        return Expired()
+
+    monkeypatch.setattr(cb.requests, "post", expire)
+    result = cb.cancel_cleaning_checkout(cb.CancelCleaningCheckout(checkout_ref=ref))
+    assert result["status"] == "released"
+    assert requests_seen and requests_seen[0].endswith("/cs_live_canceltest/expire")
+    assert not store.exists(cb.hold_key(ref))
+    assert cb._slot_is_free(store, date, "08:00", 1)
+
+
+def test_cannot_cancel_already_paid_cleaning(calendar, monkeypatch):
+    store, _ = calendar
+    ref = "8" * 32
+    store.set(cb.paid_key(ref), json.dumps({"status": "confirmed"}))
+    def no_request(*args, **kwargs):
+        raise AssertionError("Already paid: must not call Stripe")
+    monkeypatch.setattr(cb.requests, "post", no_request)
+    result = cb.cancel_cleaning_checkout(cb.CancelCleaningCheckout(checkout_ref=ref))
+    assert result["status"] == "already_paid"
