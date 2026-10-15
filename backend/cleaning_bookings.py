@@ -338,7 +338,6 @@ def _create_stripe_checkout(hold):
         # Stripe determines which BNPL methods are eligible for each payment;
         # payment_method_types cannot be forced on this account.
         "payment_method_configuration": "pmc_1UNgZ0PpUx7EUhdNwdVqO3md",
-        "payment_method_collection": "always",
         "expires_at": str(int(time.time()) + STRIPE_SESSION_SECONDS),
         "client_reference_id": hold["reference"],
         "customer_email": hold["lead"]["email"],
