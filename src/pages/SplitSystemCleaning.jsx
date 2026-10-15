@@ -549,7 +549,7 @@ export default function SplitSystemCleaning() {
                 className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
                 {continuing ? "Opening secure booking..." : "Continue to details & payment options"} <ArrowRight className="h-5 w-5"/>
               </button>
-              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when secure checkout begins. The booking is confirmed only once full payment is verified.</p>
+              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when checkout starts. Your date is confirmed after your chosen $200 booking payment or full payment is verified.</p>
             </div>
           </div>
         </div>
