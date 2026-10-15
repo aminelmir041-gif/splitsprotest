@@ -235,7 +235,7 @@ export default function CleaningCheckout() {
               <p className="text-xs font-black uppercase tracking-[0.15em] text-[#087FA4]">CHOOSE YOUR PAYMENT</p>
               <fieldset className="mt-3 grid gap-3" aria-label="How much to pay for cleaning">
                 {[
-                  { id: "booking", title: "Pay $200 to book", note: money(price - 200) + " due after cleaning; Stripe may offer card only for $200" },
+                  { id: "booking", title: "Pay $200 to book", note: money(price - 200) + " due after cleaning; eligible Stripe pay-later options may appear" },
                   { id: "full", title: "Pay the full " + money(price) + " now", note: "Nothing remaining; eligible instalment options may appear on Stripe" }
                 ].map((option) => (
                   <label key={option.id} className={"flex cursor-pointer items-center gap-3 rounded-md border-2 p-4 " +
@@ -248,7 +248,7 @@ export default function CleaningCheckout() {
                   </label>
                 ))}
               </fieldset>
-              <p className="mt-3 text-sm font-medium text-[#466073]">Want Afterpay, Klarna or Zip? Choose <strong>Pay in full</strong> for the best chance of seeing eligible payment plans. Stripe decides what is available for each purchase; the $200 booking payment may only show card options.</p>
+              <p className="mt-3 text-sm font-medium text-[#466073]">Through Stripe, eligible customers may see <strong>Afterpay, Klarna or Zip</strong> on either the $200 booking payment or the full amount. Stripe shows the options available for each customer and purchase.</p>
               <div className="mt-4 flex flex-wrap items-end justify-between gap-4 border-t border-[#D7E2E9] pt-4">
                 <div><p className="text-xs font-black uppercase tracking-wide text-[#007FA4]">DUE TODAY</p><strong className="block text-3xl font-black text-[#0B2641]">{money(dueNow)}</strong></div>
                 <div className="text-right"><p className="text-xs font-black uppercase tracking-wide text-[#526677]">AFTER CLEANING</p><strong className="block text-2xl font-black text-[#0B2641]">{money(remainingBalance)}</strong></div>
