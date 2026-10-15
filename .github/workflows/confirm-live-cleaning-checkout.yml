@@ -33,7 +33,7 @@ jobs:
           assert cfg.get("booking_payment") == 200
           assert cfg.get("default_payment_choice") == "booking"
           print("Default $200 booking payment confirmed; full-payment choice remains available.")
-          assert cfg.get("paypal_ready") or cfg.get("stripe_ready"), "No checkout methods connected"
+          assert cfg.get("stripe_ready") is True, "Cleaning Stripe integration must be ready; PayPal alone is insufficient"
           for units in (1,2,3):
               result=query(f"cleaning-slots?quantity={units}&limit=3")
               print("Quantity", units, "opens", len(result.get("slots", [])), "timezone", result.get("timezone"))
