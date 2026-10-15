@@ -14,6 +14,7 @@ import logging
 import os
 import re
 import uuid
+import time
 
 import redis
 import requests
@@ -31,7 +32,13 @@ WORKDAYS = {
     int(n) for n in os.environ.get("BOOKING_WORKDAYS", "0,1,2,3,4,5,6").split(",")
     if n.strip().isdigit() and 0 <= int(n) <= 6
 }
-HOLD_SECONDS = max(600, min(7200, int(os.environ.get("BOOKING_HOLD_SECONDS", "3600"))))
+# Stripe Checkout sessions cannot expire sooner than 30 minutes. Keep the
+# temporary availability hold only slightly longer than the Stripe session.
+# An abandoned checkout automatically frees the slot; a cancellation frees it
+# immediately through the verified cancellation endpoint below.
+HOLD_SECONDS = 32 * 60
+STRIPE_SESSION_SECONDS = 31 * 60
+
 FIRST_CLEAN_CENTS = 30000
 ADDITIONAL_CLEAN_CENTS = 15000
 CLEANING_BOOKING_PAYMENT_CENTS = 20000
@@ -327,6 +334,12 @@ def _create_stripe_checkout(hold):
         raise HTTPException(status_code=503, detail="Stripe is not yet enabled for cleaning checkout")
     body = {
         "mode": "payment",
+        # Use the account's active Dashboard payment-method configuration.
+        # Stripe determines which BNPL methods are eligible for each payment;
+        # payment_method_types cannot be forced on this account.
+        "payment_method_configuration": "pmc_1UNgZ0PpUx7EUhdNwdVqO3md",
+        "payment_method_collection": "always",
+        "expires_at": str(int(time.time()) + STRIPE_SESSION_SECONDS),
         "client_reference_id": hold["reference"],
         "customer_email": hold["lead"]["email"],
         "success_url": _return_params(hold, "returned") + "&session_id={CHECKOUT_SESSION_ID}",
@@ -492,7 +505,9 @@ def _finalize_paid_cleaning(connection, hold, background_tasks: BackgroundTasks 
             finally:
                 if current_hold:
                     connection.set(hold_key(ref), json.dumps(current_hold), ex=HOLD_SECONDS)
-            if not current_hold or not is_free:
+            # A paid session may arrive after the brief temporary hold expires.
+            # Book it if the time is STILL free; otherwise arrange rescheduling.
+            if not is_free:
                 status = "needs_reschedule"
             else:
                 status = "confirmed"
@@ -574,6 +589,71 @@ def expire_cleaning_stripe_hold(session: dict):
     if hold and hold.get("stripe_session_id") == session.get("id"):
         connection.delete(hold_key(ref))
     return True
+
+
+class CancelCleaningCheckout(BaseModel):
+    checkout_ref: str
+
+
+@router.post("/api/cleaning-checkout-cancel")
+def cancel_cleaning_checkout(payload: CancelCleaningCheckout):
+    """Release an unpaid time immediately, never an already-paid booking.
+
+    Stripe's hosted checkout must first be expired server-side so a customer
+    cannot pay a still-open session after its date has been released.
+    """
+    ref = payload.checkout_ref
+    if not re.fullmatch(r"[0-9a-f]{32}", ref):
+        raise HTTPException(status_code=422, detail="Invalid cleaning checkout reference")
+    connection = client()
+    if _get_json(connection, paid_key(ref)):
+        return {"status": "already_paid"}
+    hold = _get_json(connection, hold_key(ref))
+    if not hold:
+        return {"status": "released"}
+    if hold.get("payment_provider") == "stripe":
+        sid = hold.get("stripe_session_id") or ""
+        key = (os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+        if not sid or not key:
+            raise HTTPException(status_code=503, detail="Could not release Stripe checkout safely. The temporary hold will expire automatically.")
+        try:
+            response = requests.post(
+                "https://api.stripe.com/v1/checkout/sessions/" + sid + "/expire",
+                headers={"Authorization": "Bearer " + key,
+                         "Idempotency-Key": "cancel-cleaning-" + ref},
+                timeout=12,
+            )
+            if response.status_code == 400:
+                # Stripe returns 400 when a session has already completed or
+                # expired. Only an EXPIRED session can safely be released.
+                check = requests.get(
+                    "https://api.stripe.com/v1/checkout/sessions/" + sid,
+                    headers={"Authorization": "Bearer " + key}, timeout=12)
+                check.raise_for_status()
+                session = check.json()
+                if session.get("status") != "expired":
+                    # Payment may have completed while buyer pressed back;
+                    # do not release the time until confirmation is processed.
+                    return {"status": "payment_processing"}
+            else:
+                response.raise_for_status()
+                if response.json().get("status") != "expired":
+                    return {"status": "payment_processing"}
+        except (requests.RequestException, ValueError):
+            logging.warning("Unable to expire cancelled cleaning Stripe session: %s", ref)
+            raise HTTPException(status_code=503, detail="Could not cancel Stripe checkout yet. The temporary hold will expire automatically.")
+    # PayPal buyer has returned through the Cancel URL without authorizing
+    # a capture. The order remains safely unconfirmed.
+    try:
+        with connection.lock(day_lock_key(hold["booking_date"]), timeout=30, blocking_timeout=10):
+            if _get_json(connection, paid_key(ref)):
+                return {"status": "already_paid"}
+            current = _get_json(connection, hold_key(ref))
+            if current and current.get("reference") == ref:
+                connection.delete(hold_key(ref))
+    except (redis.RedisError, OSError):
+        raise HTTPException(status_code=503, detail="Unable to release the temporary hold. It will expire automatically.")
+    return {"status": "released"}
 
 
 class CapturePaypalCleaning(BaseModel):
