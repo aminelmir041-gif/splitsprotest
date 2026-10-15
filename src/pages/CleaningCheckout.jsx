@@ -259,7 +259,7 @@ export default function CleaningCheckout() {
                   ].map((method) => (
                     <label key={method.id} className={"flex items-start gap-3 border p-4 " + (provider === method.id ? "border-[#00A1CF] bg-[#EFFAFE]" : "border-[#D6E0E7]") + (!method.enabled ? " opacity-50" : "")}>
                       <input type="radio" name="cleaning-provider" disabled={!method.enabled || processing} checked={provider === method.id} onChange={() => setProvider(method.id)} />
-                      <span><strong className="block text-sm">{method.title}</strong><small className="mt-1 block text-xs text-[#586D7D]">{method.enabled ? method.note : "Currently unavailable"}</small></span>
+                      <span><strong className="block text-sm">{method.title}</strong><small className="mt-1 block text-xs text-[#586D7D]">{settingsLoading || !settings ? "Checking payment connection…" : settingsError ? "Connection check failed — retry below" : method.enabled ? method.note : "Currently unavailable for cleaning"}</small></span>
                     </label>
                   ))}
                 </div>
