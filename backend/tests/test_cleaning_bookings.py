@@ -5,6 +5,8 @@ from datetime import timedelta, datetime
 import fakeredis
 import pytest
 
+from fastapi import Response
+
 from backend import cleaning_bookings as cb
 
 
@@ -129,3 +131,138 @@ def test_expired_payment_hold_never_overbooks(calendar):
     assert result["status"] == "needs_reschedule"
     assert not store.exists(cb.confirmed_key(reference))
     assert store.exists(cb.paid_key(reference))
+
+
+@pytest.mark.parametrize("quantity,total,book_due,balance", [
+    (1, 30000, 20000, 10000),
+    (2, 45000, 20000, 25000),
+    (3, 60000, 20000, 40000),
+    (7, 120000, 20000, 100000),
+])
+def test_payment_options_never_change_total_price(quantity, total, book_due, balance):
+    assert cb.price_cents(quantity) == total
+    assert cb.amount_to_charge_cents(quantity, "booking") == book_due
+    assert cb.amount_to_charge_cents(quantity, "full") == total
+    assert total - cb.amount_to_charge_cents(quantity, "booking") == balance
+
+
+def test_old_checkout_clients_still_default_to_full_payment():
+    payload = cb.CleaningCheckoutRequest(
+        quantity=1, booking_date="2099-10-15", start_time="08:00",
+        payment_provider="paypal", name="Test Customer",
+        address="23 Market Street, Sydney NSW 2000", phone="0414698435",
+        email="person@example.com"
+    )
+    assert payload.payment_choice == "full"
+    assert cb.CleaningCheckoutRequest(
+        **{**payload.model_dump(), "payment_choice": "booking"}
+    ).payment_choice == "booking"
+
+
+@pytest.mark.parametrize("choice,charged,balance", [
+    ("booking", 200, 250),
+    ("full", 450, 0),
+])
+def test_checkout_creates_precisely_priced_hold_and_preserves_shared_calendar(
+    calendar, monkeypatch, choice, charged, balance
+):
+    store, _ = calendar
+    monkeypatch.setattr(cb, "booking_enabled", lambda: True)
+    monkeypatch.setenv("PAYPAL_CLIENT_ID", "fake-for-unittest")
+    monkeypatch.setenv("PAYPAL_CLIENT_SECRET", "fake-for-unittest")
+    def fake_paypal(hold):
+        hold["paypal_order_id"] = "PAYPAL-CHECKOUT-ID"
+        return "https://www.paypal.com/checkoutnow?token=test"
+    monkeypatch.setattr(cb, "_create_paypal_checkout", fake_paypal)
+    day = future_date()
+    payload = cb.CleaningCheckoutRequest(
+        quantity=2, booking_date=day, start_time="08:00",
+        payment_provider="paypal", payment_choice=choice,
+        name="Test Customer", address="23 Market Street, Sydney NSW 2000",
+        phone="0414698435", email="person@example.com"
+    )
+    response = cb.create_cleaning_checkout(payload)
+    assert response["total_amount"] == 450
+    assert response["amount_due_now"] == charged
+    assert response["balance_amount"] == balance
+    assert response["payment_choice"] == choice
+    assert response["paid_upfront"] is (choice == "full")
+    hold = cb._get_json(store, cb.hold_key(response["checkout_ref"]))
+    assert hold["payment_cents"] == charged * 100
+    assert hold["balance_cents"] == balance * 100
+    assert hold["total_cents"] == 45000
+    assert not cb._slot_is_free(store, day, "08:00", 1)
+    assert cb.cleaning_blocks_installation(store, day, "Morning")
+
+
+def test_booking_deposit_webhook_verifies_charged_amount_and_records_balance(calendar):
+    store, _ = calendar
+    day = future_date()
+    reference = "c" * 32
+    hold = {
+        "reference": reference, "booking_date": day, "start_time": "09:30",
+        "quantity": 2, "total_cents": 45000,
+        "payment_cents": 20000, "balance_cents": 25000,
+        "payment_choice": "booking", "payment_provider": "stripe",
+        "stripe_session_id": "cs_test_verified",
+        "lead": {"name": "Customer", "email": "example@example.com"},
+    }
+    store.set(cb.hold_key(reference), json.dumps(hold), ex=1000)
+    session = {
+        "metadata": {"checkout_type": "cleaning", "cleaning_ref": reference},
+        "id": "cs_test_verified", "client_reference_id": reference,
+        "amount_total": 45000, "currency": "aud", "payment_status": "paid",
+    }
+    # The full job total must NOT be accepted as proof of the $200 transaction.
+    assert cb.confirm_stripe_cleaning_payment(session)
+    assert not store.exists(cb.paid_key(reference))
+    session["amount_total"] = 20000
+    assert cb.confirm_stripe_cleaning_payment(session)
+    paid = cb._get_json(store, cb.paid_key(reference))
+    assert paid["status"] == "confirmed"
+    assert paid["amount_paid"] == 200
+    assert paid["balance_amount"] == 250
+    assert paid["paid_upfront"] is False
+    assert paid["payment_choice"] == "booking"
+    assert store.exists(cb.confirmed_key(reference))
+    # Redelivered paid webhooks do not create duplicate bookings.
+    assert cb.confirm_stripe_cleaning_payment(session)
+
+
+def test_stripe_checkout_uses_existing_active_prices_by_payment_choice(monkeypatch):
+    monkeypatch.setenv("STRIPE_SECRET_KEY", "sk_test_not_real")
+    received = []
+    class FakeResponse:
+        def raise_for_status(self): pass
+        def json(self): return {"url":"https://checkout.stripe.com/test","id":"cs_test_checkout"}
+    def fake_post(url, headers, data, timeout):
+        assert "stripe.com" in url
+        received.append(data)
+        return FakeResponse()
+    monkeypatch.setattr(cb.requests, "post", fake_post)
+    for choice in ("booking", "full"):
+        hold = {
+            "reference": "d" * 32, "quantity": 2, "payment_choice": choice,
+            "payment_cents": cb.amount_to_charge_cents(2, choice),
+            "total_cents": 45000, "balance_cents": 25000 if choice == "booking" else 0,
+            "booking_date": future_date(), "start_time": "08:00",
+            "payment_provider": "stripe", "lead": {"email":"test@example.com"}
+        }
+        assert cb._create_stripe_checkout(hold).startswith("https://")
+    deposit, full = received
+    assert deposit["line_items[0][price]"] == cb.STRIPE_CLEANING_BOOKING_PRICE
+    assert "line_items[1][price]" not in deposit
+    assert deposit["metadata[payment_choice]"] == "booking"
+    assert full["line_items[0][price]"] == cb.STRIPE_FIRST_CLEAN_PRICE
+    assert full["line_items[1][price]"] == cb.STRIPE_ADDITIONAL_CLEAN_PRICE
+    assert full["line_items[1][quantity]"] == "1"
+    assert "billing_address_collection" not in deposit
+    assert "billing_address_collection" not in full
+
+
+def test_live_config_advertises_book_200_default():
+    result = cb.cleaning_config(Response())
+    assert result["first_system"] == 300
+    assert result["each_additional_system"] == 150
+    assert result["booking_payment"] == 200
+    assert result["default_payment_choice"] == "booking"
