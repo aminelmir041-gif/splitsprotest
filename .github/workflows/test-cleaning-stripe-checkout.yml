@@ -1,0 +1,23 @@
+name: Test Cleaning Stripe Checkout
+on:
+  push:
+    branches: [crm-lead-routing]
+    paths:
+      - 'backend/cleaning_bookings.py'
+      - 'backend/tests/test_cleaning_bookings.py'
+      - '.github/workflows/test-cleaning-stripe-checkout.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  payment-verification-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: pip install -r backend/render_requirements.txt pytest pytest-xdist fakeredis
+      - name: Run cleaning checkout and return-verification tests
+        run: python -m pytest -c backend/pytest.ini -n 0 -q backend/tests/test_cleaning_bookings.py
