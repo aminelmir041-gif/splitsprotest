@@ -1,50 +1,21 @@
-name: Publish Cleaning Page Changes
+name: Retired Partial Cleaning Publisher
+
+# The full site publisher compiles every React route against one shared
+# bundle. Publishing only /split-system-cleaning while deleting /static can
+# break /secure-cleaning and cause concurrent bundle rebase conflicts.
+# This retired workflow is kept as a manually runnable informational check.
+
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'src/pages/SplitSystemCleaning.jsx'
-      - 'src/pages/Cleaning.jsx'
-      - '.github/workflows/publish-cleaning-page-changes.yml'
+  workflow_dispatch:
+
 permissions:
-  contents: write
+  contents: read
+
 jobs:
-  build-publish:
-    if: github.actor != 'github-actions[bot]'
+  use-full-site-publisher:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout website
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install dependencies
+      - name: Use the single site-wide publishing workflow
         run: |
-          npm install --legacy-peer-deps
-          npm install --legacy-peer-deps --no-save ajv@8.17.1 ajv-keywords@5.1.0
-      - name: Compile updated React page
-        env:
-          CI: 'false'
-        run: npm run build
-      - name: Publish only the cleaning-page route and shared bundles
-        run: |
-          set -euo pipefail
-          mkdir -p static split-system-cleaning cleaning
-          rm -rf static
-          cp -R build/static static
-          cp build/index.html split-system-cleaning/index.html
-          cp build/index.html cleaning/index.html
-          cp build/asset-manifest.json asset-manifest.json 2>/dev/null || true
-          test -f public/landing/splitspro-cleaning-baby-approved.png
-          test -f landing/splitspro-cleaning-baby-approved.png
-      - name: Commit compiled cleaning-page assets
-        run: |
-          git config user.name 'SplitsPro Website Bot'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add static split-system-cleaning/index.html cleaning/index.html asset-manifest.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'Publish approved cleaning-page baby image'
-          git pull --rebase origin main
-          git push
+          echo "Use Publish Original SplitsPro Pages to deploy ALL React routes together."
+          echo "No site files are changed by this workflow."
