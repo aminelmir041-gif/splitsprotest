@@ -45,6 +45,7 @@ export default function CleaningCheckout() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
   const [paymentStatus, setPaymentStatus] = useState({ status: "processing" });
+  const [cancellationStatus, setCancellationStatus] = useState(paymentCancelled ? "releasing" : "");
   const paypalCaptureStarted = useRef(false);
 
   useEffect(() => {
@@ -100,6 +101,20 @@ export default function CleaningCheckout() {
     begin();
     return () => { stopped = true; if (pendingTimer) window.clearTimeout(pendingTimer); };
   }, [paymentReturn, checkoutRef, paymentProvider, stripeSessionId]);
+
+  useEffect(() => {
+    if (!paymentCancelled || !checkoutRef) return undefined;
+    let active = true;
+    api.post("/cleaning-checkout-cancel", { checkout_ref: checkoutRef }, { timeout: 30000 })
+      .then(({ data }) => {
+        if (!active) return;
+        setCancellationStatus(data.status || "released");
+      })
+      .catch(() => {
+        if (active) setCancellationStatus("pending");
+      });
+    return () => { active = false; };
+  }, [paymentCancelled, checkoutRef]);
 
   if (!validCount || (!paymentReturn && (!validDate || !validTime))) {
     return <Navigate to={backUrl} replace />;
@@ -220,8 +235,8 @@ export default function CleaningCheckout() {
               <p className="text-xs font-black uppercase tracking-[0.15em] text-[#087FA4]">CHOOSE YOUR PAYMENT</p>
               <fieldset className="mt-3 grid gap-3" aria-label="How much to pay for cleaning">
                 {[
-                  { id: "booking", title: "Pay $200 to book", note: money(price - 200) + " due after cleaning is finished" },
-                  { id: "full", title: "Pay the full " + money(price) + " now", note: "Nothing remaining for the agreed standard cleaning" }
+                  { id: "booking", title: "Pay $200 to book", note: money(price - 200) + " due after cleaning; Stripe may offer card only for $200" },
+                  { id: "full", title: "Pay the full " + money(price) + " now", note: "Nothing remaining; eligible instalment options may appear on Stripe" }
                 ].map((option) => (
                   <label key={option.id} className={"flex cursor-pointer items-center gap-3 rounded-md border-2 p-4 " +
                     (paymentChoice === option.id ? "border-[#F4C620] bg-[#FFF8D8]" : "border-[#D7E2E9] bg-white hover:border-[#65C7E5]")}>
@@ -233,6 +248,7 @@ export default function CleaningCheckout() {
                   </label>
                 ))}
               </fieldset>
+              <p className="mt-3 text-sm font-medium text-[#466073]">Want Afterpay, Klarna or Zip? Choose <strong>Pay in full</strong> for the best chance of seeing eligible payment plans. Stripe decides what is available for each purchase; the $200 booking payment may only show card options.</p>
               <div className="mt-4 flex flex-wrap items-end justify-between gap-4 border-t border-[#D7E2E9] pt-4">
                 <div><p className="text-xs font-black uppercase tracking-wide text-[#007FA4]">DUE TODAY</p><strong className="block text-3xl font-black text-[#0B2641]">{money(dueNow)}</strong></div>
                 <div className="text-right"><p className="text-xs font-black uppercase tracking-wide text-[#526677]">AFTER CLEANING</p><strong className="block text-2xl font-black text-[#0B2641]">{money(remainingBalance)}</strong></div>
@@ -273,7 +289,15 @@ export default function CleaningCheckout() {
               {settingsLoading && <p role="status" className="text-sm font-medium text-[#526677]">Checking available payment methods...</p>}
               {settingsError && <div role="alert" className="border-l-[3px] border-[#F4C620] pl-3"><p className="text-sm font-semibold text-[#9A441C]">{settingsError}</p><button type="button" onClick={() => setPaymentRefreshKey((value) => value + 1)} className="mt-2 text-sm font-black text-[#007FA4] underline underline-offset-2">Retry payment connection</button></div>}
               {error && <p role="alert" className="border-l-4 border-[#EDBD42] pl-4 text-sm font-semibold text-[#834E11]">{error}</p>}
-              {paymentCancelled && <p role="status" className="text-sm font-semibold">Payment was cancelled. Nothing was confirmed; you can try again.</p>}
+              {paymentCancelled && <p role="status" className="text-sm font-semibold">
+                {cancellationStatus === "released"
+                  ? "Payment cancelled. Your temporary booking hold has been released; you can select a time again."
+                  : cancellationStatus === "releasing"
+                    ? "Cancelling your unpaid checkout and releasing the temporary booking hold…"
+                    : cancellationStatus === "already_paid" || cancellationStatus === "payment_processing"
+                      ? "Stripe may have received a payment. Please contact SplitsPro before trying to pay again."
+                      : "Payment was cancelled. The temporary hold will expire automatically if it has not already been released."}
+              </p>}
               <p className="text-xs leading-relaxed text-[#627888]">The $200 booking payment is credited toward the full service. Any balance is due after cleaning is finished. Provider instalments apply only to the amount charged today. Cancellation and refund rights under Australian Consumer Law still apply.</p>
             </form>
           </div>
