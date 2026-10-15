@@ -34,6 +34,9 @@ export default function CleaningCheckout() {
 
   const [details, setDetails] = useState({ name: "", address: "", phone: "", email: "" });
   const [provider, setProvider] = useState("stripe");
+  const [paymentChoice, setPaymentChoice] = useState("booking");
+  const dueNow = paymentChoice === "booking" ? 200 : price;
+  const remainingBalance = price - dueNow;
   const [settings, setSettings] = useState(null);
   const [settingsError, setSettingsError] = useState("");
   const [paymentRefreshKey, setPaymentRefreshKey] = useState(0);
@@ -124,6 +127,7 @@ export default function CleaningCheckout() {
         booking_date: day,
         start_time: time,
         payment_provider: provider,
+        payment_choice: paymentChoice,
         name: details.name.trim(),
         address: details.address.trim(),
         phone: details.phone.trim(),
@@ -134,7 +138,10 @@ export default function CleaningCheckout() {
       if (!response.data?.checkout_url || !/^https:\/\//.test(response.data.checkout_url)) {
         throw new Error("Secure checkout is temporarily unavailable. No payment has started.");
       }
-      if (Number(response.data.total_amount) !== price) {
+      if (Number(response.data.total_amount) !== price ||
+          Number(response.data.amount_due_now) !== dueNow ||
+          Number(response.data.balance_amount) !== remainingBalance ||
+          response.data.payment_choice !== paymentChoice) {
         throw new Error("The booking total couldn't be verified. No payment was taken.");
       }
       window.location.assign(response.data.checkout_url);
@@ -157,11 +164,11 @@ export default function CleaningCheckout() {
         <div className="mx-auto max-w-2xl border-t-[6px] border-[#05A4CD] bg-white p-7 shadow-sm sm:p-10">
           {confirmed ? <ShieldCheck className="h-12 w-12 text-[#0E9C83]" /> : <Loader2 className="h-9 w-9 text-[#0699C8]" />}
           <h1 className="mt-6 text-3xl font-black uppercase sm:text-4xl">
-            {confirmed ? "FULLY PAID. YOUR CLEAN IS BOOKED." : needsHelp ? "PAYMENT RECEIVED — TIME NEEDS CONFIRMING." : "VERIFYING YOUR FULL PAYMENT"}
+            {confirmed ? (paymentStatus?.balance_amount > 0 ? "YOUR $200 BOOKING IS CONFIRMED." : "FULLY PAID. YOUR CLEAN IS BOOKED.") : needsHelp ? "PAYMENT RECEIVED — TIME NEEDS CONFIRMING." : "VERIFYING YOUR PAYMENT"}
           </h1>
           <p className="mt-4 text-base leading-relaxed text-[#405768]">
             {confirmed
-              ? "Your " + count + " system cleaning appointment is confirmed for " + formatDate(day) + " at " + formatTime(time) + ". Total paid: " + money(price) + "."
+              ? "Your " + count + " system cleaning appointment is confirmed for " + formatDate(day) + " at " + formatTime(time) + ". Paid now: " + money(Number(paymentStatus?.amount_paid ?? price)) + "." + (paymentStatus?.balance_amount > 0 ? " Remaining " + money(paymentStatus.balance_amount) + " due after cleaning is completed." : " Nothing further to pay for the agreed standard service.")
               : needsHelp
                 ? "Your payment was received, but that time requires rescheduling. Please contact SplitsPro; don't pay again."
                 : "Your payment provider has returned you to SplitsPro. We're verifying full payment and the booking. Please do not pay again while confirmation is processing."}
@@ -183,12 +190,12 @@ export default function CleaningCheckout() {
         </Link>
         <div className="mt-5 grid gap-5 lg:mt-7 lg:grid-cols-[0.85fr_1.15fr] lg:gap-10">
           <div className="hidden lg:block">
-            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#078EBA]">STEP 2 · SECURE FULL PAYMENT</p>
+            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#078EBA]">STEP 2 · SECURE YOUR CLEANING</p>
             <h1 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">YOUR CLEAN. YOUR WAY TO PAY.</h1>
             <div className="mt-7 border-y-2 border-[#CDDCE5] py-6">
               <p className="text-lg font-bold">{count} wall-mounted split system{count > 1 ? "s" : ""}</p>
               <p className="mt-3 text-5xl font-black text-[#007FA4]">{money(price)}</p>
-              <p className="mt-2 text-sm font-semibold text-[#496070]">No deposit or balance owing to SplitsPro. Eligible pay-later plans are arranged with the payment provider.</p>
+              <p className="mt-2 text-sm font-semibold text-[#496070]">Choose $200 to reserve your date, or pay the full cleaning price now.</p>
               <div className="mt-5 border-t border-[#D3E2EB] pt-4" data-testid="cleaning-checkout-before-payment-reminder">
                 <PayLaterReminder kind="cleaning" compact
                   stripeReady={settings?.stripe_ready}
@@ -197,7 +204,7 @@ export default function CleaningCheckout() {
               <p className="mt-5 text-lg font-extrabold">{formatDate(day)} · {formatTime(time)}</p>
               <p className="mt-2 text-sm text-[#596E7B]">Allow approximately {Math.floor(totalDuration / 60)}h {totalDuration % 60 ? "30m" : ""} for the full visit.</p>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-[#596E7B]">We'll recheck that the time is still available before starting payment. Your booking is confirmed after we verify payment in full.</p>
+            <p className="mt-4 text-sm leading-relaxed text-[#596E7B]">Your booking is confirmed when the selected payment is verified. Any remaining balance is due after the clean is completed.</p>
           </div>
           <div className="border border-[#D5E3EC] bg-white p-6 shadow-sm sm:p-9">
             <div className="mb-6 border-b border-[#D7E5ED] pb-5 lg:hidden" data-testid="cleaning-mobile-payment-summary">
@@ -206,10 +213,10 @@ export default function CleaningCheckout() {
                 <div><p className="font-black text-[#0B2641]">{count} split {count === 1 ? "system" : "systems"}</p><p className="mt-1 text-sm text-[#526677]">{formatDate(day)} · {formatTime(time)}</p></div>
                 <strong className="text-4xl font-black text-[#007FA4]">{money(price)}</strong>
               </div>
-              <p className="mt-2 text-xs text-[#526677]">Full cleaning total at secure checkout; eligible provider instalments may be offered.</p>
+              <p className="mt-2 text-xs text-[#526677]">Pay {money(dueNow)} now{remainingBalance > 0 ? " · " + money(remainingBalance) + " after cleaning" : " · fully paid"}; the full job price is {money(price)}.</p>
             </div>
             <h2 className="text-2xl font-black uppercase">YOUR BOOKING DETAILS</h2>
-            <p className="mt-3 text-sm text-[#526677]">Name, address, phone and email. Then pay securely through your selected provider.</p>
+            <p className="mt-3 text-sm text-[#526677]">Choose how much to pay now, then enter your four contact details.</p>
             <div className="mt-5 border-t border-[#DEE6EC] pt-4" data-testid="cleaning-before-customer-form-pay-later-reminder">
               <PayLaterReminder kind="cleaning" compact
                 stripeReady={settings?.stripe_ready}
@@ -244,7 +251,7 @@ export default function CleaningCheckout() {
               {settingsError && <div role="alert" className="border-l-[3px] border-[#F4C620] pl-3"><p className="text-sm font-semibold text-[#9A441C]">{settingsError}</p><button type="button" onClick={() => setPaymentRefreshKey((value) => value + 1)} className="mt-2 text-sm font-black text-[#007FA4] underline underline-offset-2">Retry payment connection</button></div>}
               {error && <p role="alert" className="border-l-4 border-[#EDBD42] pl-4 text-sm font-semibold text-[#834E11]">{error}</p>}
               {paymentCancelled && <p role="status" className="text-sm font-semibold">Payment was cancelled. Nothing was confirmed; you can try again.</p>}
-              <p className="text-xs leading-relaxed text-[#627888]">Full payment is required to confirm. Eligible instalment methods, where offered by Stripe or PayPal, are subject to their own eligibility and terms. No payment is taken directly on this page.</p>
+              <p className="text-xs leading-relaxed text-[#627888]">The $200 booking payment is credited toward the full service. Any balance is due after cleaning is finished. Provider instalments apply only to the amount charged today. Cancellation and refund rights under Australian Consumer Law still apply.</p>
             </form>
           </div>
         </div>
