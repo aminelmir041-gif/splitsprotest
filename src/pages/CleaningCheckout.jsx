@@ -171,7 +171,7 @@ export default function CleaningCheckout() {
               ? "Your " + count + " system cleaning appointment is confirmed for " + formatDate(day) + " at " + formatTime(time) + ". Paid now: " + money(Number(paymentStatus?.amount_paid ?? price)) + "." + (paymentStatus?.balance_amount > 0 ? " Remaining " + money(paymentStatus.balance_amount) + " due after cleaning is completed." : " Nothing further to pay for the agreed standard service.")
               : needsHelp
                 ? "Your payment was received, but that time requires rescheduling. Please contact SplitsPro; don't pay again."
-                : "Your payment provider has returned you to SplitsPro. We're verifying full payment and the booking. Please do not pay again while confirmation is processing."}
+                : "Your payment provider has returned you to SplitsPro. We're verifying your selected payment and booking. Please do not pay again while confirmation is processing."}
           </p>
           {error && <p className="mt-5 border-l-4 border-[#F4C620] pl-4 text-sm font-semibold text-[#6E4C16]">{error}</p>}
           <a className="mt-7 inline-block text-base font-bold text-[#007DA5] underline" href="tel:0414698435">Call SplitsPro · 0414 698 435</a>
