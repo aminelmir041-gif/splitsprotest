@@ -41,6 +41,14 @@ app = FastAPI(title="SplitsPro Lead API")
 app.include_router(equipment_checkout_router)
 app.include_router(cleaning_router)
 
+# Log configuration presence only (never credentials) for payment diagnostics.
+logging.warning(
+    "Cleaning payment config: stripe_key=%s webhook_secret=%s booking_enabled=%s",
+    bool((os.environ.get("STRIPE_SECRET_KEY") or "").strip()),
+    bool((os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()),
+    (os.environ.get("SPLITSPRO_CLEANING_BOOKING_ENABLED") or "").strip().lower() in {"1", "true", "yes"},
+)
+
 origins = [o.strip() for o in (os.environ.get("CORS_ORIGINS") or "https://splitspro.com.au,https://www.splitspro.com.au").split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
