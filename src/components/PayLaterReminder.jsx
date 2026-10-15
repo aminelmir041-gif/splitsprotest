@@ -12,6 +12,7 @@ export default function PayLaterReminder({
   paypalReady,
   equipmentHref,
   compact = false,
+  cleaningChoice = "booking",
 }) {
   const dark = theme === "dark";
   const stripe = stripeReady !== false;
@@ -33,21 +34,27 @@ export default function PayLaterReminder({
       </p>
       {kind === "cleaning" && compact ? (
         <p className={"mt-2 text-sm font-semibold leading-relaxed " + bodyColor}>
-          <strong>PayPal Pay in 4</strong> may be offered to eligible customers{paypalReady === false ? " when PayPal becomes available" : ""}.
-          {" "}<strong>Afterpay, Klarna and Zip</strong> may appear through Stripe{stripeReady === false ? " once Stripe checkout is connected" : " where enabled and eligible"}.
-          <span className="mt-1 block text-xs font-normal">SplitsPro receives the full service amount upfront. Approved instalments are repaid to the payment provider under its terms.</span>
+          {cleaningChoice === "booking"
+            ? <>Secure the date with <strong>$200 today</strong>; pay the remaining cleaning balance after the job. </>
+            : <>Pay the <strong>full cleaning price now</strong> if you prefer. </>}
+          {paypal && <><strong>PayPal Pay in 4</strong> may be offered to eligible customers. </>}
+          <strong>Afterpay, Klarna and Zip</strong> may appear through Stripe{stripeReady === false ? " once Stripe is connected" : " where enabled and eligible"}.
+          <span className="mt-1 block text-xs font-normal">An approved instalment plan covers only the amount charged at this checkout. Provider limits, terms and approval apply.</span>
         </p>
       ) : kind === "cleaning" ? (
         <>
           <p className={"mt-2 text-sm font-medium leading-relaxed " + bodyColor}>
-            {paypal && <><strong>PayPal Pay in 4</strong> may be offered to eligible customers through PayPal. </>}
+            {cleaningChoice === "booking"
+              ? <>You can <strong>book for $200</strong> and settle the remaining balance after cleaning. </>
+              : <>You can <strong>pay the full service price now</strong>. </>}
+            {paypal && <><strong>PayPal Pay in 4</strong> may be offered by PayPal to eligible customers. </>}
             {stripe
               ? <>Through Stripe, eligible checkouts may offer <strong>Afterpay, Klarna or Zip</strong>. </>
               : <>Afterpay, Klarna and Zip require Stripe checkout, which is not currently connected for cleaning. </>}
-            You choose the provider at checkout; the full cleaning price is paid to SplitsPro upfront, while an approved pay-later plan is repaid to your provider.
+            Any approved instalments apply only to what is charged today.
           </p>
           <p className={"mt-2 text-xs leading-relaxed " + bodyColor}>
-            Options depend on provider availability, spending limits and approval. Fees, interest and repayment terms vary; review the provider's terms before paying.
+            Payment-plan availability, spending limits and approval vary; check the actual provider terms before paying.
           </p>
         </>
       ) : kind === "equipment" && compact ? (
