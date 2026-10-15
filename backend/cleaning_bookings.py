@@ -342,7 +342,7 @@ def _create_stripe_checkout(hold):
         "metadata[payment_choice]": hold.get("payment_choice", "full"),
         "metadata[service_total_cents]": str(hold["total_cents"]),
         "metadata[balance_due_cents]": str(hold.get("balance_cents", 0)),
-        "billing_address_collection": "required",
+        # Service address already captured by SplitsPro before redirect; no duplicate address form.
     }
     if hold.get("payment_choice", "full") == "full" and hold["quantity"] > 1:
         body["line_items[1][price]"] = STRIPE_ADDITIONAL_CLEAN_PRICE
