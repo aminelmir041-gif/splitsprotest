@@ -20,6 +20,7 @@ export default function CleaningCheckout() {
   const day = params.get("date") || "";
   const time = params.get("time") || "";
   const checkoutRef = params.get("checkout_ref") || "";
+  const stripeSessionId = params.get("session_id") || "";
   const paymentReturn = params.get("cleaning_payment") === "returned";
   const paymentCancelled = params.get("cleaning_payment") === "cancelled";
   const paymentProvider = params.get("provider") || "";
@@ -71,7 +72,7 @@ export default function CleaningCheckout() {
       if (stopped) return;
       tries += 1;
       try {
-        const result = await api.get("/cleaning-payment-status", { params: { checkout_ref: checkoutRef }, timeout: 16000 });
+        const result = await api.get("/cleaning-payment-status", { params: { checkout_ref: checkoutRef, ...(paymentProvider === "paypal" ? {} : { session_id: stripeSessionId }) }, timeout: 16000 });
         if (stopped) return;
         setPaymentStatus(result.data);
         if (result.data?.status === "confirmed" || result.data?.status === "needs_reschedule") return;
@@ -98,7 +99,7 @@ export default function CleaningCheckout() {
     };
     begin();
     return () => { stopped = true; if (pendingTimer) window.clearTimeout(pendingTimer); };
-  }, [paymentReturn, checkoutRef, paymentProvider]);
+  }, [paymentReturn, checkoutRef, paymentProvider, stripeSessionId]);
 
   if (!validCount || (!paymentReturn && (!validDate || !validTime))) {
     return <Navigate to={backUrl} replace />;
