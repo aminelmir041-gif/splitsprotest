@@ -199,7 +199,7 @@ export default function CleaningCheckout() {
               <div className="mt-5 border-t border-[#D3E2EB] pt-4" data-testid="cleaning-checkout-before-payment-reminder">
                 <PayLaterReminder kind="cleaning" compact
                   stripeReady={settings?.stripe_ready}
-                  paypalReady={settings?.paypal_ready} />
+                  paypalReady={settings?.paypal_ready} cleaningChoice={paymentChoice} />
               </div>
               <p className="mt-5 text-lg font-extrabold">{formatDate(day)} · {formatTime(time)}</p>
               <p className="mt-2 text-sm text-[#596E7B]">Allow approximately {Math.floor(totalDuration / 60)}h {totalDuration % 60 ? "30m" : ""} for the full visit.</p>
@@ -215,12 +215,34 @@ export default function CleaningCheckout() {
               </div>
               <p className="mt-2 text-xs text-[#526677]">Pay {money(dueNow)} now{remainingBalance > 0 ? " · " + money(remainingBalance) + " after cleaning" : " · fully paid"}; the full job price is {money(price)}.</p>
             </div>
+            <div className="mb-6 border-b border-[#D7E5ED] pb-6" data-testid="cleaning-payment-choice">
+              <p className="text-xs font-black uppercase tracking-[0.15em] text-[#087FA4]">CHOOSE YOUR PAYMENT</p>
+              <fieldset className="mt-3 grid gap-3" aria-label="How much to pay for cleaning">
+                {[
+                  { id: "booking", title: "Pay $200 to book", note: money(price - 200) + " due after cleaning is finished" },
+                  { id: "full", title: "Pay the full " + money(price) + " now", note: "Nothing remaining for the agreed standard cleaning" }
+                ].map((option) => (
+                  <label key={option.id} className={"flex cursor-pointer items-center gap-3 rounded-md border-2 p-4 " +
+                    (paymentChoice === option.id ? "border-[#F4C620] bg-[#FFF8D8]" : "border-[#D7E2E9] bg-white hover:border-[#65C7E5]")}>
+                    <input type="radio" name="cleaning-payment-choice" checked={paymentChoice === option.id}
+                      onChange={() => { setPaymentChoice(option.id); setError(""); }} value={option.id}
+                      disabled={processing} className="h-5 w-5 shrink-0 accent-[#087FA4]" />
+                    <span><strong className="block text-lg font-black text-[#0B2641]">{option.title}</strong>
+                      <span className="mt-1 block text-sm font-medium text-[#466073]">{option.note}</span></span>
+                  </label>
+                ))}
+              </fieldset>
+              <div className="mt-4 flex flex-wrap items-end justify-between gap-4 border-t border-[#D7E2E9] pt-4">
+                <div><p className="text-xs font-black uppercase tracking-wide text-[#007FA4]">DUE TODAY</p><strong className="block text-3xl font-black text-[#0B2641]">{money(dueNow)}</strong></div>
+                <div className="text-right"><p className="text-xs font-black uppercase tracking-wide text-[#526677]">AFTER CLEANING</p><strong className="block text-2xl font-black text-[#0B2641]">{money(remainingBalance)}</strong></div>
+              </div>
+            </div>
             <h2 className="text-2xl font-black uppercase">YOUR BOOKING DETAILS</h2>
             <p className="mt-3 text-sm text-[#526677]">Choose how much to pay now, then enter your four contact details.</p>
             <div className="mt-5 border-t border-[#DEE6EC] pt-4" data-testid="cleaning-before-customer-form-pay-later-reminder">
               <PayLaterReminder kind="cleaning" compact
                 stripeReady={settings?.stripe_ready}
-                paypalReady={settings?.paypal_ready} />
+                paypalReady={settings?.paypal_ready} cleaningChoice={paymentChoice} />
             </div>
             <form onSubmit={pay} className="mt-7 space-y-5">
               <label className={fieldLabel}>Full name<input className={fieldInput} required autoComplete="name" value={details.name} onChange={(e) => update("name", e.target.value)} placeholder="Full name" /></label>
@@ -245,7 +267,7 @@ export default function CleaningCheckout() {
               <button type="submit" disabled={!formReady || !settings || !!settingsError || processing || !(provider === "stripe" ? settings?.stripe_ready : settings?.paypal_ready)}
                 className="flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] p-4 text-base font-black uppercase text-[#09243B] disabled:opacity-40">
                 {processing ? <><Loader2 className="h-5 w-5 animate-spin"/>Opening secure payment…</>
-                  : <><CreditCard className="h-5 w-5"/>CONTINUE TO {provider === "paypal" ? "PAYPAL" : "STRIPE"} · {money(price)} <ArrowRight className="h-5 w-5"/></>}
+                  : <><CreditCard className="h-5 w-5"/>PAY {money(dueNow)} TO {paymentChoice === "booking" ? "BOOK" : "COMPLETE"} · {provider === "paypal" ? "PAYPAL" : "STRIPE"} <ArrowRight className="h-5 w-5"/></>}
               </button>
               {settingsLoading && <p role="status" className="text-sm font-medium text-[#526677]">Checking available payment methods...</p>}
               {settingsError && <div role="alert" className="border-l-[3px] border-[#F4C620] pl-3"><p className="text-sm font-semibold text-[#9A441C]">{settingsError}</p><button type="button" onClick={() => setPaymentRefreshKey((value) => value + 1)} className="mt-2 text-sm font-black text-[#007FA4] underline underline-offset-2">Retry payment connection</button></div>}
