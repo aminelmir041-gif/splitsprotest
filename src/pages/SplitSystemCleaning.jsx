@@ -46,7 +46,8 @@ export default function SplitSystemCleaning() {
   const [selectedTime, setSelectedTime] = useState("");
   const [showMoreSlots, setShowMoreSlots] = useState(false);
   const [continuing, setContinuing] = useState(false);
-  const [paymentReadiness, setPaymentReadiness] = useState({ stripe_ready: false, paypal_ready: false });
+  // Unknown until the API responds: do not call an active Stripe integration unavailable while checking.
+  const [paymentReadiness, setPaymentReadiness] = useState({ stripe_ready: undefined, paypal_ready: undefined });
   const requestId = useRef(0);
   const scrollBook = () => document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
   const choose = (count) => { setQuantity(count); scrollBook(); };
