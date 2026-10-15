@@ -172,22 +172,24 @@ def main() -> None:
     if not all(token in cleaning_page for token in (
         "CLEANING_QUANTITIES", "300 + Math.max(0, count - 1) * 150",
         "getCleaningSlots", 'data-testid="cleaning-unit-count"',
-        "Continue to details & full payment",
+        "Continue to details & payment options", 'data-testid="cleaning-booking-200-default"',
     )):
-        fail("cleaning page must show the $300 first + $150 extra offer and timed booking before full payment")
+        fail("cleaning page must show the first $300, $150 extras, $200 booking payment and live booking times")
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
         'getCleaningCheckoutConfig', 'start_time: time', 'quantity: count',
-        'api.post("/cleaning-checkout"', "CONTINUE TO {provider === \"paypal\" ? \"PAYPAL\" : \"STRIPE\"} · {money(price)}",
+        'api.post("/cleaning-checkout"', "PAY {money(dueNow)} TO", 'data-testid="cleaning-payment-choice"', 'useState("booking")',
     )):
-        fail("cleaning checkout must verify live availability, full payment and quantity with the server")
+        fail("cleaning checkout must present default $200 booking, optional full pay and server-verifiable amounts")
     # Full checkout uses the booking server's one atomic availability-and-hold
     # request; no redundant calendar call that might reject later valid dates.
     if 'api.get("/cleaning-slots"' in secure_page:
         fail("cleaning checkout must not fetch the entire calendar before the atomic checkout request")
     if "cleaning-mobile-payment-summary" not in secure_page:
         fail("mobile checkout must show date and price above customer details")
+    if "payment_choice: paymentChoice" not in secure_page or "Number(response.data.amount_due_now) !== dueNow" not in secure_page:
+        fail("cleaning payment amount and mode must be validated against server checkout response")
     for field in ('name', 'address', 'phone', 'email'):
         if field not in secure_page:
             fail(f"cleaning checkout missing customer field {field}")
@@ -203,7 +205,7 @@ def main() -> None:
          'cleaning-unit-quantity'),
         ("src/pages/CleaningCheckout.jsx",
          "cleaning-checkout-before-payment-reminder",
-         'CONTINUE TO'),
+         'PAY {money(dueNow)} TO'),
         ("src/pages/CleaningCheckout.jsx",
          "cleaning-before-customer-form-pay-later-reminder",
          '<form onSubmit={pay}'),
