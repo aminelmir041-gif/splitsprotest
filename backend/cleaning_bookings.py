@@ -1,4 +1,4 @@
-"""SplitsPro full-prepaid cleaning appointments.
+"""SplitsPro cleaning appointments with optional $200 booking part-payment.
 
 One server-side price and calendar source of truth. Cleaning appointments take
 90 minutes per unit; installation half-day bookings and cleaning appointments
@@ -34,9 +34,11 @@ WORKDAYS = {
 HOLD_SECONDS = max(600, min(7200, int(os.environ.get("BOOKING_HOLD_SECONDS", "3600"))))
 FIRST_CLEAN_CENTS = 30000
 ADDITIONAL_CLEAN_CENTS = 15000
+CLEANING_BOOKING_PAYMENT_CENTS = 20000
 # Existing LIVE Stripe prices owned by the connected SplitsPro merchant account.
 STRIPE_FIRST_CLEAN_PRICE = "price_1UQOyqPpUx7EUhdNSOh3J3j6"
 STRIPE_ADDITIONAL_CLEAN_PRICE = "price_1UQP2JPpUx7EUhdNIUL0YefK"
+STRIPE_CLEANING_BOOKING_PRICE = "price_1UQgKvPpUx7EUhdNDtgFNRLv"
 MAX_SYSTEMS = 7
 SLOT_MINUTES = 90
 START_MINUTE = 8 * 60
@@ -60,6 +62,15 @@ def price_cents(quantity: int) -> int:
     if type(quantity) is not int or not 1 <= quantity <= MAX_SYSTEMS:
         raise ValueError("Choose between 1 and 7 split systems")
     return FIRST_CLEAN_CENTS + ADDITIONAL_CLEAN_CENTS * (quantity - 1)
+
+
+def amount_to_charge_cents(quantity: int, payment_choice: str) -> int:
+    total = price_cents(quantity)
+    if payment_choice == "booking":
+        return CLEANING_BOOKING_PAYMENT_CENTS
+    if payment_choice == "full":
+        return total
+    raise ValueError("Unknown payment choice")
 
 
 def parse_time(value: str) -> int:
@@ -216,6 +227,8 @@ def cleaning_config(response: Response):
         "currency": "AUD", "enabled": booking_enabled(), "first_system": FIRST_CLEAN_CENTS / 100,
         "each_additional_system": ADDITIONAL_CLEAN_CENTS / 100,
         "max_systems": MAX_SYSTEMS,
+        "booking_payment": CLEANING_BOOKING_PAYMENT_CENTS / 100,
+        "default_payment_choice": "booking",
         "stripe_ready": bool((os.environ.get("STRIPE_SECRET_KEY") or "").strip()
                              and (os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()),
         "paypal_ready": bool((os.environ.get("PAYPAL_CLIENT_ID") or "").strip()
@@ -262,6 +275,8 @@ class CleaningCheckoutRequest(BaseModel):
     booking_date: str
     start_time: str
     payment_provider: Literal["stripe", "paypal"]
+    # Legacy in-flight checkout clients still pay full amount by default.
+    payment_choice: Literal["booking", "full"] = "full"
     name: str = Field(min_length=2, max_length=120)
     address: str = Field(min_length=6, max_length=300)
     phone: str = Field(min_length=8, max_length=32)
@@ -299,6 +314,7 @@ def _return_params(hold, status: str):
         "count": str(hold["quantity"]), "date": hold["booking_date"],
         "time": hold["start_time"], "checkout_ref": hold["reference"],
         "cleaning_payment": status,
+        "choice": hold.get("payment_choice", "full"),
     }
     if status == "returned" and hold["payment_provider"] == "paypal":
         query["provider"] = "paypal"
@@ -319,12 +335,16 @@ def _create_stripe_checkout(hold):
         "metadata[cleaning_ref]": hold["reference"],
         # Prices are configured in the merchant's actual Stripe Dashboard,
         # not made up or supplied by the buyer's browser.
-        "line_items[0][price]": STRIPE_FIRST_CLEAN_PRICE,
+        "line_items[0][price]": (STRIPE_CLEANING_BOOKING_PRICE if hold.get("payment_choice") == "booking"
+                                   else STRIPE_FIRST_CLEAN_PRICE),
         "line_items[0][quantity]": "1",
         "metadata[quantity]": str(hold["quantity"]),
+        "metadata[payment_choice]": hold.get("payment_choice", "full"),
+        "metadata[service_total_cents]": str(hold["total_cents"]),
+        "metadata[balance_due_cents]": str(hold.get("balance_cents", 0)),
         "billing_address_collection": "required",
     }
-    if hold["quantity"] > 1:
+    if hold.get("payment_choice", "full") == "full" and hold["quantity"] > 1:
         body["line_items[1][price]"] = STRIPE_ADDITIONAL_CLEAN_PRICE
         body["line_items[1][quantity]"] = str(hold["quantity"] - 1)
     try:
@@ -353,8 +373,10 @@ def _create_paypal_checkout(hold):
         "purchase_units": [{
             "reference_id": hold["reference"],
             "custom_id": hold["reference"],
-            "description": f'SplitsPro full cleaning booking — {hold["quantity"]} split system(s)',
-            "amount": {"currency_code": "AUD", "value": f'{hold["total_cents"] / 100:.2f}'},
+            "description": (f'SplitsPro $200 cleaning booking payment — {hold["quantity"]} system(s); balance after service'
+                            if hold.get("payment_choice") == "booking"
+                            else f'SplitsPro complete cleaning — {hold["quantity"]} split system(s)'),
+            "amount": {"currency_code": "AUD", "value": f'{hold.get("payment_cents", hold["total_cents"]) / 100:.2f}'},
         }],
         "payment_source": {"paypal": {"experience_context": {
             "return_url": _return_params(hold, "returned"),
@@ -387,6 +409,7 @@ def create_cleaning_checkout(payload: CleaningCheckoutRequest):
     require_booking_enabled()
     validate_date(payload.booking_date)
     cents = price_cents(payload.quantity)
+    payment_cents = amount_to_charge_cents(payload.quantity, payload.payment_choice)
     if parse_time(payload.start_time) + SLOT_MINUTES * payload.quantity > CLOSING_MINUTE:
         raise HTTPException(status_code=422, detail="There is not enough time for that many systems")
     if payload.payment_provider == "stripe" and not (
@@ -408,14 +431,18 @@ def create_cleaning_checkout(payload: CleaningCheckoutRequest):
         "suburb": payload.address.strip(), "quantity": payload.quantity,
         "booking_date": payload.booking_date, "booking_time": payload.start_time,
         "preferred_date": payload.booking_date,
-        "message": f'{payload.quantity} units; fully prepaid; 90 minutes per unit',
+        "message": (f'{payload.quantity} units; $200 paid to book with ${((cents - payment_cents) / 100):.2f} balance due after cleaning'
+                    if payload.payment_choice == "booking"
+                    else f'{payload.quantity} units; full amount prepaid; 90 minutes per unit'),
         "page_url": payload.page_url, "referrer": payload.referrer,
     }
     hold = {
         "reference": reference, "booking_date": payload.booking_date,
         "start_time": payload.start_time, "quantity": payload.quantity,
         "duration_minutes": SLOT_MINUTES * payload.quantity,
-        "total_cents": cents, "payment_provider": payload.payment_provider,
+        "total_cents": cents, "payment_cents": payment_cents,
+        "balance_cents": cents - payment_cents,
+        "payment_choice": payload.payment_choice, "payment_provider": payload.payment_provider,
         "created_at": datetime.now(TZ).isoformat(), "lead": lead,
     }
     try:
@@ -436,7 +463,11 @@ def create_cleaning_checkout(payload: CleaningCheckoutRequest):
         # A late successful payment must be recorded and offered rescheduling.
         connection.set(order_key(reference), json.dumps(hold), ex=BOOKING_TTL)
         return {"checkout_url": checkout_url, "checkout_ref": reference, "currency": "AUD",
-                "quantity": payload.quantity, "total_amount": cents / 100, "paid_upfront": True}
+                "quantity": payload.quantity, "total_amount": cents / 100,
+                "payment_choice": payload.payment_choice,
+                "amount_due_now": payment_cents / 100,
+                "balance_amount": (cents - payment_cents) / 100,
+                "paid_upfront": payload.payment_choice == "full"}
     except Exception:
         connection.delete(hold_key(reference))
         raise
@@ -467,12 +498,21 @@ def _finalize_paid_cleaning(connection, hold, background_tasks: BackgroundTasks 
                 status = "confirmed"
                 connection.set(confirmed_key(ref), json.dumps(hold), ex=BOOKING_TTL)
             connection.delete(hold_key(ref))
+            paid_cents = int(hold.get("payment_cents", hold["total_cents"]))
+            outstanding_cents = int(hold["total_cents"]) - paid_cents
+            choice = hold.get("payment_choice", "full")
             result = {
                 "status": status, "checkout_ref": ref, "booking_date": d,
                 "start_time": hold["start_time"], "quantity": hold["quantity"],
-                "total_amount": hold["total_cents"] / 100, "paid_upfront": True,
-                "message": "Cleaning booked and fully paid" if status == "confirmed"
-                           else "Payment received, but the time needs rescheduling. SplitsPro will contact you.",
+                "total_amount": hold["total_cents"] / 100,
+                "amount_paid": paid_cents / 100,
+                "balance_amount": outstanding_cents / 100,
+                "payment_choice": choice,
+                "paid_upfront": outstanding_cents == 0,
+                "message": ("Cleaning booked: $200 paid today; balance due after service"
+                            if outstanding_cents and status == "confirmed"
+                            else "Cleaning booked and fully paid" if status == "confirmed"
+                            else "Payment received, but the time needs rescheduling. SplitsPro will contact you."),
             }
             connection.set(paid_key(ref), json.dumps(result), ex=BOOKING_TTL)
     except (redis.RedisError, OSError) as exc:
@@ -480,7 +520,11 @@ def _finalize_paid_cleaning(connection, hold, background_tasks: BackgroundTasks 
         raise HTTPException(status_code=503, detail="Payment confirmation is being verified") from exc
 
     lead = dict(hold.get("lead") or {})
-    lead.update({"booking_payment_status": status, "payment_status": "paid",
+    lead.update({"booking_payment_status": status,
+                 "payment_status": "paid" if int(hold.get("payment_cents", hold["total_cents"])) >= int(hold["total_cents"]) else "part_paid",
+                 "payment_choice": hold.get("payment_choice", "full"),
+                 "amount_paid": int(hold.get("payment_cents", hold["total_cents"])) / 100,
+                 "balance_amount": (int(hold["total_cents"]) - int(hold.get("payment_cents", hold["total_cents"]))) / 100,
                  "total_amount": hold["total_cents"] / 100})
     try:
         sync_quote_to_hubspot(lead)
@@ -510,7 +554,7 @@ def confirm_stripe_cleaning_payment(session: dict, background_tasks: BackgroundT
     if (hold.get("payment_provider") != "stripe"
         or session.get("id") != hold.get("stripe_session_id")
         or session.get("client_reference_id") != ref
-        or session.get("amount_total") != hold["total_cents"]
+        or session.get("amount_total") != hold.get("payment_cents", hold["total_cents"])
         or (session.get("currency") or "").lower() != "aud"):
         logging.error("Stripe cleaning amount or identity verification rejected: %s", ref)
         return True
@@ -567,7 +611,7 @@ def capture_cleaning_paypal(payload: CapturePaypalCleaning, background_tasks: Ba
         for capture in (unit.get("payments") or {}).get("captures", [])
         if capture.get("status") == "COMPLETED"
         and capture.get("amount", {}).get("currency_code") == "AUD"
-        and capture.get("amount", {}).get("value") == f'{hold["total_cents"] / 100:.2f}'
+        and capture.get("amount", {}).get("value") == f'{hold.get("payment_cents", hold["total_cents"]) / 100:.2f}'
     ]
     if not completed:
         raise HTTPException(status_code=409, detail="PayPal has not confirmed the full amount")
