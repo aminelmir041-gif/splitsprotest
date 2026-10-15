@@ -504,6 +504,7 @@ export default function SplitSystemCleaning() {
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-4" data-testid="cleaning-booking-200-default">
                   <span className="font-black uppercase text-[#F4C620]">Pay $200 to reserve</span>
                   <span className="text-sm font-semibold text-white/80">Balance after clean: {money(cleaningPrice(quantity) - 200)}</span>
+                </div>
               </div>
               <p className="mt-5 text-sm leading-relaxed text-white/70">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
             </div>
