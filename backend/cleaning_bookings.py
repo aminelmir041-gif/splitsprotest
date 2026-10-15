@@ -536,7 +536,7 @@ def _finalize_paid_cleaning(connection, hold, background_tasks: BackgroundTasks 
 
 
 def confirm_stripe_cleaning_payment(session: dict, background_tasks: BackgroundTasks = None) -> bool:
-    """Call only AFTER verifying Stripe's webhook signature in render_app."""
+    """Accept only Stripe-signed webhook sessions or sessions fetched from Stripe with our secret API key."""
     if (session.get("metadata") or {}).get("checkout_type") != "cleaning":
         return False
     ref = (session.get("metadata") or {}).get("cleaning_ref") or ""
@@ -619,10 +619,42 @@ def capture_cleaning_paypal(payload: CapturePaypalCleaning, background_tasks: Ba
 
 
 @router.get("/api/cleaning-payment-status")
-def cleaning_payment_status(response: Response, checkout_ref: str = ""):
+def cleaning_payment_status(response: Response, checkout_ref: str = "", session_id: str = ""):
+    """Verify a returning Stripe buyer with Stripe itself if the webhook is delayed.
+
+    The browser cannot mark an order paid. A result is finalized only after the
+    server fetches an already-created session using its secret Stripe API key,
+    verifies the reference/session/amount/currency and sees payment_status=paid.
+    """
     response.headers["Cache-Control"] = "no-store"
     if not re.fullmatch(r"[0-9a-f]{32}", checkout_ref):
         raise HTTPException(status_code=422, detail="Invalid payment reference")
     connection = client()
     paid = _get_json(connection, paid_key(checkout_ref))
-    return paid or {"status": "processing", "checkout_ref": checkout_ref}
+    if paid:
+        return paid
+    hold = (_get_json(connection, hold_key(checkout_ref))
+            or _get_json(connection, order_key(checkout_ref)))
+    secret = (os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+    # Only the Stripe-hosted success redirect supplies session_id. Never query
+    # an arbitrary session or change a booking based on client-provided status.
+    if (secret and hold and hold.get("payment_provider") == "stripe"
+        and re.fullmatch(r"cs_(?:live|test)_[A-Za-z0-9]+", session_id or "")
+        and session_id == hold.get("stripe_session_id")):
+        try:
+            result = requests.get(
+                "https://api.stripe.com/v1/checkout/sessions/" + session_id,
+                headers={"Authorization": "Bearer " + secret},
+                timeout=12,
+            )
+            result.raise_for_status()
+            session = result.json()
+            if session.get("payment_status") == "paid":
+                confirm_stripe_cleaning_payment(session)
+                paid = _get_json(connection, paid_key(checkout_ref))
+                if paid:
+                    return paid
+        except (requests.RequestException, ValueError):
+            logging.warning("Stripe cleaning payment return check could not complete")
+        # Keep this endpoint read-only for unpaid or unverifiable sessions.
+    return {"status": "processing", "checkout_ref": checkout_ref}
