@@ -356,6 +356,7 @@ def test_cancel_unpaid_stripe_checkout_expires_session_and_reopens_slot(calendar
     requests_seen = []
 
     class Expired:
+        status_code = 200
         def raise_for_status(self): pass
         def json(self): return {"status": "expired"}
 
