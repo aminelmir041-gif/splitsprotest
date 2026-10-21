@@ -117,6 +117,30 @@ def main() -> None:
             if main_js not in html or main_css not in html:
                 fail(f"/{route} does not reference the current React bundle")
 
+    # Regression guard: customers must be able to choose the unit and live
+    # installation date ON the local-deals page, without a hidden initial click.
+    brand_source = (ROOT / "src/pages/BrandPage.jsx").read_text(encoding="utf-8")
+    booking_source = (ROOT / "src/components/InlineDealsBooking.jsx").read_text(encoding="utf-8")
+    if (
+        brand_source.count("<InlineDealsBooking") != 1
+        or "selectedUnit={selected?.productKey ? selected : null}" not in brand_source
+        or "onChooseUnit={handleBook}" not in brand_source
+        or 'id="local-deal-booking"' not in brand_source
+    ):
+        fail("local deals must always mount the inline unit/date booking component")
+    for required in (
+        'data-testid="local-deal-unit-select"',
+        'data-testid="local-deal-inline-booking"',
+        "getBookingSlots(12)",
+        "Choose your installation date",
+        "onChange={(event) => chooseUnitFromList(event.target.value)}",
+    ):
+        if required not in booking_source:
+            fail(f"local deals unit/date selector missing {required}")
+    compiled_js = (ROOT / main_js.lstrip("/")).read_text(encoding="utf-8")
+    if "local-deal-unit-select" not in compiled_js or "local-deal-inline-booking" not in compiled_js:
+        fail("published React bundle missing the local-deals unit/date selector")
+
     deals = ROOT / "deals/index.html"
     if not deals.exists() or "rinnai-local-offer" not in deals.read_text(encoding="utf-8"):
         fail("/deals redirect is missing or points to the wrong destination")
