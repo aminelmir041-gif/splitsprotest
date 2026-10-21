@@ -80,7 +80,7 @@ export default function InlineDealsBooking({ productKey, size, model, price }) {
 
       <h4 className="mt-7 font-serif text-2xl text-[#0B0B0B]">Choose your installation date</h4>
       <p className="mt-2 text-sm text-[#55555A]">
-        These are live openings. Fully booked dates and blocked-out times are not offered.
+        These are live openings, including morning and afternoon where available. Fully booked dates and blocked-out times are not offered.
       </p>
 
       {loading && (
