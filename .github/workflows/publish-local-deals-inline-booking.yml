@@ -1,0 +1,55 @@
+name: Publish Local Deals Inline Booking
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/pages/BrandPage.jsx'
+      - 'src/components/InlineDealsBooking.jsx'
+      - '.github/workflows/publish-local-deals-inline-booking.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: splitspro-site-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps --no-audit
+          npm install --legacy-peer-deps --no-save ajv@8.17.1 ajv-keywords@5.1.0
+      - name: Build React site
+        env:
+          CI: 'false'
+        run: npm run build
+      - name: Publish the local deals page without breaking other routes
+        run: |
+          set -eu
+          mkdir -p static split-systems/rinnai-local-offer deals
+          # Preserve historical hashed assets used by other published pages.
+          cp -R build/static/. static/
+          cp build/asset-manifest.json asset-manifest.json
+          cp build/index.html split-systems/rinnai-local-offer/index.html
+          cp build/index.html deals/index.html
+      - name: Commit compiled website changes
+        run: |
+          git config user.name "SplitsPro Site Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static asset-manifest.json split-systems/rinnai-local-offer/index.html deals/index.html
+          if git diff --cached --quiet; then
+            echo "No compiled changes to publish"
+          else
+            git commit -m "Publish inline deal unit and date booking"
+            git pull --rebase origin main
+            git push origin main
+          fi
