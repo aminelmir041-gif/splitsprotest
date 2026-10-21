@@ -5,7 +5,20 @@ import { getBookingSlots } from "../lib/api";
 
 // Reuses the same live backend availability and checkout routes as /book-installation.
 // No client-side date list is invented: manual blackouts and full slots stay server-controlled.
-export default function InlineDealsBooking({ productKey, size, model, price }) {
+export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onChooseUnit }) {
+  const productKey = selectedUnit?.productKey || "";
+  const size = selectedUnit?.kw || "";
+  const model = selectedUnit?.displayName || "";
+  const price = selectedUnit?.price || "";
+  const hasChosenUnit = Boolean(productKey && size);
+  const unitOptionValue = hasChosenUnit ? `${productKey}|${size}` : "";
+
+  const chooseUnitFromList = (value) => {
+    const [slug, kw] = value.split("|");
+    const range = offerRanges.find((item) => item.slug === slug);
+    const priceRow = range?.prices.find((item) => item.kw === kw);
+    if (range && priceRow) onChooseUnit(range, priceRow);
+  };
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -70,15 +83,33 @@ export default function InlineDealsBooking({ productKey, size, model, price }) {
     <div className="scroll-mt-24 border-t-2 border-[#C8A46A] bg-[#F7F5F1] px-4 py-7 sm:px-8 sm:py-9"
       data-testid="local-deal-inline-booking">
       <p className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-[#8F6A34]">
-        Your selected air conditioner
+        Book your local installed deal
       </p>
-      <div className="mt-2 flex flex-wrap items-baseline justify-between gap-3">
-        <h3 className="font-serif text-2xl text-[#0B0B0B] sm:text-3xl">{model} {size}</h3>
-        <p className="font-serif text-3xl text-[#0B0B0B]">{price}</p>
-      </div>
-      <p className="mt-1 text-xs text-[#55555A]">Supplied &amp; installed on our No More to Pay standard installation model.</p>
+      <h3 className="mt-2 font-serif text-3xl text-[#0B0B0B] sm:text-4xl">Choose your unit and installation day</h3>
+      <label htmlFor="deals-booking-unit" className="mt-6 block text-sm font-extrabold text-[#0B0B0B]">
+        1 · Choose your air conditioner
+      </label>
+      <select id="deals-booking-unit" data-testid="local-deal-unit-select" value={unitOptionValue}
+        onChange={(event) => chooseUnitFromList(event.target.value)}
+        className="mt-2 min-h-12 w-full rounded-lg border border-[#CBBEAD] bg-white px-4 py-3 text-sm font-semibold text-[#0B0B0B] outline-[#B88A48]">
+        <option value="">Select Rinnai or Daikin Cora and size</option>
+        {offerRanges.flatMap((range) => range.prices.map((row) => (
+          <option key={range.slug + "-" + row.kw} value={range.slug + "|" + row.kw}>
+            {range.displayName} · {row.kw} · {row.localOfferPrice || row.price} installed
+          </option>
+        )))}
+      </select>
+      {hasChosenUnit ? (
+        <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3 border-b border-[#DDD8CF] pb-5">
+          <p className="text-sm font-bold text-[#0B0B0B]">{model} {size} supplied &amp; installed</p>
+          <strong className="font-serif text-3xl font-normal text-[#0B0B0B]">{price}</strong>
+        </div>
+      ) : (
+        <p className="mt-2 text-xs text-[#55555A]">Or press “Book installed” beside any of the offers above to select it here.</p>
+      )}
+      <p className="mt-3 text-xs text-[#55555A]">Our No More to Pay standard installation model includes up to 3m pipework, an isolator, a wall bracket or suitable floor placement, and up to 20m dedicated electrical circuit where required.</p>
 
-      <h4 className="mt-7 font-serif text-2xl text-[#0B0B0B]">Choose your installation date</h4>
+      <h4 className="mt-8 font-serif text-2xl text-[#0B0B0B]">2 · Choose your installation date</h4>
       <p className="mt-2 text-sm text-[#55555A]">
         These are live openings, including morning and afternoon where available. Fully booked dates and blocked-out times are not offered.
       </p>
@@ -135,7 +166,7 @@ export default function InlineDealsBooking({ productKey, size, model, price }) {
         </>
       )}
 
-      {selected && !loading && !error && (
+      {selected && hasChosenUnit && !loading && !error && (
         <div className="mt-7 border-t border-[#DDD8CF] pt-6">
           <p className="flex items-center gap-2 text-sm font-bold text-[#0B0B0B]">
             <Check className="h-4 w-4 text-[#8F6A34]" />
@@ -181,6 +212,11 @@ export default function InlineDealsBooking({ productKey, size, model, price }) {
             Your time is only secured after the booking and payment are confirmed.
           </p>
         </div>
+      )}
+      {selected && !hasChosenUnit && !loading && !error && (
+        <p className="mt-5 text-sm font-semibold text-[#7B5A28]">
+          {dateLabel(selected.date)} · {selected.window} selected. Choose your air conditioner above to continue.
+        </p>
       )}
     </div>
   );
