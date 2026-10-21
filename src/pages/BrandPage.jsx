@@ -648,7 +648,10 @@ const BrandPage = ({ offerMode = null }) => {
                   <h2 className="font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-5xl">New installed prices. More ways to pay.</h2>
                   <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#606064]">Choose a Rinnai or Daikin Cora system. Book at the installed price, or explore payment options for the equipment you choose.</p>
                 </div>
-                <a href="#pay-later-deals" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">See pay-later choices ↓</a>
+                <div className="flex flex-wrap items-center gap-3">
+                  <a href="#local-deal-booking" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">Choose unit &amp; date ↓</a>
+                  <a href="#pay-later-deals" className="text-xs font-bold text-[#08778D] underline underline-offset-4">See pay-later choices ↓</a>
+                </div>
               </div>
               <div className="mt-6" data-testid="installation-offer-pay-later-reminder">
                 <PayLaterReminder kind="equipment" equipmentHref="/payment-options?product=rinnai-local&size=2.5kW" />
@@ -684,17 +687,13 @@ const BrandPage = ({ offerMode = null }) => {
                   </div>
                 ))}
               </div>
-              {selected?.productKey && (
-                <div id="local-deal-booking" className="mt-9 scroll-mt-24" data-testid="local-deal-booking">
-                  <InlineDealsBooking
-                    key={selected.productKey + "-" + selected.kw}
-                    productKey={selected.productKey}
-                    size={selected.kw}
-                    model={selected.displayName}
-                    price={selected.price}
-                  />
-                </div>
-              )}
+              <div id="local-deal-booking" className="mt-9 scroll-mt-24" data-testid="local-deal-booking">
+                <InlineDealsBooking
+                  selectedUnit={selected?.productKey ? selected : null}
+                  offerRanges={displayRanges}
+                  onChooseUnit={handleBook}
+                />
+              </div>
               <div id="pay-later-deals" className="mt-8 border-l-4 border-[#087D94] bg-[#EEF8FA] p-5 sm:p-7" data-testid="payment-options">
                 <h3 className="font-serif text-2xl text-[#0B0B0B]">Buy now. Pay later. Stay cool.</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[#374B55]">Available Stripe checkout methods may include <strong>Afterpay, Klarna and Zip</strong>, plus cards. <strong>PayPal Pay in 4</strong> uses a separate PayPal checkout and is only shown for eligible air conditioners where the installed deal is $2,000 or less and the equipment price qualifies.</p>
