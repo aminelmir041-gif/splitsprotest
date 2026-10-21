@@ -23,7 +23,7 @@ jobs:
           for url in endpoints:
               try:
                   t=time.monotonic()
-                  req=urllib.request.Request(url,headers={"User-Agent":"SplitsPro-Booking-Check/1.0","Cache-Control":"no-cache"})
+                  req=urllib.request.Request(url,headers={"User-Agent":"SplitsPro-Booking-Check/1.0","Cache-Control":"no-cache","Origin":"https://splitspro.com.au"})
                   with urllib.request.urlopen(req,timeout=90) as res:
                       body=res.read(2000000).decode("utf-8","replace")
                       print("URL",url,"HTTP",res.status,"seconds",round(time.monotonic()-t,2),"size",len(body))
