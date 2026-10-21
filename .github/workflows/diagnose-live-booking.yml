@@ -44,3 +44,44 @@ jobs:
               except Exception as e:
                   print("URL",url,"EXCEPTION",type(e).__name__,str(e)[:300])
           PY
+      - name: Simulate mobile customer booking
+        run: |
+          python3 -m pip install --disable-pip-version-check --quiet selenium
+          python3 - <<'PY'
+          from selenium import webdriver
+          from selenium.webdriver.common.by import By
+          from selenium.webdriver.support.ui import WebDriverWait, Select
+          from urllib.parse import urlparse, parse_qs
+          opts=webdriver.ChromeOptions()
+          opts.add_argument("--headless=new")
+          opts.add_argument("--no-sandbox")
+          opts.add_argument("--disable-dev-shm-usage")
+          opts.add_argument("--window-size=390,844")
+          driver=webdriver.Chrome(options=opts)
+          try:
+              url="https://splitspro.com.au/split-systems/rinnai-local-offer/"
+              driver.get(url)
+              wait=WebDriverWait(driver,45)
+              picker=wait.until(lambda d:d.find_element(By.ID,"deals-booking-unit"))
+              print("Unit selector visible:",picker.is_displayed())
+              dates=wait.until(lambda d:d.find_elements(By.CSS_SELECTOR, '[aria-label="Available installation dates"] button'))
+              print("Live clickable dates:",len(dates))
+              if len(dates) < 1:
+                  raise AssertionError("Date buttons are not displayed")
+              Select(picker).select_by_value("rinnai-local|5.0kW")
+              wait.until(lambda d:"Rinnai Split Systems 5.0kW" in d.find_element(By.CSS_SELECTOR,'[data-testid="local-deal-inline-booking"]').text)
+              date=wait.until(lambda d:d.find_elements(By.CSS_SELECTOR,'[aria-label="Available installation dates"] button:not([disabled])'))[0]
+              date_text=date.text
+              date.click()
+              driver.find_element(By.CSS_SELECTOR,'[data-testid="local-deal-inline-booking"] input[type="checkbox"]').click()
+              checkout=wait.until(lambda d:d.find_element(By.CSS_SELECTOR,'[data-testid="local-deal-inline-booking"] a[href*="/secure-installation?"]'))
+              qs=parse_qs(urlparse(checkout.get_attribute("href")).query)
+              print("Selected date label:",date_text)
+              print("Checkout parameters:",{k:v for k,v in qs.items() if k in ("product","size","date","window")})
+              assert qs.get("product")==["rinnai-local"]
+              assert qs.get("size")==["5.0kW"]
+              assert qs.get("date") and qs.get("window")
+              print("MOBILE BOOKING E2E PASS")
+          finally:
+              driver.quit()
+          PY
