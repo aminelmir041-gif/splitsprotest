@@ -1,0 +1,46 @@
+name: Diagnose Live Booking Dates
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/diagnose-live-booking.yml'
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check live page and appointment API safely
+        run: |
+          python3 - <<'PY'
+          import urllib.request, urllib.error, json, re, time
+          endpoints = [
+              "https://splitspro.com.au/split-systems/rinnai-local-offer/",
+              "https://splitspro-leads.onrender.com/api/booking-slots?limit=12",
+              "https://splitspro-leads.onrender.com/api/health",
+          ]
+          for url in endpoints:
+              try:
+                  t=time.monotonic()
+                  req=urllib.request.Request(url,headers={"User-Agent":"SplitsPro-Booking-Check/1.0","Cache-Control":"no-cache"})
+                  with urllib.request.urlopen(req,timeout=90) as res:
+                      body=res.read(2000000).decode("utf-8","replace")
+                      print("URL",url,"HTTP",res.status,"seconds",round(time.monotonic()-t,2),"size",len(body))
+                      print("CORS",res.headers.get('Access-Control-Allow-Origin'))
+                      if "booking-slots" in url:
+                          try:
+                              data=json.loads(body)
+                              slots=data.get("slots",[]) if isinstance(data,dict) else []
+                              print("response keys",list(data) if isinstance(data,dict) else type(data).__name__,"slot count",len(slots))
+                              print("upcoming dates/windows",[(s.get("date"),s.get("window")) for s in slots[:12] if isinstance(s,dict)])
+                          except Exception: print("Non-JSON reply",repr(body[:180]))
+                      elif "/rinnai-local-offer/" in url:
+                          print("script bundle",re.findall(r'/static/js/main\.[a-z0-9]+\.js',body)[:2])
+                          print("React root present",'id="root"' in body)
+                      else: print("health excerpt",repr(body[:160]))
+              except urllib.error.HTTPError as e:
+                  print("URL",url,"HTTP_ERROR",e.code,repr(e.read(400).decode("utf-8","replace")))
+              except Exception as e:
+                  print("URL",url,"EXCEPTION",type(e).__name__,str(e)[:300])
+          PY
