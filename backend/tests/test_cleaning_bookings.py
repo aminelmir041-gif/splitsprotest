@@ -1,6 +1,6 @@
 import json
 from contextlib import nullcontext
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 
 import fakeredis
 import pytest
@@ -8,6 +8,26 @@ import pytest
 from fastapi import Response
 
 from backend import cleaning_bookings as cb
+
+
+@pytest.fixture(autouse=True)
+def unchanged_regular_price_for_existing_checkout_tests(monkeypatch):
+    # Isolate established checkout behavior from the calendar promotion.
+    monkeypatch.setattr(cb, "first_clean_cents", lambda: 30000)
+
+
+@pytest.mark.parametrize("day, expected", [
+    ("2026-10-21", 30000),
+    ("2026-10-22", 22000),
+    ("2026-10-28", 22000),
+    ("2026-10-29", 24000),
+    ("2026-11-05", 26000),
+    ("2026-11-12", 28000),
+    ("2026-11-19", 30000),
+    ("2026-11-27", 30000),
+])
+def test_genuine_weekly_early_booking_prices(day, expected):
+    assert cb.scheduled_first_clean_cents(date.fromisoformat(day)) == expected
 
 
 @pytest.fixture
@@ -269,6 +289,34 @@ def test_stripe_checkout_uses_existing_active_prices_by_payment_choice(monkeypat
         assert "payment_method_collection" not in item
         assert int(item["expires_at"]) > int(cb.time.time())
         assert int(item["expires_at"]) - int(cb.time.time()) <= 32 * 60
+
+
+def test_stripe_full_payment_uses_server_priced_early_booking_offer(monkeypatch):
+    monkeypatch.setenv("STRIPE_SECRET_KEY", "sk_test_not_real")
+    received = []
+
+    class FakeResponse:
+        def raise_for_status(self): pass
+        def json(self): return {"url": "https://checkout.stripe.com/test", "id": "cs_test_checkout"}
+
+    def fake_post(url, headers, data, timeout):
+        received.append(data)
+        return FakeResponse()
+
+    monkeypatch.setattr(cb.requests, "post", fake_post)
+    hold = {
+        "reference": "f" * 32, "quantity": 2, "payment_choice": "full",
+        "payment_cents": 37000, "total_cents": 37000, "balance_cents": 0,
+        "booking_date": future_date(), "start_time": "08:00",
+        "payment_provider": "stripe", "lead": {"email": "test@example.com"},
+    }
+    cb._create_stripe_checkout(hold)
+    body = received[0]
+    assert body["line_items[0][price_data][unit_amount]"] == "37000"
+    assert body["line_items[0][price_data][currency]"] == "aud"
+    assert "line_items[0][price]" not in body
+    assert "line_items[1][price]" not in body
+    assert body["metadata[service_total_cents]"] == "37000"
 
 
 def test_live_config_advertises_book_200_default():

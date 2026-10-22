@@ -39,7 +39,10 @@ WORKDAYS = {
 HOLD_SECONDS = 32 * 60
 STRIPE_SESSION_SECONDS = 31 * 60
 
-FIRST_CLEAN_CENTS = 30000
+FIRST_CLEAN_CENTS = 30000  # standard price and hard promotional cap
+EARLY_CLEAN_START = date(2026, 10, 22)
+EARLY_CLEAN_START_CENTS = 22000
+EARLY_CLEAN_WEEKLY_INCREASE_CENTS = 2000
 ADDITIONAL_CLEAN_CENTS = 15000
 CLEANING_BOOKING_PAYMENT_CENTS = 20000
 # Existing LIVE Stripe prices owned by the connected SplitsPro merchant account.
@@ -65,10 +68,27 @@ def require_booking_enabled():
         raise HTTPException(status_code=503, detail="Timed cleaning bookings are temporarily unavailable")
 
 
+def scheduled_first_clean_cents(on_day: date) -> int:
+    """Early-booking event, from $220 on 22 October; $20 up each Thursday.
+
+    Returns to $300 on 19 November and stays at that cap through Black Friday.
+    The price is calculated when the server creates a paid booking hold, not
+    from a customer-supplied date or amount.
+    """
+    if on_day < EARLY_CLEAN_START:
+        return FIRST_CLEAN_CENTS
+    elapsed_weeks = (on_day - EARLY_CLEAN_START).days // 7
+    return min(FIRST_CLEAN_CENTS, EARLY_CLEAN_START_CENTS + EARLY_CLEAN_WEEKLY_INCREASE_CENTS * elapsed_weeks)
+
+
+def first_clean_cents() -> int:
+    return scheduled_first_clean_cents(datetime.now(TZ).date())
+
+
 def price_cents(quantity: int) -> int:
     if type(quantity) is not int or not 1 <= quantity <= MAX_SYSTEMS:
         raise ValueError("Choose between 1 and 7 split systems")
-    return FIRST_CLEAN_CENTS + ADDITIONAL_CLEAN_CENTS * (quantity - 1)
+    return first_clean_cents() + ADDITIONAL_CLEAN_CENTS * (quantity - 1)
 
 
 def amount_to_charge_cents(quantity: int, payment_choice: str) -> int:
@@ -231,11 +251,14 @@ def validate_date(value: str):
 def cleaning_config(response: Response):
     response.headers["Cache-Control"] = "no-store"
     return {
-        "currency": "AUD", "enabled": booking_enabled(), "first_system": FIRST_CLEAN_CENTS / 100,
+        "currency": "AUD", "enabled": booking_enabled(), "first_system": first_clean_cents() / 100,
         "each_additional_system": ADDITIONAL_CLEAN_CENTS / 100,
         "max_systems": MAX_SYSTEMS,
         "booking_payment": CLEANING_BOOKING_PAYMENT_CENTS / 100,
         "default_payment_choice": "booking",
+        "regular_first_system": FIRST_CLEAN_CENTS / 100,
+        "weekly_price_increase": EARLY_CLEAN_WEEKLY_INCREASE_CENTS / 100,
+        "promotion_regular_price_date": "2026-11-19",
         "stripe_ready": bool((os.environ.get("STRIPE_SECRET_KEY") or "").strip()
                              and (os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()),
         "paypal_ready": bool((os.environ.get("PAYPAL_CLIENT_ID") or "").strip()
@@ -345,10 +368,7 @@ def _create_stripe_checkout(hold):
         "cancel_url": _return_params(hold, "cancelled"),
         "metadata[checkout_type]": "cleaning",
         "metadata[cleaning_ref]": hold["reference"],
-        # Prices are configured in the merchant's actual Stripe Dashboard,
-        # not made up or supplied by the buyer's browser.
-        "line_items[0][price]": (STRIPE_CLEANING_BOOKING_PRICE if hold.get("payment_choice") == "booking"
-                                   else STRIPE_FIRST_CLEAN_PRICE),
+        # Only server-calculated, fixed-at-hold amounts reach Stripe.
         "line_items[0][quantity]": "1",
         "metadata[quantity]": str(hold["quantity"]),
         "metadata[payment_choice]": hold.get("payment_choice", "full"),
@@ -356,9 +376,23 @@ def _create_stripe_checkout(hold):
         "metadata[balance_due_cents]": str(hold.get("balance_cents", 0)),
         # Service address already captured by SplitsPro before redirect; no duplicate address form.
     }
-    if hold.get("payment_choice", "full") == "full" and hold["quantity"] > 1:
-        body["line_items[1][price]"] = STRIPE_ADDITIONAL_CLEAN_PRICE
-        body["line_items[1][quantity]"] = str(hold["quantity"] - 1)
+    if hold.get("payment_choice") == "booking":
+        # The existing $200 Stripe price remains unchanged for part-payment.
+        body["line_items[0][price]"] = STRIPE_CLEANING_BOOKING_PRICE
+    elif hold["total_cents"] == FIRST_CLEAN_CENTS + ADDITIONAL_CLEAN_CENTS * (hold["quantity"] - 1):
+        # Reuse existing Dashboard prices whenever the event is over.
+        body["line_items[0][price]"] = STRIPE_FIRST_CLEAN_PRICE
+        if hold["quantity"] > 1:
+            body["line_items[1][price]"] = STRIPE_ADDITIONAL_CLEAN_PRICE
+            body["line_items[1][quantity]"] = str(hold["quantity"] - 1)
+    else:
+        # Checkout supports inline Price data for a genuine time-limited price.
+        # Product and amount come exclusively from our server-side booking hold.
+        body["line_items[0][price_data][currency]"] = "aud"
+        body["line_items[0][price_data][unit_amount]"] = str(hold["total_cents"])
+        body["line_items[0][price_data][product_data][name]"] = (
+            f'SplitsPro complete split-system deep cleaning — {hold["quantity"]} unit(s)'
+        )
     try:
         res = requests.post(
             "https://api.stripe.com/v1/checkout/sessions",

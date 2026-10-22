@@ -17,10 +17,11 @@ class FakeRedis:
 
 
 def test_full_payment_server_prices():
-    assert m.price_cents(1) == 30000
-    assert m.price_cents(2) == 45000
-    assert m.price_cents(3) == 60000
-    assert m.price_cents(7) == 120000
+    first = m.first_clean_cents()
+    assert m.price_cents(1) == first
+    assert m.price_cents(2) == first + 15000
+    assert m.price_cents(3) == first + 30000
+    assert m.price_cents(7) == first + 90000
 
 
 def test_90_minute_starts_and_duration():
