@@ -199,18 +199,29 @@ def main() -> None:
         "Continue to details & payment options", 'data-testid="cleaning-booking-200-default"',
     )):
         fail("cleaning page must show the current server-verified first-system offer, $150 extras, $200 booking and live times")
-    # Keep the fast conversion path exactly where customers can use it:
-    # the benchtop punchline, then offer, booking, and only then the long explanation.
+    # Preserve the full approved sales story with booking and calendar near the bottom.
+    # Visitors wanting to skip the copy can go straight there from Book Now in the hero.
     landing_sequence = (
+        'data-testid="cleaning-hero-book-now-mobile"',
+        'data-testid="cleaning-guardian-story"',
         'data-testid="cleaning-benchtop-airflow-punchline"',
-        'data-testid="cleaning-prices"',
-        'data-testid="cleaning-booking"',
-        'data-testid="cleaning-family-details"',
+        "splitspro-cleaning-baby-approved.png",
         'data-testid="cleaning-solution"',
+        'data-testid="cleaning-trust"',
+        'data-testid="cleaning-prices"',
+        'data-testid="cleaning-offer-details"',
+        'data-testid="cleaning-booking"',
+        'data-testid="cleaning-faq"',
     )
     positions = [cleaning_page.find(part) for part in landing_sequence]
     if any(position < 0 for position in positions) or positions != sorted(positions):
-        fail("cleaning conversion sections are not in the approved order")
+        fail("cleaning sales story, offer and booking must remain in the approved order")
+    if 'data-testid="cleaning-hero-book-now-desktop"' not in cleaning_page:
+        fail("desktop cleaning hero must include a Book Now shortcut")
+    if 'const scrollOffer = () => document.getElementById("cleaning-prices")?.scrollIntoView' not in cleaning_page:
+        fail("cleaning hero must jump to the existing offer section")
+    if cleaning_page.count("onClick={scrollOffer}") != 2 or cleaning_page.count("See Our Offer") != 2:
+        fail("mobile and desktop hero buttons must show the offer shortcut")
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
