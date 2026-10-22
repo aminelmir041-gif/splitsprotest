@@ -48,6 +48,8 @@ export default function CleaningCheckout() {
   const [paymentStatus, setPaymentStatus] = useState({ status: "processing" });
   const [cancellationStatus, setCancellationStatus] = useState(paymentCancelled ? "releasing" : "");
   const paypalCaptureStarted = useRef(false);
+  const checkoutTracked = useRef("");
+  const purchaseTracked = useRef("");
 
   useEffect(() => {
     if (paymentReturn || !validCount) return undefined;
@@ -118,6 +120,51 @@ export default function CleaningCheckout() {
       });
     return () => { active = false; };
   }, [paymentCancelled, checkoutRef]);
+
+  // Report funnel progress to Meta now; GA4 will also receive events once connected.
+  useEffect(() => {
+    if (paymentReturn || paymentCancelled || !validCount || !validDate || !validTime || settingsLoading || settingsError) return;
+    const selection = [count, day, time].join("|");
+    if (checkoutTracked.current === selection) return;
+    checkoutTracked.current = selection;
+    const items = [{ item_id: "split_cleaning", item_name: "Split system deep cleaning", quantity: count }];
+    if (typeof window.fbq === "function") {
+      window.fbq("track", "InitiateCheckout", { value: price, currency: "AUD", num_items: count, content_name: "Split system deep cleaning" });
+    }
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "begin_checkout", { value: price, currency: "AUD", items });
+    }
+  }, [paymentReturn, paymentCancelled, validCount, validDate, validTime, settingsLoading, settingsError, price, count, day, time]);
+
+  // Report genuine paid bookings only after server-side Stripe/PayPal verification.
+  useEffect(() => {
+    const status = paymentStatus?.status;
+    if (!paymentReturn || !checkoutRef || (status !== "confirmed" && status !== "needs_reschedule")) return;
+    const amountPaid = Number(paymentStatus?.amount_paid);
+    if (!Number.isFinite(amountPaid) || amountPaid <= 0) return;
+    const key = "splitspro:cleaning-purchase:" + checkoutRef;
+    if (purchaseTracked.current === key) return;
+    try { if (window.localStorage.getItem(key) === "sent") return; } catch {}
+    let sent = false;
+    if (typeof window.fbq === "function") {
+      window.fbq("track", "Purchase", {
+        value: amountPaid, currency: "AUD", content_name: "Split system deep cleaning",
+        content_type: "product", num_items: count,
+      }, { eventID: "cleaning-" + checkoutRef });
+      sent = true;
+    }
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "purchase", {
+        transaction_id: checkoutRef, value: amountPaid, currency: "AUD",
+        items: [{ item_id: "split_cleaning", item_name: "Split system deep cleaning", quantity: count }],
+      });
+      sent = true;
+    }
+    if (sent) {
+      purchaseTracked.current = key;
+      try { window.localStorage.setItem(key, "sent"); } catch {}
+    }
+  }, [paymentReturn, checkoutRef, paymentStatus?.status, paymentStatus?.amount_paid, count]);
 
   if (!validCount || (!paymentReturn && (!validDate || !validTime))) {
     return <Navigate to={backUrl} replace />;
