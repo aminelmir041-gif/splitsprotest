@@ -216,6 +216,8 @@ def main() -> None:
     positions = [cleaning_page.find(part) for part in landing_sequence]
     if any(position < 0 for position in positions) or positions != sorted(positions):
         fail("cleaning sales story, offer and booking must remain in the approved order")
+    if 'data-testid="cleaning-black-friday-countdown"' not in cleaning_page or "PRICE RISES $20 EVERY THURSDAY" not in cleaning_page:
+        fail("Black Friday countdown sale and weekly increases must be prominently visible")
     if 'data-testid="cleaning-hero-book-now-desktop"' not in cleaning_page:
         fail("desktop cleaning hero must include a Book Now shortcut")
     if 'const scrollOffer = () => document.getElementById("cleaning-prices")?.scrollIntoView' not in cleaning_page:
