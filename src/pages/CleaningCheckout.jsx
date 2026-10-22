@@ -29,7 +29,8 @@ export default function CleaningCheckout() {
     && ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00"].indexOf(time) + count <= 7;
   const localToday = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(day) && day >= localToday;
-  const price = validCount ? FIRST_PRICE + EXTRA_PRICE * (count - 1) : FIRST_PRICE;
+  const [firstPrice, setFirstPrice] = useState(FIRST_PRICE);
+  const price = (validCount ? firstPrice + EXTRA_PRICE * (count - 1) : firstPrice);
   const totalDuration = count * 90;
   const backUrl = "/split-system-cleaning/#cleaning-booking";
 
@@ -56,6 +57,8 @@ export default function CleaningCheckout() {
     getCleaningCheckoutConfig()
       .then((data) => { if (live) {
         setSettings(data);
+        const advertisedPrice = Number(data?.first_system);
+        setFirstPrice(Number.isFinite(advertisedPrice) && advertisedPrice >= 200 ? advertisedPrice : FIRST_PRICE);
         setSettingsLoading(false);
         if (!data.stripe_ready && data.paypal_ready) setProvider("paypal");
         if (!data.stripe_ready && !data.paypal_ready) setSettingsError("Secure full-payment checkout is temporarily unavailable. Please contact SplitsPro.");

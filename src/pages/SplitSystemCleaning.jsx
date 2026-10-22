@@ -11,12 +11,12 @@ import { PHONE_TEL } from "../lib/data";
 // This is the ONE consumer sales landing page for split-system cleaning.
 // No separate cleaning funnel; the old /split-system-cleaning-offer/ URL redirects here.
 const CLEANING_QUANTITIES = Array.from({ length: 7 }, (_, index) => index + 1);
-const cleaningPrice = (count) => 300 + Math.max(0, count - 1) * 150;
+const cleaningPrice = (count, firstPrice) => firstPrice + Math.max(0, count - 1) * 150;
 const money = (value) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(value);
 
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
-  { q: "How much do additional air conditioners cost?", a: "The first complete deep clean is $300. Every additional standard split system is $150 when cleaned at the same address and on the same visit. Two systems cost $450, three cost $600. Your total is shown before you choose a secure payment method. Eligible pay-later options may be available." },
+  { q: "How much do additional air conditioners cost?", a: "The current first-system price is displayed in the live offer and booking calculator. Every additional standard split system is $150 when cleaned at the same address and on the same visit. Your total is shown before you choose a secure payment method. Eligible pay-later options may be available." },
   { q: "Do you have to remove the whole air conditioner?", a: "Normally no. We protect the area, open or remove suitable service-accessible covers and clean the accessible indoor components. We won't dismantle sealed refrigerant components as part of a cleaning job." },
   { q: "Can cleaning repair an air conditioner that isn't cooling?", a: "Cleaning can help when dirt is affecting airflow, but it won't fix a refrigerant leak, electrical fault or failed part. If we find a likely fault, we'll discuss the next step before any separate repair work." },
   { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." },
@@ -38,6 +38,7 @@ export default function SplitSystemCleaning() {
     return () => window.clearTimeout(timeout);
   }, [location.hash]);
   const [quantity, setQuantity] = useState(1);
+  const [firstPrice, setFirstPrice] = useState(null);
   const [openFaq, setOpenFaq] = useState(0);
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(true);
@@ -99,15 +100,22 @@ export default function SplitSystemCleaning() {
     let active = true;
     api.get("/cleaning-checkout-config", { timeout: 20000 })
       .then(({ data }) => {
-        if (active) setPaymentReadiness({
+        if (active) {
+          const latestPrice = Number(data?.first_system);
+          setFirstPrice(Number.isFinite(latestPrice) && latestPrice >= 200 ? latestPrice : 300);
+          setPaymentReadiness({
           stripe_ready: Boolean(data?.stripe_ready),
           paypal_ready: Boolean(data?.paypal_ready),
-        });
+          });
+        }
       })
-      .catch(() => {});
+      .catch(() => { if (active) setFirstPrice(300); });
     return () => { active = false; };
   }, []);
 
+  const currentFirstPrice = firstPrice ?? 300;
+  const currentTotal = cleaningPrice(quantity, currentFirstPrice);
+  const isEarlyPrice = firstPrice !== null && firstPrice < 300;
   const formatDate = (day) => new Date(day + "T00:00:00").toLocaleDateString(
     "en-AU", { weekday: "short", day: "numeric", month: "short" });
   const formatTime = (time) => new Date("2026-01-01T" + time + ":00").toLocaleTimeString(
@@ -133,11 +141,11 @@ export default function SplitSystemCleaning() {
   return (
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
-        <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | $300 | SplitsPro Sydney</title>
-        <meta name="description" content="SplitsPro complete split-system deep cleaning: $300 first system, $150 for each extra system at the same address, book from $200 upfront or pay the full amount online. Protective treatments where suitable." />
+        <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | SplitsPro Sydney</title>
+        <meta name="description" content="SplitsPro complete split-system deep cleaning with a weekly early-booking offer. $150 for each extra system at the same address, book from $200 upfront or pay the full amount online. Protective treatments where suitable." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
-        <meta property="og:description" content="Deep clean and suitable protective treatments. $300 first system, each extra split system $150 at the same property. Choose a live 90-minute start time." />
+        <meta property="og:description" content="Deep clean and suitable protective treatments. Check the current weekly first-system offer; each extra split system $150 at the same property. Choose a live 90-minute start time." />
       </Helmet>
 
 
@@ -195,6 +203,184 @@ export default function SplitSystemCleaning() {
             </p>
           </div>
 
+        </div>
+      </section>
+
+      <section className="bg-[#F1F9FC] py-16 sm:py-24" id="cleaning-prices" data-testid="cleaning-prices">
+        <div className="sp-container">
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007EA7]">SUMMER EARLY-BOOKING OFFER</p>
+          <h2 className="mt-4 max-w-5xl text-4xl font-black uppercase leading-[1.04] tracking-tight text-[#0B2641] sm:text-5xl">
+            NOT ALL DEEP CLEANS ARE CREATED EQUAL.
+            <span className="mt-2 block text-[#008DB8]">THE DIFFERENCE IS WHAT HAPPENS AFTER THE CLEAN.</span>
+          </h2>
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#50616D] sm:text-lg">
+            We strip back the service-accessible covers, filters and drain parts; deep-clean the indoor coil, blower and drainage; use steam, pressure rinsing, hospital-grade disinfectant and targeted mould treatment where suitable; then clean the outdoor unit and apply compatible anti-mould and anti-corrosion protective coatings. Finally, we reassemble and check the system.
+          </p>
+          <div className="mt-8 border-y-[6px] border-[#F4C620] bg-[#08263E] px-5 py-8 text-white sm:px-10 sm:py-11" data-testid="cleaning-300-complete-offer">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#50D3F3]">THE COMPLETE SPLITSPRO CLEAN</p>
+            <div className="mt-4 grid items-start gap-7 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12">
+              <div>
+                <h3 className="max-w-xl text-3xl font-black uppercase leading-[1.04] tracking-tight sm:text-4xl">
+                  THE FULL DEEP CLEAN. <span className="text-[#F4C620]">NOT A FILTER RINSE.</span>
+                </h3>
+                <p className="mt-4 max-w-xl text-base leading-relaxed text-[#D6E7EF]">
+                  Covers off. Indoor coil, fan and drain cleaned. Steam, pressure rinse, suitable disinfectant and mould treatment. Outdoor clean, compatible protective coatings, reassembly and operation check.
+                </p>
+                <p className="mt-4 border-l-[3px] border-[#45C6E7] pl-4 text-sm font-extrabold leading-relaxed text-white">
+                  Includes a cleaning certificate listing the work done, plus photos from your service.
+                </p>
+              </div>
+              <div className="border-t border-white/25 pt-5 lg:border-l lg:border-t-0 lg:pl-9 lg:pt-0">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">FIRST SPLIT SYSTEM</p>
+                <strong className="mt-1 block text-[clamp(5.2rem,15vw,8rem)] font-black leading-[1] tracking-tighter text-white">{firstPrice === null ? "..." : money(firstPrice)}</strong>
+                {isEarlyPrice && <p className="mt-2 text-sm font-bold text-[#F4C620]">Book early: rises $20 every Thursday until the regular $300 price returns on 19 November.</p>}
+                <p className="mt-3 text-[clamp(1.55rem,4vw,2.45rem)] font-black uppercase leading-tight text-[#F4C620]">
+                  + $150 EACH EXTRA SYSTEM
+                </p>
+                <p className="mt-2 text-sm font-bold leading-relaxed text-[#D2E6F0]">Same property. Same visit. Same complete clean.</p>
+                <p className="mt-4 border-t border-white/20 pt-4 text-sm font-extrabold text-white sm:text-base">
+                  2 systems <span className="text-[#F4C620]">{firstPrice === null ? "..." : money(cleaningPrice(2, firstPrice))}</span> <span className="mx-2 text-white/45">|</span> 3 systems <span className="text-[#F4C620]">{firstPrice === null ? "..." : money(cleaningPrice(3, firstPrice))}</span>
+                </p>
+              </div>
+            </div>
+            <div className="mt-7 border-t border-white/20 pt-5" data-testid="cleaning-booking-invitation">
+              <div className="mb-4" data-testid="cleaning-before-booking-cta-pay-later-reminder">
+                <PayLaterReminder kind="cleaning" compact theme="dark" stripeReady={paymentReadiness.stripe_ready} paypalReady={paymentReadiness.paypal_ready} />
+              </div>
+              <button type="button" onClick={() => choose(1)}
+                className="flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42] sm:text-lg">
+                Choose systems &amp; booking time <ArrowRight className="h-5 w-5" />
+              </button>
+              <p className="mt-3 text-sm text-white/70">Reserve your date with $200 today and pay the balance after the clean — or choose to pay the full price now.</p>
+            </div>
+          </div>
+
+          <p className="mt-5 text-sm leading-relaxed text-[#566D7B]">Standard-access wall-mounted splits; additional systems are at the same address and visit. Coatings are applied only where suitable and compatible. Your agreed price is confirmed at payment.</p>
+        </div>
+      </section>
+
+      <section className="scroll-mt-24 bg-[#081726] py-16 text-white sm:py-20" id="cleaning-booking" data-testid="cleaning-booking">
+        <div className="sp-container mx-auto max-w-5xl">
+          <p className="text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">CHOOSE YOUR COMPLETE CLEAN</p>
+          <h2 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">
+            PICK THE SYSTEMS. <span className="text-[#45C6E7]">PICK THE TIME.</span>
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/75">
+            Choose the number of systems and an available start time. Then pay $200 to secure the booking, or choose to pay the full amount. Cleaning and installation bookings share the same live calendar.
+          </p>
+          <div className="mt-6" data-testid="cleaning-booking-pay-later-reminder">
+            <PayLaterReminder kind="cleaning" theme="dark" />
+          </div>
+          <div className="mt-9 grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
+            <div className="border-t-[3px] border-[#45C6E7] pt-6">
+              <label htmlFor="cleaning-unit-quantity" className="block text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">How many split systems need cleaning?</label>
+              <select id="cleaning-unit-quantity" data-testid="cleaning-unit-count"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                className="mt-3 min-h-14 w-full rounded-md border border-white/25 bg-white px-4 py-3 text-lg font-extrabold text-[#082337]">
+                {CLEANING_QUANTITIES.map((count) => (
+                  <option key={count} value={count}>{count} split {count === 1 ? "system" : "systems"}</option>
+                ))}
+              </select>
+              <div className="mt-6 border-y border-white/20 py-5">
+                <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>{firstPrice === null ? "..." : money(firstPrice)}</strong></div>
+                {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $150</span><strong>{money((quantity - 1) * 150)}</strong></div>}
+                <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-5">
+                  <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total</span>
+                  <strong className="text-4xl font-black text-[#F4C620]">{firstPrice === null ? "..." : money(currentTotal)}</strong>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-4" data-testid="cleaning-booking-200-default">
+                  <span className="font-black uppercase text-[#F4C620]">Pay $200 to reserve</span>
+                  <span className="text-sm font-semibold text-white/80">Balance after clean: {firstPrice === null ? "..." : money(currentTotal - 200)}</span>
+                </div>
+              </div>
+              <p className="mt-5 text-sm leading-relaxed text-white/70">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
+            </div>
+            <div className="border-t-[3px] border-[#F4C620] pt-6">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">Live calendar</p>
+                  <h3 className="mt-2 text-2xl font-black uppercase sm:text-3xl">Choose a date</h3>
+                </div>
+                <button type="button" onClick={() => refreshSlots(quantity)} disabled={slotsLoading}
+                  className="text-sm font-bold text-[#F4C620] underline underline-offset-4 disabled:opacity-50">Refresh openings</button>
+              </div>
+              {slotsLoading && <p className="mt-5 flex items-center gap-2 text-sm text-white/75"><Loader2 className="h-4 w-4 animate-spin"/> Checking live bookings...</p>}
+              {slotsError && <p className="mt-5 border-l-[3px] border-[#F4C620] pl-3 text-sm font-semibold text-[#F4C620]" role="alert">{slotsError}</p>}
+              {!slotsLoading && availableDays.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/80">No online openings are available for {quantity} systems right now. Call 0414 698 435 to ask about another date.</p>}
+              <p className="mt-4 text-xs text-white/65">Soonest available opening is selected automatically. Choose another date or time if you prefer.</p>
+              <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {(showMoreSlots ? availableDays : availableDays.slice(0, 6)).map((day) => (
+                  <button type="button" key={day} aria-pressed={selectedDate === day}
+                    onClick={() => { const first = slots.find((slot) => slot.date === day); setSelectedDate(day); setSelectedTime(first?.time || ""); setSlotsError(""); }}
+                    className={"min-h-14 rounded-md border px-3 py-3 text-sm font-bold transition " + (selectedDate === day ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
+                    {formatDate(day)}
+                  </button>
+                ))}
+              </div>
+              {availableDays.length > 6 && <button type="button" onClick={() => setShowMoreSlots(!showMoreSlots)} className="mt-3 text-sm font-bold text-[#F4C620] underline underline-offset-4">{showMoreSlots ? "Show fewer dates" : "See more dates"}</button>}
+              {selectedDate && <div className="mt-7 border-t border-white/20 pt-5">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#F4C620]">Available start times · {formatDate(selectedDate)}</p>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {availableTimes.map((slot) => (
+                    <button type="button" key={slot.time} aria-pressed={selectedTime === slot.time}
+                      onClick={() => { setSelectedTime(slot.time); setSlotsError(""); }}
+                      className={"min-h-14 rounded-md border px-3 py-3 text-sm font-extrabold " + (selectedTime === slot.time ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
+                      <Clock3 className="mr-2 inline h-4 w-4"/> {formatTime(slot.time)}
+                    </button>
+                  ))}
+                </div>
+              </div>}
+              {selectedDate && selectedTime && <p className="mt-5 text-sm font-bold text-[#FFFFFF]">Your booking: {formatDate(selectedDate)} at {formatTime(selectedTime)} · {quantity} {quantity === 1 ? "system" : "systems"}</p>}
+              <button type="button" onClick={continueBooking}
+                disabled={!selectedDate || !selectedTime || continuing || slotsLoading || !!slotsError}
+                className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
+                {continuing ? "Opening secure booking..." : "Continue to details & payment options"} <ArrowRight className="h-5 w-5"/>
+              </button>
+              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when checkout starts. Your date is confirmed after your chosen $200 booking payment or full payment is verified.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#F1F9FC] py-12" data-testid="cleaning-offer-details">
+        <div className="sp-container">
+          <h2 className="mb-4 font-serif text-3xl text-[#0B2641]">Everything included, in detail</h2>
+          <div className="mt-7 border-y border-[#C7DDE7] py-6" data-testid="cleaning-deal-sweetener">
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#007EA7]">WHAT YOUR COMPLETE CLEAN INCLUDES</p>
+            <div className="mt-4 grid gap-x-7 gap-y-3 sm:grid-cols-2">
+              {[
+                "Strip service-accessible indoor covers, filters and drain parts",
+                "Steam, pressure rinse, disinfect and treat accessible coil, fan and drain surfaces where suitable",
+                "Targeted mould treatment and compatible indoor anti-mould coating",
+                "Clean accessible outdoor parts and apply compatible anti-corrosion protection",
+                "Reassemble, test operation, provide certificate and job photos"
+              ].map((value) => (
+                <p key={value} className="flex items-start gap-2 text-sm font-bold leading-relaxed text-[#153249] sm:text-base">
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#007FA4]" aria-hidden="true"/>{value}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-5 border-b border-[#C7DDE7] pb-5" data-testid="cleaning-competitor-prices">
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#426173]">WHY THIS IS GOOD VALUE</p>
+            <p className="mt-2 text-sm leading-relaxed text-[#456173]">
+              For context, separately advertised services include a deep clean from <strong>$385</strong> (A Grade Air Con) and coastal anti-corrosion treatment up to <strong>$250+</strong> (Denali Air).
+              These are different providers, scopes and inclusions — not one combined competitor quote or a like-for-like comparison.
+            </p>
+          </div>
+          <p className="mt-5 text-sm leading-relaxed text-[#566D7B]">
+            Standard-access wall-mounted splits only. Additional-system pricing applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-[#566D7B]">
+            Choose a $200 booking payment, with the balance due after cleaning, or pay the full price online. Any approved PayPal Pay in 4 or Stripe instalments apply only to the amount paid at that checkout. Eligibility, limits and availability depend on the provider.
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-white py-12 sm:py-20" data-testid="cleaning-family-details">
+        <div className="sp-container">
           <div className="mt-9 grid items-center gap-7 md:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] sm:mt-11">
             <img src="/landing/splitspro-cleaning-baby-approved.png"
               alt="Baby holding a teething toy in a family home — reminder to care for the aircon as well as frequently touched surfaces"
@@ -225,7 +411,6 @@ export default function SplitSystemCleaning() {
         </div>
       </section>
 
-      {/* The offer stays below the complete solution and company-proof story. */}
       <section className="bg-[#081C2B] py-16 text-white sm:py-24" id="cleaning-solution" data-testid="cleaning-solution">
         <div className="sp-container">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-[#40C9EE]">THE SPLITSPRO SOLUTION</p>
@@ -389,170 +574,6 @@ export default function SplitSystemCleaning() {
           <p className="mt-10 max-w-5xl border-l-[5px] border-[#F4C620] pl-5 text-base font-semibold leading-relaxed text-[#233C4D]">
             A thorough, honest cleaning process — not an unrealistic promise to make the entire house sterile or guarantee a health outcome.
           </p>
-        </div>
-      </section>
-
-      <section className="bg-[#F1F9FC] py-16 sm:py-24" id="cleaning-prices" data-testid="cleaning-prices">
-        <div className="sp-container">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007EA7]">NOW, HERE'S THE DEAL</p>
-          <h2 className="mt-4 max-w-5xl text-4xl font-black uppercase leading-[1.04] tracking-tight text-[#0B2641] sm:text-5xl">
-            NOT ALL DEEP CLEANS ARE CREATED EQUAL.
-            <span className="mt-2 block text-[#008DB8]">THE DIFFERENCE IS WHAT HAPPENS AFTER THE CLEAN.</span>
-          </h2>
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#50616D] sm:text-lg">
-            Some cleaners wash away the grime, pack up and call it a day. We go further. After cleaning those hard-to-reach indoor components, we apply compatible anti-mould treatment where suitable, and anti-corrosion protection to suitable outdoor components. Then we reassemble and check the system.
-          </p>
-          <div className="mt-8 border-y-[6px] border-[#F4C620] bg-[#08263E] px-5 py-8 text-white sm:px-10 sm:py-11" data-testid="cleaning-300-complete-offer">
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#50D3F3]">THE COMPLETE SPLITSPRO CLEAN</p>
-            <div className="mt-4 grid items-start gap-7 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12">
-              <div>
-                <h3 className="max-w-xl text-3xl font-black uppercase leading-[1.04] tracking-tight sm:text-4xl">
-                  THE FULL DEEP CLEAN. <span className="text-[#F4C620]">NOT A FILTER RINSE.</span>
-                </h3>
-                <p className="mt-4 max-w-xl text-base leading-relaxed text-[#D6E7EF]">
-                  We strip back accessible covers and drain parts, clean hidden coil, blower and air-path surfaces, then apply compatible anti-mould and anti-corrosion treatments on suitable indoor and outdoor surfaces.
-                </p>
-                <p className="mt-4 border-l-[3px] border-[#45C6E7] pl-4 text-sm font-extrabold leading-relaxed text-white">
-                  Includes a cleaning certificate listing the work done, plus photos from your service.
-                </p>
-              </div>
-              <div className="border-t border-white/25 pt-5 lg:border-l lg:border-t-0 lg:pl-9 lg:pt-0">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">FIRST SPLIT SYSTEM</p>
-                <strong className="mt-1 block text-[clamp(5.2rem,15vw,8rem)] font-black leading-[1] tracking-tighter text-white">$300</strong>
-                <p className="mt-3 text-[clamp(1.55rem,4vw,2.45rem)] font-black uppercase leading-tight text-[#F4C620]">
-                  + $150 EACH EXTRA SYSTEM
-                </p>
-                <p className="mt-2 text-sm font-bold leading-relaxed text-[#D2E6F0]">Same property. Same visit. Same complete clean.</p>
-                <p className="mt-4 border-t border-white/20 pt-4 text-sm font-extrabold text-white sm:text-base">
-                  2 systems <span className="text-[#F4C620]">$450</span> <span className="mx-2 text-white/45">|</span> 3 systems <span className="text-[#F4C620]">$600</span>
-                </p>
-              </div>
-            </div>
-            <div className="mt-7 border-t border-white/20 pt-5" data-testid="cleaning-booking-invitation">
-              <div className="mb-4" data-testid="cleaning-before-booking-cta-pay-later-reminder">
-                <PayLaterReminder kind="cleaning" compact theme="dark" stripeReady={paymentReadiness.stripe_ready} paypalReady={paymentReadiness.paypal_ready} />
-              </div>
-              <button type="button" onClick={() => choose(1)}
-                className="flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42] sm:text-lg">
-                Choose systems &amp; booking time <ArrowRight className="h-5 w-5" />
-              </button>
-              <p className="mt-3 text-sm text-white/70">Reserve your date with $200 today and pay the balance after the clean — or choose to pay the full price now.</p>
-            </div>
-          </div>
-
-          <div className="mt-7 border-y border-[#C7DDE7] py-6" data-testid="cleaning-deal-sweetener">
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#007EA7]">WHAT YOUR COMPLETE CLEAN INCLUDES</p>
-            <div className="mt-4 grid gap-x-7 gap-y-3 sm:grid-cols-2">
-              {[
-                "Indoor coil, fan and drainage cleaning where accessible",
-                "Anti-mould protective treatment on compatible surfaces",
-                "Outdoor anti-corrosion treatment where compatible and in scope",
-                "Reassembly, operation check, certificate and job photos"
-              ].map((value) => (
-                <p key={value} className="flex items-start gap-2 text-sm font-bold leading-relaxed text-[#153249] sm:text-base">
-                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#007FA4]" aria-hidden="true"/>{value}
-                </p>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-5 border-b border-[#C7DDE7] pb-5" data-testid="cleaning-competitor-prices">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#426173]">WHY THIS IS GOOD VALUE</p>
-            <p className="mt-2 text-sm leading-relaxed text-[#456173]">
-              For context, separately advertised services include a deep clean from <strong>$385</strong> (A Grade Air Con) and coastal anti-corrosion treatment up to <strong>$250+</strong> (Denali Air).
-              These are different providers, scopes and inclusions — not one combined competitor quote or a like-for-like comparison.
-            </p>
-          </div>
-          <p className="mt-5 text-sm leading-relaxed text-[#566D7B]">
-            Standard-access wall-mounted splits only. Additional-system pricing applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
-          </p>
-          <p className="mt-3 text-sm leading-relaxed text-[#566D7B]">
-            Choose a $200 booking payment, with the balance due after cleaning, or pay the full price online. Any approved PayPal Pay in 4 or Stripe instalments apply only to the amount paid at that checkout. Eligibility, limits and availability depend on the provider.
-          </p>
-        </div>
-      </section>
-
-      <section className="scroll-mt-24 bg-[#081726] py-16 text-white sm:py-20" id="cleaning-booking" data-testid="cleaning-booking">
-        <div className="sp-container mx-auto max-w-5xl">
-          <p className="text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">CHOOSE YOUR COMPLETE CLEAN</p>
-          <h2 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">
-            PICK THE SYSTEMS. <span className="text-[#45C6E7]">PICK THE TIME.</span>
-          </h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/75">
-            Choose the number of systems and an available start time. Then pay $200 to secure the booking, or choose to pay the full amount. Cleaning and installation bookings share the same live calendar.
-          </p>
-          <div className="mt-6" data-testid="cleaning-booking-pay-later-reminder">
-            <PayLaterReminder kind="cleaning" theme="dark" />
-          </div>
-          <div className="mt-9 grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
-            <div className="border-t-[3px] border-[#45C6E7] pt-6">
-              <label htmlFor="cleaning-unit-quantity" className="block text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">How many split systems need cleaning?</label>
-              <select id="cleaning-unit-quantity" data-testid="cleaning-unit-count"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                className="mt-3 min-h-14 w-full rounded-md border border-white/25 bg-white px-4 py-3 text-lg font-extrabold text-[#082337]">
-                {CLEANING_QUANTITIES.map((count) => (
-                  <option key={count} value={count}>{count} split {count === 1 ? "system" : "systems"}</option>
-                ))}
-              </select>
-              <div className="mt-6 border-y border-white/20 py-5">
-                <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>$300</strong></div>
-                {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $150</span><strong>{money((quantity - 1) * 150)}</strong></div>}
-                <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-5">
-                  <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total</span>
-                  <strong className="text-4xl font-black text-[#F4C620]">{money(cleaningPrice(quantity))}</strong>
-                </div>
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-4" data-testid="cleaning-booking-200-default">
-                  <span className="font-black uppercase text-[#F4C620]">Pay $200 to reserve</span>
-                  <span className="text-sm font-semibold text-white/80">Balance after clean: {money(cleaningPrice(quantity) - 200)}</span>
-                </div>
-              </div>
-              <p className="mt-5 text-sm leading-relaxed text-white/70">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
-            </div>
-            <div className="border-t-[3px] border-[#F4C620] pt-6">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">Live calendar</p>
-                  <h3 className="mt-2 text-2xl font-black uppercase sm:text-3xl">Choose a date</h3>
-                </div>
-                <button type="button" onClick={() => refreshSlots(quantity)} disabled={slotsLoading}
-                  className="text-sm font-bold text-[#F4C620] underline underline-offset-4 disabled:opacity-50">Refresh openings</button>
-              </div>
-              {slotsLoading && <p className="mt-5 flex items-center gap-2 text-sm text-white/75"><Loader2 className="h-4 w-4 animate-spin"/> Checking live bookings...</p>}
-              {slotsError && <p className="mt-5 border-l-[3px] border-[#F4C620] pl-3 text-sm font-semibold text-[#F4C620]" role="alert">{slotsError}</p>}
-              {!slotsLoading && availableDays.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/80">No online openings are available for {quantity} systems right now. Call 0414 698 435 to ask about another date.</p>}
-              <p className="mt-4 text-xs text-white/65">Soonest available opening is selected automatically. Choose another date or time if you prefer.</p>
-              <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {(showMoreSlots ? availableDays : availableDays.slice(0, 6)).map((day) => (
-                  <button type="button" key={day} aria-pressed={selectedDate === day}
-                    onClick={() => { const first = slots.find((slot) => slot.date === day); setSelectedDate(day); setSelectedTime(first?.time || ""); setSlotsError(""); }}
-                    className={"min-h-14 rounded-md border px-3 py-3 text-sm font-bold transition " + (selectedDate === day ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
-                    {formatDate(day)}
-                  </button>
-                ))}
-              </div>
-              {availableDays.length > 6 && <button type="button" onClick={() => setShowMoreSlots(!showMoreSlots)} className="mt-3 text-sm font-bold text-[#F4C620] underline underline-offset-4">{showMoreSlots ? "Show fewer dates" : "See more dates"}</button>}
-              {selectedDate && <div className="mt-7 border-t border-white/20 pt-5">
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#F4C620]">Available start times · {formatDate(selectedDate)}</p>
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {availableTimes.map((slot) => (
-                    <button type="button" key={slot.time} aria-pressed={selectedTime === slot.time}
-                      onClick={() => { setSelectedTime(slot.time); setSlotsError(""); }}
-                      className={"min-h-14 rounded-md border px-3 py-3 text-sm font-extrabold " + (selectedTime === slot.time ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
-                      <Clock3 className="mr-2 inline h-4 w-4"/> {formatTime(slot.time)}
-                    </button>
-                  ))}
-                </div>
-              </div>}
-              {selectedDate && selectedTime && <p className="mt-5 text-sm font-bold text-[#FFFFFF]">Your booking: {formatDate(selectedDate)} at {formatTime(selectedTime)} · {quantity} {quantity === 1 ? "system" : "systems"}</p>}
-              <button type="button" onClick={continueBooking}
-                disabled={!selectedDate || !selectedTime || continuing || slotsLoading || !!slotsError}
-                className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
-                {continuing ? "Opening secure booking..." : "Continue to details & payment options"} <ArrowRight className="h-5 w-5"/>
-              </button>
-              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when checkout starts. Your date is confirmed after your chosen $200 booking payment or full payment is verified.</p>
-            </div>
-          </div>
         </div>
       </section>
 
