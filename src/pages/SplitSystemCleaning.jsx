@@ -208,7 +208,7 @@ export default function SplitSystemCleaning() {
 
       <section className="bg-[#F1F9FC] py-16 sm:py-24" id="cleaning-prices" data-testid="cleaning-prices">
         <div className="sp-container">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007EA7]">SUMMER EARLY-BOOKING OFFER</p>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007EA7]">{isEarlyPrice ? "SUMMER EARLY-BOOKING OFFER" : "NOW, HERE'S THE DEAL"}</p>
           <h2 className="mt-4 max-w-5xl text-4xl font-black uppercase leading-[1.04] tracking-tight text-[#0B2641] sm:text-5xl">
             NOT ALL DEEP CLEANS ARE CREATED EQUAL.
             <span className="mt-2 block text-[#008DB8]">THE DIFFERENCE IS WHAT HAPPENS AFTER THE CLEAN.</span>

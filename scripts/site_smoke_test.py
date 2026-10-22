@@ -194,11 +194,23 @@ def main() -> None:
         fail("old cleaning-offer URL must redirect to the main split-system-cleaning page")
     cleaning_page = (ROOT / "src/pages/SplitSystemCleaning.jsx").read_text(encoding="utf-8")
     if not all(token in cleaning_page for token in (
-        "CLEANING_QUANTITIES", "300 + Math.max(0, count - 1) * 150",
+        "CLEANING_QUANTITIES", "firstPrice + Math.max(0, count - 1) * 150",
         "getCleaningSlots", 'data-testid="cleaning-unit-count"',
         "Continue to details & payment options", 'data-testid="cleaning-booking-200-default"',
     )):
-        fail("cleaning page must show the first $300, $150 extras, $200 booking payment and live booking times")
+        fail("cleaning page must show the current server-verified first-system offer, $150 extras, $200 booking and live times")
+    # Keep the fast conversion path exactly where customers can use it:
+    # the benchtop punchline, then offer, booking, and only then the long explanation.
+    landing_sequence = (
+        'data-testid="cleaning-benchtop-airflow-punchline"',
+        'data-testid="cleaning-prices"',
+        'data-testid="cleaning-booking"',
+        'data-testid="cleaning-family-details"',
+        'data-testid="cleaning-solution"',
+    )
+    positions = [cleaning_page.find(part) for part in landing_sequence]
+    if any(position < 0 for position in positions) or positions != sorted(positions):
+        fail("cleaning conversion sections are not in the approved order")
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
