@@ -650,7 +650,7 @@ const BrandPage = ({ offerMode = null }) => {
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <a href="#local-deal-booking" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">Choose unit &amp; date ↓</a>
-                  <a href="#pay-later-deals" className="text-xs font-bold text-[#08778D] underline underline-offset-4">Pay-later: choose date first ↓</a>
+                  <a href="#local-deal-booking" className="text-xs font-bold text-[#08778D] underline underline-offset-4">Pay-later: choose date first ↓</a>
                 </div>
               </div>
               <div className="mt-6" data-testid="installation-offer-pay-later-reminder">
