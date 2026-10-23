@@ -133,7 +133,7 @@ def main() -> None:
         'data-testid="local-deal-unit-select"',
         'data-testid="local-deal-inline-booking"',
         "getBookingSlots(12)",
-        "Choose your installation date",
+        "Choose your installation day",
         "onChange={(event) => chooseUnitFromList(event.target.value)}",
     ):
         if required not in booking_source:
