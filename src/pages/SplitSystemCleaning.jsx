@@ -14,6 +14,20 @@ const CLEANING_QUANTITIES = Array.from({ length: 7 }, (_, index) => index + 1);
 const cleaningPrice = (count, firstPrice) => firstPrice + Math.max(0, count - 1) * 150;
 const money = (value) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(value);
 
+// Show the agreed early-bird price immediately, even while Render's checkout
+// configuration wakes up. The API remains authoritative when it responds.
+// Promotion: $220 from 22 Oct 2026, +$20 each Sydney Thursday, capped at $300.
+const scheduledCleaningPrice = () => {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit"
+  }).formatToParts(new Date());
+  const part = (type) => Number(parts.find((entry) => entry.type === type)?.value);
+  const localDay = Date.UTC(part("year"), part("month") - 1, part("day"));
+  const startDay = Date.UTC(2026, 9, 22);
+  const weeks = Math.max(0, Math.floor((localDay - startDay) / (7 * 86400000)));
+  return 220 + Math.min(4, weeks) * 20;
+};
+
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
   { q: "How much do additional air conditioners cost?", a: "The current first-system price is displayed in the live offer and booking calculator. Every additional standard split system is $150 when cleaned at the same address and on the same visit. Your total is shown before you choose a secure payment method. Eligible pay-later options may be available." },
@@ -38,7 +52,7 @@ export default function SplitSystemCleaning() {
     return () => window.clearTimeout(timeout);
   }, [location.hash]);
   const [quantity, setQuantity] = useState(1);
-  const [firstPrice, setFirstPrice] = useState(null);
+  const [firstPrice, setFirstPrice] = useState(scheduledCleaningPrice);
   const [openFaq, setOpenFaq] = useState(0);
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(true);
@@ -110,13 +124,13 @@ export default function SplitSystemCleaning() {
           });
         }
       })
-      .catch(() => { if (active) setFirstPrice(300); });
+      .catch(() => { if (active) setFirstPrice(scheduledCleaningPrice()); });
     return () => { active = false; };
   }, []);
 
-  const currentFirstPrice = firstPrice ?? 300;
+  const currentFirstPrice = firstPrice;
   const currentTotal = cleaningPrice(quantity, currentFirstPrice);
-  const isEarlyPrice = firstPrice !== null && firstPrice < 300;
+  const isEarlyPrice = firstPrice < 300;
   const formatDate = (day) => new Date(day + "T00:00:00").toLocaleDateString(
     "en-AU", { weekday: "short", day: "numeric", month: "short" });
   const formatTime = (time) => new Date("2026-01-01T" + time + ":00").toLocaleTimeString(
@@ -466,14 +480,14 @@ export default function SplitSystemCleaning() {
               </div>
               <div className="border-t border-white/25 pt-5 lg:border-l lg:border-t-0 lg:pl-9 lg:pt-0">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">FIRST SPLIT SYSTEM</p>
-                <strong className="mt-1 block text-[clamp(5.2rem,15vw,8rem)] font-black leading-[1] tracking-tighter text-white">{firstPrice === null ? "..." : money(firstPrice)}</strong>
+                <strong className="mt-1 block text-[clamp(5.2rem,15vw,8rem)] font-black leading-[1] tracking-tighter text-white">{money(firstPrice)}</strong>
 
                 <p className="mt-3 text-[clamp(1.55rem,4vw,2.45rem)] font-black uppercase leading-tight text-[#F4C620]">
                   + $150 EACH EXTRA SYSTEM
                 </p>
                 <p className="mt-2 text-sm font-bold leading-relaxed text-[#D2E6F0]">Same property. Same visit. Same complete clean.</p>
                 <p className="mt-4 border-t border-white/20 pt-4 text-sm font-extrabold text-white sm:text-base">
-                  2 systems <span className="text-[#F4C620]">{firstPrice === null ? "..." : money(cleaningPrice(2, firstPrice))}</span> <span className="mx-2 text-white/45">|</span> 3 systems <span className="text-[#F4C620]">{firstPrice === null ? "..." : money(cleaningPrice(3, firstPrice))}</span>
+                  2 systems <span className="text-[#F4C620]">{money(cleaningPrice(2, firstPrice))}</span> <span className="mx-2 text-white/45">|</span> 3 systems <span className="text-[#F4C620]">{money(cleaningPrice(3, firstPrice))}</span>
                 </p>
               </div>
             </div>
@@ -553,15 +567,15 @@ export default function SplitSystemCleaning() {
                 ))}
               </select>
               <div className="mt-6 border-y border-white/20 py-5">
-                <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>{firstPrice === null ? "..." : money(firstPrice)}</strong></div>
+                <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>{money(firstPrice)}</strong></div>
                 {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $150</span><strong>{money((quantity - 1) * 150)}</strong></div>}
                 <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-5">
                   <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total</span>
-                  <strong className="text-4xl font-black text-[#F4C620]">{firstPrice === null ? "..." : money(currentTotal)}</strong>
+                  <strong className="text-4xl font-black text-[#F4C620]">{money(currentTotal)}</strong>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-4" data-testid="cleaning-booking-200-default">
                   <span className="font-black uppercase text-[#F4C620]">Pay $200 to reserve</span>
-                  <span className="text-sm font-semibold text-white/80">Balance after clean: {firstPrice === null ? "..." : money(currentTotal - 200)}</span>
+                  <span className="text-sm font-semibold text-white/80">Balance after clean: {money(currentTotal - 200)}</span>
                 </div>
               </div>
               <p className="mt-5 text-sm leading-relaxed text-white/70">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
