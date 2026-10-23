@@ -204,7 +204,7 @@ export default function PaymentOptions() {
   // the backend. Keep a real checkout button visible even while a free Render
   // service wakes up or the catalogue request is still loading.
   const hasDirectPayPalCheckout = provider === "paypal" && paypalPayIn4Eligible && modelId === "rinnai-local:2.5kW";
-  const canCheckout = (provider !== "paypal" || paypalPayIn4Eligible) && (
+  const canCheckout = !withInstall && (provider !== "paypal" || paypalPayIn4Eligible) && (
     hasHostedStripeCheckout || hasDirectPayPalCheckout
     || !!(catalog?.checkout_enabled && connectedProvider && hasSeparatePrices && serverPriceCurrent && serverEquipmentCurrent
       && (!withInstall || catalog?.installed_checkout_enabled))
@@ -302,7 +302,7 @@ export default function PaymentOptions() {
                 </>
               )}
               {withInstall && <p className="mt-3 text-xs leading-relaxed text-[#666]">Our No More to Pay installation includes labour and commissioning, up to 3m refrigeration pipework, a standard wall bracket or suitable floor placement, an isolator and up to 20m electrical cable and circuit from the switchboard if required. Switchboard upgrades, difficult access and other non-standard work are quoted before proceeding.</p>}
-              {validDate && withInstall && <p className="mt-2 text-xs font-semibold text-[#8F6A34]">Requested date: {selectedDate} · {selectedWindow || "time to confirm"} (not reserved)</p>}
+              {validDate && withInstall && <p className="mt-2 text-xs font-semibold text-[#8F6A34]">Requested date: {selectedDate} · {selectedWindow || "time to confirm"} (not reserved — use the deals booking checkout)</p>}
             </div>
 
 
@@ -376,7 +376,7 @@ export default function PaymentOptions() {
               </button>
             ) : (
               <p className="mt-6 rounded-lg border border-[#E5DFD5] bg-[#FAF9F7] p-3 text-center text-sm leading-relaxed text-[#606064]">
-                Secure checkout for this model isn't ready yet. Call <a href={PHONE_TEL} className="font-semibold underline">{PHONE}</a> for help.
+                {withInstall ? <>For an installed air conditioner, first <Link to="/split-systems/rinnai-local-offer#local-deal-booking" className="font-semibold underline">choose your installation day and time</Link>. The next page offers deposit and eligible Stripe pay-later options.</> : <>Equipment-only checkout for this model isn't ready yet. Call <a href={PHONE_TEL} className="font-semibold underline">{PHONE}</a> for help.</>}
               </p>
             )}
             {canCheckout && !buyerDetailsComplete && (

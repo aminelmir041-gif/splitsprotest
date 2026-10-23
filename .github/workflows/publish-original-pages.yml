@@ -103,6 +103,7 @@ jobs:
             "split-systems/rinnai-local-offer"
             "book-installation"
             "secure-installation"
+            "deal-payment"
             "payment-options"
             "split-system-installation-sydney"
             "daikin-zena-special"
@@ -173,7 +174,7 @@ jobs:
         run: |
           git config user.name "SplitsPro Pages Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add src/App.js src/components/Navbar.jsx src/pages/Deals.jsx src/pages/BrandPage.jsx src/pages/ZenaSpecial.jsx src/pages/InstallationBooking.jsx src/pages/InstallationDepositCheckout.jsx src/pages/GoogleAdsLanding.jsx public/installs/rinnai-back-to-back-guide.webp public/landing/overheated-bulldog-hero.webp static installs landing products asset-manifest.json about deals split-systems book-installation secure-installation payment-options split-system-installation-sydney daikin-zena-special ducted cleaning split-system-cleaning colony-forming-units aircon-colony-forming-units secure-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
+          git add src/App.js src/components/Navbar.jsx src/pages/Deals.jsx src/pages/BrandPage.jsx src/pages/ZenaSpecial.jsx src/pages/InstallationBooking.jsx src/pages/InstallationDepositCheckout.jsx src/pages/GoogleAdsLanding.jsx public/installs/rinnai-back-to-back-guide.webp public/landing/overheated-bulldog-hero.webp static installs landing products asset-manifest.json about deals split-systems book-installation secure-installation deal-payment payment-options split-system-installation-sydney daikin-zena-special ducted cleaning split-system-cleaning colony-forming-units aircon-colony-forming-units secure-cleaning ducted-cleaning repairs servicing gallery reviews service-areas faq contact
 
           if git diff --cached --quiet; then
             echo "Original pages are already published"

@@ -646,15 +646,15 @@ const BrandPage = ({ offerMode = null }) => {
               <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <h2 className="font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-5xl">New installed prices. More ways to pay.</h2>
-                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#606064]">Choose a Rinnai or Daikin Cora system. Book at the installed price, or explore payment options for the equipment you choose.</p>
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#606064]">Choose your unit and installation date below first. On the next page, choose how you want to pay.</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <a href="#local-deal-booking" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">Choose unit &amp; date ↓</a>
-                  <a href="#pay-later-deals" className="text-xs font-bold text-[#08778D] underline underline-offset-4">See pay-later choices ↓</a>
+                  <a href="#pay-later-deals" className="text-xs font-bold text-[#08778D] underline underline-offset-4">Pay-later: choose date first ↓</a>
                 </div>
               </div>
               <div className="mt-6" data-testid="installation-offer-pay-later-reminder">
-                <PayLaterReminder kind="equipment" equipmentHref="/payment-options?product=rinnai-local&size=2.5kW" />
+                <PayLaterReminder kind="equipment" equipmentHref="/split-systems/rinnai-local-offer#local-deal-booking" />
               </div>
               <div className="mt-8 grid gap-8 lg:grid-cols-2">
                 {displayRanges.map((range) => (
@@ -675,10 +675,10 @@ const BrandPage = ({ offerMode = null }) => {
                             </div>
                             <div className="mt-2 flex items-center justify-between gap-3">
                               <button type="button" onClick={() => handleBook(range, row)} className="text-xs font-bold text-[#8F6A34] underline underline-offset-4">Book installed ↗</button>
-                              <Link className="text-xs font-bold text-[#08778D] underline underline-offset-4"
-                                to={"/payment-options?product=" + encodeURIComponent(range.slug) + "&size=" + encodeURIComponent(row.kw)}>
-                                Pay-later options →
-                              </Link>
+                              <button type="button" className="text-xs font-bold text-[#08778D] underline underline-offset-4"
+                                onClick={() => handleBook(range, row)}>
+                                Pay later — choose date →
+                              </button>
                             </div>
                           </div>
                         );
@@ -697,8 +697,8 @@ const BrandPage = ({ offerMode = null }) => {
               <div id="pay-later-deals" className="mt-8 border-l-4 border-[#087D94] bg-[#EEF8FA] p-5 sm:p-7" data-testid="payment-options">
                 <h3 className="font-serif text-2xl text-[#0B0B0B]">Buy now. Pay later. Stay cool.</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[#374B55]">Available Stripe checkout methods may include <strong>Afterpay, Klarna and Zip</strong>, plus cards. <strong>PayPal Pay in 4</strong> uses a separate PayPal checkout and is only shown for eligible air conditioners where the installed deal is $2,000 or less and the equipment price qualifies.</p>
-                <p className="mt-3 text-xs leading-relaxed text-[#374B55]">Choose your unit first. No More to Pay installation is pre-selected on the payment page, or you can choose the air conditioner only. Equipment and installation are separately priced and charged where available. Approval and payment methods depend on the provider.</p>
-                <Link to="/payment-options?product=rinnai-local&size=2.5kW" className="mt-3 inline-block text-sm font-bold text-[#00556D] underline underline-offset-4">Explore secure payment options →</Link>
+                <p className="mt-3 text-xs leading-relaxed text-[#374B55]">First choose your unit, date and morning or afternoon appointment above. On the next page choose a booking payment or the full installed price through Stripe, with pay-later methods where eligible. Your date is confirmed only after payment is verified.</p>
+                <a href="#local-deal-booking" className="mt-3 inline-block text-sm font-bold text-[#00556D] underline underline-offset-4">Choose unit, date and time to view payment options →</a>
               </div>
               <p className="mt-5 text-xs leading-relaxed text-[#525960]"><strong>Our No More to Pay installation model</strong> includes supply, installation labour and commissioning, up to 3m of refrigeration pipework, a suitable wall bracket or floor placement, an isolator, and up to 20m of electrical cable and a dedicated circuit from the switchboard where required. Non-standard extras are quoted before work proceeds.</p>
               <p className="mt-2 text-[11px] leading-relaxed text-[#777]">*Subject to appointment availability, service area and qualifying standard installation terms. Finance availability and individual eligibility are checked by Stripe or PayPal at checkout. The installed total is not the equipment-only finance amount.</p>

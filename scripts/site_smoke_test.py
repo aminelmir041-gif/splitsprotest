@@ -17,6 +17,7 @@ REACT_ROUTES = (
     "split-systems/rinnai-local-offer",
     "book-installation",
     "secure-installation",
+    "deal-payment",
     "payment-options",
     "split-system-installation-sydney",
     "daikin-zena-special",
@@ -137,6 +138,14 @@ def main() -> None:
     ):
         if required not in booking_source:
             fail(f"local deals unit/date selector missing {required}")
+    deal_page = (ROOT / "src/pages/DealPayment.jsx").read_text(encoding="utf-8")
+    for required in ("installed-deal-checkout", "installed-deal-payment-status", "payment_choice", "booking_date", "booking_window"):
+        if required not in deal_page:
+            fail("installed deals checkout is missing " + required)
+    if "deals-select-time" not in booking_source or "deals-continue-to-payment" not in booking_source:
+        fail("deals must pick a day and morning/afternoon before any checkout")
+    if 'to={"/payment-options?product=" + encodeURIComponent(range.slug)' in brand_source:
+        fail("deal pay-later links cannot bypass installation date selection")
     compiled_js = (ROOT / main_js.lstrip("/")).read_text(encoding="utf-8")
     if "local-deal-unit-select" not in compiled_js or "local-deal-inline-booking" not in compiled_js:
         fail("published React bundle missing the local-deals unit/date selector")
