@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
-// These public tracking IDs come from GitHub Actions repository variables,
-// not from checkout details or customer-submitted personal information.
-const gaId = (process.env.REACT_APP_GA4_MEASUREMENT_ID || "").trim();
+// Google Analytics measurement ID belongs to SplitsPro and is public.
+// A GitHub Actions variable may override this project default; no customer details are used.
+const gaId = (process.env.REACT_APP_GA4_MEASUREMENT_ID || "G-4QG9BF6FT0").trim();
 const clarityId = (process.env.REACT_APP_CLARITY_PROJECT_ID || "").trim();
 const validGa = /^G-[A-Z0-9]+$/i.test(gaId);
 const validClarity = /^[a-z0-9]{5,32}$/i.test(clarityId);
