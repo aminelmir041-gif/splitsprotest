@@ -2,7 +2,7 @@ from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File, H
 from fastapi.responses import FileResponse, Response, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, field_validator
-from typing import Optional
+from typing import Optional, Literal
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from threading import Lock
@@ -883,6 +883,15 @@ async def stripe_webhook(request: Request, background_tasks: BackgroundTasks):
             expire_cleaning_stripe_hold(session)
         return Response(status_code=200)
 
+    # Deal payments include their installation appointment. Confirm the date
+    # only after Stripe has independently verified the actual amount received.
+    if (session.get("metadata") or {}).get("checkout_type") == "installed_deal":
+        if event_type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"} and session.get("payment_status") == "paid":
+            _confirm_installed_deal_payment(session, background_tasks)
+        elif event_type in {"checkout.session.expired", "checkout.session.async_payment_failed"}:
+            _expire_installed_deal_checkout(session)
+        return Response(status_code=200)
+
     # Equipment retail checkouts use the same trusted Stripe webhook but
     # must NEVER be mistaken for an installation deposit or reserve a date.
     if (session.get("metadata") or {}).get("checkout_type") == "equipment_retail":
@@ -1105,3 +1114,189 @@ def get_file(file_id: str):
     if not target.exists():
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(target)
+
+
+# Unified Rinnai/Daikin local-deals checkout. The customer selects a live
+# installation window FIRST. The website never supplies a monetary amount.
+# A temporary hold expires without payment; only a verified paid session
+# permanently books an installation date.
+from .equipment_checkout import INSTALLED_CENTS as DEAL_INSTALLED_CENTS, LABELS as DEAL_LABELS
+
+DEAL_STRIPE_CONFIGURATION = "pmc_1UNgZ0PpUx7EUhdNwdVqO3md"
+DEAL_HOLD_SECONDS = 32 * 60
+
+
+class InstalledDealCheckoutRequest(BookingCreate):
+    payment_choice: Literal["deposit", "full"] = "deposit"
+
+
+@app.post("/api/installed-deal-checkout")
+def installed_deal_checkout(payload: InstalledDealCheckoutRequest):
+    _validate_booking_request(payload)
+    model_id = f"{payload.product_key}:{payload.size}"
+    if model_id not in DEAL_INSTALLED_CENTS:
+        raise HTTPException(status_code=422, detail="That air conditioner is not available for this offer")
+    key = (os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+    if not key or not STRIPE_WEBHOOK_SECRET:
+        raise HTTPException(status_code=503, detail="Secure booking checkout is temporarily unavailable")
+    total_cents = DEAL_INSTALLED_CENTS[model_id]
+    # Keep the residential installation booking amount within 10% of its total.
+    payable_cents = total_cents // 10 if payload.payment_choice == "deposit" else total_cents
+    connection = _booking_redis()
+    reference = uuid.uuid4().hex
+    lead = payload.model_dump()
+    lead.update({
+        "service": "Split System Installation",
+        "product_key": payload.product_key,
+        "size": payload.size,
+        "preferred_date": payload.booking_date,
+        "payment_choice": payload.payment_choice,
+        "total_amount": total_cents / 100,
+        "id": uuid.uuid4().hex,
+        "created_at": now_iso(),
+    })
+    lead["lead_source"] = derive_lead_source(lead)
+    hold = {
+        "reference": reference, "booking_date": payload.booking_date,
+        "booking_window": payload.booking_window,
+        "lead": lead, "created_at": now_iso(),
+        "model_id": model_id, "total_cents": total_cents,
+        "deposit_cents": payable_cents,
+        "payment_choice": payload.payment_choice,
+        "checkout_type": "installed_deal",
+    }
+    try:
+        with connection.lock(day_lock_key(payload.booking_date), timeout=30, blocking_timeout=10):
+            if (_slot_count(connection, payload.booking_date, payload.booking_window) >= BOOKING_SLOT_CAPACITY
+                or cleaning_blocks_installation(connection, payload.booking_date, payload.booking_window)):
+                raise HTTPException(status_code=409, detail="That installation slot has just been taken. Choose another time.")
+            connection.set(_hold_key(reference), json.dumps(hold), ex=DEAL_HOLD_SECONDS)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logging.exception("Could not reserve deal checkout slot")
+        raise HTTPException(status_code=503, detail="Live availability is temporarily unavailable") from exc
+
+    return_params = urlencode({
+        "product": payload.product_key, "size": payload.size,
+        "date": payload.booking_date, "window": payload.booking_window,
+        "booking_ref": reference,
+    })
+    return_base = "https://splitspro.com.au/deal-payment?" + return_params
+    body = {
+        "mode": "payment",
+        "payment_method_configuration": DEAL_STRIPE_CONFIGURATION,
+        "expires_at": str(int(time.time()) + 31 * 60),
+        "client_reference_id": reference,
+        "customer_email": payload.email,
+        "success_url": return_base + "&deal_payment=returned&session_id={CHECKOUT_SESSION_ID}",
+        "cancel_url": return_base + "&deal_payment=cancelled",
+        "metadata[checkout_type]": "installed_deal",
+        "metadata[booking_ref]": reference,
+        "metadata[model_id]": model_id,
+        "metadata[payment_choice]": payload.payment_choice,
+        "metadata[booking_date]": payload.booking_date,
+        "metadata[booking_window]": payload.booking_window,
+        "line_items[0][price_data][currency]": "aud",
+        "line_items[0][price_data][unit_amount]": str(payable_cents),
+        "line_items[0][price_data][product_data][name]":
+            (f"SplitsPro {DEAL_LABELS[model_id]} - "
+             + ("10% installation booking payment" if payload.payment_choice == "deposit"
+                else "complete supplied and installed package")),
+        "line_items[0][quantity]": "1",
+    }
+    try:
+        response = requests.post(
+            "https://api.stripe.com/v1/checkout/sessions",
+            headers={"Authorization": "Bearer " + key, "Idempotency-Key": "installed-deal-" + reference},
+            data=body, timeout=25,
+        )
+        response.raise_for_status()
+        checkout = response.json()
+        if not checkout.get("id") or not (checkout.get("url") or "").startswith("https://"):
+            raise ValueError("missing Stripe checkout session")
+        hold["stripe_session_id"] = checkout["id"]
+        connection.set(_hold_key(reference), json.dumps(hold), ex=DEAL_HOLD_SECONDS)
+    except (requests.RequestException, ValueError, redis.RedisError) as exc:
+        connection.delete(_hold_key(reference))
+        logging.exception("Installed deal Stripe checkout unavailable")
+        raise HTTPException(status_code=502, detail="Could not open secure checkout. Nothing was charged.") from exc
+
+    return {
+        "checkout_url": checkout["url"], "booking_ref": reference,
+        "total_amount": total_cents / 100,
+        "amount_due_now": payable_cents / 100,
+        "balance_amount": (total_cents - payable_cents) / 100,
+        "payment_choice": payload.payment_choice, "currency": "AUD",
+    }
+
+
+def _confirm_installed_deal_payment(session, background_tasks):
+    ref = (session.get("metadata") or {}).get("booking_ref") or ""
+    if not re.fullmatch(r"[0-9a-f]{32}", ref):
+        return
+    connection = _booking_redis()
+    raw = connection.get(_hold_key(ref))
+    if not raw:
+        # If checkout completes after hold expiry, do NOT reserve the date
+        # or pretend an installation is booked; staff must reconcile with Stripe.
+        logging.warning("Paid installation session has no active hold: %s", ref)
+        return
+    hold = json.loads(raw)
+    if (
+        hold.get("checkout_type") != "installed_deal"
+        or session.get("id") != hold.get("stripe_session_id")
+        or session.get("client_reference_id") != ref
+        or session.get("amount_total") != hold.get("deposit_cents")
+        or (session.get("currency") or "").lower() != "aud"
+    ):
+        logging.error("Rejected mismatched installed deal payment: %s", ref)
+        return
+    _complete_paid_booking(ref, session.get("id"), background_tasks, int(session["amount_total"]))
+
+
+def _expire_installed_deal_checkout(session):
+    ref = (session.get("metadata") or {}).get("booking_ref") or ""
+    if not re.fullmatch(r"[0-9a-f]{32}", ref):
+        return
+    connection = _booking_redis()
+    raw = connection.get(_hold_key(ref))
+    if raw and json.loads(raw).get("stripe_session_id") == session.get("id"):
+        connection.delete(_hold_key(ref))
+
+
+@app.get("/api/installed-deal-payment-status")
+def installed_deal_payment_status(
+    background_tasks: BackgroundTasks, booking_ref: str = "", session_id: str = ""
+):
+    if not re.fullmatch(r"[0-9a-f]{32}", booking_ref):
+        raise HTTPException(status_code=422, detail="Invalid installation booking reference")
+    connection = _booking_redis()
+    paid_raw = connection.get(_paid_key(booking_ref))
+    if paid_raw:
+        return json.loads(paid_raw)
+    raw = connection.get(_hold_key(booking_ref))
+    if raw:
+        hold = json.loads(raw)
+        if (
+            hold.get("checkout_type") == "installed_deal"
+            and session_id == hold.get("stripe_session_id")
+            and re.fullmatch(r"cs_(?:live|test)_[A-Za-z0-9]+", session_id or "")
+        ):
+            secret = (os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+            if secret:
+                try:
+                    result = requests.get(
+                        "https://api.stripe.com/v1/checkout/sessions/" + session_id,
+                        headers={"Authorization": "Bearer " + secret}, timeout=12,
+                    )
+                    result.raise_for_status()
+                    session = result.json()
+                    if session.get("payment_status") == "paid":
+                        _confirm_installed_deal_payment(session, background_tasks)
+                        paid_raw = connection.get(_paid_key(booking_ref))
+                        if paid_raw:
+                            return json.loads(paid_raw)
+                except (requests.RequestException, ValueError):
+                    logging.warning("Installed deal confirmation is still processing")
+    return {"status": "processing", "booking_ref": booking_ref}
