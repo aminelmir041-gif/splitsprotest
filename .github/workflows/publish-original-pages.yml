@@ -71,6 +71,8 @@ jobs:
       - name: Build original React site
         env:
           CI: 'false'
+          REACT_APP_GA4_MEASUREMENT_ID: ${{ vars.GA4_MEASUREMENT_ID }}
+          REACT_APP_CLARITY_PROJECT_ID: ${{ vars.CLARITY_PROJECT_ID }}
         run: npm run build
 
       - name: Publish original routes without replacing homepage

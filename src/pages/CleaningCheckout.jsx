@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, ArrowRight, CreditCard, Loader2, ShieldCheck } from "lucide-react";
-import { api, getCleaningCheckoutConfig } from "../lib/api";
+import { api, getCachedCleaningCheckoutConfig, getCleaningCheckoutConfig } from "../lib/api";
+import { scheduledCleaningPrice } from "../lib/cleaningPricing";
 
-const FIRST_PRICE = 300;
 const EXTRA_PRICE = 150;
 const MAX_UNITS = 7;
 const money = (n) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
@@ -29,7 +29,7 @@ export default function CleaningCheckout() {
     && ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00"].indexOf(time) + count <= 7;
   const localToday = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(day) && day >= localToday;
-  const [firstPrice, setFirstPrice] = useState(FIRST_PRICE);
+  const [firstPrice, setFirstPrice] = useState(scheduledCleaningPrice);
   const price = (validCount ? firstPrice + EXTRA_PRICE * (count - 1) : firstPrice);
   const totalDuration = count * 90;
   const backUrl = "/split-system-cleaning/#cleaning-booking";
@@ -39,10 +39,10 @@ export default function CleaningCheckout() {
   const [paymentChoice, setPaymentChoice] = useState("booking");
   const dueNow = paymentChoice === "booking" ? 200 : price;
   const remainingBalance = price - dueNow;
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState(getCachedCleaningCheckoutConfig);
   const [settingsError, setSettingsError] = useState("");
   const [paymentRefreshKey, setPaymentRefreshKey] = useState(0);
-  const [settingsLoading, setSettingsLoading] = useState(true);
+  const [settingsLoading, setSettingsLoading] = useState(() => !getCachedCleaningCheckoutConfig());
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
   const [paymentStatus, setPaymentStatus] = useState({ status: "processing" });
@@ -54,13 +54,13 @@ export default function CleaningCheckout() {
   useEffect(() => {
     if (paymentReturn || !validCount) return undefined;
     let live = true;
-    setSettingsLoading(true);
+    setSettingsLoading(!getCachedCleaningCheckoutConfig());
     setSettingsError("");
     getCleaningCheckoutConfig()
       .then((data) => { if (live) {
         setSettings(data);
         const advertisedPrice = Number(data?.first_system);
-        setFirstPrice(Number.isFinite(advertisedPrice) && advertisedPrice >= 200 ? advertisedPrice : FIRST_PRICE);
+        setFirstPrice(Number.isFinite(advertisedPrice) && advertisedPrice >= 200 ? advertisedPrice : scheduledCleaningPrice());
         setSettingsLoading(false);
         if (!data.stripe_ready && data.paypal_ready) setProvider("paypal");
         if (!data.stripe_ready && !data.paypal_ready) setSettingsError("Secure full-payment checkout is temporarily unavailable. Please contact SplitsPro.");
@@ -312,10 +312,10 @@ export default function CleaningCheckout() {
                 paypalReady={settings?.paypal_ready} cleaningChoice={paymentChoice} />
             </div>
             <form onSubmit={pay} className="mt-7 space-y-5">
-              <label className={fieldLabel}>Full name<input className={fieldInput} required autoComplete="name" value={details.name} onChange={(e) => update("name", e.target.value)} placeholder="Full name" /></label>
-              <label className={fieldLabel}>Cleaning address<input className={fieldInput} required autoComplete="street-address" value={details.address} onChange={(e) => update("address", e.target.value)} placeholder="Street address, suburb and postcode" /></label>
-              <label className={fieldLabel}>Mobile number<input className={fieldInput} required type="tel" autoComplete="tel" value={details.phone} onChange={(e) => update("phone", e.target.value)} placeholder="04xx xxx xxx" /></label>
-              <label className={fieldLabel}>Email<input className={fieldInput} required type="email" autoComplete="email" value={details.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" /></label>
+              <label data-clarity-mask="true" className={fieldLabel}>Full name<input className={fieldInput} required autoComplete="name" value={details.name} onChange={(e) => update("name", e.target.value)} placeholder="Full name" /></label>
+              <label data-clarity-mask="true" className={fieldLabel}>Cleaning address<input className={fieldInput} required autoComplete="street-address" value={details.address} onChange={(e) => update("address", e.target.value)} placeholder="Street address, suburb and postcode" /></label>
+              <label data-clarity-mask="true" className={fieldLabel}>Mobile number<input className={fieldInput} required type="tel" autoComplete="tel" value={details.phone} onChange={(e) => update("phone", e.target.value)} placeholder="04xx xxx xxx" /></label>
+              <label data-clarity-mask="true" className={fieldLabel}>Email<input className={fieldInput} required type="email" autoComplete="email" value={details.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" /></label>
 
               <fieldset className="border-t border-[#DEE6EC] pt-5">
                 <legend className="text-sm font-black uppercase tracking-wide">PAYMENT METHOD</legend>

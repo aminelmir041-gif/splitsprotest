@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock3, Droplets, Loader2, ShieldCheck, Sun, Wind } from "lucide-react";
-import { api, getCleaningSlots } from "../lib/api";
+import { getCleaningCheckoutConfig, getCleaningSlots } from "../lib/api";
+import { scheduledCleaningPrice } from "../lib/cleaningPricing";
 import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
@@ -14,19 +15,6 @@ const CLEANING_QUANTITIES = Array.from({ length: 7 }, (_, index) => index + 1);
 const cleaningPrice = (count, firstPrice) => firstPrice + Math.max(0, count - 1) * 150;
 const money = (value) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(value);
 
-// Show the agreed early-bird price immediately, even while Render's checkout
-// configuration wakes up. The API remains authoritative when it responds.
-// Promotion: $220 from 22 Oct 2026, +$20 each Sydney Thursday, capped at $300.
-const scheduledCleaningPrice = () => {
-  const parts = new Intl.DateTimeFormat("en-AU", {
-    timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit"
-  }).formatToParts(new Date());
-  const part = (type) => Number(parts.find((entry) => entry.type === type)?.value);
-  const localDay = Date.UTC(part("year"), part("month") - 1, part("day"));
-  const startDay = Date.UTC(2026, 9, 22);
-  const weeks = Math.max(0, Math.floor((localDay - startDay) / (7 * 86400000)));
-  return 220 + Math.min(4, weeks) * 20;
-};
 
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
@@ -113,11 +101,11 @@ export default function SplitSystemCleaning() {
 
   useEffect(() => {
     let active = true;
-    api.get("/cleaning-checkout-config", { timeout: 20000 })
-      .then(({ data }) => {
+    getCleaningCheckoutConfig()
+      .then((data) => {
         if (active) {
           const latestPrice = Number(data?.first_system);
-          setFirstPrice(Number.isFinite(latestPrice) && latestPrice >= 200 ? latestPrice : 300);
+          setFirstPrice(Number.isFinite(latestPrice) && latestPrice >= 200 ? latestPrice : scheduledCleaningPrice());
           setPaymentReadiness({
           stripe_ready: Boolean(data?.stripe_ready),
           paypal_ready: Boolean(data?.paypal_ready),

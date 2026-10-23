@@ -54,22 +54,48 @@ export const getCleaningSlots = async (quantity = 1, limit = 70) => {
   throw lastError;
 };
 
+// Prefetch on the cleaning offer page and reuse on the next checkout route.
+// This removes a duplicate Render cold-start request without trusting a
+// cached amount at payment: /cleaning-checkout verifies the actual price.
+const CLEANING_CONFIG_CACHE_KEY = "splitspro:cleaning-config:v2";
+const CLEANING_CONFIG_TTL_MS = 300000;
+let cleaningConfigInFlight = null;
+export const getCachedCleaningCheckoutConfig = () => {
+  try {
+    const cached = JSON.parse(window.sessionStorage.getItem(CLEANING_CONFIG_CACHE_KEY) || "null");
+    if (cached && cached.expires > Date.now() && cached.data && typeof cached.data === "object") return cached.data;
+  } catch {}
+  return null;
+};
+
 export const getCleaningCheckoutConfig = async () => {
-  let lastError;
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    try {
-      const response = await api.get("/cleaning-checkout-config", {
-        timeout: 30000,
-        headers: { "Cache-Control": "no-cache" },
-      });
-      return response.data;
-    } catch (error) {
-      lastError = error;
-      if (error?.response?.status && error.response.status < 500) throw error;
-      if (attempt < 2) await sleep((attempt + 1) * 850);
+  const cached = getCachedCleaningCheckoutConfig();
+  if (cached) return cached;
+  if (cleaningConfigInFlight) return cleaningConfigInFlight;
+  cleaningConfigInFlight = (async () => {
+    let lastError;
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        const response = await api.get("/cleaning-checkout-config", {
+          timeout: attempt === 0 ? 16000 : 35000,
+          headers: { "Cache-Control": "no-cache" },
+        });
+        try {
+          window.sessionStorage.setItem(CLEANING_CONFIG_CACHE_KEY, JSON.stringify({
+            expires: Date.now() + CLEANING_CONFIG_TTL_MS,
+            data: response.data,
+          }));
+        } catch {}
+        return response.data;
+      } catch (error) {
+        lastError = error;
+        if (error?.response?.status && error.response.status < 500) throw error;
+        if (attempt === 0) await sleep(800);
+      }
     }
-  }
-  throw lastError;
+    throw lastError;
+  })().finally(() => { cleaningConfigInFlight = null; });
+  return cleaningConfigInFlight;
 };
 
 export const submitBooking = (data) => api.post("/bookings", data).then((r) => r.data);

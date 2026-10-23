@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 
 import Navbar from "@/components/Navbar";
+import AnalyticsTracking from "@/components/AnalyticsTracking";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
 import { LOGO } from "@/lib/data";
@@ -124,6 +125,7 @@ function App() {
         <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
           <BrowserRouter basename={basename}>
             <ScrollToTop />
+            <AnalyticsTracking />
             <Navbar />
             <main className="pt-[36px]">
               <AnimatedRoutes />
