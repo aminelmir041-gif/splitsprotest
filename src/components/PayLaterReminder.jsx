@@ -35,26 +35,25 @@ export default function PayLaterReminder({
       {kind === "cleaning" && compact ? (
         <p className={"mt-2 text-sm font-semibold leading-relaxed " + bodyColor}>
           {cleaningChoice === "booking"
-            ? <>Secure the date with <strong>$200 today</strong>; pay the remaining cleaning balance after the job. </>
-            : <>Pay the <strong>full cleaning price now</strong> if you prefer. </>}
+            ? <>Reserve your date for <strong>$50 today</strong>; pay the remaining balance after cleaning. Want instalments instead? Select <strong>full payment</strong> to finance the complete job if approved. </>
+            : <>Select the <strong>full cleaning total</strong> for eligible buy now, pay later instalments. </>}
           {paypal && <><strong>PayPal Pay in 4</strong> may be offered to eligible customers. </>}
           <strong>Afterpay, Klarna and Zip</strong> may appear through Stripe{stripeReady === false ? " once Stripe is connected" : " where enabled and eligible"}.
-          <span className="mt-1 block text-xs font-normal">An approved instalment plan covers only the amount charged at this checkout. Provider limits, terms and approval apply.</span>
+          <span className="mt-1 block text-xs font-normal">The full price is charged to the approved provider; you repay that provider on its terms. Approval and availability are not guaranteed.</span>
         </p>
       ) : kind === "cleaning" ? (
         <>
           <p className={"mt-2 text-sm font-medium leading-relaxed " + bodyColor}>
             {cleaningChoice === "booking"
-              ? <>You can <strong>book for $200</strong> and settle the remaining balance after cleaning. </>
-              : <>You can <strong>pay the full service price now</strong>. </>}
+              ? <>You can <strong>book for $50</strong> and settle the remaining balance after cleaning. For buy now, pay later, choose full payment instead. </>
+              : <>You can <strong>pay the full service price</strong>, or use eligible instalments for that full amount if approved. </>}
             {paypal && <><strong>PayPal Pay in 4</strong> may be offered by PayPal to eligible customers. </>}
             {stripe
               ? <>Through Stripe, eligible checkouts may offer <strong>Afterpay, Klarna or Zip</strong>. </>
               : <>Afterpay, Klarna and Zip require Stripe checkout, which is not currently connected for cleaning. </>}
-            Any approved instalments apply only to what is charged today.
           </p>
           <p className={"mt-2 text-xs leading-relaxed " + bodyColor}>
-            Payment-plan availability, spending limits and approval vary; check the actual provider terms before paying.
+            With approved buy now, pay later, the provider pays the job amount and you repay the provider. Availability, limits and approval vary.
           </p>
         </>
       ) : kind === "equipment" && compact ? (

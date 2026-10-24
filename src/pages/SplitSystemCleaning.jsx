@@ -143,10 +143,10 @@ export default function SplitSystemCleaning() {
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
         <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | SplitsPro Sydney</title>
-        <meta name="description" content="SplitsPro complete split-system deep cleaning with a weekly early-booking offer. $150 for each extra system at the same address, book from $200 upfront or pay the full amount online. Protective treatments where suitable." />
+        <meta name="description" content="SplitsPro complete split-system deep cleaning for $300, plus $150 for each extra system at the same address. Reserve a date with $50, pay in full, or use eligible pay-later options for the full service. Protective treatments where suitable." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
-        <meta property="og:description" content="Deep clean and suitable protective treatments. Check the current weekly first-system offer; each extra split system $150 at the same property. Choose a live 90-minute start time." />
+        <meta property="og:description" content="$300 complete deep clean with suitable protective treatments. Each extra split system $150 at the same property. Book for $50 and pay the balance after cleaning, or pay in full." />
       </Helmet>
 
 
@@ -455,7 +455,7 @@ export default function SplitSystemCleaning() {
                 className="flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42] sm:text-lg">
                 Choose systems &amp; booking time <ArrowRight className="h-5 w-5" />
               </button>
-              <p className="mt-3 text-sm text-white/70">Reserve your date with $200 today and pay the balance after the clean — or choose to pay the full price now.</p>
+              <p className="mt-3 text-sm text-white/70">Reserve your date with $50 today and pay the balance after the clean — or choose to pay the full price now.</p>
             </div>
           </div>
 
@@ -494,7 +494,7 @@ export default function SplitSystemCleaning() {
             Standard-access wall-mounted splits only. Additional-system pricing applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-[#566D7B]">
-            Choose a $200 booking payment, with the balance due after cleaning, or pay the full price online. Any approved PayPal Pay in 4 or Stripe instalments apply only to the amount paid at that checkout. Eligibility, limits and availability depend on the provider.
+            Choose a $50 booking payment, with the balance due after cleaning, or pay the full price online. For buy now, pay later on the complete job, choose full payment at checkout and use an eligible provider if approved. Provider limits and terms apply.
           </p>
         </div>
       </section>
@@ -506,7 +506,7 @@ export default function SplitSystemCleaning() {
             PICK THE SYSTEMS. <span className="text-[#45C6E7]">PICK THE TIME.</span>
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/75">
-            Choose the number of systems and an available start time. Then pay $200 to secure the booking, or choose to pay the full amount. Cleaning and installation bookings share the same live calendar.
+            Choose the number of systems and an available start time. Then pay $50 to secure the booking, or choose to pay the full amount. Cleaning and installation bookings share the same live calendar.
           </p>
           <div className="mt-6" data-testid="cleaning-booking-pay-later-reminder">
             <PayLaterReminder kind="cleaning" theme="dark" />
@@ -529,9 +529,9 @@ export default function SplitSystemCleaning() {
                   <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total</span>
                   <strong className="text-4xl font-black text-[#F4C620]">{money(currentTotal)}</strong>
                 </div>
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-4" data-testid="cleaning-booking-200-default">
-                  <span className="font-black uppercase text-[#F4C620]">Pay $200 to reserve</span>
-                  <span className="text-sm font-semibold text-white/80">Balance after clean: {money(currentTotal - 200)}</span>
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-4" data-testid="cleaning-booking-50-default">
+                  <span className="font-black uppercase text-[#F4C620]">Pay $50 to reserve</span>
+                  <span className="text-sm font-semibold text-white/80">Balance after clean: {money(currentTotal - 50)}</span>
                 </div>
               </div>
               <p className="mt-5 text-sm leading-relaxed text-white/70">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
@@ -577,7 +577,7 @@ export default function SplitSystemCleaning() {
                 className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
                 {continuing ? "Opening secure booking..." : "Continue to details & payment options"} <ArrowRight className="h-5 w-5"/>
               </button>
-              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when checkout starts. Your date is confirmed after your chosen $200 booking payment or full payment is verified.</p>
+              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when checkout starts. Your date is confirmed after your chosen $50 booking payment or full payment is verified.</p>
             </div>
           </div>
         </div>

@@ -207,9 +207,9 @@ def main() -> None:
     if not all(token in cleaning_page for token in (
         "CLEANING_QUANTITIES", "firstPrice + Math.max(0, count - 1) * 150",
         "getCleaningSlots", 'data-testid="cleaning-unit-count"',
-        "Continue to details & payment options", 'data-testid="cleaning-booking-200-default"',
+        "Continue to details & payment options", 'data-testid="cleaning-booking-50-default"',
     )):
-        fail("cleaning page must show the current server-verified first-system offer, $150 extras, $200 booking and live times")
+        fail("cleaning page must show the current server-verified first-system offer, $150 extras, $50 booking and live times")
     # Preserve the full approved sales story with booking and calendar near the bottom.
     # Visitors wanting to skip the copy can go straight there from Book Now in the hero.
     landing_sequence = (
@@ -243,7 +243,7 @@ def main() -> None:
         'getCleaningCheckoutConfig', 'start_time: time', 'quantity: count',
         'api.post("/cleaning-checkout"', "PAY {money(dueNow)} TO", 'data-testid="cleaning-payment-choice"', 'useState("booking")',
     )):
-        fail("cleaning checkout must present default $200 booking, optional full pay and server-verifiable amounts")
+        fail("cleaning checkout must present default $50 booking, optional full pay and server-verifiable amounts")
     # Full checkout uses the booking server's one atomic availability-and-hold
     # request; no redundant calendar call that might reject later valid dates.
     if 'api.get("/cleaning-slots"' in secure_page:
