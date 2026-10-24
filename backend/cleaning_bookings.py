@@ -39,10 +39,7 @@ WORKDAYS = {
 HOLD_SECONDS = 32 * 60
 STRIPE_SESSION_SECONDS = 31 * 60
 
-FIRST_CLEAN_CENTS = 30000  # standard price and hard promotional cap
-EARLY_CLEAN_START = date(2026, 10, 22)
-EARLY_CLEAN_START_CENTS = 22000
-EARLY_CLEAN_WEEKLY_INCREASE_CENTS = 2000
+FIRST_CLEAN_CENTS = 30000  # Regular all-inclusive first-unit price
 ADDITIONAL_CLEAN_CENTS = 15000
 CLEANING_BOOKING_PAYMENT_CENTS = 20000
 # Existing LIVE Stripe prices owned by the connected SplitsPro merchant account.
@@ -69,16 +66,8 @@ def require_booking_enabled():
 
 
 def scheduled_first_clean_cents(on_day: date) -> int:
-    """Early-booking event, from $220 on 22 October; $20 up each Thursday.
-
-    Returns to $300 on 19 November and stays at that cap through Black Friday.
-    The price is calculated when the server creates a paid booking hold, not
-    from a customer-supplied date or amount.
-    """
-    if on_day < EARLY_CLEAN_START:
-        return FIRST_CLEAN_CENTS
-    elapsed_weeks = (on_day - EARLY_CLEAN_START).days // 7
-    return min(FIRST_CLEAN_CENTS, EARLY_CLEAN_START_CENTS + EARLY_CLEAN_WEEKLY_INCREASE_CENTS * elapsed_weeks)
+    """The regular price applies every day; the early-booking sale is retired."""
+    return FIRST_CLEAN_CENTS
 
 
 def first_clean_cents() -> int:
@@ -257,8 +246,6 @@ def cleaning_config(response: Response):
         "booking_payment": CLEANING_BOOKING_PAYMENT_CENTS / 100,
         "default_payment_choice": "booking",
         "regular_first_system": FIRST_CLEAN_CENTS / 100,
-        "weekly_price_increase": EARLY_CLEAN_WEEKLY_INCREASE_CENTS / 100,
-        "promotion_regular_price_date": "2026-11-19",
         "stripe_ready": bool((os.environ.get("STRIPE_SECRET_KEY") or "").strip()
                              and (os.environ.get("STRIPE_WEBHOOK_SECRET") or "").strip()),
         "paypal_ready": bool((os.environ.get("PAYPAL_CLIENT_ID") or "").strip()
@@ -380,13 +367,13 @@ def _create_stripe_checkout(hold):
         # The existing $200 Stripe price remains unchanged for part-payment.
         body["line_items[0][price]"] = STRIPE_CLEANING_BOOKING_PRICE
     elif hold["total_cents"] == FIRST_CLEAN_CENTS + ADDITIONAL_CLEAN_CENTS * (hold["quantity"] - 1):
-        # Reuse existing Dashboard prices whenever the event is over.
+        # Reuse the existing Dashboard prices at the regular cleaning rate.
         body["line_items[0][price]"] = STRIPE_FIRST_CLEAN_PRICE
         if hold["quantity"] > 1:
             body["line_items[1][price]"] = STRIPE_ADDITIONAL_CLEAN_PRICE
             body["line_items[1][quantity]"] = str(hold["quantity"] - 1)
     else:
-        # Checkout supports inline Price data for a genuine time-limited price.
+        # Checkout supports inline Price data for a non-catalogue total.
         # Product and amount come exclusively from our server-side booking hold.
         body["line_items[0][price_data][currency]"] = "aud"
         body["line_items[0][price_data][unit_amount]"] = str(hold["total_cents"])
