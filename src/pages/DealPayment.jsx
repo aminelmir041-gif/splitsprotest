@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, ArrowRight, CreditCard, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CreditCard, Loader2, Phone } from "lucide-react";
+import { PHONE_TEL } from "../lib/data";
 import { api } from "../lib/api";
 
 const DEALS = {
@@ -43,6 +44,7 @@ export default function DealPayment() {
   const [status, setStatus] = useState({ status: "processing" });
   const tracked = useRef("");
   const total = model?.[1] || 0;
+  const backendChoice = choice === "deposit" ? "deposit" : "full";
   const dueNow = choice === "deposit" ? total / 10 : total;
   const remaining = total - dueNow;
 
@@ -97,7 +99,7 @@ export default function DealPayment() {
     try {
       const response = await api.post("/installed-deal-checkout", {
         product_key: productKey, size, booking_date: date, booking_window: bookingWindow,
-        payment_choice: choice, name: buyer.name.trim(), phone: buyer.phone.trim(),
+        payment_choice: backendChoice, name: buyer.name.trim(), phone: buyer.phone.trim(),
         email: buyer.email.trim(), address: buyer.address.trim(), suburb: buyer.address.trim(),
         service: "Split System Installation",
         message: model[0] + " supplied and installed; standard installation conditions confirmed",
@@ -106,7 +108,7 @@ export default function DealPayment() {
       const data = response.data;
       if (!/^https:\/\/checkout\.stripe\.com\//.test(data?.checkout_url || "") ||
           Number(data.total_amount) !== total || Number(data.amount_due_now) !== dueNow ||
-          Number(data.balance_amount) !== remaining || data.payment_choice !== choice) {
+          Number(data.balance_amount) !== remaining || data.payment_choice !== backendChoice) {
         throw new Error("The payment total could not be verified. No payment started.");
       }
       if (typeof window.fbq === "function") {
@@ -148,7 +150,7 @@ export default function DealPayment() {
       {cancelled && <p role="status" className="mt-5 border-l-4 border-[#C8A46A] bg-white p-4 text-sm">
         Payment cancelled. No appointment was booked. You can retry, subject to availability.
       </p>}
-      <p className="mt-8 text-xs font-black uppercase tracking-wider text-[#876338]">Step 4 · Secure the installation</p>
+      <p className="mt-8 text-xs font-black uppercase tracking-wider text-[#876338]">Step 5 · Secure the installation</p>
       <h1 className="mt-2 font-serif text-4xl">Choose how you'd like to pay.</h1>
       <div className="mt-7 grid gap-5 lg:grid-cols-[.9fr_1.1fr]">
         <section className="h-fit border-t-4 border-[#C8A46A] bg-white p-6">
@@ -168,19 +170,26 @@ export default function DealPayment() {
           <div className="mt-4 grid gap-3" role="radiogroup" aria-label="Payment choice">
             <button type="button" role="radio" aria-checked={choice === "deposit"} onClick={() => setChoice("deposit")}
               className={"rounded-lg border-2 p-4 text-left " + (choice === "deposit" ? "border-[#C8A46A] bg-[#FBF2E2]" : "border-[#DDD8CF]")}>
-              <strong className="block">Pay 10% to book · {money(total / 10)}</strong>
+              <strong className="block">Book with 10% · {money(total / 10)}</strong>
               <span className="mt-1 block text-sm text-[#555]">Remaining balance: {money(total * .9)} under your installation agreement.</span>
+            </button>
+            <button type="button" role="radio" aria-checked={choice === "paylater"} onClick={() => setChoice("paylater")}
+              className={"rounded-lg border-2 p-4 text-left " + (choice === "paylater" ? "border-[#C8A46A] bg-[#FBF2E2]" : "border-[#DDD8CF]")}>
+              <strong className="block">Buy now, pay later · {money(total)}</strong>
+              <span className="mt-1 block text-sm text-[#555]">Continue to Stripe to see eligible Afterpay, Klarna or Zip instalment plans. Provider approval and limits apply.</span>
             </button>
             <button type="button" role="radio" aria-checked={choice === "full"} onClick={() => setChoice("full")}
               className={"rounded-lg border-2 p-4 text-left " + (choice === "full" ? "border-[#C8A46A] bg-[#FBF2E2]" : "border-[#DDD8CF]")}>
               <strong className="block">Pay the full installed price · {money(total)}</strong>
-              <span className="mt-1 block text-sm text-[#555]">Stripe can offer Afterpay, Klarna or Zip when eligible. Approval and limits vary.</span>
+              <span className="mt-1 block text-sm text-[#555]">Pay by card at the full installed price.</span>
             </button>
           </div>
+          <a href={PHONE_TEL} className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#80602F] underline"><Phone className="h-4 w-4" /> Prefer to call before booking?</a>
           <div className="mt-5 flex items-end justify-between border-y border-[#DDD8CF] py-4">
-            <div><small className="block font-bold">PAY NOW</small><strong className="text-3xl">{money(dueNow)}</strong></div>
+            <div><small className="block font-bold">{choice === "paylater" ? "CHECKOUT TOTAL" : "PAY NOW"}</small><strong className="text-3xl">{money(dueNow)}</strong></div>
             <div className="text-right"><small className="block font-bold">BALANCE</small><strong className="text-xl">{money(remaining)}</strong></div>
           </div>
+          {choice === "paylater" && <p className="mt-3 text-xs text-[#666]">Any instalment schedule and initial payment are set by your eligible provider at Stripe checkout.</p>}
           <h3 className="mt-6 text-xl font-black">Your details</h3>
           <p className="mt-2 text-sm text-[#666]">Next, you'll go to secure Stripe checkout.</p>
           <form onSubmit={submit} className="mt-5 space-y-4">
@@ -191,7 +200,7 @@ export default function DealPayment() {
             <button type="submit" disabled={!ready || busy}
               className="flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#C8A46A] p-4 text-sm font-black uppercase disabled:opacity-40">
               {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> Opening Stripe…</> :
-                <><CreditCard className="h-5 w-5" /> Pay {money(dueNow)} · secure checkout <ArrowRight className="h-5 w-5" /></>}
+                <><CreditCard className="h-5 w-5" /> {choice === "paylater" ? "See pay-later at secure checkout" : "Pay " + money(dueNow) + " · secure checkout"} <ArrowRight className="h-5 w-5" /></>}
             </button>
             {error && <p role="alert" className="text-sm font-bold text-red-700">{error} <Link to="/split-systems/rinnai-local-offer#local-deal-booking" className="underline">Choose another time</Link></p>}
             <p className="text-xs text-[#666]">Your time is temporarily held when Stripe checkout opens, but is only booked after the payment is verified. An unpaid hold expires automatically.</p>
@@ -199,5 +208,9 @@ export default function DealPayment() {
         </section>
       </div>
     </div>
+    <a href={PHONE_TEL} data-testid="deal-payment-floating-call"
+      className="fixed bottom-4 right-4 z-40 flex items-center gap-2 rounded-full bg-[#111] px-5 py-3 text-sm font-extrabold uppercase text-white shadow-2xl sm:bottom-7 sm:right-7">
+      <Phone className="h-4 w-4" /> Call now
+    </a>
   </main>;
 }

@@ -1,5 +1,6 @@
 import PayLaterReminder from "../components/PayLaterReminder";
 import InlineDealsBooking from "../components/InlineDealsBooking";
+import ExitQuoteCapture from "../components/ExitQuoteCapture";
 import { useEffect, useState } from "react";
 import { useParams, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -645,8 +646,8 @@ const BrandPage = ({ offerMode = null }) => {
               <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#8F6A34]">SplitsPro · Current installed deals</p>
               <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <h2 className="font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-5xl">New installed prices. More ways to pay.</h2>
-                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#606064]">Choose your unit and installation date below first. On the next page, choose how you want to pay.</p>
+                  <h2 className="font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-5xl">Choose your air conditioner and installation day.</h2>
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#606064]">Tap the large Rinnai or Daikin card, select your system size, and pick a live installation time. Then choose a 10% booking payment, full payment or eligible pay-later options.</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <a href="#local-deal-booking" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">Choose unit &amp; date ↓</a>
@@ -656,42 +657,12 @@ const BrandPage = ({ offerMode = null }) => {
               <div className="mt-6" data-testid="installation-offer-pay-later-reminder">
                 <PayLaterReminder kind="equipment" equipmentHref="/split-systems/rinnai-local-offer#local-deal-booking" />
               </div>
-              <div className="mt-8 grid gap-8 lg:grid-cols-2">
-                {displayRanges.map((range) => (
-                  <div key={range.slug} className="border-t-4 border-[#C8A46A] pt-4" id={"range-" + range.slug}>
-                    <div className="flex items-baseline justify-between gap-3">
-                      <h3 className="font-serif text-2xl text-[#0B0B0B] sm:text-3xl">{range.displayName}</h3>
-                      <span className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#8F6A34]">Installed</span>
-                    </div>
-                    <p className="mt-2 text-xs text-[#666]">{range.localBrand === "Rinnai" ? "7-year manufacturer warranty" : "5-year manufacturer warranty"} · Installation guarantee · 2-day installation offer*</p>
-                    <div className="mt-3">
-                      {range.prices.map((row) => {
-                        const price = row.localOfferPrice || getRinnaiLocalSalePrice(row.price);
-                        return (
-                          <div key={row.kw} className="border-b border-[#E5E0D7] py-3" data-testid={"deal-price-" + range.slug + "-" + row.kw}>
-                            <div className="flex items-baseline justify-between gap-3">
-                              <span className="text-sm font-bold text-[#1C232A]">{row.kw}</span>
-                              <span className="font-sans text-2xl font-extrabold tracking-tight text-[#0B0B0B]">{price}</span>
-                            </div>
-                            <div className="mt-2 flex items-center justify-between gap-3">
-                              <button type="button" onClick={() => handleBook(range, row)} className="text-xs font-bold text-[#8F6A34] underline underline-offset-4">Book installed ↗</button>
-                              <button type="button" className="text-xs font-bold text-[#08778D] underline underline-offset-4"
-                                onClick={() => handleBook(range, row)}>
-                                Pay later — choose date →
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
               <div id="local-deal-booking" className="mt-9 scroll-mt-24" data-testid="local-deal-booking">
                 <InlineDealsBooking
                   selectedUnit={selected?.productKey ? selected : null}
                   offerRanges={displayRanges}
                   onChooseUnit={handleBook}
+                  onClearUnit={() => setSelected(null)}
                 />
               </div>
               <div id="pay-later-deals" className="mt-8 border-l-4 border-[#087D94] bg-[#EEF8FA] p-5 sm:p-7" data-testid="payment-options">
@@ -1071,6 +1042,7 @@ const BrandPage = ({ offerMode = null }) => {
           </div>
         </div>
       </section>
+      {isRinnaiLocalOffer && <ExitQuoteCapture selectedUnit={selected} />}
     </>
   );
 };
