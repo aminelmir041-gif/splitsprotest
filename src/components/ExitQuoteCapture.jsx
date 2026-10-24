@@ -36,13 +36,13 @@ export default function ExitQuoteCapture({ selectedUnit }) {
     };
     const startedAt = Date.now();
     resetIdle();
-    for (const event of ["scroll", "pointerdown", "keydown", "touchstart"]) {
+    for (const event of ["scroll", "pointermove", "pointerdown", "keydown", "touchstart"]) {
       window.addEventListener(event, resetIdle, { passive: true });
     }
     document.addEventListener("mouseout", onMouseOut);
     return () => {
       window.clearTimeout(idleTimer);
-      for (const event of ["scroll", "pointerdown", "keydown", "touchstart"]) {
+      for (const event of ["scroll", "pointermove", "pointerdown", "keydown", "touchstart"]) {
         window.removeEventListener(event, resetIdle);
       }
       document.removeEventListener("mouseout", onMouseOut);

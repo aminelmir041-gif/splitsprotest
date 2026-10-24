@@ -130,14 +130,16 @@ def main() -> None:
     ):
         fail("local deals must always mount the inline unit/date booking component")
     for required in (
-        'data-testid="local-deal-unit-select"',
         'data-testid="local-deal-inline-booking"',
+        'data-testid={"brand-card-" + range.slug}',
+        'data-testid={"unit-card-" + selectedRange.slug + "-" + row.kw}',
         "getBookingSlots(12)",
         "Choose your installation day",
-        "onChange={(event) => chooseUnitFromList(event.target.value)}",
+        "onClick={() => chooseBrand(range)}",
+        "onClick={() => chooseUnit(selectedRange, row)}",
     ):
         if required not in booking_source:
-            fail(f"local deals unit/date selector missing {required}")
+            fail(f"local deals card/date selector missing {required}")
     deal_page = (ROOT / "src/pages/DealPayment.jsx").read_text(encoding="utf-8")
     for required in ("installed-deal-checkout", "installed-deal-payment-status", "payment_choice", "booking_date", "booking_window"):
         if required not in deal_page:
@@ -147,8 +149,8 @@ def main() -> None:
     if 'to={"/payment-options?product=" + encodeURIComponent(range.slug)' in brand_source:
         fail("deal pay-later links cannot bypass installation date selection")
     compiled_js = (ROOT / main_js.lstrip("/")).read_text(encoding="utf-8")
-    if "local-deal-unit-select" not in compiled_js or "local-deal-inline-booking" not in compiled_js:
-        fail("published React bundle missing the local-deals unit/date selector")
+    if not all(token in compiled_js for token in ("brand-card-", "unit-card-", "local-deal-inline-booking")):
+        fail("published React bundle missing the local-deals card/date selector")
 
     deals = ROOT / "deals/index.html"
     if not deals.exists() or "rinnai-local-offer" not in deals.read_text(encoding="utf-8"):

@@ -135,7 +135,7 @@ export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onC
         </div>
       </section>}
 
-      {hasChosenUnit && <section className="mt-8 border-t border-[#DDD8CF] pt-7" data-testid="deals-select-day">
+      {hasChosenUnit && <section id="deals-select-day" className="mt-8 scroll-mt-24 border-t border-[#DDD8CF] pt-7" data-testid="deals-select-day">
         <p className="text-sm font-bold text-[#4C4C4C]">{model} {size} · <span className="text-[#8F6A34]">{price} installed</span></p>
         <h4 className="mt-3 font-serif text-2xl text-[#0B0B0B]">3 · Choose your installation day</h4>
         <p className="mt-2 text-sm text-[#55555A]">Pick an available day, then morning or afternoon.</p>

@@ -287,7 +287,7 @@ const BrandPage = ({ offerMode = null }) => {
         price: effectivePrice,
       });
       window.setTimeout(() => {
-        const el = document.getElementById("local-deal-booking");
+        const el = document.getElementById("deals-select-day") || document.getElementById("local-deal-booking");
         if (!el) return;
         if (lenis) lenis.scrollTo(el, { offset: -95 });
         else el.scrollIntoView({ behavior: "smooth", block: "start" });
