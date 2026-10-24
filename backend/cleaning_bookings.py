@@ -1,4 +1,4 @@
-"""SplitsPro cleaning appointments with optional $200 booking part-payment.
+"""SplitsPro cleaning appointments with optional $50 booking part-payment.
 
 One server-side price and calendar source of truth. Cleaning appointments take
 90 minutes per unit; installation half-day bookings and cleaning appointments
@@ -41,11 +41,10 @@ STRIPE_SESSION_SECONDS = 31 * 60
 
 FIRST_CLEAN_CENTS = 30000  # Regular all-inclusive first-unit price
 ADDITIONAL_CLEAN_CENTS = 15000
-CLEANING_BOOKING_PAYMENT_CENTS = 20000
+CLEANING_BOOKING_PAYMENT_CENTS = 5000
 # Existing LIVE Stripe prices owned by the connected SplitsPro merchant account.
 STRIPE_FIRST_CLEAN_PRICE = "price_1UQOyqPpUx7EUhdNSOh3J3j6"
 STRIPE_ADDITIONAL_CLEAN_PRICE = "price_1UQP2JPpUx7EUhdNIUL0YefK"
-STRIPE_CLEANING_BOOKING_PRICE = "price_1UQgKvPpUx7EUhdNDtgFNRLv"
 MAX_SYSTEMS = 7
 SLOT_MINUTES = 90
 START_MINUTE = 8 * 60
@@ -364,8 +363,12 @@ def _create_stripe_checkout(hold):
         # Service address already captured by SplitsPro before redirect; no duplicate address form.
     }
     if hold.get("payment_choice") == "booking":
-        # The existing $200 Stripe price remains unchanged for part-payment.
-        body["line_items[0][price]"] = STRIPE_CLEANING_BOOKING_PRICE
+        # Charge only the $50 reservation amount; the old $200 Stripe Price is retired.
+        body["line_items[0][price_data][currency]"] = "aud"
+        body["line_items[0][price_data][unit_amount]"] = str(hold["payment_cents"])
+        body["line_items[0][price_data][product_data][name]"] = (
+            f'SplitsPro cleaning booking payment — {hold["quantity"]} system(s); balance after service'
+        )
     elif hold["total_cents"] == FIRST_CLEAN_CENTS + ADDITIONAL_CLEAN_CENTS * (hold["quantity"] - 1):
         # Reuse the existing Dashboard prices at the regular cleaning rate.
         body["line_items[0][price]"] = STRIPE_FIRST_CLEAN_PRICE
@@ -406,7 +409,7 @@ def _create_paypal_checkout(hold):
         "purchase_units": [{
             "reference_id": hold["reference"],
             "custom_id": hold["reference"],
-            "description": (f'SplitsPro $200 cleaning booking payment — {hold["quantity"]} system(s); balance after service'
+            "description": (f'SplitsPro $50 cleaning booking payment — {hold["quantity"]} system(s); balance after service'
                             if hold.get("payment_choice") == "booking"
                             else f'SplitsPro complete cleaning — {hold["quantity"]} split system(s)'),
             "amount": {"currency_code": "AUD", "value": f'{hold.get("payment_cents", hold["total_cents"]) / 100:.2f}'},
@@ -464,7 +467,7 @@ def create_cleaning_checkout(payload: CleaningCheckoutRequest):
         "suburb": payload.address.strip(), "quantity": payload.quantity,
         "booking_date": payload.booking_date, "booking_time": payload.start_time,
         "preferred_date": payload.booking_date,
-        "message": (f'{payload.quantity} units; $200 paid to book with ${((cents - payment_cents) / 100):.2f} balance due after cleaning'
+        "message": (f'{payload.quantity} units; $50 paid to book with ${((cents - payment_cents) / 100):.2f} balance due after cleaning'
                     if payload.payment_choice == "booking"
                     else f'{payload.quantity} units; full amount prepaid; 90 minutes per unit'),
         "page_url": payload.page_url, "referrer": payload.referrer,
@@ -544,7 +547,7 @@ def _finalize_paid_cleaning(connection, hold, background_tasks: BackgroundTasks 
                 "balance_amount": outstanding_cents / 100,
                 "payment_choice": choice,
                 "paid_upfront": outstanding_cents == 0,
-                "message": ("Cleaning booked: $200 paid today; balance due after service"
+                "message": ("Cleaning booked: $50 paid today; balance due after service"
                             if outstanding_cents and status == "confirmed"
                             else "Cleaning booked and fully paid" if status == "confirmed"
                             else "Payment received, but the time needs rescheduling. SplitsPro will contact you."),
