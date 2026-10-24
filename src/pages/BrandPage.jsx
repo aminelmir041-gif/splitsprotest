@@ -181,7 +181,7 @@ const getRinnaiLocalSalePrice = (price) => {
   return `$${sale.toLocaleString("en-AU")}`;
 };
 
-const RINNAI_LOCAL_OFFER_RANGES = [
+export const RINNAI_LOCAL_OFFER_RANGES = [
   {
     slug: "rinnai-local",
     manufacturer: "Rinnai",

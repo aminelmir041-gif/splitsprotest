@@ -5,12 +5,12 @@ import { getBookingSlots } from "../lib/api";
 import { PHONE_TEL } from "../lib/data";
 
 // Brand -> system size -> live installation day/time -> payment options.
-export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onChooseUnit, onClearUnit }) {
+export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onChooseUnit, onClearUnit, initialBrand = "" }) {
   const productKey = selectedUnit?.productKey || "";
   const size = selectedUnit?.kw || "";
   const model = selectedUnit?.displayName || "";
   const price = selectedUnit?.price || "";
-  const [activeBrand, setActiveBrand] = useState(productKey || "");
+  const [activeBrand, setActiveBrand] = useState(productKey || initialBrand || "");
   const hasChosenUnit = Boolean(productKey && size && productKey === activeBrand);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
