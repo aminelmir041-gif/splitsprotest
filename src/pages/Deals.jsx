@@ -14,7 +14,7 @@ const Deals = () => {
       copy: "See the current Rinnai 2.5kW, 3.5kW, 5.0kW, 7.0kW and 8.0kW supplied-and-installed specials.",
       warranty: "7-year manufacturer warranty",
       image: rinnaiImage,
-      to: "/split-systems/rinnai-local-offer#range-rinnai-local",
+      to: "/split-system-installation-sydney?brand=rinnai",
     },
     {
       brand: "Daikin",
@@ -22,7 +22,7 @@ const Deals = () => {
       copy: "See the current Daikin Cora 2.5kW, 3.5kW, 5.0kW, 7.0kW, 8.0kW and 9.0kW supplied-and-installed specials.",
       warranty: "5-year manufacturer warranty",
       image: daikinImage,
-      to: "/split-systems/rinnai-local-offer#range-daikin-lite-local",
+      to: "/split-system-installation-sydney?brand=daikin",
     },
   ];
 

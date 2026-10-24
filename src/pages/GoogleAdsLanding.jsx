@@ -102,11 +102,11 @@ const GoogleAdsLanding = () => {
   return (
     <>
       <Helmet>
-        <title>Split System Air Conditioning Installed Sydney | Rinnai & Daikin Deals | SplitsPro</title>
-        <meta name="description" content="Rinnai split systems from $1,700 installed and Daikin Cora from $2,000 installed. Choose your system, see available installation dates and book with SplitsPro Sydney." />
+        <title>Split Systems Fully Installed with Electrical Circuit Included | Sydney | SplitsPro</title>
+        <meta name="description" content="Rinnai 2.5kW $1,700 fully installed. Daikin Cora 2.5kW $2,000. Standard installation includes electrical circuit, bracket, isolator and pipework." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-installation-sydney" />
         <meta property="og:title" content="Rinnai & Daikin Split Systems Supplied & Installed | SplitsPro Sydney" />
-        <meta property="og:description" content="Compare current installed prices, see real available dates and choose how to pay." />
+        <meta property="og:description" content="Your standard-install price includes the unit, electrical circuit, isolator, bracket and pipework. Compare sizes and book a real installation date." />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
@@ -116,22 +116,22 @@ const GoogleAdsLanding = () => {
           <div>
             <p className="text-[11px] font-extrabold uppercase tracking-[0.19em] text-[#D9BC8B]">Sydney · Central Coast · Wollongong</p>
             <h1 className="mt-4 max-w-3xl font-serif text-[clamp(36px,5.3vw,68px)] leading-[1.04] tracking-[-0.035em]">
-              Rinnai &amp; Daikin air conditioners <span className="text-[#E4CFA6]">supplied &amp; installed.</span>
+              Air conditioning <span className="text-[#E4CFA6]">fully installed — electrical circuit included.</span>
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">
-              Clear prices. Licensed and insured installers. Choose your system, pick a live installation date and book online.
+              Rinnai and Daikin Cora. One clear standard-install price covers the unit, labour, wall bracket, isolator, up to 3m of pipework and an electrical circuit up to 20m where required. No chasing extra trades or surprise essential add-ons.
             </p>
             <a href="#google-booking" className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-[#0B0B0B] transition-colors hover:bg-[#E4CFA6]">
-              See installed prices &amp; dates <ArrowDown className="h-4 w-4" />
+              See fully installed prices &amp; dates <ArrowDown className="h-4 w-4" />
             </a>
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/80">
-              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No surprises on standard installs</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
               <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Fast installation dates</span>
               <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Installation guarantee</span>
             </div>
           </div>
           <div className="rounded-2xl border border-white/15 bg-white/[0.055] p-5 sm:p-7">
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">Current supplied &amp; installed deals</p>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">Fully installed deals · including electrical circuit</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div>
                 <p className="text-sm font-semibold text-white/70">Rinnai 2.5kW</p>
@@ -144,7 +144,7 @@ const GoogleAdsLanding = () => {
                 <p className="mt-2 text-xs text-white/65">5-year manufacturer warranty</p>
               </div>
             </div>
-            <p className="mt-5 border-t border-white/15 pt-4 text-xs text-white/65">Prices include qualifying standard installation. Larger sizes and full inclusions are below.</p>
+            <p className="mt-5 border-t border-white/15 pt-4 text-xs text-white/65">These are complete prices for qualifying standard installations. Any non-standard extras are quoted upfront, never hidden.</p>
           </div>
         </div>
       </section>
@@ -161,8 +161,8 @@ const GoogleAdsLanding = () => {
         <div className="sp-container max-w-6xl">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Real prices · Real appointment availability</p>
-              <h2 className="mt-2 font-serif text-3xl font-medium text-[#111] sm:text-4xl">Find your installed deal</h2>
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Complete standard-install prices · Real appointment availability</p>
+              <h2 className="mt-2 font-serif text-3xl font-medium text-[#111] sm:text-4xl">Choose your all-inclusive installed deal</h2>
             </div>
             <a href={PHONE_TEL} className="inline-flex items-center gap-2 text-sm font-bold text-[#7B5A28] underline"><Phone className="h-4 w-4" /> Talk to us: {PHONE}</a>
           </div>
@@ -184,9 +184,9 @@ const GoogleAdsLanding = () => {
         <div className="sp-container grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">What you pay for</p>
-            <h2 className="mt-3 font-serif text-4xl text-[#111]">A complete standard installation. No mystery extras.</h2>
+            <h2 className="mt-3 font-serif text-4xl text-[#111]">Electrical circuit, bracket, isolator. Already included.</h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-[#5B5B60]">
-              If your home qualifies for the standard installation, the price on the system card is the price for supply and installation. We discuss non-standard work and any additional charges before booking it in.
+              When your home qualifies for the standard installation, the card price includes the air conditioner, labour, electrical circuit up to 20 metres where required, wall bracket, isolator and up to 3 metres of pipe. No separate electrician to organise and no missing essential installation items.
             </p>
             <p className="mt-4 text-sm leading-relaxed text-[#6C6A6E]">
               Extra pipework, difficult access, switchboard upgrades and unusual roof or cavity routing may need a separate quote.

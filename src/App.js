@@ -63,7 +63,7 @@ const AnimatedRoutes = () => {
           <Route path="/about" element={<About />} />
           <Route path="/payment-options" element={<PaymentOptions />} />
           <Route path="/deal-payment" element={<DealPayment />} />
-          <Route path="/deals" element={<Navigate to="/split-systems/rinnai-local-offer" replace />} />
+          <Route path="/deals" element={<Navigate to="/split-system-installation-sydney" replace />} />
           <Route path="/split-systems" element={<SplitSystems />} />
           <Route path="/split-systems/oran-park" element={<SplitSystems />} />
           <Route path="/split-systems/willoughby-north-sydney" element={<SplitSystems />} />

@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Clock3, Loader2, Phone, Sun } from "lucide-react";
+import { Check, CheckCircle2, Clock3, Loader2, Phone, Sun } from "lucide-react";
 import { getBookingSlots } from "../lib/api";
 import { PHONE_TEL } from "../lib/data";
+
+// A small, honest celebration for each completed choice. It uses the existing
+// SplitsPro gold/cream palette and our familiar summer-rush bulldog artwork.
+function DecisionWin({ children, showDog = false }) {
+  return <div role="status" className="deal-step-win mt-4 flex items-center gap-3 rounded-xl border border-[#E2CDAA] bg-[#FFF9EC] p-3 text-[#4E3A1F] sm:p-4">
+    {showDog && <img src={`${process.env.PUBLIC_URL}/landing/rinnai-google-dog.webp`} alt="" loading="lazy" className="h-14 w-20 shrink-0 rounded-md bg-black object-contain sm:h-16 sm:w-24" />}
+    <CheckCircle2 className="h-5 w-5 shrink-0 text-[#A3793B]" />
+    <p className="text-sm font-semibold leading-relaxed">{children}</p>
+  </div>;
+}
 
 // Brand -> system size -> live installation day/time -> payment options.
 export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onChooseUnit, onClearUnit, initialBrand = "" }) {
@@ -82,13 +92,30 @@ export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onC
     product: productKey, size, date: selectedDate, window: selectedWindow
   }).toString();
   const selectedRange = offerRanges.find((range) => range.slug === activeBrand);
+  const progress = [
+    { label: "Brand", done: Boolean(selectedRange) },
+    { label: "Size", done: hasChosenUnit },
+    { label: "Day", done: Boolean(selectedDate) },
+    { label: "Time", done: Boolean(selectedWindow) },
+  ];
 
   return (
     <div className="scroll-mt-24 rounded-2xl border border-[#DED4C3] bg-[#F7F5F1] px-4 py-7 shadow-sm sm:px-8 sm:py-9"
       data-testid="local-deal-inline-booking">
       <p className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-[#8F6A34]">Book your local installed deal</p>
       <h3 className="mt-2 font-serif text-3xl text-[#0B0B0B] sm:text-4xl">Choose your system, then your installation date.</h3>
-      <p className="mt-2 text-sm text-[#5E5E60]">Only one system and one appointment to choose. You select how to pay after that.</p>
+      <p className="mt-2 text-sm text-[#5E5E60]">No stripped-back prices: unit, labour, isolator, wall bracket, up to 3m pipe and electrical circuit up to 20m where required are included in a standard install. You choose how to pay after picking a date.</p>
+      <ol className="mt-6 grid grid-cols-4 gap-2" aria-label="Your booking progress">
+        {progress.map((step, index) => (
+          <li key={step.label} className="flex flex-col items-center gap-2 text-center">
+            <span className={"flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-black transition-colors duration-300 " +
+              (step.done ? "border-[#B88A48] bg-[#B88A48] text-white" : "border-[#D8D0C4] bg-white text-[#777]")}>
+              {step.done ? <Check className="h-4 w-4" /> : index + 1}
+            </span>
+            <span className={"text-[11px] font-extrabold uppercase tracking-wide " + (step.done ? "text-[#795423]" : "text-[#7A7875]")}>{step.label}</span>
+          </li>
+        ))}
+      </ol>
 
       <h4 className="mt-7 font-serif text-2xl text-[#0B0B0B]">1 · Choose Rinnai or Daikin</h4>
       <div className="mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 md:grid md:grid-cols-2 md:overflow-visible md:pb-0" role="group" aria-label="Choose air conditioning brand">
@@ -114,9 +141,10 @@ export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onC
         })}
       </div>
 
+      {selectedRange && !hasChosenUnit && <DecisionWin key={activeBrand}>Brand picked. Nice start! Now choose the size that fits your room.</DecisionWin>}
       {selectedRange && <section className="mt-7" data-testid="local-deal-size-cards">
         <h4 className="font-serif text-2xl text-[#0B0B0B]">2 · Select your {selectedRange.localBrand} system size</h4>
-        <p className="mt-2 text-sm text-[#666]">Each price includes supply and standard installation.</p>
+        <p className="mt-2 text-sm text-[#666]">Each price includes the unit, standard install, electrical circuit up to 20m where required, wall bracket and isolator.</p>
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {selectedRange.prices.map((row) => {
             const chosen = hasChosenUnit && size === row.kw;
@@ -137,7 +165,8 @@ export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onC
 
       {hasChosenUnit && <section id="deals-select-day" className="mt-8 scroll-mt-24 border-t border-[#DDD8CF] pt-7" data-testid="deals-select-day">
         <p className="text-sm font-bold text-[#4C4C4C]">{model} {size} · <span className="text-[#8F6A34]">{price} installed</span></p>
-        <h4 className="mt-3 font-serif text-2xl text-[#0B0B0B]">3 · Choose your installation day</h4>
+        <DecisionWin key={productKey + size} showDog>{size} selected. Beauty! That's the system sorted — let's find a day that suits you.</DecisionWin>
+        <h4 className="mt-5 font-serif text-2xl text-[#0B0B0B]">3 · Choose your installation day</h4>
         <p className="mt-2 text-sm text-[#55555A]">Pick an available day, then morning or afternoon.</p>
         {loading && <p className="mt-4 flex items-center gap-2 text-sm text-[#55555A]" role="status">
           <Loader2 className="h-4 w-4 animate-spin" /> Checking live dates…
@@ -160,6 +189,7 @@ export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onC
           onClick={() => setShowAll((v) => !v)}>{showAll ? "Show fewer dates" : "See more dates"}</button>}
 
         {selectedDate && <section className="mt-7 border-t border-[#DDD8CF] pt-6" data-testid="deals-select-time">
+          <DecisionWin key={selectedDate}>Day picked. Nice! Morning or afternoon — whichever works for you.</DecisionWin>
           <h4 className="font-serif text-2xl text-[#0B0B0B]">4 · Morning or afternoon?</h4>
           <p className="mt-2 text-sm font-semibold">{formatDay(selectedDate)}</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -178,7 +208,8 @@ export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onC
 
         {selectedValid && !loading && !error &&
           <div className="mt-7 border-t border-[#DDD8CF] pt-6">
-            <p className="flex items-center gap-2 text-sm font-bold"><Check className="h-4 w-4 text-[#8F6A34]" />
+            <DecisionWin key={selectedDate + selectedWindow}>You're nearly there, mate. Just confirm the standard install and choose how to pay.</DecisionWin>
+            <p className="mt-4 flex items-center gap-2 text-sm font-bold"><Check className="h-4 w-4 text-[#8F6A34]" />
               {model} {size} · {formatDay(selectedDate)} · {selectedWindow}
             </p>
             <label className="mt-4 flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-[#3A3A3C]">

@@ -376,7 +376,7 @@ export default function PaymentOptions() {
               </button>
             ) : (
               <p className="mt-6 rounded-lg border border-[#E5DFD5] bg-[#FAF9F7] p-3 text-center text-sm leading-relaxed text-[#606064]">
-                {withInstall ? <>For an installed air conditioner, first <Link to="/split-systems/rinnai-local-offer#local-deal-booking" className="font-semibold underline">choose your installation day and time</Link>. The next page offers deposit and eligible Stripe pay-later options.</> : <>Equipment-only checkout for this model isn't ready yet. Call <a href={PHONE_TEL} className="font-semibold underline">{PHONE}</a> for help.</>}
+                {withInstall ? <>For an installed air conditioner, first <Link to="/split-system-installation-sydney" className="font-semibold underline">choose your installation day and time</Link>. The next page offers deposit and eligible Stripe pay-later options.</> : <>Equipment-only checkout for this model isn't ready yet. Call <a href={PHONE_TEL} className="font-semibold underline">{PHONE}</a> for help.</>}
               </p>
             )}
             {canCheckout && !buyerDetailsComplete && (
@@ -396,7 +396,7 @@ export default function PaymentOptions() {
           <p className="mt-5 text-xs leading-relaxed text-[#6E6E73]">
             Equipment-only sales are available by phone and do not require SplitsPro installation. Supply and optional installation are separate agreements only where genuinely offered and accepted. All consumer guarantees and statutory rights apply. Provider and NSW payment-rule eligibility must be confirmed before finance is activated.
           </p>
-          <Link to="/split-systems/rinnai-local-offer#installed-prices" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#8F6A34] underline"><ArrowLeft className="h-4 w-4" /> Back to deals</Link>
+          <Link to="/split-system-installation-sydney" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#8F6A34] underline"><ArrowLeft className="h-4 w-4" /> Back to deals</Link>
         </div>
       </div>
     </div>

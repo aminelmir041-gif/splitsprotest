@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, ArrowRight, CreditCard, Loader2, Phone } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, CreditCard, Loader2, Phone } from "lucide-react";
 import { PHONE_TEL } from "../lib/data";
 import { api } from "../lib/api";
 
@@ -152,6 +152,10 @@ export default function DealPayment() {
       </p>}
       <p className="mt-8 text-xs font-black uppercase tracking-wider text-[#876338]">Step 5 · Secure the installation</p>
       <h1 className="mt-2 font-serif text-4xl">Choose how you'd like to pay.</h1>
+      <p className="deal-step-win mt-4 flex items-start gap-2 rounded-lg border border-[#E2CDAA] bg-[#FFF9EC] px-4 py-3 text-sm font-semibold text-[#4E3A1F]">
+        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#A3793B]" />
+        Nice work — your system and preferred time are chosen. Nothing is charged until you confirm the secure checkout.
+      </p>
       <div className="mt-7 grid gap-5 lg:grid-cols-[.9fr_1.1fr]">
         <section className="h-fit border-t-4 border-[#C8A46A] bg-white p-6">
           <h2 className="text-xl font-black">{model[0]}</h2>
