@@ -471,7 +471,7 @@ const BrandPage = ({ offerMode = null }) => {
           </section>
 
           <div id="local-offer-sticky-trigger" className="h-px" aria-hidden="true" />
-          <section className="bg-[#F7F5F1] py-10 sm:py-16" data-testid="local-offer-proof">
+          <section id="local-offer-trust" className="scroll-mt-24 bg-[#F7F5F1] py-10 sm:py-16" data-testid="local-offer-proof">
             <div className="sp-container">
               <div className="mx-auto max-w-5xl">
                 <div className="relative overflow-hidden rounded-[30px] bg-[#FCFBF8] px-5 py-7 shadow-[0_22px_70px_rgba(11,11,11,0.07)] sm:px-8 sm:py-10 lg:px-10">

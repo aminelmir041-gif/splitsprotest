@@ -195,6 +195,7 @@ export default function InlineDealsBooking({ selectedUnit, offerRanges = [], onC
               Confirm the standard-install conditions above to continue.
             </p>}
             <p className="mt-3 text-xs text-[#666]">Your date is only booked after successful payment.</p>
+            <a href="#local-offer-trust" className="mt-4 inline-block text-sm font-bold text-[#8F6A34] underline underline-offset-4">Still deciding? See our reviews, licences and guarantees ↑</a>
           </div>}
       </section>}
 
