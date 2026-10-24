@@ -1,6 +1,7 @@
 import PayLaterReminder from "../components/PayLaterReminder";
 import InlineDealsBooking from "../components/InlineDealsBooking";
 import ExitQuoteCapture from "../components/ExitQuoteCapture";
+import FloatingBookingShortcut from "../components/FloatingBookingShortcut";
 import { useEffect, useState } from "react";
 import { useParams, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -469,6 +470,7 @@ const BrandPage = ({ offerMode = null }) => {
             </div>
           </section>
 
+          <div id="local-offer-sticky-trigger" className="h-px" aria-hidden="true" />
           <section className="bg-[#F7F5F1] py-10 sm:py-16" data-testid="local-offer-proof">
             <div className="sp-container">
               <div className="mx-auto max-w-5xl">
@@ -1042,6 +1044,7 @@ const BrandPage = ({ offerMode = null }) => {
           </div>
         </div>
       </section>
+      {isRinnaiLocalOffer && <FloatingBookingShortcut />}
       {isRinnaiLocalOffer && <ExitQuoteCapture selectedUnit={selected} />}
     </>
   );
