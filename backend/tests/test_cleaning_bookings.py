@@ -153,10 +153,10 @@ def test_expired_payment_hold_confirms_only_if_still_free(calendar):
 
 
 @pytest.mark.parametrize("quantity,total,book_due,balance", [
-    (1, 30000, 20000, 10000),
-    (2, 45000, 20000, 25000),
-    (3, 60000, 20000, 40000),
-    (7, 120000, 20000, 100000),
+    (1, 30000, 5000, 25000),
+    (2, 45000, 5000, 40000),
+    (3, 60000, 5000, 55000),
+    (7, 120000, 5000, 115000),
 ])
 def test_payment_options_never_change_total_price(quantity, total, book_due, balance):
     assert cb.price_cents(quantity) == total
@@ -179,7 +179,7 @@ def test_old_checkout_clients_still_default_to_full_payment():
 
 
 @pytest.mark.parametrize("choice,charged,balance", [
-    ("booking", 200, 250),
+    ("booking", 50, 400),
     ("full", 450, 0),
 ])
 def test_checkout_creates_precisely_priced_hold_and_preserves_shared_calendar(
@@ -221,7 +221,7 @@ def test_booking_deposit_webhook_verifies_charged_amount_and_records_balance(cal
     hold = {
         "reference": reference, "booking_date": day, "start_time": "09:30",
         "quantity": 2, "total_cents": 45000,
-        "payment_cents": 20000, "balance_cents": 25000,
+        "payment_cents": 5000, "balance_cents": 40000,
         "payment_choice": "booking", "payment_provider": "stripe",
         "stripe_session_id": "cs_test_verified",
         "lead": {"name": "Customer", "email": "example@example.com"},
@@ -232,15 +232,15 @@ def test_booking_deposit_webhook_verifies_charged_amount_and_records_balance(cal
         "id": "cs_test_verified", "client_reference_id": reference,
         "amount_total": 45000, "currency": "aud", "payment_status": "paid",
     }
-    # The full job total must NOT be accepted as proof of the $200 transaction.
+    # The full job total must NOT be accepted as proof of the $50 transaction.
     assert cb.confirm_stripe_cleaning_payment(session)
     assert not store.exists(cb.paid_key(reference))
-    session["amount_total"] = 20000
+    session["amount_total"] = 5000
     assert cb.confirm_stripe_cleaning_payment(session)
     paid = cb._get_json(store, cb.paid_key(reference))
     assert paid["status"] == "confirmed"
-    assert paid["amount_paid"] == 200
-    assert paid["balance_amount"] == 250
+    assert paid["amount_paid"] == 50
+    assert paid["balance_amount"] == 400
     assert paid["paid_upfront"] is False
     assert paid["payment_choice"] == "booking"
     assert store.exists(cb.confirmed_key(reference))
@@ -263,13 +263,15 @@ def test_stripe_checkout_uses_existing_active_prices_by_payment_choice(monkeypat
         hold = {
             "reference": "d" * 32, "quantity": 2, "payment_choice": choice,
             "payment_cents": cb.amount_to_charge_cents(2, choice),
-            "total_cents": 45000, "balance_cents": 25000 if choice == "booking" else 0,
+            "total_cents": 45000, "balance_cents": 40000 if choice == "booking" else 0,
             "booking_date": future_date(), "start_time": "08:00",
             "payment_provider": "stripe", "lead": {"email":"test@example.com"}
         }
         assert cb._create_stripe_checkout(hold).startswith("https://")
     deposit, full = received
-    assert deposit["line_items[0][price]"] == cb.STRIPE_CLEANING_BOOKING_PRICE
+    assert deposit["line_items[0][price_data][unit_amount]"] == "5000"
+    assert deposit["line_items[0][price_data][currency]"] == "aud"
+    assert "line_items[0][price]" not in deposit
     assert "line_items[1][price]" not in deposit
     assert deposit["metadata[payment_choice]"] == "booking"
     assert full["line_items[0][price]"] == cb.STRIPE_FIRST_CLEAN_PRICE
@@ -313,11 +315,11 @@ def test_stripe_full_payment_supports_server_priced_non_catalogue_total(monkeypa
     assert body["metadata[service_total_cents]"] == "37000"
 
 
-def test_live_config_advertises_book_200_default():
+def test_live_config_advertises_book_50_default():
     result = cb.cleaning_config(Response())
     assert result["first_system"] == 300
     assert result["each_additional_system"] == 150
-    assert result["booking_payment"] == 200
+    assert result["booking_payment"] == 50
     assert result["default_payment_choice"] == "booking"
 
 def test_stripe_return_verifies_payment_directly_when_webhook_is_delayed(calendar, monkeypatch):
@@ -327,8 +329,8 @@ def test_stripe_return_verifies_payment_directly_when_webhook_is_delayed(calenda
     day = future_date()
     order = {
         "reference": ref, "booking_date": day, "start_time": "08:00",
-        "quantity": 1, "total_cents": 30000, "payment_cents": 20000,
-        "balance_cents": 10000, "payment_choice": "booking",
+        "quantity": 1, "total_cents": 30000, "payment_cents": 5000,
+        "balance_cents": 25000, "payment_choice": "booking",
         "payment_provider": "stripe", "stripe_session_id": session_id,
         "lead": {"name": "Customer", "email": "example@example.com"},
     }
@@ -341,7 +343,7 @@ def test_stripe_return_verifies_payment_directly_when_webhook_is_delayed(calenda
             return {
                 "metadata": {"checkout_type": "cleaning", "cleaning_ref": ref},
                 "id": session_id, "client_reference_id": ref,
-                "amount_total": 20000, "currency": "aud", "payment_status": "paid",
+                "amount_total": 5000, "currency": "aud", "payment_status": "paid",
             }
 
     def fake_get(url, headers, timeout):
@@ -352,8 +354,8 @@ def test_stripe_return_verifies_payment_directly_when_webhook_is_delayed(calenda
     monkeypatch.setattr(cb.requests, "get", fake_get)
     paid = cb.cleaning_payment_status(Response(), checkout_ref=ref, session_id=session_id)
     assert paid["status"] == "confirmed"
-    assert paid["amount_paid"] == 200
-    assert paid["balance_amount"] == 100
+    assert paid["amount_paid"] == 50
+    assert paid["balance_amount"] == 250
     assert cb._get_json(store, cb.confirmed_key(ref))
 
 
@@ -363,7 +365,7 @@ def test_stripe_return_rejects_unverified_or_mismatched_session(calendar, monkey
     session_id = "cs_live_a1verified"
     order = {
         "reference": ref, "booking_date": future_date(), "start_time": "08:00",
-        "quantity": 1, "total_cents": 30000, "payment_cents": 20000,
+        "quantity": 1, "total_cents": 30000, "payment_cents": 5000,
         "payment_provider": "stripe", "stripe_session_id": session_id,
         "lead": {},
     }
