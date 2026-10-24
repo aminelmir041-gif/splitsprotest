@@ -116,9 +116,7 @@ export default function SplitSystemCleaning() {
     return () => { active = false; };
   }, []);
 
-  const currentFirstPrice = firstPrice;
-  const currentTotal = cleaningPrice(quantity, currentFirstPrice);
-  const isEarlyPrice = firstPrice < 300;
+  const currentTotal = cleaningPrice(quantity, firstPrice);
   const formatDate = (day) => new Date(day + "T00:00:00").toLocaleDateString(
     "en-AU", { weekday: "short", day: "numeric", month: "short" });
   const formatTime = (time) => new Date("2026-01-01T" + time + ":00").toLocaleTimeString(
@@ -413,7 +411,7 @@ export default function SplitSystemCleaning() {
 
       <section className="scroll-mt-24 bg-[#F1F9FC] py-16 sm:py-24" id="cleaning-prices" data-testid="cleaning-prices">
         <div className="sp-container">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007EA7]">{isEarlyPrice ? "SUMMER EARLY-BOOKING OFFER" : "NOW, HERE'S THE DEAL"}</p>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007EA7]">NOW, HERE'S THE DEAL</p>
           <h2 className="mt-4 max-w-5xl text-4xl font-black uppercase leading-[1.04] tracking-tight text-[#0B2641] sm:text-5xl">
             NOT ALL DEEP CLEANS ARE CREATED EQUAL.
             <span className="mt-2 block text-[#008DB8]">THE DIFFERENCE IS WHAT HAPPENS AFTER THE CLEAN.</span>
@@ -422,37 +420,7 @@ export default function SplitSystemCleaning() {
             We strip back the service-accessible covers, filters and drain parts; deep-clean the indoor coil, blower and drainage; use steam, pressure rinsing, hospital-grade disinfectant and targeted mould treatment where suitable; then clean the outdoor unit and apply compatible anti-mould and anti-corrosion protective coatings. Finally, we reassemble and check the system.
           </p>
           <div className="mt-8 border-y-[6px] border-[#F4C620] bg-[#08263E] px-5 py-8 text-white sm:px-10 sm:py-11" data-testid="cleaning-300-complete-offer">
-            {isEarlyPrice && (
-              <div className="mb-7 rounded-lg bg-[#F4C620] px-5 py-6 text-[#08263E] sm:px-8 sm:py-8" data-testid="cleaning-black-friday-countdown">
-                <p className="text-xs font-black uppercase tracking-[0.19em]">OUR BIGGEST SAVINGS ARE BEFORE BLACK FRIDAY</p>
-                <h3 className="mt-2 text-3xl font-black uppercase leading-[0.98] tracking-tight sm:text-5xl">
-                  BLACK FRIDAY EARLY-BIRD SALE!
-                </h3>
-                <p className="mt-4 text-lg font-black uppercase sm:text-2xl">
-                  Book early. Save {money(300 - currentFirstPrice)} off the regular $300 deep clean.
-                </p>
-                <div className="mt-5 rounded bg-[#08263E] px-4 py-4 text-center text-white">
-                  <p className="text-lg font-black uppercase tracking-wide sm:text-2xl">PRICE RISES $20 EVERY THURSDAY</p>
-                  <p className="mt-1 text-sm font-semibold">The earlier you book and pay, the lower the price.</p>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5" aria-label="Weekly sale price schedule">
-                  {[
-                    ["22 Oct", 220],
-                    ["29 Oct", 240],
-                    ["5 Nov", 260],
-                    ["12 Nov", 280],
-                    ["19 Nov", 300]
-                  ].map(([day, price]) => (
-                    <div key={day} className={"rounded px-2 py-3 text-center " + (firstPrice === price ? "bg-[#08263E] text-white" : "bg-[#FCEB94] text-[#08263E]")}>
-                      <span className="block text-xs font-black uppercase">{day}</span>
-                      <strong className="mt-1 block text-xl font-black">{money(price)}</strong>
-                      {firstPrice === price && <span className="mt-1 block text-[10px] font-black uppercase">Current price</span>}
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-3 text-sm font-bold">Normal $300 pricing returns on Thursday 19 November, before Black Friday.</p>
-              </div>
-            )}
+
             <p className="text-xs font-black uppercase tracking-[0.2em] text-[#50D3F3]">THE COMPLETE SPLITSPRO CLEAN</p>
             <div className="mt-4 grid items-start gap-7 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12">
               <div>
