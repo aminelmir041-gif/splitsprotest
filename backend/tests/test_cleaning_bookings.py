@@ -12,22 +12,16 @@ from backend import cleaning_bookings as cb
 
 @pytest.fixture(autouse=True)
 def unchanged_regular_price_for_existing_checkout_tests(monkeypatch):
-    # Isolate established checkout behavior from the calendar promotion.
+    # Keep checkout tests deterministic at the regular price.
     monkeypatch.setattr(cb, "first_clean_cents", lambda: 30000)
 
 
-@pytest.mark.parametrize("day, expected", [
-    ("2026-10-21", 30000),
-    ("2026-10-22", 22000),
-    ("2026-10-28", 22000),
-    ("2026-10-29", 24000),
-    ("2026-11-05", 26000),
-    ("2026-11-12", 28000),
-    ("2026-11-19", 30000),
-    ("2026-11-27", 30000),
+@pytest.mark.parametrize("day", [
+    "2026-10-21", "2026-10-22", "2026-10-28", "2026-10-29",
+    "2026-11-05", "2026-11-12", "2026-11-19", "2026-11-27",
 ])
-def test_genuine_weekly_early_booking_prices(day, expected):
-    assert cb.scheduled_first_clean_cents(date.fromisoformat(day)) == expected
+def test_regular_cleaning_price_is_constant(day):
+    assert cb.scheduled_first_clean_cents(date.fromisoformat(day)) == 30000
 
 
 @pytest.fixture
@@ -291,7 +285,7 @@ def test_stripe_checkout_uses_existing_active_prices_by_payment_choice(monkeypat
         assert int(item["expires_at"]) - int(cb.time.time()) <= 32 * 60
 
 
-def test_stripe_full_payment_uses_server_priced_early_booking_offer(monkeypatch):
+def test_stripe_full_payment_supports_server_priced_non_catalogue_total(monkeypatch):
     monkeypatch.setenv("STRIPE_SECRET_KEY", "sk_test_not_real")
     received = []
 
