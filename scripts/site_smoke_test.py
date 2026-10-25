@@ -207,7 +207,7 @@ def main() -> None:
     if not all(token in cleaning_page for token in (
         "CLEANING_QUANTITIES", "firstPrice + Math.max(0, count - 1) * 150",
         "getCleaningSlots", 'data-testid="cleaning-unit-count"',
-        "Continue to details & payment options", 'data-testid="cleaning-booking-50-default"',
+        "Continue to secure $50 booking", 'data-testid="cleaning-booking-full-payment"',
     )):
         fail("cleaning page must show the current server-verified first-system offer, $150 extras, $50 booking and live times")
     # Preserve the full approved sales story with booking and calendar near the bottom.
@@ -227,8 +227,11 @@ def main() -> None:
     positions = [cleaning_page.find(part) for part in landing_sequence]
     if any(position < 0 for position in positions) or positions != sorted(positions):
         fail("cleaning sales story, offer and booking must remain in the approved order")
-    if 'data-testid="cleaning-300-complete-offer"' not in cleaning_page:
-        fail("cleaning page must display the regular $300 complete-clean offer")
+    if 'data-testid="cleaning-200-complete-offer"' not in cleaning_page:
+        fail("cleaning page must display the $200 first-system complete-clean offer")
+    pricing_source = (ROOT / "src/lib/cleaningPricing.js").read_text(encoding="utf-8")
+    if "scheduledCleaningPrice = () => 200" not in pricing_source:
+        fail("the first-unit local fallback must be $200")
     if "BLACK FRIDAY EARLY-BIRD SALE" in cleaning_page or "PRICE RISES $20 EVERY THURSDAY" in cleaning_page:
         fail("retired Black Friday promotion must not appear on the cleaning page")
     if 'data-testid="cleaning-hero-book-now-desktop"' not in cleaning_page:
