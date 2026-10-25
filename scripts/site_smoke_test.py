@@ -210,8 +210,8 @@ def main() -> None:
         "Continue to secure $50 booking", 'data-testid="cleaning-booking-full-payment"',
     )):
         fail("cleaning page must show the current server-verified $200 first system, $120 extras, $50 booking and live times")
-    # The short three-step funnel shares one booking calendar and checkout.
-    # Keep the diagnosis, solution/trust, offer and booking in that order.
+    # One continuous long-form cleaning landing page, with the same live calendar
+    # and secure checkout. Preserve the educational -> trust -> offer -> booking order.
     landing_sequence = (
         'data-testid="cleaning-diagnosis"',
         'data-testid="cleaning-next-solution"',
@@ -229,10 +229,21 @@ def main() -> None:
         fail("cleaning funnel must follow diagnosis, solution/trust, offer and booking order")
     if "splitspro-cleaning-baby-approved.png" not in cleaning_page or "splitspro-cleaning-family-hero.webp" in cleaning_page:
         fail("cleaning funnel must show approved baby hero only; secondary hero was intentionally removed")
-    if 'data-testid="cleaning-process-benefits"' not in cleaning_page or "anti-mould and anti-corrosion" not in cleaning_page:
-        fail("cleaning funnel must show process benefits and compatible protective coatings")
+    if not all(token in cleaning_page for token in (
+        'data-testid="cleaning-process-benefits"',
+        'id="hero-method"',
+        "6-STEP HERO METHOD",
+        "STICKY GRIME NEEDS MORE THAN PLAIN WATER",
+        "EVERY EXTRA SPLIT + $120",
+        'data-testid="cleaning-odour-guarantee"',
+    )):
+        fail("cleaning page must show the scannable six-step Hero Method, clear $120 extra system price and odour guarantee")
+    if re.search(r"anti[- ]?(?:mould|corrosion)|coatings?", cleaning_page, re.I):
+        fail("cleaning page must not advertise retired anti-mould or anti-corrosion coating services")
+    if any(stage in cleaning_page for stage in ("{stage === 1 && (", "{stage === 2 && (", "{stage === 3 && (")):
+        fail("the cleaning sales content must be one continuous page, not a gated three-stage funnel")
     if "goStage(2)" not in cleaning_page or "goStage(3)" not in cleaning_page:
-        fail("cleaning funnel must allow visitors to progress through three steps")
+        fail("cleaning page must retain smooth-scroll navigation to the method and price sections")
     pricing_source = (ROOT / "src/lib/cleaningPricing.js").read_text(encoding="utf-8")
     if "scheduledCleaningPrice = () => 200" not in pricing_source:
         fail("the first-unit local fallback must be $200")
