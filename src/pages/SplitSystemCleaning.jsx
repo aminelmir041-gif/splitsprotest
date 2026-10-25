@@ -64,7 +64,7 @@ export default function SplitSystemCleaning() {
   const scrollOffer = () => { setStage(3); window.setTimeout(() => document.getElementById("cleaning-prices")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); };
   const choose = (count) => { setQuantity(count); scrollBook(); };
 
-  const refreshSlots = async (requestedQuantity = quantity) => {
+  const refreshSlots = async (requestedQuantity = quantity, preserveSelection = true) => {
     const token = ++requestId.current;
     setSlotsLoading(true);
     setSlotsError("");
@@ -78,7 +78,7 @@ export default function SplitSystemCleaning() {
       );
       setSlots(next);
       // Highlight an actual live opening by default, keeping a prior choice if still free.
-      if (!next.some((slot) => slot.date === selectedDate && slot.time === selectedTime)) {
+      if (!preserveSelection || !next.some((slot) => slot.date === selectedDate && slot.time === selectedTime)) {
         const defaultSlot = next.find((slot) => slot.date === selectedDate) || next[0];
         setSelectedDate(defaultSlot?.date || "");
         setSelectedTime(defaultSlot?.time || "");
@@ -95,7 +95,7 @@ export default function SplitSystemCleaning() {
     setSelectedDate("");
     setSelectedTime("");
     setShowMoreSlots(false);
-    refreshSlots(quantity);
+    refreshSlots(quantity, false);
   }, [quantity]);
   useEffect(() => {
     const refresh = () => { if (document.visibilityState === "visible") refreshSlots(quantity); };
