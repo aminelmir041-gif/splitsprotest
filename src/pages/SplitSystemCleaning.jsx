@@ -106,7 +106,7 @@ export default function SplitSystemCleaning() {
       .then((data) => {
         if (active) {
           const latestPrice = Number(data?.first_system);
-          setPriceReady(latestPrice === scheduledCleaningPrice() && Number(data?.each_additional_system) === 150 && data?.enabled === true);
+          setPriceReady(latestPrice === scheduledCleaningPrice() && Number(data?.each_additional_system) === 150 && Number(data?.booking_payment) === 50 && data?.enabled === true);
            setFirstPrice(scheduledCleaningPrice());
           setPaymentReadiness({
           stripe_ready: Boolean(data?.stripe_ready),
@@ -145,10 +145,10 @@ export default function SplitSystemCleaning() {
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
         <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | SplitsPro Sydney</title>
-        <meta name="description" content="SplitsPro complete split-system deep cleaning for $200 for one system, plus $150 for each additional system at the same address. Choose a date and pay the full total online, with eligible pay-later options where offered. Protective treatments where suitable." />
+        <meta name="description" content="SplitsPro complete split-system deep cleaning for $200 for one system, plus $150 for each additional system at the same address. Choose a date and book online for $50, with the balance due after cleaning. Full payment and eligible pay-later options are also available. Protective treatments where suitable." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
-        <meta property="og:description" content="$200 complete deep clean with suitable protective treatments. Each extra split system $150 at the same property. Choose a date and pay the full total online." />
+        <meta property="og:description" content="$200 complete deep clean with suitable protective treatments. Each extra split system $150 at the same property. Book online for $50 and pay the balance after cleaning, or pay the full total online." />
       </Helmet>
 
 
@@ -457,7 +457,7 @@ export default function SplitSystemCleaning() {
                 className="flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42] sm:text-lg">
                 Choose systems &amp; booking time <ArrowRight className="h-5 w-5" />
               </button>
-              <p className="mt-3 text-sm text-white/70">Choose an available cleaning date and pay the full service total online. Eligible pay-later options may be offered at secure checkout.</p>
+              <p className="mt-3 text-sm text-white/70">Choose an available date and pay $50 online to book. Pay the balance after cleaning, or choose full payment and eligible instalments at secure checkout.</p>
             </div>
           </div>
 
@@ -496,7 +496,7 @@ export default function SplitSystemCleaning() {
             Standard-access wall-mounted splits only. Additional-system pricing applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-[#566D7B]">
-            Your booking is paid in full online. You may select an eligible buy now, pay later option at secure checkout if available and approved. Provider limits and terms apply.
+            Pay $50 online to secure your booking, credited toward the total, and settle the remaining balance after cleaning. You can instead pay the full amount using a card or eligible buy now, pay later provider. Provider limits and terms apply.
           </p>
         </div>
       </section>
@@ -508,7 +508,7 @@ export default function SplitSystemCleaning() {
             PICK THE SYSTEMS. <span className="text-[#45C6E7]">PICK THE TIME.</span>
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/75">
-            Choose the number of systems and an available start time. Then securely pay the full booking total online. Cleaning and installation bookings share the same live calendar.
+            Choose the number of systems and an available start time. Then pay $50 online to reserve, or pay the full total securely. Cleaning and installation bookings share the same live calendar.
           </p>
           <div className="mt-6" data-testid="cleaning-booking-pay-later-reminder">
             <PayLaterReminder kind="cleaning" theme="dark" />
@@ -532,8 +532,8 @@ export default function SplitSystemCleaning() {
                   <strong className="text-4xl font-black text-[#F4C620]">{money(currentTotal)}</strong>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-4" data-testid="cleaning-booking-full-payment">
-                  <span className="font-black uppercase text-[#F4C620]">Pay online to book</span>
-                  <span className="text-sm font-semibold text-white/80">Due now: {money(currentTotal)} · Nothing due after</span>
+                  <span className="font-black uppercase text-[#F4C620]">Pay $50 online to reserve</span>
+                  <span className="text-sm font-semibold text-white/80">Balance after clean: {money(currentTotal - 50)}</span>
                 </div>
               </div>
               <p className="mt-5 text-sm leading-relaxed text-white/70">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
@@ -574,13 +574,13 @@ export default function SplitSystemCleaning() {
                 </div>
               </div>}
               {selectedDate && selectedTime && <p className="mt-5 text-sm font-bold text-[#FFFFFF]">Your booking: {formatDate(selectedDate)} at {formatTime(selectedTime)} · {quantity} {quantity === 1 ? "system" : "systems"}</p>}
-              {!priceReady && <p role="status" className="mt-4 text-xs text-[#F4C620]">We're verifying the $200 cleaning offer with secure checkout. Booking will open once pricing matches.</p>}
+              {!priceReady && <p role="status" className="mt-4 text-xs text-[#F4C620]">We're verifying the $200 cleaning offer and $50 booking payment. Online booking will open when the secure checkout matches.</p>}
               <button type="button" onClick={continueBooking}
                 disabled={!selectedDate || !selectedTime || continuing || slotsLoading || !!slotsError || !priceReady}
                 className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
-                {continuing ? "Opening secure booking..." : "Book Online · Pay Full Total"} <ArrowRight className="h-5 w-5"/>
+                {continuing ? "Opening secure booking..." : "Continue to secure $50 booking"} <ArrowRight className="h-5 w-5"/>
               </button>
-              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when checkout starts. Your date is confirmed after full online payment is verified.</p>
+              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when checkout starts. Your date is confirmed after your $50 booking payment or full payment is verified.</p>
             </div>
           </div>
         </div>
