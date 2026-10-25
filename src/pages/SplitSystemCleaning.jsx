@@ -179,19 +179,19 @@ export default function SplitSystemCleaning() {
               <div className="mt-5">
                 <h1 className="font-serif text-[clamp(1.8rem,6vw,3.5rem)] leading-[1.1] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
                 <p className="mt-3 max-w-2xl text-base font-semibold leading-relaxed text-[#3B5969]">You wouldn't let someone sneeze all over a freshly wiped benchtop. So why overlook the dust a neglected aircon could blow back around the room?</p>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#526978]">Behind a clean-looking cover, dust, pet dander, damp grime and sometimes mould can build up. Airflow may recirculate particles into the rooms your loved ones share.</p>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#526978]">Inside a neglected aircon, dust, pet hair and dander can collect on the filters, coil and blower wheel. Moisture in the drain tray can leave slimy buildup and musty smells, and mould may develop in damp areas. When the fan runs, some trapped particles and odours can circulate back into your living space.</p>
               </div>
             </div>
             <p className="mt-4 border-l-4 border-[#F4C620] pl-4 text-sm font-bold leading-relaxed text-[#244456]">
-              Looking after the people you love starts with caring for the parts of your home you can't easily see.
+              The nasties aren't always on the filter. Some buildup hides deeper inside, where a quick wipe won't reach.
             </p>
             <p className="mt-3 text-xs leading-relaxed text-[#637782]">
-              Dust, pet dander and damp buildup can collect behind the cover. When the fan runs, irritants may circulate through rooms where children and older family members spend their time.
+              That's why cleaning beyond the filter matters, especially in homes with children, pets or older loved ones.
             </p>
             <button type="button" onClick={() => goStage(2)}
               className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-solution">
-              What’s actually inside your aircon? <ArrowRight className="h-5 w-5" />
+              Learn more <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
