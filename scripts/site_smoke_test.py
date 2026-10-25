@@ -205,41 +205,41 @@ def main() -> None:
         fail("old cleaning-offer URL must redirect to the main split-system-cleaning page")
     cleaning_page = (ROOT / "src/pages/SplitSystemCleaning.jsx").read_text(encoding="utf-8")
     if not all(token in cleaning_page for token in (
-        "CLEANING_QUANTITIES", "firstPrice + Math.max(0, count - 1) * 150",
+        "CLEANING_QUANTITIES", "EXTRA_CLEAN_PRICE = 120", "firstPrice + Math.max(0, count - 1) * EXTRA_CLEAN_PRICE",
         "getCleaningSlots", 'data-testid="cleaning-unit-count"',
         "Continue to secure $50 booking", 'data-testid="cleaning-booking-full-payment"',
     )):
-        fail("cleaning page must show the current server-verified first-system offer, $150 extras, $50 booking and live times")
-    # Preserve the full approved sales story with booking and calendar near the bottom.
-    # Visitors wanting to skip the copy can go straight there from Book Now in the hero.
+        fail("cleaning page must show the current server-verified $200 first system, $120 extras, $50 booking and live times")
+    # The short three-step funnel shares one booking calendar and checkout.
+    # Keep the diagnosis, solution/trust, offer and booking in that order.
     landing_sequence = (
-        'data-testid="cleaning-hero-book-now-mobile"',
-        'data-testid="cleaning-guardian-story"',
-        'data-testid="cleaning-benchtop-airflow-punchline"',
-        "splitspro-cleaning-baby-approved.png",
-        'data-testid="cleaning-solution"',
+        'data-testid="cleaning-diagnosis"',
+        'data-testid="cleaning-next-solution"',
+        'data-testid="cleaning-solution-trust"',
+        'data-testid="cleaning-real-process-gallery"',
         'data-testid="cleaning-trust"',
+        'data-testid="cleaning-next-offer"',
+        'data-testid="cleaning-offer"',
         'data-testid="cleaning-prices"',
-        'data-testid="cleaning-offer-details"',
         'data-testid="cleaning-booking"',
         'data-testid="cleaning-faq"',
     )
     positions = [cleaning_page.find(part) for part in landing_sequence]
     if any(position < 0 for position in positions) or positions != sorted(positions):
-        fail("cleaning sales story, offer and booking must remain in the approved order")
-    if 'data-testid="cleaning-200-complete-offer"' not in cleaning_page:
-        fail("cleaning page must display the $200 first-system complete-clean offer")
+        fail("cleaning funnel must follow diagnosis, solution/trust, offer and booking order")
+    if "splitspro-cleaning-baby-approved.png" not in cleaning_page or "splitspro-cleaning-family-hero.webp" not in cleaning_page:
+        fail("cleaning funnel must reuse approved baby and family artwork")
+    if 'data-testid="cleaning-process-benefits"' not in cleaning_page or "anti-mould and anti-corrosion" not in cleaning_page:
+        fail("cleaning funnel must show process benefits and compatible protective coatings")
+    if "goStage(2)" not in cleaning_page or "goStage(3)" not in cleaning_page:
+        fail("cleaning funnel must allow visitors to progress through three steps")
     pricing_source = (ROOT / "src/lib/cleaningPricing.js").read_text(encoding="utf-8")
     if "scheduledCleaningPrice = () => 200" not in pricing_source:
         fail("the first-unit local fallback must be $200")
     if "BLACK FRIDAY EARLY-BIRD SALE" in cleaning_page or "PRICE RISES $20 EVERY THURSDAY" in cleaning_page:
         fail("retired Black Friday promotion must not appear on the cleaning page")
-    if 'data-testid="cleaning-hero-book-now-desktop"' not in cleaning_page:
-        fail("desktop cleaning hero must include a Book Now shortcut")
-    if 'const scrollOffer = () => document.getElementById("cleaning-prices")?.scrollIntoView' not in cleaning_page:
-        fail("cleaning hero must jump to the existing offer section")
-    if cleaning_page.count("onClick={scrollOffer}") != 2 or cleaning_page.count("See Our Offer") != 2:
-        fail("mobile and desktop hero buttons must show the offer shortcut")
+    if cleaning_page.count("data-testid=\"cleaning-next-solution\"") != 1 or cleaning_page.count("data-testid=\"cleaning-next-offer\"") != 1:
+        fail("cleaning funnel must have one forward button on each persuasive step")
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
@@ -264,7 +264,7 @@ def main() -> None:
     pay_later_positions = (
         ("src/pages/SplitSystemCleaning.jsx",
          "cleaning-before-booking-cta-pay-later-reminder",
-         '<button type="button" onClick={() => choose(1)}'),
+         '<button type="button" onClick={scrollBook}'),
         ("src/pages/SplitSystemCleaning.jsx",
          "cleaning-booking-pay-later-reminder",
          'cleaning-unit-quantity'),
