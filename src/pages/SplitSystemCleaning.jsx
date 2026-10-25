@@ -334,27 +334,38 @@ export default function SplitSystemCleaning() {
               </div>
               <p className="mt-6 max-w-4xl border-l-4 border-[#F4C620] pl-5 text-sm leading-7 text-[#4B6575] sm:text-base">Every split system is different. The access, chemicals, steam and rinsing we use depend on the unit and manufacturer's instructions. We do not promise sterile air, a fixed bacteria-kill percentage or a guaranteed reduction in electricity bills.</p>
             </section>
-            <section className="mt-8 rounded-xl bg-[#08263E] p-6 text-white sm:p-9" data-testid="cleaning-odour-guarantee" id="cleaning-guarantee">
-              <p className="text-xs font-black uppercase tracking-[0.17em] text-[#62D1EC]">Our cleaning promise</p>
-              <h3 className="mt-2 text-3xl font-black uppercase leading-tight sm:text-4xl">Musty smell from the parts we clean? <span className="text-[#F4C620]">We'll make it right — or you don't pay.</span></h3>
-              <p className="mt-4 text-sm leading-relaxed text-white/90 sm:text-base">If the same musty odour caused by build-up in the accessible components we've cleaned remains after the service, or returns within seven days, tell us within seven days. We'll inspect those areas and re-clean the affected accessible parts once at no extra charge. If we cannot resolve a cleaning-related odour from those serviced areas, we'll refund the cleaning service charge, including any $50 booking payment.</p>
-              <p className="mt-3 text-xs leading-relaxed text-white/70">This covers cleaning of accessible split-system parts, not odours caused by other building areas, ongoing leaks, inaccessible contamination, refrigerant or electrical faults, or new moisture problems outside our cleaning scope. We explain any such issue before extra work. This promise is in addition to your rights under Australian Consumer Law.</p>
-            </section>
-            <div className="mt-6 border-t-2 border-[#BCDDEB] pt-5" id="cleaning-trust" data-testid="cleaning-trust">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">Why trust SplitsPro with your home?</p>
-              <div className="mt-3 grid gap-4 sm:grid-cols-[1fr_1fr] sm:items-center">
-                <div>
-                  <GoogleRating />
-                  <p className="mt-2 text-xs leading-relaxed text-[#526B7B]">Genuine customer reviews and real work photos.</p>
+            <section className="mt-14 rounded-xl bg-[#08263E] px-6 py-9 text-white sm:px-10 sm:py-12" data-testid="cleaning-odour-guarantee" id="cleaning-guarantee">
+              <p className="text-sm font-black uppercase tracking-widest text-[#62D1EC]">Our seven-day cleaning-related odour promise</p>
+              <h3 className="mt-4 max-w-4xl text-3xl font-black uppercase leading-tight sm:text-5xl">THE SAME MUSTY SMELL? <span className="text-[#F4C620]">WE COME BACK — OR REFUND YOU.</span></h3>
+              <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-white sm:text-xl">If a musty smell caused by build-up in the accessible parts we cleaned remains or returns within seven days, tell us within that period.</p>
+              <div className="mt-7 grid gap-5 sm:grid-cols-2">
+                <div className="border-l-4 border-[#45C6E7] pl-5">
+                  <h4 className="text-xl font-black uppercase text-white">First, we re-clean.</h4>
+                  <p className="mt-3 text-base leading-8 text-white/85 sm:text-lg">We inspect those affected accessible areas and re-clean them once at no charge.</p>
                 </div>
-                <div className="space-y-2">
-                  <p className="flex items-start gap-2 text-sm font-bold text-[#14394E]"><ShieldCheck className="h-5 w-5 shrink-0 text-[#008DB8]" /> Licensed and insured technicians.</p>
-                  <p className="flex items-start gap-2 text-sm font-bold text-[#14394E]"><ShieldCheck className="h-5 w-5 shrink-0 text-[#008DB8]" /> We protect the work area, explain the job and leave it tidy.</p>
-                  <p className="flex items-start gap-2 text-sm font-bold text-[#14394E]"><ShieldCheck className="h-5 w-5 shrink-0 text-[#008DB8]" /> Cleaning checklist, job photos and completion certificate.</p>
+                <div className="border-l-4 border-[#F4C620] pl-5">
+                  <h4 className="text-xl font-black uppercase text-white">If we can't fix it, we refund.</h4>
+                  <p className="mt-3 text-base leading-8 text-white/85 sm:text-lg">If the odour is from the serviced areas and cleaning cannot resolve it, we refund the cleaning service charge, including any $50 booking payment.</p>
                 </div>
               </div>
-            </div>
-            <p className="mt-4 text-xs leading-relaxed text-[#607889]">Cleaning steps depend on the unit's design and product compatibility. We explain any access limits and protect your room and electronics during the service.</p>
+              <p className="mt-8 max-w-4xl border-t border-white/20 pt-5 text-sm leading-7 text-white/75">Applies only to cleaning-related odours from accessible serviced parts, not unrelated building moisture, ongoing leaks, inaccessible contamination or mechanical faults. We'll explain anything beyond the cleaning scope before quoting extra work. Your Australian Consumer Law rights still apply.</p>
+            </section>
+            <section className="mt-14 border-t-2 border-[#BCDDEB] pt-9" id="cleaning-trust" data-testid="cleaning-trust">
+              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Why people choose SplitsPro</p>
+              <h3 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">WE LOOK AFTER YOUR HOME — AND SHOW YOU THE WORK.</h3>
+              <div className="mt-7 grid gap-7 sm:grid-cols-[1fr_1fr] sm:items-start">
+                <div>
+                  <GoogleRating />
+                  <p className="mt-4 max-w-md text-base leading-8 text-[#526B7B] sm:text-lg">Genuine reviews. Real cleaning photos. A clear explanation of what we can safely clean.</p>
+                </div>
+                <div className="space-y-5">
+                  <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> Licensed and insured technicians.</p>
+                  <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> Your floors and furniture are protected, and we leave the work area tidy.</p>
+                  <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> A cleaning checklist, job photos and completion certificate.</p>
+                </div>
+              </div>
+              <p className="mt-7 max-w-3xl text-sm leading-7 text-[#607889]">Cleaning methods and access vary with the system. We'll tell you before doing anything outside the agreed service.</p>
+            </section>
             <button type="button" onClick={() => goStage(3)}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-offer">
