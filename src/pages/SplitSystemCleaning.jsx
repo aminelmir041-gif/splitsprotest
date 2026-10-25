@@ -171,11 +171,10 @@ export default function SplitSystemCleaning() {
       </div>
 
       {stage === 1 && (
-        <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] py-6 sm:py-14" data-testid="cleaning-diagnosis">
+        <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] pt-0 pb-6 sm:py-10" data-testid="cleaning-diagnosis">
           <div className="sp-container mx-auto max-w-6xl">
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#8D6325]">For the little ones, the older ones and everyone in between</p>
-            <div className="mt-4">
-              <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby at home — if it's not nailed down, it's food. What about the aircon they breathe around?" width={409} height={487} loading="eager" decoding="async" className="mx-auto block w-full max-w-[520px] h-auto rounded-xl object-contain" />
+            <div className="mt-0">
+              <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby at home — if it's not nailed down, it's food. What about the aircon they breathe around?" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="-mx-4 block w-[calc(100%+2rem)] max-w-none h-auto object-contain sm:mx-auto sm:w-full sm:max-w-[680px] sm:rounded-xl" />
               <div className="mt-5">
                 <h1 className="font-serif text-[clamp(1.8rem,6vw,3.5rem)] leading-[1.1] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
                 <p className="mt-3 max-w-2xl text-base font-semibold leading-relaxed text-[#3B5969]">You wouldn't let someone sneeze all over a freshly wiped benchtop. So why overlook the dust a neglected aircon could blow back around the room?</p>
