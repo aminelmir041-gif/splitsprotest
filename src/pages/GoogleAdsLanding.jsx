@@ -130,7 +130,15 @@ const GoogleAdsLanding = () => {
               <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Installation guarantee</span>
             </div>
           </div>
-          <div className="rounded-2xl border border-white/15 bg-white/[0.055] p-5 sm:p-7">
+          <div className="space-y-4">
+            <img
+              src={`${process.env.PUBLIC_URL || ""}/landing/overheated-bulldog-hero.webp`}
+              alt="Overheated bulldog — SplitsPro split-system installation deals"
+              loading="eager"
+              fetchPriority="high"
+              className="w-full rounded-2xl object-contain"
+            />
+            <div className="rounded-2xl border border-white/15 bg-white/[0.055] p-5 sm:p-7">
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">Fully installed deals · including electrical circuit</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div>
@@ -145,6 +153,7 @@ const GoogleAdsLanding = () => {
               </div>
             </div>
             <p className="mt-5 border-t border-white/15 pt-4 text-xs text-white/65">These are complete prices for qualifying standard installations. Any non-standard extras are quoted upfront, never hidden.</p>
+          </div>
           </div>
         </div>
       </section>
