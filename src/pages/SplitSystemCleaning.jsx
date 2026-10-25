@@ -307,29 +307,32 @@ export default function SplitSystemCleaning() {
                 </figure>
               ))}
             </div>
-            <section className="mt-7" id="hero-method" data-testid="cleaning-process-benefits">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">The SplitsPro Bare-Bones Deep Clean</p>
-              <h3 className="mt-2 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">OUR 6-STEP <span className="text-[#008DB8]">HERO METHOD.</span></h3>
-              <p className="mt-3 text-base font-semibold leading-relaxed text-[#24485D]">We don't just wipe the cover and rinse the filters. We get into accessible components, tackle the build-up, look after the outdoor unit and test the result.</p>
-              <p className="mt-3 text-sm leading-relaxed text-[#405E6E] sm:text-base">Our Bare-Bones Hero Method combines specialised coil-compatible cleaning solutions, enzyme-based detergents, carefully controlled steam and physical dirt removal — without disguising odours with perfume or spraying sensitive electrical parts.</p>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <section className="mt-14" id="hero-method" data-testid="cleaning-process-benefits">
+              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">The SplitsPro Bare-Bones Deep Clean</p>
+              <h3 className="mt-3 max-w-5xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">NOT JUST A FILTER RINSE. <span className="text-[#008DB8]">HERE'S OUR 6-STEP HERO METHOD.</span></h3>
+              <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">We strip it back, get to the grime, clean the drain and outdoor unit — then check the result.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#405E6E] sm:text-lg">Different types of build-up need different tools. That's why we combine <strong className="text-[#0B2641]">coil-compatible chemicals, enzyme detergents, controlled steam and careful rinsing</strong>, instead of just masking smells.</p>
+              <div className="mt-9 grid gap-6 md:grid-cols-2">
                 {[
-                  {number:"01",title:"The Bare-Bones Teardown",subtitle:"We strip it back, not just wipe over it.",description:"We protect the room and safely open the indoor head unit, removing suitable covers, filters and louvers. We reach the coil, blower wheel and drain pan, and remove the wheel and pan when the model permits safe removal. Hidden dust and grime are exposed instead of left behind the fascia."},
-                  {number:"02",title:"Triple-Action Chemical Attack",subtitle:"Professional cleaners loosen what's stuck.",description:"Coil-compatible surfactants and enzyme-based detergents help break down oily dirt, sticky residues and organic film. Suitable labelled sanitising treatments may be used when appropriate for the surfaces and the job. We follow the chemical instructions and give the solution time to work."},
-                  {number:"03",title:"The Thermal Flush & Steam Treatment",subtitle:"Loosen, lift and carefully flush.",description:"We use controlled steam on suitable accessible components to soften stubborn dirt, with gentle rinsing to physically wash away loosened debris where appropriate. Some enzyme cleaners are made to self-rinse with condensate, so those are used as directed rather than washed away prematurely. Wastewater is captured to protect the room."},
-                  {number:"04",title:"Electronic Protection",subtitle:"We look after the brains of your aircon.",description:"We isolate power and keep indoor and outdoor printed circuit boards protected from cleaning water, steam and chemicals. We can check for visible signs of contamination, but any specialised PCB cleaning, fault repair or electrical work would be assessed and quoted separately — never sprayed as part of an ordinary deep clean."},
-                  {number:"05",title:"Full Drainage & Outdoor Clean",subtitle:"Indoor drain and outdoor condenser included.",description:"We clean the accessible drain pan and drainage path to help remove sludge and reduce the risk of blockages and stale smells. Outside, we clear debris and gently clean accessible condenser surfaces with suitable water pressure, without crushing delicate fins. A clean coil can improve performance when dirt was the cause, but savings vary."},
-                  {number:"06",title:"Reassembly, Testing & Proof",subtitle:"Rebuilt carefully. Checked before we go.",description:"We refit the removed parts, clean up, check operation and accessible drainage, and show you the completed work with photos where practical. We also check for cleaning-related musty smells, backed by our written seven-day odour guarantee."}
+                  {number:"01",title:"Bare-Bones Teardown",hook:"WE OPEN IT UP. NOT JUST WIPE OVER IT.",paragraphs:["We protect the room, isolate power and remove suitable covers, filters and louvers. That gives us better access to dirt hiding behind the front panel.","We reach accessible coils, the blower wheel and the drain tray. Parts such as the wheel or tray are removed when the specific model allows it safely."]},
+                  {number:"02",title:"Triple-Action Chemical Attack",hook:"STICKY GRIME NEEDS MORE THAN PLAIN WATER.",paragraphs:["Professional coil-compatible surfactants and enzyme-based detergents help loosen oils, dust and organic build-up.","We select the right product for the unit and give it the contact time it needs. Any sanitising product is used only where suitable and according to its label."]},
+                  {number:"03",title:"Thermal Flush & Steam",hook:"LOOSEN THE DIRT. THEN REMOVE IT.",paragraphs:["Controlled steam helps soften stubborn build-up on suitable components. We use gentle, directed rinsing where appropriate to carry away the loosened grime.","Wastewater is collected to protect your home. Some enzyme products are designed to self-rinse with condensate, so we follow those instructions instead of washing them off too early."]},
+                  {number:"04",title:"Electronic Protection",hook:"WE CLEAN THE AIRCON — NOT SOAK ITS ELECTRONICS.",paragraphs:["We isolate power and protect the indoor and outdoor circuit boards from water, steam and cleaning spray.","If we spot contamination or a possible board fault, we explain it. Specialist PCB cleaning and repairs are separate work, never an automatic extra charge."]},
+                  {number:"05",title:"Drainage & Outdoor Clean",hook:"YES, THE DRAIN AND OUTDOOR UNIT TOO.",paragraphs:["We clean accessible drain components to remove sludge and help condensate flow as it should.","Outside, we clear debris and clean suitable condenser surfaces with safe water pressure. That can help airflow and performance when dirt is the problem."]},
+                  {number:"06",title:"Reassembly, Testing & Proof",hook:"PUT BACK PROPERLY. CHECKED BEFORE WE LEAVE.",paragraphs:["We reassemble the suitable parts, check the unit and accessible drainage, and tidy the work area.","Where practical, we'll show you before-and-after photos. Our written cleaning-related musty-odour guarantee backs the work."]}
                 ].map((step) => (
-                  <article key={step.number} className="rounded-lg border border-[#C7E2EB] bg-white p-5 shadow-sm">
-                    <span className="text-xs font-black tracking-[0.16em] text-[#008DB8]">STEP {step.number} OF 6</span>
-                    <h4 className="mt-2 text-xl font-black uppercase text-[#0B2641]">{step.title}</h4>
-                    <p className="mt-2 text-sm font-extrabold text-[#008DB8]">{step.subtitle}</p>
-                    <p className="mt-3 text-sm leading-relaxed text-[#496374]">{step.description}</p>
+                  <article key={step.number} className="rounded-xl border border-[#C7E2EB] bg-white px-6 py-7 shadow-sm sm:px-8 sm:py-9">
+                    <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">STEP {step.number} OF 6 · {step.title}</p>
+                    <h4 className="mt-4 text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-[1.8rem]">{step.hook}</h4>
+                    <div className="mt-5 space-y-4">
+                      {step.paragraphs.map((paragraph, index) => (
+                        <p key={index} className="text-base leading-8 text-[#435F70] sm:text-lg">{paragraph}</p>
+                      ))}
+                    </div>
                   </article>
                 ))}
               </div>
-              <p className="mt-4 border-l-4 border-[#F4C620] pl-4 text-xs leading-relaxed text-[#4B6575]">Access, disassembly, chemicals, steam and rinsing are selected for the model and condition of the unit. We do not claim completely sterile air, a fixed bacteria-kill percentage or guaranteed energy savings.</p>
+              <p className="mt-6 max-w-4xl border-l-4 border-[#F4C620] pl-5 text-sm leading-7 text-[#4B6575] sm:text-base">Every split system is different. The access, chemicals, steam and rinsing we use depend on the unit and manufacturer's instructions. We do not promise sterile air, a fixed bacteria-kill percentage or a guaranteed reduction in electricity bills.</p>
             </section>
             <section className="mt-8 rounded-xl bg-[#08263E] p-6 text-white sm:p-9" data-testid="cleaning-odour-guarantee" id="cleaning-guarantee">
               <p className="text-xs font-black uppercase tracking-[0.17em] text-[#62D1EC]">Our cleaning promise</p>
