@@ -306,7 +306,7 @@ export default function SplitSystemCleaning() {
                   <strong className="mt-1 block text-6xl font-black leading-none text-white sm:text-7xl">{money(firstPrice)}</strong>
                   <p className="mt-2 text-2xl font-black uppercase text-[#F4C620]">+ $120 each extra system</p>
                   <p className="mt-2 text-sm font-bold text-white/85">2 systems {money(cleaningPrice(2, firstPrice))} · 3 systems {money(cleaningPrice(3, firstPrice))}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-white/75">Book for $50, credited toward your $200 clean. Pay the remaining $150 after cleaning. Prefer Afterpay on the day? Ask us before your appointment so we can confirm whether it's available for your balance. Afterpay eligibility and approval apply.</p>
+                  <p className="mt-3 text-sm leading-relaxed text-white/75">Choose what suits you at checkout: pay $50 to book and the remaining $150 after cleaning, or pay the full $200 now by card or an eligible Afterpay / Pay in 4 option. Pay-later availability and approval depend on the provider. Want Afterpay for the $150 balance on the day? Ask us ahead of your visit so we can confirm availability.</p>
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold text-[#244456]" data-testid="cleaning-offer-reassurance"><GoogleRating /><span>✓ Licensed & insured technicians</span><span>✓ Secure $50 booking · balance after cleaning</span></div>
