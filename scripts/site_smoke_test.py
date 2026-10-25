@@ -227,8 +227,8 @@ def main() -> None:
     positions = [cleaning_page.find(part) for part in landing_sequence]
     if any(position < 0 for position in positions) or positions != sorted(positions):
         fail("cleaning funnel must follow diagnosis, solution/trust, offer and booking order")
-    if "splitspro-cleaning-baby-approved.png" not in cleaning_page or "splitspro-cleaning-family-hero.webp" not in cleaning_page:
-        fail("cleaning funnel must reuse approved baby and family artwork")
+    if "splitspro-cleaning-baby-approved.png" not in cleaning_page or "splitspro-cleaning-family-hero.webp" in cleaning_page:
+        fail("cleaning funnel must show approved baby hero only; secondary hero was intentionally removed")
     if 'data-testid="cleaning-process-benefits"' not in cleaning_page or "anti-mould and anti-corrosion" not in cleaning_page:
         fail("cleaning funnel must show process benefits and compatible protective coatings")
     if "goStage(2)" not in cleaning_page or "goStage(3)" not in cleaning_page:
