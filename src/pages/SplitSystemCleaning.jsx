@@ -194,12 +194,12 @@ export default function SplitSystemCleaning() {
               Looking after the people you love starts with caring for the parts of your home you can't easily see.
             </p>
             <p className="mt-3 text-xs leading-relaxed text-[#637782]">
-              Not every aircon has mould. Cleaning can remove accessible buildup; it cannot guarantee sterile air or prevent illness.
+              Dust, pet dander and damp buildup can collect behind the cover. When the fan runs, irritants may circulate through rooms where children and older family members spend their time.
             </p>
             <button type="button" onClick={() => goStage(2)}
               className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-solution">
-              See how we clean &amp; protect it <ArrowRight className="h-5 w-5" />
+              What’s actually inside your aircon? <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
@@ -221,7 +221,7 @@ export default function SplitSystemCleaning() {
               </div>
               <img src="/landing/splitspro-cleaning-family-hero.webp" alt="Family with their dog at home"
                 width={1536} height={1024} loading="lazy" decoding="async"
-                className="h-28 w-full rounded-lg object-cover object-[78%_55%] sm:h-36" />
+                className="h-auto w-full rounded-lg object-contain sm:max-h-64" />
             </div>
 
             <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4" data-testid="cleaning-real-process-gallery">
@@ -243,11 +243,11 @@ export default function SplitSystemCleaning() {
               </div>
               <div className="border-l-[3px] border-[#008DB8] pl-3">
                 <h3 className="text-sm font-black uppercase text-[#0B2641]">We spray, rinse and clear.</h3>
-                <p className="mt-1 text-sm leading-snug text-[#435F70]">We clean accessible coils, fan and drain with suitable sprays, steam and pressure rinsing. Clear drainage helps reduce blockages and drips.</p>
+                <p className="mt-1 text-sm leading-snug text-[#435F70]">We use HVAC-appropriate cleaning chemicals, including hospital- and food-area-grade products where suitable, followed by steam and controlled rinsing on accessible coils and fans. We clear the drain to help prevent blockages and leaks.</p>
               </div>
               <div className="border-l-[3px] border-[#008DB8] pl-3">
                 <h3 className="text-sm font-black uppercase text-[#0B2641]">We help protect surfaces.</h3>
-                <p className="mt-1 text-sm leading-snug text-[#435F70]">Compatible anti-mould and anti-corrosion coatings go on suitable indoor and outdoor surfaces. Then we reassemble and test.</p>
+                <p className="mt-1 text-sm leading-snug text-[#435F70]">We finish with compatible anti-mould and anti-corrosion coatings on suitable indoor and outdoor surfaces to help protect against future buildup and corrosion. Then we reassemble and test.</p>
               </div>
             </div>
 
@@ -269,7 +269,7 @@ export default function SplitSystemCleaning() {
             <button type="button" onClick={() => goStage(3)}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-offer">
-              See the complete clean offer <ArrowRight className="h-5 w-5" />
+              See what’s included in your clean <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
@@ -277,7 +277,7 @@ export default function SplitSystemCleaning() {
 
       {stage === 3 && (
         <>
-          <section id="cleaning-stage-3" className="scroll-mt-16 bg-[#F1F9FC] py-8 sm:py-14" data-testid="cleaning-offer">
+          <section id="cleaning-stage-3" className="scroll-mt-16 bg-[#FFF7E8] py-8 sm:py-14" data-testid="cleaning-offer">
             <div className="sp-container mx-auto max-w-6xl">
               <button type="button" onClick={() => goStage(2)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
                 <ArrowLeft className="h-4 w-4" /> Back to how we clean
@@ -285,15 +285,14 @@ export default function SplitSystemCleaning() {
               <div className="grid items-center gap-5 sm:grid-cols-[1fr_0.45fr]">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">Now, here's the offer</p>
-                  <h2 className="mt-2 max-w-3xl font-serif text-3xl leading-tight text-[#0B2641] sm:text-5xl">
-                    A small price for a cleaner, better-protected aircon at home.
+                  <h2 className="mt-2 max-w-3xl font-black uppercase text-3xl leading-tight text-[#0B2641] sm:text-5xl">
+                    Everything included. One clear price.
                   </h2>
                   <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4F6575] sm:text-base">
-                    The full deep clean, outdoor care and compatible anti-mould and anti-corrosion treatments are included. More than a filter wash, with one clear price.
+                    No basic filter wipe: indoor deep clean, outdoor care, drain clearing, suitable protective coatings and an operation check. Choose your systems and book a time below.
                   </p>
                 </div>
-                <img src="/landing/splitspro-process-covers.png" alt="Real SplitsPro cleaning work with removed covers neatly cleaned"
-                  loading="lazy" decoding="async" className="h-36 w-full rounded-xl object-cover sm:h-52" />
+                
               </div>
               <div className="mt-6 grid gap-6 rounded-xl bg-[#08263E] p-5 text-white sm:grid-cols-[1fr_1fr] sm:p-8" id="cleaning-prices" data-testid="cleaning-prices">
                 <div>
