@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ChevronDown, ShieldCheck } from "lucide-react";
 import { api } from "../lib/api";
 import { GoogleRating } from "../components/sections";
-import { PHONE_TEL } from "../lib/data";
+import { PHONE_TEL, FEATURED_REVIEW } from "../lib/data";
 
 // This is the ONE consumer sales landing page for split-system cleaning.
 // One continuous explanation of the Hero Method, with no on-page booking calendar.
@@ -61,6 +61,35 @@ export default function SplitSystemCleaning() {
       setGuideError("Couldn't save your email. Please try again.");
     }
   };
+  const [consultation, setConsultation] = useState({ name: "", phone: "", email: "" });
+  const [consultationStatus, setConsultationStatus] = useState("idle");
+  const [consultationError, setConsultationError] = useState("");
+  const updateConsultation = (field, value) => setConsultation((previous) => ({ ...previous, [field]: value }));
+  const submitConsultation = async (event) => {
+    event.preventDefault();
+    const phoneDigits = consultation.phone.replace(/[^0-9]/g, "");
+    if (!consultation.name.trim() || phoneDigits.length < 8) {
+      setConsultationError("Please enter your name and a phone number we can call.");
+      return;
+    }
+    setConsultationStatus("saving");
+    setConsultationError("");
+    try {
+      await api.post("/quotes", {
+        name: consultation.name.trim(),
+        phone: consultation.phone.trim(),
+        email: consultation.email.trim(),
+        service: "Split System Cleaning Consultation",
+        suburb: "To be confirmed on callback",
+        message: "Family-focused deep-clean consultation requested. If email provided, customer requests service information by email.",
+        photo_url: "",
+      });
+      setConsultationStatus("success");
+    } catch {
+      setConsultationStatus("idle");
+      setConsultationError("Your request could not be sent just now. Please try again or call us.");
+    }
+  };
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
@@ -69,8 +98,8 @@ export default function SplitSystemCleaning() {
         <title>Six-Step Hero Method | Split-System Deep Cleaning Sydney | SplitsPro</title>
         <meta name="description" content="For Sydney parents and carers: a proper one-visit Hero Method deep clean for the hidden dust and grime in the split system their family lives around. Learn how we care for indoor units, drains and outdoor coils." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
-        <meta property="og:title" content="Sydney Parents & Carers: Hidden Aircon Dust Cleared in One Visit | SplitsPro" />
-        <meta property="og:description" content="You clean the highchair, the toys and the kitchen bench. Discover what a filter rinse can leave behind and how our six-step Hero Method reaches it." />
+        <meta property="og:title" content="Fresher Air Where Your Family Eats, Plays & Sleeps | SplitsPro" />
+        <meta property="og:description" content="A practical, parent-focused deep clean for the aircon running through family mealtimes, play and sleep. Discover what our six-step gold-standard process reaches beyond a filter rinse." />
       </Helmet>
 
 
@@ -80,30 +109,30 @@ export default function SplitSystemCleaning() {
         <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] pt-0 pb-6 sm:py-10" data-testid="cleaning-diagnosis">
           <div className="sp-container mx-auto max-w-6xl">
             <div className="mt-0">
-              <div className="relative isolate overflow-hidden sm:mx-auto sm:max-w-[680px] sm:rounded-xl" data-testid="cleaning-baby-hero-overlay">
-                <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby resting at home — a reminder of why parents care about the environment their family lives in" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="-mx-4 block w-[calc(100%+2rem)] max-w-none h-auto object-contain sm:mx-auto sm:w-full" />
-                <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-[#051D30]/95 via-[#051D30]/85 to-transparent px-5 pb-16 pt-5 text-white sm:px-8 sm:pb-24 sm:pt-8">
-                  <p className="text-[0.7rem] font-black uppercase tracking-[0.16em] text-[#F4C620] sm:text-sm">For Sydney parents &amp; families caring for older loved ones</p>
-                  <h1 className="mt-3 max-w-xl font-sans text-[clamp(1.6rem,5.5vw,3.2rem)] font-black uppercase leading-[1.08] tracking-tight text-white">A cleaner aircon for the rooms your family eats, plays and sleeps in. <span className="text-[#F4C620]">One visit. Guaranteed.</span></h1>
-                  <p className="mt-3 text-sm font-bold text-white/90 sm:text-base">Agreed accessible areas cleaned — or we return to put it right.</p>
+              <div className="relative isolate overflow-hidden bg-[#08263E] sm:mx-auto sm:max-w-[680px] sm:rounded-xl" data-testid="cleaning-baby-hero-overlay">
+                <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby resting comfortably at home" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="-mx-4 block h-auto w-[calc(100%+2rem)] max-w-none object-contain sm:mx-auto sm:w-full" />
+                <div className="absolute inset-x-0 top-0 z-10 bg-[#052137]/95 px-4 py-2.5 text-white sm:px-7 sm:py-4" data-testid="cleaning-hero-title-over-photo">
+                  <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-[#F4C620] sm:text-xs">Sydney parents &amp; families</p>
+                  <h1 className="mt-1 max-w-2xl font-sans text-[clamp(1.12rem,4.5vw,2rem)] font-black uppercase leading-[1.12] tracking-tight text-white">FRESHER AIR WHERE YOUR FAMILY <span className="text-[#F4C620]">EATS, PLAYS &amp; SLEEPS.</span></h1>
                 </div>
               </div>
+              <p className="mx-auto mt-4 max-w-[680px] text-base font-black leading-7 text-[#12384E] sm:text-xl">One thorough visit to tackle hidden dust, mould-prone grime and debris inside your split system. <span className="text-[#008DB8]">Our workmanship is backed by a return-to-clean promise.</span></p>
               <div className="mt-7 max-w-4xl">
-                <p className="text-xl font-black leading-8 text-[#12384E] sm:text-2xl">You wipe the highchair. The toys. The kitchen bench.</p>
-                <p className="mt-4 text-lg font-bold leading-8 text-[#294353] sm:text-xl">But what about the one place you rarely look — even though it runs while your baby naps or your parents visit?</p>
-                <p className="mt-5 border-l-4 border-[#F4C620] pl-5 text-base leading-8 text-[#294353] sm:text-lg font-semibold">There's a hidden part of the room that can collect damp grime even when everything else looks spotless. Most quick wipe-downs don't reach it. <strong className="text-[#0B2641]">We'll show you what it is.</strong></p>
+                <p className="text-xl font-black leading-8 text-[#12384E] sm:text-2xl">You wash the toys, wipe down the kitchen benches, and change the sheets.</p>
+                <p className="mt-4 text-lg font-bold leading-8 text-[#294353] sm:text-xl">But the aircon keeps running during family dinner, your child's afternoon nap and the nights you want everyone sleeping comfortably.</p>
+                <p className="mt-5 border-l-4 border-[#F4C620] pl-5 text-base leading-8 text-[#294353] sm:text-lg font-semibold">You already know your split system moves air around the home. The part most people never see is what builds up <em>behind its filter</em>. <strong className="text-[#0B2641]">So what should a gold-standard deep clean actually remove?</strong></p>
               </div>
             </div>
             <section className="mt-10" aria-label="What can build up inside an air conditioner">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Why a spotless room can still feel stale</p>
-              <h2 className="mt-2 max-w-4xl text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">THE HIGHCHAIR IS CLEAN. <span className="text-[#008DB8]">IS THE AIRCON ABOVE IT?</span></h2>
+              <h2 className="mt-2 max-w-4xl text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">THE HOUSE LOOKS SPOTLESS. <span className="text-[#008DB8]">WHAT IS THE AIRCON MOVING THROUGH IT?</span></h2>
               <p className="mt-5 max-w-3xl text-base leading-8 text-[#2B4758] sm:text-lg font-semibold">You work hard to make home comfortable for the people who depend on you. It's easy to miss what sits behind the front panel of a split system.</p>
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 {[
-                  ["You clean where little hands reach.", "Filters may look clean while dust, dander and greasy residue remain on deeper, accessible parts."],
-                  ["You finally get the baby to sleep.", "While the split runs through nap time, airborne dust can settle on hidden surfaces beyond the filter you wash."],
-                  ["Someone at home has asthma.", "Dust and mould can trigger symptoms for some people. Cleaning accessible build-up addresses a possible source of irritants, not the whole home or a medical condition."],
-                  ["An older parent spends time in that room.", "You want the room to feel cared for — including the indoor unit everyone overlooks when cleaning the home."]
+                  ["You clean the surfaces your kids touch.", "But every time the split runs, room air is pulled through the unit and sent back into the spaces where they eat, play and sleep. A washed filter is only part of the clean."],
+                  ["You finally settle the kids for the night.", "Then the split runs for hours while they sleep. The dust and residue on internal parts do not disappear because you washed the front filter."],
+                  ["Asthma triggers are already on your mind.", "Dust and mould are recognised asthma triggers. If they have built up in the system you use every day, that is another place in your home worth cleaning properly."],
+                  ["You want your parents to visit a cared-for home.", "You make the tea, tidy the lounge and get everything ready. The aircon above everyone deserves the same attention, especially if it has not had a deep clean in years."]
                 ].map(([title, description]) => (
                   <div key={title} className="rounded-lg bg-white p-5 border-l-4 border-[#008DB8]">
                     <h3 className="text-lg font-black leading-snug text-[#0B2641] sm:text-xl">{title}</h3>
@@ -116,14 +145,18 @@ export default function SplitSystemCleaning() {
             <section className="mt-12 rounded-xl border border-[#D4E5ED] bg-white px-5 py-8 sm:px-9 sm:py-10" aria-label="Everyday spaces your family uses">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">You know that feeling</p>
               <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">YOU'VE CLEANED THE ROOM. <span className="text-[#008DB8]">BUT WHAT'S STILL INSIDE THE UNIT?</span></h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">You wipe the highchair before meals, wash the toys after little hands have touched everything, and keep the kitchen benches ready for cooking.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">But air keeps moving through the split system while people cook, sneeze, play and sleep. Fine dust and cooking oils can settle inside. Add trapped moisture in dark internal areas, and it can create conditions where mould and bacteria grow.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">When someone at home has asthma or allergies, the thought of hidden dust and mould matters even more. That's why the inside deserves attention too.</p>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">You wipe the kitchen benches before preparing dinner and keep the kids' rooms clean. You would never knowingly leave dust and grime all over those surfaces.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">The same rooms have an aircon moving air through them for hours. Dust, cooking residue and moisture collect on internal parts. Damp deposits also create conditions where mould and bacteria thrive. That is why the inside of the unit deserves attention, not just its filter.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Dust and mould are recognised asthma triggers. If you are careful about bedding, floors and food preparation for your family, the appliance circulating room air belongs on that cleaning list too.</p>
+              <div className="mt-6 rounded-lg border-l-8 border-[#F4C620] bg-[#FFF0A8] px-5 py-5" data-testid="cleaning-sneeze-analogy">
+                <p className="text-xl font-black uppercase leading-8 text-[#0B2641] sm:text-2xl">YOU WOULDN'T LET SOMEONE <span className="bg-[#F4C620] px-1">SNEEZE OVER YOUR FAMILY'S DINNER.</span></p>
+                <p className="mt-3 text-base font-bold leading-7 text-[#294353] sm:text-lg">So why leave years of dust and grime sitting in the aircon running while you cook, eat and settle the kids? The gold standard starts where a quick filter wash stops.</p>
+              </div>
               <div className="mt-6 grid gap-5 sm:grid-cols-3">
                 {[
                   ["FOR THE LITTLE ONES.", "A proper clean of accessible internal parts in rooms where babies nap and children play."],
                   ["FOR FAMILY MEALTIMES.", "Help clear airborne cooking grime that has settled inside the unit near busy kitchen spaces."],
-                  ["FOR OLDER LOVED ONES.", "Give the often-overlooked system in their living or sleeping area the same care as the rest of the home."]
+                  ["FOR THE FAMILY YOU LOOK AFTER.", "When children, grandparents and loved ones are around, a clean-feeling home means taking care of the parts you cannot see as well."]
                 ].map(([heading, detail]) => (
                   <div key={heading} className="rounded-lg bg-[#F5FAFC] p-5 border-l-4 border-[#F4C620]">
                     <h3 className="text-lg font-black leading-snug text-[#12384E] sm:text-xl">{heading}</h3>
@@ -212,7 +245,7 @@ export default function SplitSystemCleaning() {
               <div className="mt-7 grid gap-7 sm:grid-cols-[1fr_1fr] sm:items-start">
                 <div>
                   <GoogleRating />
-                  <p className="mt-4 max-w-md text-base leading-8 text-[#3B5667] sm:text-lg font-semibold">Genuine reviews. Real cleaning photos. A clear explanation of what we can safely clean.</p>
+                  <p className="mt-4 max-w-md text-base leading-8 text-[#3B5667] sm:text-lg font-semibold">Real customer feedback, genuine work photos and a clear explanation before we begin.</p>
                 </div>
                 <div className="space-y-5">
                   <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> Licensed and insured technicians.</p>
@@ -220,6 +253,17 @@ export default function SplitSystemCleaning() {
                   <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> A cleaning checklist, job photos and completion certificate.</p>
                 </div>
               </div>
+              <div className="mt-8 grid gap-4 md:grid-cols-2" data-testid="cleaning-customer-testimonials">
+                <blockquote className="rounded-lg border border-[#D4E5ED] bg-white p-5">
+                  <p className="text-base font-bold leading-7 text-[#23465A]">“{FEATURED_REVIEW.text}”</p>
+                  <footer className="mt-4 text-sm font-black text-[#0B2641]">Sia · SplitsPro installation customer</footer>
+                </blockquote>
+                <blockquote className="rounded-lg border border-[#D4E5ED] bg-white p-5">
+                  <p className="text-base font-bold leading-7 text-[#23465A]">“Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy.”</p>
+                  <footer className="mt-4 text-sm font-black text-[#0B2641]">Gill McPhee · SplitsPro installation customer</footer>
+                </blockquote>
+              </div>
+              <p className="mt-4 text-sm font-semibold text-[#435B6B]">These existing customer testimonials are about installation workmanship. <a href="https://g.page/r/CYTvO1ipeYUtEBM/" target="_blank" rel="noreferrer" className="font-black text-[#007EA7] underline">Read SplitsPro's Google reviews</a>.</p>
               <p className="mt-7 max-w-3xl text-sm leading-7 text-[#435B6B] font-medium">We explain suitable access and protect nearby surfaces before work begins.</p>
             </section>
             <button type="button" onClick={() => scrollToSection("cleaning-next-step")}
@@ -238,11 +282,38 @@ export default function SplitSystemCleaning() {
               <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">For the home you work hard to look after</p>
               <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">YOU'VE DONE THE SURFACE CLEANING. <span className="text-[#008DB8]">LET'S LOOK AFTER WHAT'S INSIDE.</span></h2>
               <p className="mt-6 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">A thorough deep clean is a practical, budget-conscious way to care for the split system you already own — reaching accessible internal areas that household cleaning cannot reach.</p>
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-                <a href={PHONE_TEL} className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-7 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto" data-testid="cleaning-contact-cta">
-                  Talk to SplitsPro <ArrowRight className="h-5 w-5" />
-                </a>
-                <div className="rounded-lg bg-white px-4 py-3 shadow-sm" data-testid="cleaning-cta-google-rating" aria-label="SplitsPro Google reviews"><GoogleRating /></div>
+              <div className="mt-6 border-l-4 border-[#F4C620] bg-white px-5 py-4" data-testid="cleaning-urgency">
+                <p className="text-lg font-black text-[#0B2641] sm:text-xl">ANOTHER DAY, ANOTHER NIGHT WITH THE SAME BUILD-UP.</p>
+                <p className="mt-2 text-base font-semibold leading-7 text-[#30495B]">It's easy to say you'll sort the aircon out next week. Then dinner, school, work and life take over. If the hidden dust and grime is there today, putting it off doesn't clean it. Make the first move now: ask us what a proper clean would involve for your unit.</p>
+              </div>
+              <div className="mt-7 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                <form className="rounded-xl border border-[#C9DDE7] bg-white p-5 shadow-sm sm:p-7" data-testid="cleaning-consultation-form" onSubmit={submitConsultation}>
+                  <h3 className="text-2xl font-black uppercase leading-tight text-[#0B2641]">Book a consultation</h3>
+                  <p className="mt-2 text-sm font-semibold leading-6 text-[#375469] sm:text-base">Leave your details. We'll call you to talk through the cleaning and arrange what comes next. No calendar or payment required.</p>
+                  {consultationStatus === "success" ? (
+                    <div role="status" className="mt-5 rounded-md bg-[#EAF7EF] p-5 text-[#14532D]" data-testid="cleaning-consultation-success">
+                      <p className="text-lg font-black">Request received.</p>
+                      <p className="mt-2 text-sm font-semibold">Thanks, {consultation.name.trim()}. SplitsPro has your details and will call you back to discuss your cleaning consultation.</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                        <label className="block text-sm font-black text-[#0B2641]">Your name <span aria-hidden="true">*</span><input name="name" type="text" required autoComplete="name" value={consultation.name} onChange={(event) => updateConsultation("name", event.target.value)} placeholder="First and last name" className="mt-2 w-full rounded-md border border-[#B4CDD9] px-4 py-3 text-base font-semibold text-[#0B2641] focus:outline-[#008DB8]" /></label>
+                        <label className="block text-sm font-black text-[#0B2641]">Phone number <span aria-hidden="true">*</span><input name="phone" type="tel" required autoComplete="tel" value={consultation.phone} onChange={(event) => updateConsultation("phone", event.target.value)} placeholder="Your best number" className="mt-2 w-full rounded-md border border-[#B4CDD9] px-4 py-3 text-base font-semibold text-[#0B2641] focus:outline-[#008DB8]" /></label>
+                      </div>
+                      <label className="mt-4 block text-sm font-black text-[#0B2641]">Email <span className="font-semibold text-[#567286]">(optional, for the service information)</span><input name="email" type="email" autoComplete="email" value={consultation.email} onChange={(event) => updateConsultation("email", event.target.value)} placeholder="you@example.com" className="mt-2 w-full rounded-md border border-[#B4CDD9] px-4 py-3 text-base font-semibold text-[#0B2641] focus:outline-[#008DB8]" /></label>
+                      {consultationError && <p role="alert" className="mt-4 font-semibold text-red-700">{consultationError}</p>}
+                      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+                        <button type="submit" disabled={consultationStatus === "saving"} className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-7 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] disabled:opacity-50 sm:w-auto" data-testid="cleaning-contact-cta">
+                          {consultationStatus === "saving" ? "Sending request…" : "Book a consultation"} <ArrowRight className="h-5 w-5" />
+                        </button>
+                        <div className="rounded-lg bg-white px-3 py-3" data-testid="cleaning-cta-google-rating" aria-label="SplitsPro Google rating and review count"><GoogleRating /></div>
+                      </div>
+                      <p className="mt-3 text-xs leading-5 text-[#567286]">We use your details to contact you about this request. If you include an email, we can send the relevant service information.</p>
+                    </>
+                  )}
+                </form>
+                <p className="max-w-xs text-base font-bold leading-8 text-[#30495B]">A couple of minutes now beats another month of wondering what is hidden behind the filter. <a className="font-black text-[#007EA7] underline" href={PHONE_TEL}>Prefer to call? Talk to us directly.</a></p>
               </div>
               <p className="mt-4 text-sm font-bold text-[#244456] sm:text-base">✓ Licensed &amp; insured technicians &nbsp; ✓ We explain and show the work</p>
             </div>
