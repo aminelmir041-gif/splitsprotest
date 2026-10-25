@@ -261,7 +261,7 @@ export default function SplitSystemCleaning() {
             <button type="button" onClick={() => goStage(3)}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-offer">
-              See what’s included in your clean <ArrowRight className="h-5 w-5" />
+              Learn more <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
