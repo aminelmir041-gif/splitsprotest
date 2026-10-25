@@ -39,12 +39,9 @@ WORKDAYS = {
 HOLD_SECONDS = 32 * 60
 STRIPE_SESSION_SECONDS = 31 * 60
 
-FIRST_CLEAN_CENTS = 30000  # Regular all-inclusive first-unit price
+FIRST_CLEAN_CENTS = 20000  # Standard complete first-unit cleaning offer
 ADDITIONAL_CLEAN_CENTS = 15000
 CLEANING_BOOKING_PAYMENT_CENTS = 5000
-# Existing LIVE Stripe prices owned by the connected SplitsPro merchant account.
-STRIPE_FIRST_CLEAN_PRICE = "price_1UQOyqPpUx7EUhdNSOh3J3j6"
-STRIPE_ADDITIONAL_CLEAN_PRICE = "price_1UQP2JPpUx7EUhdNIUL0YefK"
 MAX_SYSTEMS = 7
 SLOT_MINUTES = 90
 START_MINUTE = 8 * 60
@@ -65,7 +62,7 @@ def require_booking_enabled():
 
 
 def scheduled_first_clean_cents(on_day: date) -> int:
-    """The regular price applies every day; the early-booking sale is retired."""
+    """Current $200 first-unit price applies every day until changed."""
     return FIRST_CLEAN_CENTS
 
 
@@ -363,20 +360,16 @@ def _create_stripe_checkout(hold):
         # Service address already captured by SplitsPro before redirect; no duplicate address form.
     }
     if hold.get("payment_choice") == "booking":
-        # Charge only the $50 reservation amount; the old $200 Stripe Price is retired.
+        # Collect just $50 to secure the appointment, credited to the $200 first-unit service total.
         body["line_items[0][price_data][currency]"] = "aud"
         body["line_items[0][price_data][unit_amount]"] = str(hold["payment_cents"])
         body["line_items[0][price_data][product_data][name]"] = (
             f'SplitsPro cleaning booking payment — {hold["quantity"]} system(s); balance after service'
         )
-    elif hold["total_cents"] == FIRST_CLEAN_CENTS + ADDITIONAL_CLEAN_CENTS * (hold["quantity"] - 1):
-        # Reuse the existing Dashboard prices at the regular cleaning rate.
-        body["line_items[0][price]"] = STRIPE_FIRST_CLEAN_PRICE
-        if hold["quantity"] > 1:
-            body["line_items[1][price]"] = STRIPE_ADDITIONAL_CLEAN_PRICE
-            body["line_items[1][quantity]"] = str(hold["quantity"] - 1)
     else:
-        # Checkout supports inline Price data for a non-catalogue total.
+        # Always use a server-priced inline line item for the full cleaning total.
+        # Legacy Stripe catalogue prices may still be set to $300; never charge
+        # those old prices for a $200 first-unit offer.
         # Product and amount come exclusively from our server-side booking hold.
         body["line_items[0][price_data][currency]"] = "aud"
         body["line_items[0][price_data][unit_amount]"] = str(hold["total_cents"])
