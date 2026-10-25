@@ -178,8 +178,16 @@ export default function SplitSystemCleaning() {
               <div className="mt-5">
                 <h1 className="font-serif text-[clamp(1.8rem,6vw,3.5rem)] leading-[1.1] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
                 <p className="mt-3 max-w-2xl text-base font-semibold leading-relaxed text-[#3B5969]">You wouldn't let someone sneeze all over a freshly wiped benchtop. So why overlook the dust a neglected aircon could blow back around the room?</p>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#526978]">Inside a neglected aircon, dust, pet hair and dander can collect on the filters, coil and blower wheel. Moisture in the drain tray can leave slimy buildup and musty smells, and mould may develop in damp areas. When the fan runs, some trapped particles and odours can circulate back into your living space.</p>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#526978]">A filter can look clean while dust, pet dander and grime build up deeper inside the coil and blower wheel. Damp areas can also develop biofilm, musty smells and sometimes mould. When the fan runs, some particles and odours may be carried into the room.</p>
               </div>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="What can build up inside an air conditioner">
+              {[
+                ["Dust and pet dander", "Can settle beyond the filters on the coil and blower."],
+                ["Moisture and slimy buildup", "Condensation in the drain tray can allow biofilm and unpleasant smells."],
+                ["Mould in damp areas", "May develop where moisture and dirt remain, even out of sight."],
+                ["Trapped grime", "Can restrict airflow and leave a stale or musty smell when the unit runs."]
+              ].map(([title, description]) => <div key={title} className="border-l-[3px] border-[#008DB8] pl-3"><h2 className="text-sm font-black text-[#0B2641]">{title}</h2><p className="mt-1 text-sm leading-relaxed text-[#526978]">{description}</p></div>)}
             </div>
             <p className="mt-4 border-l-4 border-[#F4C620] pl-4 text-sm font-bold leading-relaxed text-[#244456]">
               The nasties aren't always on the filter. Some buildup hides deeper inside, where a quick wipe won't reach.
@@ -202,7 +210,7 @@ export default function SplitSystemCleaning() {
             <button type="button" onClick={() => goStage(1)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
               <ArrowLeft className="h-4 w-4" /> Back
             </button>
-            <div className="grid items-center gap-5 sm:grid-cols-[1.3fr_0.7fr]">
+            <div>
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro solution</p>
                 <h2 className="mt-2 font-serif text-3xl leading-[1.1] text-[#0B2641] sm:text-4xl">
@@ -210,9 +218,6 @@ export default function SplitSystemCleaning() {
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-[#3F5B6D] sm:text-base">A proper clean reaches past the filters, targets hidden buildup and finishes with protection where suitable.</p>
               </div>
-              <img src="/landing/splitspro-cleaning-family-hero.webp" alt="Family with their dog at home"
-                width={1536} height={1024} loading="lazy" decoding="async"
-                className="h-auto w-full rounded-lg object-contain sm:max-h-64" />
             </div>
 
             <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4" data-testid="cleaning-real-process-gallery">
@@ -261,7 +266,7 @@ export default function SplitSystemCleaning() {
             <button type="button" onClick={() => goStage(3)}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-offer">
-              Learn more <ArrowRight className="h-5 w-5" />
+              See How We Can Help <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
