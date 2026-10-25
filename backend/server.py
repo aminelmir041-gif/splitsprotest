@@ -172,6 +172,30 @@ async def root():
     return {"message": "SplitsPro API"}
 
 
+class CleaningGuideLead(BaseModel):
+    email: str
+    marketing_consent: bool = False
+
+    @field_validator("email")
+    @classmethod
+    def valid_email(cls, value):
+        value = value.strip().lower()
+        if len(value) > 254 or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", value):
+            raise ValueError("Enter a valid email address")
+        return value
+
+
+@api_router.post("/cleaning-guide-leads")
+async def save_cleaning_guide_lead(payload: CleaningGuideLead):
+    await db.cleaning_guide_leads.update_one(
+        {"email": payload.email},
+        {"$set": {"marketing_consent": payload.marketing_consent, "updated_at": now_iso(), "source": "cleaning_exit_guide"},
+         "$setOnInsert": {"created_at": now_iso()}},
+        upsert=True,
+    )
+    return {"ok": True}
+
+
 @api_router.post("/quotes", response_model=Quote)
 async def create_quote(payload: QuoteCreate):
     quote = Quote(**payload.model_dump())
