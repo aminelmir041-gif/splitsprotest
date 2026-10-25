@@ -251,6 +251,7 @@ const BrandPage = ({ offerMode = null }) => {
   const location = useLocation();
   const [selected, setSelected] = useState(null);
   const [activeOfferSlug, setActiveOfferSlug] = useState("rinnai-local");
+  const [offerStage, setOfferStage] = useState(1);
   const activeOfferRange = isRinnaiLocalOffer
     ? (displayRanges.find((range) => range.slug === activeOfferSlug) || displayRanges[0])
     : null;
@@ -361,8 +362,8 @@ const BrandPage = ({ offerMode = null }) => {
         />
       )}
       <PageHero
-        overline={isRinnaiLocalOffer ? "Rinnai & Daikin Cora · Fast, Reliable Installation" : brand.brand}
-        title={isRinnaiLocalOffer ? "When the heat takes over, get your home back — without turning your life upside down." : brand.h1}
+        overline={isRinnaiLocalOffer ? "Rinnai & Daikin Cora — Fast Installation Available" : brand.brand}
+        title={isRinnaiLocalOffer ? "A hassle-free way to install split systems" : brand.h1}
         sub={isRinnaiLocalOffer ? "Reliable installation. Minimal disruption. 5-star rated. Installations within 2 days. Sydney, Central Coast & Wollongong." : brand.tagline}
         image={isRinnaiLocalOffer ? RINNAI_LOCAL_HERO_IMAGE : brand.image}
         mobileImageFirst={isRinnaiLocalOffer}
@@ -430,10 +431,10 @@ const BrandPage = ({ offerMode = null }) => {
               <div className="mx-auto max-w-5xl">
                 <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#C8A46A]">A hassle-free way to install split systems</p>
                 <h2 className="mt-4 max-w-4xl font-serif text-4xl font-medium leading-[1.06] tracking-tight text-[#0B0B0B] sm:text-5xl lg:text-6xl">
-                  You pick the system. We handle the rest.
+                  No chasing an aircon installer, then an electrician, only to find out the advertised price did not include the bits your home actually needs.
                 </h2>
                 <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#55555A]">
-                  No chasing an aircon installer, then an electrician, then finding out the “from” price did not include the bits your home actually needs. Our standard installed price includes the unit, labour, up to 3 metres of pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of electrical connection if required.
+                  Our standard installed price includes the unit, labour, up to 3 metres of pipework, a standard wall bracket or suitable floor placement, an isolation switch and up to 20 metres of electrical connection if required.
                 </p>
 
                 <p className="mt-10 max-w-4xl font-serif text-3xl leading-tight text-[#0B0B0B] sm:text-4xl">
@@ -470,6 +471,15 @@ const BrandPage = ({ offerMode = null }) => {
             </div>
           </section>
 
+          <section className="bg-[#F7F5F1] py-12" data-testid="installation-eligibility"><div className="sp-container max-w-5xl">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Stage 1 of 3 · Installation check</p>
+            <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Is your installation standard?</h2>
+            <p className="mt-4 text-[#55555A]">Single-storey, back-to-back installation, with up to 3 metres of pipework and straightforward access? A dedicated electrical circuit up to 20 metres is included where required under standard terms.</p>
+            <div className="mt-7 flex flex-wrap gap-4">
+              <button type="button" onClick={() => {setOfferStage(2);window.setTimeout(() => document.getElementById("local-offer-trust")?.scrollIntoView({behavior:"smooth"}),80);}} className="rounded-lg bg-[#0B0B0B] px-7 py-4 font-bold text-white">Yes — standard installation →</button>
+              <a href="/contact?service=split-system-installation" className="rounded-lg border border-[#0B0B0B] px-7 py-4 font-bold text-[#0B0B0B]">No / not sure — request a quote</a>
+            </div></div></section>
+          {offerStage >= 2 && <>
           <div id="local-offer-sticky-trigger" className="h-px" aria-hidden="true" />
           <section id="local-offer-trust" className="scroll-mt-24 bg-[#F7F5F1] py-10 sm:py-16" data-testid="local-offer-proof">
             <div className="sp-container">
@@ -637,11 +647,16 @@ const BrandPage = ({ offerMode = null }) => {
               </div>
             </div>
           </section>
+          <div className="bg-[#F7F5F1] py-10"><div className="sp-container">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Stage 2 of 3 · Premium systems &amp; trust</p>
+            <button type="button" onClick={() => {setOfferStage(3);window.setTimeout(() => document.getElementById("installed-prices")?.scrollIntoView({behavior:"smooth"}),80);}} className="mt-4 rounded-lg bg-[#0B0B0B] px-7 py-4 font-bold text-white">View offers and book →</button>
+          </div></div>
+          </>}
         </>
       )}
 
 
-      {isRinnaiLocalOffer && (
+      {isRinnaiLocalOffer && offerStage >= 3 && (
         <section id="installed-prices" className="scroll-mt-24 bg-white py-10 sm:py-16" data-testid="current-installed-deals">
           <div className="sp-container">
             <div className="mx-auto max-w-6xl">
@@ -1044,7 +1059,7 @@ const BrandPage = ({ offerMode = null }) => {
           </div>
         </div>
       </section>
-      {isRinnaiLocalOffer && <FloatingBookingShortcut />}
+      {isRinnaiLocalOffer && offerStage >= 3 && <FloatingBookingShortcut />}
       {isRinnaiLocalOffer && <ExitQuoteCapture selectedUnit={selected} />}
     </>
   );
