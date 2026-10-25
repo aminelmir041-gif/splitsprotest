@@ -275,9 +275,6 @@ export default function SplitSystemCleaning() {
       {(
         <section id="cleaning-stage-2" className="scroll-mt-16 bg-[#F0F9FC] py-6 sm:py-12" data-testid="cleaning-solution-trust">
           <div className="sp-container mx-auto max-w-6xl">
-            <button type="button" onClick={() => goStage(1)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
-              <ArrowLeft className="h-4 w-4" /> Back
-            </button>
             <div className="mb-10 rounded-xl bg-white px-6 py-8 shadow-sm sm:px-10 sm:py-10" data-testid="cleaning-caring-home-message">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">A better clean for the home you care about</p>
               <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">If it still smells inside, wiping the outside isn't enough.</h2>
@@ -379,35 +376,38 @@ export default function SplitSystemCleaning() {
         <>
           <section id="cleaning-stage-3" className="scroll-mt-16 bg-[#FFF7E8] py-8 sm:py-14" data-testid="cleaning-offer">
             <div className="sp-container mx-auto max-w-6xl">
-              <button type="button" onClick={() => goStage(2)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
-                <ArrowLeft className="h-4 w-4" /> Back to how we clean
-              </button>
               <div className="grid items-center gap-5 sm:grid-cols-[1fr_0.45fr]">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">Now, here's the offer</p>
                   <h2 className="mt-2 max-w-3xl font-black uppercase text-3xl leading-tight text-[#0B2641] sm:text-5xl">
-                    The complete six-step Hero Method. One straightforward price.
+                    ONE FULL HERO METHOD CLEAN. NO SURPRISE EXTRAS.
                   </h2>
-                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4F6575] sm:text-base">
-                    The six-step Hero Method includes suitable deep indoor cleaning, drain care, outdoor unit cleaning and final checks. Choose your systems and date below.
-                  </p>
+                  <p className="mt-6 max-w-3xl text-base leading-8 text-[#405B6D] sm:text-lg">The six-step Hero Method includes suitable deep indoor cleaning, drain care, outdoor-unit cleaning and final checks.</p>
+                  <p className="mt-4 max-w-3xl text-base leading-8 text-[#405B6D] sm:text-lg">See the complete price before you pick your date. <strong className="text-[#0B2641]">Every extra split cleaned on the same visit is $120.</strong></p>
                 </div>
               </div>
-              <div className="mt-6 grid gap-6 rounded-xl bg-[#08263E] p-5 text-white sm:grid-cols-[1fr_1fr] sm:p-8" id="cleaning-prices" data-testid="cleaning-prices">
+              <div className="mt-9 grid gap-9 rounded-xl bg-[#08263E] px-6 py-8 text-white sm:grid-cols-[1fr_1fr] sm:px-9 sm:py-11" id="cleaning-prices" data-testid="cleaning-prices">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#4BD0F0]">Complete split-system deep clean</p>
-                  <p className="mt-3 text-sm leading-relaxed text-white/85">One complete six-step Hero Method service, including accessible indoor cleaning, drainage and outdoor care, with our cleaning-related musty-odour guarantee. No $50 call-out fee or surprise extras for a standard accessible split.</p>
-                  <p className="mt-3 text-xs text-white/60">Standard accessible wall-mounted systems, same property and visit. Non-standard work is always quoted before you approve it. Your $50 online booking payment counts towards the service price; it is not a call-out fee.</p>
+                  <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4BD0F0]">Complete split-system Hero Method</p>
+                  <h3 className="mt-4 text-2xl font-black uppercase leading-tight text-white sm:text-3xl">ONE PROPER CLEAN. INSIDE AND OUT.</h3>
+                  <p className="mt-5 text-base leading-8 text-white/90 sm:text-lg">Accessible indoor cleaning, drainage, outdoor care and our cleaning-related musty-odour guarantee are included.</p>
+                  <p className="mt-4 text-base leading-8 text-white/90 sm:text-lg"><strong className="text-[#F4C620]">No separate call-out fee.</strong> We quote any non-standard work before asking you to approve it.</p>
+                  <p className="mt-5 text-sm leading-7 text-white/70">Applies to accessible wall-mounted splits at the same property and on the same visit. Your $50 online booking payment is part of the total — not an extra fee.</p>
                 </div>
                 <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-[#F4C620]">First split system</p>
+                  <p className="text-sm font-black uppercase tracking-widest text-[#F4C620]">First split system</p>
                   <strong className="mt-1 block text-6xl font-black leading-none text-white sm:text-7xl">{money(firstPrice)}</strong>
-                  <p className="mt-2 text-2xl font-black uppercase text-[#F4C620]">+ $120 each extra system</p>
-                  <p className="mt-2 text-sm font-bold text-white/85">2 systems {money(cleaningPrice(2, firstPrice))} · 3 systems {money(cleaningPrice(3, firstPrice))}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-white/75">Choose what suits you at checkout: pay $50 to book and the remaining $150 after cleaning, or pay the full $200 now by card or an eligible Afterpay / Pay in 4 option. Pay-later availability and approval depend on the provider. Want Afterpay for the $150 balance on the day? Ask us ahead of your visit so we can confirm availability.</p>
+                  <p className="mt-5 text-2xl font-black uppercase leading-tight text-[#F4C620] sm:text-3xl">EVERY EXTRA SPLIT + $120</p>
+                  <p className="mt-3 text-base font-bold leading-8 text-white/90">2 systems {money(cleaningPrice(2, firstPrice))} · 3 systems {money(cleaningPrice(3, firstPrice))}</p>
+                  <div className="mt-7 space-y-4">
+                    <p className="text-base font-bold leading-8 text-white sm:text-lg">CHOOSE HOW YOU PAY.</p>
+                    <p className="text-base leading-8 text-white/85">Book online with <strong className="text-white">$50 towards the total</strong>, then pay the balance after cleaning.</p>
+                    <p className="text-base leading-8 text-white/85">Or pay the full amount now by card or an eligible buy-now-pay-later option at checkout.</p>
+                    <p className="text-sm leading-7 text-white/65">Payment options and approval depend on the provider. Ask us in advance if you want to use instalments for a remaining balance.</p>
+                  </div>
                 </div>
               </div>
-              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold text-[#244456]" data-testid="cleaning-offer-reassurance"><GoogleRating /><span>✓ Licensed & insured technicians</span><span>✓ Secure $50 booking · balance after cleaning</span></div>
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-bold text-[#244456] sm:text-base" data-testid="cleaning-offer-reassurance"><GoogleRating /><span>✓ Licensed & insured technicians</span><span>✓ Secure $50 booking · balance after cleaning</span></div>
               <div className="mt-5" data-testid="cleaning-before-booking-cta-pay-later-reminder">
                 <PayLaterReminder kind="cleaning" compact stripeReady={paymentReadiness.stripe_ready} paypalReady={paymentReadiness.paypal_ready} />
               </div>
@@ -415,7 +415,7 @@ export default function SplitSystemCleaning() {
                 className="mt-4 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-10">
                 Choose systems &amp; date <ArrowRight className="h-5 w-5" />
               </button>
-              <p className="mt-3 text-xs text-[#506979]">We tackle dirt and cleaning-related odours, but no cleaning can guarantee sterile air, prevent all future mould or repair mechanical faults.</p>
+              <p className="mt-5 text-sm leading-7 text-[#506979]">We tackle dirt and cleaning-related odours, but no cleaning can guarantee sterile air, prevent all future mould or repair mechanical faults.</p>
             </div>
           </section>
 
@@ -506,12 +506,12 @@ export default function SplitSystemCleaning() {
 
       <section className="bg-white py-14 sm:py-20" data-testid="cleaning-faq">
         <div className="sp-container grid gap-10 lg:grid-cols-[.68fr_1.32fr] lg:gap-16">
-          <div><p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#9B753E]">Straight answers</p><h2 className="mt-3 font-serif text-4xl text-[#0B0B0B] sm:text-5xl">Before we rock up.</h2></div>
+          <div><p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#9B753E]">Straight answers</p><h2 className="mt-3 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">Still have questions? Straight answers before we arrive.</h2></div>
           <div className="border-t border-[#E6E0D7]">
             {FAQS.map((item, index) => (
               <div className="border-b border-[#E6E0D7]" key={item.q}>
-                <button type="button" aria-expanded={openFaq === index} onClick={() => setOpenFaq(openFaq === index ? -1 : index)} className="flex w-full items-center justify-between gap-5 py-5 text-left text-sm font-bold text-[#192532] sm:text-base"><span>{item.q}</span><ChevronDown className={"h-4 w-4 shrink-0 transition-transform " + (openFaq === index ? "rotate-180" : "")} /></button>
-                {openFaq === index && <p className="pb-5 text-sm leading-relaxed text-[#60676E]">{item.a}</p>}
+                <button type="button" aria-expanded={openFaq === index} onClick={() => setOpenFaq(openFaq === index ? -1 : index)} className="flex w-full items-center justify-between gap-5 py-6 text-left text-base font-black leading-7 text-[#192532] sm:text-lg"><span>{item.q}</span><ChevronDown className={"h-4 w-4 shrink-0 transition-transform " + (openFaq === index ? "rotate-180" : "")} /></button>
+                {openFaq === index && <p className="max-w-3xl pb-7 text-base leading-8 text-[#536675] sm:text-lg">{item.a}</p>}
               </div>
             ))}
           </div>
