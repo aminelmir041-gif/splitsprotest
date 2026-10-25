@@ -174,21 +174,13 @@ export default function SplitSystemCleaning() {
         <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] py-6 sm:py-14" data-testid="cleaning-diagnosis">
           <div className="sp-container mx-auto max-w-6xl">
             <p className="text-xs font-black uppercase tracking-[0.15em] text-[#8D6325]">For the little ones, the older ones and everyone in between</p>
-            <div className="mt-4 grid items-center gap-5 md:grid-cols-[1.1fr_0.9fr] md:gap-12">
-              <div>
-                <h1 className="font-serif text-[clamp(2.05rem,7.6vw,4.25rem)] leading-[1.08] tracking-tight text-[#0B2641]">
-                  You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span>
-                </h1>
-                <p className="mt-4 max-w-xl text-base font-semibold leading-relaxed text-[#3B5969] sm:text-lg">
-                  You wouldn't let someone sneeze all over a freshly wiped benchtop. So why overlook the dust a neglected aircon could blow back around the room?
-                </p>
-                <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#526978] sm:text-base">
-                  Behind a clean-looking cover, dust, pet dander, damp grime and sometimes mould can build up. Airflow may recirculate particles into the rooms your children, pets and older loved ones share.
-                </p>
+            <div className="mt-4">
+              <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby at home — if it's not nailed down, it's food. What about the aircon they breathe around?" width={409} height={487} loading="eager" decoding="async" className="mx-auto block w-full max-w-[520px] h-auto rounded-xl object-contain" />
+              <div className="mt-5">
+                <h1 className="font-serif text-[clamp(1.8rem,6vw,3.5rem)] leading-[1.1] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
+                <p className="mt-3 max-w-2xl text-base font-semibold leading-relaxed text-[#3B5969]">You wouldn't let someone sneeze all over a freshly wiped benchtop. So why overlook the dust a neglected aircon could blow back around the room?</p>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#526978]">Behind a clean-looking cover, dust, pet dander, damp grime and sometimes mould can build up. Airflow may recirculate particles into the rooms your loved ones share.</p>
               </div>
-              <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby playing at home — a reminder to care for hidden dirt inside the air conditioner"
-                width={409} height={487} loading="eager" decoding="async"
-                className="mx-auto h-[220px] w-full max-w-md rounded-xl object-contain sm:h-[330px] md:h-[460px]" />
             </div>
             <p className="mt-4 border-l-4 border-[#F4C620] pl-4 text-sm font-bold leading-relaxed text-[#244456]">
               Looking after the people you love starts with caring for the parts of your home you can't easily see.
