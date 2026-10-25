@@ -208,7 +208,6 @@ def main() -> None:
     landing_sequence = (
         'data-testid="cleaning-diagnosis"',
         'data-testid="cleaning-baby-hero-overlay"',
-        'data-testid="cleaning-next-solution"',
         'data-testid="cleaning-solution-trust"',
         'data-testid="cleaning-process-benefits"',
         'data-testid="cleaning-service-promise"',
@@ -223,20 +222,22 @@ def main() -> None:
     if "splitspro-cleaning-baby-approved.png" not in cleaning_page or "splitspro-cleaning-family-hero.webp" in cleaning_page:
         fail("cleaning page must show only the approved baby hero")
     if not all(token in cleaning_page for token in (
-        "Sydney parents", "FRESHER AIR WHERE YOUR FAMILY",
-        "THE HOUSE LOOKS SPOTLESS", "STICKY GRIME NEEDS MORE THAN PLAIN WATER",
-        "6-STEP HERO METHOD", 'id="hero-method"',
+        "Sydney mums", "FRESHER AIR WHERE YOUR FAMILY",
+        "YOU'VE DONE EVERYTHING TO KEEP HOME CLEAN", "STICKY GRIME NEEDS MORE THAN PLAIN WATER",
+        "6-STEP GOLD-STANDARD DEEP CLEAN", 'id="gold-standard-clean"',
         'data-testid="cleaning-sneeze-analogy"', 'data-testid="cleaning-urgency"',
         'data-testid="cleaning-consultation-form"',
         'data-testid="cleaning-contact-cta"', 'data-testid="cleaning-cta-google-rating"',
-        'data-testid="cleaning-google-reviews-proof"',
+        'data-testid="cleaning-google-review-cards"', 'data-testid="cleaning-google-review-card"',
+        'data-testid="cleaning-free-consultation-benefits"',
+        'data-testid="cleaning-rating-guarantee"',
     )):
         fail("cleaning page must show the family hook, gold-standard process, urgency, testimonials and consultation CTA")
     if any(token in cleaning_page.lower() for token in (
         "$50", "call-out fee", "see dates", "book online",
         'data-testid="cleaning-booking"', "getcleaningslots",
         'data-testid="cleaning-prices"', "paylaterreminder",
-        "paid for a clean", "still smells", "musty smell",
+        "paid for a clean",
     )):
         fail("parent-focused cleaning page must have no booking, pricing or odour-led sales angle")
     if not all(token in cleaning_page for token in (
@@ -253,15 +254,22 @@ def main() -> None:
         fail("cleaning page must not advertise retired coating services")
     if any(stage in cleaning_page for stage in ("{stage === 1 && (", "{stage === 2 && (", "{stage === 3 && (")):
         fail("cleaning sales content must be one continuous page, not a gated funnel")
-    if 'scrollToSection("hero-method")' not in cleaning_page or 'scrollToSection("cleaning-next-step")' not in cleaning_page:
+    if 'scrollToSection("cleaning-next-step")' not in cleaning_page:
         fail("page must retain smooth-scroll exploration to the consultation form")
+    if "Hero Method" in cleaning_page or "HERO METHOD" in cleaning_page or "Specialist PCB cleaning" in cleaning_page:
+        fail("retired internal terminology and charge caveat must be absent")
+    for objection in ("Isn't that enough?", "still smells after a clean", "What actually gets rid of mould?", "genuinely free?"):
+        if objection not in cleaning_page:
+            fail(f"cleaning FAQ missing real customer objection {objection}")
+    if "Claim your free consultation" not in cleaning_page or "No pressure to buy" not in cleaning_page:
+        fail("free, pressure-free consultation offer must be clear before the form")
     pricing_source = (ROOT / "src/lib/cleaningPricing.js").read_text(encoding="utf-8")
     if "scheduledCleaningPrice = () => 200" not in pricing_source:
         fail("the separate cleaning checkout first-unit local fallback must remain $200")
     if "BLACK FRIDAY EARLY-BIRD SALE" in cleaning_page or "PRICE RISES $20 EVERY THURSDAY" in cleaning_page:
         fail("retired Black Friday promotion must not appear on the cleaning page")
-    if cleaning_page.count("data-testid=\"cleaning-next-solution\"") != 1 or cleaning_page.count("data-testid=\"cleaning-next-offer\"") != 1:
-        fail("cleaning page must have one forward exploration button on each persuasive step")
+    if "data-testid=\"cleaning-next-solution\"" in cleaning_page or cleaning_page.count("data-testid=\"cleaning-next-offer\"") != 1:
+        fail("cleaning page must have no redundant first-stage CTA and only one final exploration CTA")
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',

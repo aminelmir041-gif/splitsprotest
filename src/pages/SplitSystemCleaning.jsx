@@ -7,16 +7,32 @@ import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
 // This is the ONE consumer sales landing page for split-system cleaning.
-// One continuous explanation of the Hero Method, with no on-page booking calendar.
+// One continuous explanation of the Gold-Standard Deep Clean, with no on-page booking calendar.
 
+
+const GoogleReviewBadge = () => (
+  <span className="inline-flex items-center gap-2 text-sm font-black text-[#374151]">
+    <svg viewBox="0 0 48 48" className="h-5 w-5" role="img" aria-label="Google">
+      <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-7.97 6.56-16.17z"/>
+      <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
+      <path fill="#FBBC04" d="M11.69 28.18c-.44-1.32-.69-2.73-.69-4.18s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z"/>
+      <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>
+    </svg>
+    Google review
+  </span>
+);
 
 const FAQS = [
-  { q: "We already wash the filters. Why would the rest need cleaning?", a: "Filters are just the first layer. Dust, pet dander, airborne cooking residue and moisture can also collect on accessible coils, the blower wheel and the drain tray. Our Hero Method goes beyond the filter wash." },
-  { q: "Can dust and mould inside a home aggravate asthma or allergies?", a: "Yes. Dust and mould are recognised triggers for some people with asthma and allergies. Keeping accessible parts of a split system clean is a practical way to tackle one potential source of build-up." },
-  { q: "What do you clean in a baby's bedroom or a family living area?", a: "We protect nearby furniture and play areas, open suitable covers, clean accessible internal surfaces, look after drainage, clean the outdoor unit where appropriate, then reassemble and check operation." },
-  { q: "What about kitchens where we prepare family meals?", a: "Airborne cooking oils and fine dust can settle on indoor components over time. Suitable professional detergents help loosen those deposits so we can remove accessible grime rather than just wiping the outside." },
-  { q: "Will you need to take the entire air conditioner off the wall?", a: "Usually not. We open or remove suitable service-accessible covers and parts. The exact access and cleaning method depend on the unit's design." },
-  { q: "How do we know the work was properly done?", a: "We explain the service before starting, protect the area, reassemble and test the unit, and show accessible areas cleaned where practical. If agreed accessible areas were missed, contact us within seven days so we can inspect and make that work right." }
+  { q: "We wash the filters. Isn't that enough?", a: "Filters catch some of the dust passing through, but they are only the first layer. The blower wheel, accessible coils and drain tray can still collect dust, greasy residue and moisture. A filter rinse doesn't reach that build-up." },
+  { q: "If dirt is inside the aircon, does it end up around the house?", a: "Your split system pulls room air through its indoor unit and blows it back into the spaces your family uses. Fine particles in moving air can travel with that airflow. Removing accessible internal build-up tackles a source that ordinary bench and floor cleaning doesn't reach." },
+  { q: "My aircon still smells after a clean. Why would yours be different?", a: "A filter wash or a spray through the front can miss deposits on the blower, coils and drain components. Our Gold-Standard Deep Clean goes into suitable accessible parts and checks the drainage. If an odour returns, the cause may include trapped moisture or another issue that needs investigation." },
+  { q: "What actually gets rid of mould? Do you just spray something over it?", a: "We open the suitable covers and use coil-compatible cleaning products, controlled rinsing and steam where appropriate to loosen and physically remove accessible contamination. Products are selected and used according to their labels. We also check drainage because persistent moisture lets mould return." },
+  { q: "Can dust and mould trigger asthma or allergies?", a: "Yes. Dust and mould are recognised asthma and allergy triggers. A proper aircon clean is one practical way to deal with build-up in the system circulating room air. Keeping the rest of the home dry and well-ventilated matters too." },
+  { q: "What about cleaning products near children's beds or our kitchen?", a: "We protect furniture and nearby surfaces, isolate power and use products suitable for the unit. We control rinse water, follow product instructions and reassemble and check the aircon before finishing. We explain the process before we start." },
+  { q: "Do you clean the drain and the outdoor unit too?", a: "Yes, where safe and accessible. We look after the condensate drain components to help clear sludge and support water flow, and remove appropriate outdoor debris and grime. Those parts matter to how the whole system operates." },
+  { q: "Could I just use a cheap spray and clean it myself?", a: "Keep washing removable filters as the manufacturer advises—that's useful routine care. Deep internal cleaning is different: there are electrical parts, delicate coils, drainage paths and model-specific access. The wrong spray or water pressure can do damage." },
+  { q: "How often should a split system have a proper deep clean?", a: "It depends on use, indoor dust, pets, humidity and the unit's condition. We can talk you through simple signs to check and a sensible maintenance routine for your household during the free consultation." },
+  { q: "Is the consultation genuinely free? Do we have to buy a clean?", a: "It's free and there is no pressure or obligation to book anything. You'll speak with an experienced air-conditioning professional about your unit, what deep cleaning involves, how to reduce build-up at home and what options make sense. You decide what happens next." }
 ];
 export default function SplitSystemCleaning() {
   const scrollToSection = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -95,8 +111,8 @@ export default function SplitSystemCleaning() {
   return (
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
-        <title>Six-Step Hero Method | Split-System Deep Cleaning Sydney | SplitsPro</title>
-        <meta name="description" content="For Sydney parents and carers: a proper one-visit Hero Method deep clean for the hidden dust and grime in the split system their family lives around. Learn how we care for indoor units, drains and outdoor coils." />
+        <title>Six-Step Gold-Standard Deep Clean | Split-System Deep Cleaning Sydney | SplitsPro</title>
+        <meta name="description" content="For Sydney parents and carers: a proper one-visit Gold-Standard Deep Clean deep clean for the hidden dust and grime in the split system their family lives around. Learn how we care for indoor units, drains and outdoor coils." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="Fresher Air Where Your Family Eats, Plays & Sleeps | SplitsPro" />
         <meta property="og:description" content="A practical, parent-focused deep clean for the aircon running through family mealtimes, play and sleep. Discover what our six-step gold-standard process reaches beyond a filter rinse." />
@@ -109,30 +125,32 @@ export default function SplitSystemCleaning() {
         <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] pt-0 pb-6 sm:py-10" data-testid="cleaning-diagnosis">
           <div className="sp-container mx-auto max-w-6xl">
             <div className="mt-0">
-              <div className="relative isolate overflow-hidden bg-[#08263E] sm:mx-auto sm:max-w-[680px] sm:rounded-xl" data-testid="cleaning-baby-hero-overlay">
-                <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby resting comfortably at home" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="-mx-4 block h-auto w-[calc(100%+2rem)] max-w-none object-contain sm:mx-auto sm:w-full" />
-                <div className="absolute inset-x-0 top-0 z-10 bg-[#052137]/95 px-4 py-2.5 text-white sm:px-7 sm:py-4" data-testid="cleaning-hero-title-over-photo">
-                  <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-[#F4C620] sm:text-xs">Sydney parents &amp; families</p>
-                  <h1 className="mt-1 max-w-2xl font-sans text-[clamp(1.12rem,4.5vw,2rem)] font-black uppercase leading-[1.12] tracking-tight text-white">FRESHER AIR WHERE YOUR FAMILY <span className="text-[#F4C620]">EATS, PLAYS &amp; SLEEPS.</span></h1>
+              <div className="overflow-hidden bg-[#08263E] sm:mx-auto sm:max-w-[680px] sm:rounded-xl" data-testid="cleaning-baby-hero-overlay">
+                <div className="relative z-10 bg-[#052137] px-4 py-4 text-white sm:px-7 sm:py-5" data-testid="cleaning-hero-title-over-photo">
+                  <p className="text-[0.7rem] font-black uppercase tracking-[0.12em] text-[#F4C620] sm:text-xs">For Sydney mums, parents &amp; everyone who looks after family</p>
+                  <h1 className="mt-2 max-w-2xl font-sans text-[clamp(1.35rem,5.2vw,2rem)] font-black uppercase leading-[1.12] tracking-tight text-white">FRESHER AIR WHERE YOUR FAMILY <span className="text-[#F4C620]">EATS, PLAYS &amp; SLEEPS.</span></h1>
+                </div>
+                <div className="relative h-[370px] overflow-hidden bg-[#E6F3FA] sm:h-[540px]" data-testid="cleaning-baby-photo-crop">
+                  <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby smiling and playing at home" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="absolute -left-[85%] -top-[25%] block h-auto w-[180%] max-w-none sm:-left-[84%] sm:-top-[62%] sm:w-[180%]" />
                 </div>
               </div>
-              <p className="mx-auto mt-4 max-w-[680px] text-base font-black leading-7 text-[#12384E] sm:text-xl">One thorough visit to tackle hidden dust, mould-prone grime and debris inside your split system. <span className="text-[#008DB8]">Our workmanship is backed by a return-to-clean promise.</span></p>
+              <p className="mx-auto mt-4 max-w-[680px] text-base font-black leading-7 text-[#12384E] sm:text-xl">One thorough visit to tackle hidden dust and mould-prone grime inside your split system. <span className="text-[#008DB8]">Satisfaction guaranteed, or you don't pay for the clean.</span></p>
               <div className="mt-7 max-w-4xl">
-                <p className="text-xl font-black leading-8 text-[#12384E] sm:text-2xl">You wash the toys, wipe down the kitchen benches, and change the sheets.</p>
-                <p className="mt-4 text-lg font-bold leading-8 text-[#294353] sm:text-xl">But the aircon keeps running during family dinner, your child's afternoon nap and the nights you want everyone sleeping comfortably.</p>
-                <p className="mt-5 border-l-4 border-[#F4C620] pl-5 text-base leading-8 text-[#294353] sm:text-lg font-semibold">You already know your split system moves air around the home. The part most people never see is what builds up <em>behind its filter</em>. <strong className="text-[#0B2641]">So what should a gold-standard deep clean actually remove?</strong></p>
+                <p className="text-xl font-black leading-8 text-[#12384E] sm:text-2xl">Being a mum is a full-time job that doesn't clock off.</p>
+                <p className="mt-4 text-lg font-bold leading-8 text-[#294353] sm:text-xl">From meals and washing to school runs and bedtime, you're already doing a hundred little things to give your kids the best. You want them to grow up happy, healthy and ready to take on the world.</p>
+                <p className="mt-5 border-l-4 border-[#F4C620] pl-5 text-base leading-8 text-[#294353] sm:text-lg font-semibold">And while you're doing all that, the aircon keeps drawing air in and sending it back into the rooms where they eat, play and sleep. The question isn't whether you care enough — you clearly do. <strong className="text-[#0B2641]">It's what a gold-standard clean reaches behind the filter that matters.</strong></p>
               </div>
             </div>
             <section className="mt-10" aria-label="What can build up inside an air conditioner">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Why a spotless room can still feel stale</p>
-              <h2 className="mt-2 max-w-4xl text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">THE HOUSE LOOKS SPOTLESS. <span className="text-[#008DB8]">WHAT IS THE AIRCON MOVING THROUGH IT?</span></h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2B4758] sm:text-lg font-semibold">You work hard to make home comfortable for the people who depend on you. It's easy to miss what sits behind the front panel of a split system.</p>
+              <h2 className="mt-2 max-w-4xl text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">YOU'VE DONE EVERYTHING TO KEEP HOME CLEAN. <span className="text-[#008DB8]">WHAT ABOUT THE AIRCON RUNNING THROUGH IT?</span></h2>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2B4758] sm:text-lg font-semibold">You're already putting in the work: the clean sheets, the dinner prep, the toys off the floor. But it's easy to overlook the aircon's internal parts while the unit keeps moving room air around the people you love.</p>
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 {[
                   ["You clean the surfaces your kids touch.", "But every time the split runs, room air is pulled through the unit and sent back into the spaces where they eat, play and sleep. A washed filter is only part of the clean."],
                   ["You finally settle the kids for the night.", "Then the split runs for hours while they sleep. The dust and residue on internal parts do not disappear because you washed the front filter."],
-                  ["Asthma triggers are already on your mind.", "Dust and mould are recognised asthma triggers. If they have built up in the system you use every day, that is another place in your home worth cleaning properly."],
-                  ["You want your parents to visit a cared-for home.", "You make the tea, tidy the lounge and get everything ready. The aircon above everyone deserves the same attention, especially if it has not had a deep clean in years."]
+                  ["You want to give your children the world.", "A good start in life isn't just big moments. It's the everyday home you work so hard to make comfortable. The hidden parts of the aircon deserve that same effort."],
+                  ["And you want the best for your parents, too.", "For older loved ones and the rest of your family, a cared-for home includes the things you can't easily see — like the build-up inside a split system."]
                 ].map(([title, description]) => (
                   <div key={title} className="rounded-lg bg-white p-5 border-l-4 border-[#008DB8]">
                     <h3 className="text-lg font-black leading-snug text-[#0B2641] sm:text-xl">{title}</h3>
@@ -145,9 +163,9 @@ export default function SplitSystemCleaning() {
             <section className="mt-12 rounded-xl border border-[#D4E5ED] bg-white px-5 py-8 sm:px-9 sm:py-10" aria-label="Everyday spaces your family uses">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">You know that feeling</p>
               <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">YOU'VE CLEANED THE ROOM. <span className="text-[#008DB8]">BUT WHAT'S STILL INSIDE THE UNIT?</span></h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">You wipe the kitchen benches before preparing dinner and keep the kids' rooms clean. You would never knowingly leave dust and grime all over those surfaces.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">The same rooms have an aircon moving air through them for hours. Dust, cooking residue and moisture collect on internal parts. Damp deposits also create conditions where mould and bacteria thrive. That is why the inside of the unit deserves attention, not just its filter.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Dust and mould are recognised asthma triggers. If you are careful about bedding, floors and food preparation for your family, the appliance circulating room air belongs on that cleaning list too.</p>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">You put real effort into the home: food prepared properly, clean bedding, washed toys, wiped benches. That's the everyday work of looking after your family — and it deserves to count.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Yet the aircon in those same rooms keeps pulling air in and blowing it back out. Behind a clean-looking filter, dust and damp residue build up on parts you cannot see. Those deposits can support mould and bacterial growth. It's worth cleaning the system itself, not just everything around it.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">You shouldn't have to wonder whether the aircon is the one thing your household cleaning never reaches. A proper deep clean helps you deal with that overlooked build-up so you can get on with family life.</p>
               <div className="mt-6 rounded-lg border-l-8 border-[#F4C620] bg-[#FFF0A8] px-5 py-5" data-testid="cleaning-sneeze-analogy">
                 <p className="text-xl font-black uppercase leading-8 text-[#0B2641] sm:text-2xl">YOU WOULDN'T LET SOMEONE <span className="bg-[#F4C620] px-1">SNEEZE OVER YOUR FAMILY'S DINNER.</span></p>
                 <p className="mt-3 text-base font-bold leading-7 text-[#294353] sm:text-lg">So why leave years of dust and grime sitting in the aircon running while you cook, eat and settle the kids? The gold standard starts where a quick filter wash stops.</p>
@@ -165,11 +183,6 @@ export default function SplitSystemCleaning() {
                 ))}
               </div>
             </section>
-            <button type="button" onClick={() => scrollToSection("hero-method")}
-              className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
-              data-testid="cleaning-next-solution">
-              See what most quick cleans miss <ArrowRight className="h-5 w-5" />
-            </button>
           </div>
         </section>
       )}
@@ -177,14 +190,9 @@ export default function SplitSystemCleaning() {
       {(
         <section id="cleaning-stage-2" className="scroll-mt-16 bg-[#F0F9FC] py-6 sm:py-12" data-testid="cleaning-solution-trust">
           <div className="sp-container mx-auto max-w-6xl">
-            <div className="mb-10 rounded-xl bg-white px-6 py-8 shadow-sm sm:px-10 sm:py-10" data-testid="cleaning-caring-home-message">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">For the rooms where your family sleeps, plays and eats</p>
-              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">A CHILD'S PLAY AREA DESERVES MORE THAN A SURFACE WIPE.</h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">If you keep the toys, kitchen bench and bedding clean, the hidden dust inside the system running nearby deserves attention too. Here is how we approach it.</p>
-            </div>
             <div>
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro Hero Method</p>
+                <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro Gold-Standard Deep Clean</p>
                 <h2 className="mt-3 max-w-4xl font-sans text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">
                   We strip it back. <span className="text-[#008DB8]">Not just wipe over it.</span>
                 </h2>
@@ -206,9 +214,9 @@ export default function SplitSystemCleaning() {
                 </figure>
               ))}
             </div>
-            <section className="mt-14" id="hero-method" data-testid="cleaning-process-benefits">
+            <section className="mt-14" id="gold-standard-clean" data-testid="cleaning-process-benefits">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">The SplitsPro Bare-Bones Deep Clean</p>
-              <h3 className="mt-3 max-w-5xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">NOT JUST A FILTER RINSE. <span className="text-[#008DB8]">HERE'S OUR 6-STEP HERO METHOD.</span></h3>
+              <h3 className="mt-3 max-w-5xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">NOT JUST A FILTER RINSE. <span className="text-[#008DB8]">HERE'S OUR 6-STEP GOLD-STANDARD DEEP CLEAN.</span></h3>
               <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">We strip it back, get to the grime, clean the drain and outdoor unit — then check the result.</p>
               <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Different types of build-up need different tools. That's why we combine <strong className="text-[#0B2641]">coil-compatible cleaners, enzyme detergents, controlled steam and careful rinsing</strong> to help lift and remove accessible dust and grime.</p>
               <div className="mt-9 grid gap-6 md:grid-cols-2">
@@ -216,7 +224,7 @@ export default function SplitSystemCleaning() {
                   {number:"01",title:"Bare-Bones Teardown",hook:"WE OPEN IT UP. NOT JUST WIPE OVER IT.",paragraphs:["We protect the room, isolate power and remove suitable covers, filters and louvers. That gives us better access to dirt hiding behind the front panel.","We reach accessible coils, the blower wheel and the drain tray. Parts such as the wheel or tray are removed when the specific model allows it safely."]},
                   {number:"02",title:"Triple-Action Chemical Attack",hook:"STICKY GRIME NEEDS MORE THAN PLAIN WATER.",paragraphs:["Professional coil-compatible surfactants and enzyme-based detergents help loosen oils, dust and organic build-up.","We select the right product for the unit and give it the contact time it needs. Any sanitising product is used only where suitable and according to its label."]},
                   {number:"03",title:"Thermal Flush & Steam",hook:"LOOSEN THE DIRT. THEN REMOVE IT.",paragraphs:["Controlled steam helps soften stubborn build-up on suitable components. We use gentle, directed rinsing where appropriate to carry away the loosened grime.","Wastewater is collected to protect your home. Some enzyme products are designed to self-rinse with condensate, so we follow those instructions instead of washing them off too early."]},
-                  {number:"04",title:"Electronic Protection",hook:"WE CLEAN THE AIRCON — NOT SOAK ITS ELECTRONICS.",paragraphs:["We isolate power and protect the indoor and outdoor circuit boards from water, steam and cleaning spray.","If we spot contamination or a possible board fault, we explain it. Specialist PCB cleaning and repairs are separate work, never an automatic extra charge."]},
+                  {number:"04",title:"Electronic Protection",hook:"WE CLEAN THE AIRCON — NOT SOAK ITS ELECTRONICS.",paragraphs:["We isolate power and protect the indoor and outdoor circuit boards from water, steam and cleaning spray.","If we spot contamination or a possible board fault, we explain what we've found and how we'll protect the unit while cleaning."]},
                   {number:"05",title:"Drainage & Outdoor Clean",hook:"YES, THE DRAIN AND OUTDOOR UNIT TOO.",paragraphs:["We clean accessible drain components to remove sludge and help condensate flow as it should.","Outside, we clear debris and clean suitable condenser surfaces with safe water pressure. That can help airflow and performance when dirt is the problem."]},
                   {number:"06",title:"Reassembly, Testing & Proof",hook:"PUT BACK PROPERLY. CHECKED BEFORE WE LEAVE.",paragraphs:["We reassemble the suitable parts, check the unit and accessible drainage, and tidy the work area.","Where practical, we'll show you before-and-after photos so you can see the care taken with the parts we serviced."]}
                 ].map((step) => (
@@ -235,8 +243,8 @@ export default function SplitSystemCleaning() {
             </section>
             <section className="mt-14 rounded-xl bg-[#08263E] px-6 py-9 text-white sm:px-10 sm:py-12" data-testid="cleaning-service-promise" id="cleaning-guarantee">
               <p className="text-sm font-black uppercase tracking-widest text-[#62D1EC]">Our work, backed by a simple promise</p>
-              <h3 className="mt-4 max-w-4xl text-3xl font-black uppercase leading-tight sm:text-5xl">AGREED ACCESSIBLE PARTS CLEANED. <span className="text-[#F4C620]">OR WE RETURN TO PUT IT RIGHT.</span></h3>
-              <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-white sm:text-xl">If we missed an agreed accessible area during the Hero Method service, contact us within seven days. We'll inspect it and complete that cleaning work without an extra service charge.</p>
+              <h3 className="mt-4 max-w-4xl text-3xl font-black uppercase leading-tight sm:text-5xl">SATISFACTION GUARANTEED. <span className="text-[#F4C620]">OR YOU DON'T PAY FOR THE CLEAN.</span></h3>
+              <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-white sm:text-xl">We explain the agreed accessible cleaning work before we begin. If you're not satisfied with that cleaning result, tell us so we can put it right. If we can't, you don't pay for the cleaning service — or we'll refund that cleaning charge if already paid.</p>
               <p className="mt-6 max-w-4xl border-t border-white/20 pt-5 text-sm leading-7 text-white/85 font-medium">We explain which parts are safely accessible for your model before starting. Your Australian Consumer Law rights continue to apply.</p>
             </section>
             <section className="mt-14 border-t-2 border-[#BCDDEB] pt-9" id="cleaning-trust" data-testid="cleaning-trust">
@@ -253,10 +261,21 @@ export default function SplitSystemCleaning() {
                   <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> A cleaning checklist, job photos and completion certificate.</p>
                 </div>
               </div>
-              <div className="mt-8 rounded-lg border-l-4 border-[#F4C620] bg-white p-5" data-testid="cleaning-google-reviews-proof">
-                <p className="text-xl font-black text-[#0B2641]">See what local customers actually say.</p>
-                <p className="mt-2 text-base font-semibold leading-7 text-[#3B5667]">Read current, first-hand feedback on SplitsPro's Google Business Profile, alongside our rating and review count. The reviews belong to the customers who wrote them.</p>
-                <a href="https://g.page/r/CYTvO1ipeYUtEBM/" target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 font-black text-[#007EA7] underline">Read genuine Google reviews <ArrowRight className="h-4 w-4" /></a>
+              <div className="mt-8 grid gap-4 md:grid-cols-2" data-testid="cleaning-google-review-cards">
+                {[
+                  { name: "Erfaan Khan", quote: "They were polite, helpful, and took the time to explain everything…" },
+                  { name: "Gill McPhee", quote: "Amin and Ibrahim were excellent installers." }
+                ].map((review) => (
+                  <article key={review.name} className="rounded-xl border border-[#DEE4E8] bg-white p-5 shadow-sm sm:p-6" data-testid="cleaning-google-review-card">
+                    <div className="flex items-start justify-between gap-3">
+                      <GoogleReviewBadge />
+                      <span className="text-lg font-black tracking-[0.12em] text-[#FBBC04]" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+                    </div>
+                    <blockquote className="mt-5 text-lg font-bold leading-8 text-[#243F51]">“{review.quote}”</blockquote>
+                    <p className="mt-4 text-sm font-black text-[#0B2641]">{review.name}</p>
+                    <a href="https://g.page/r/CYTvO1ipeYUtEBM/" target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-[#007EA7] underline">View on Google <ArrowRight className="h-3 w-3" /></a>
+                  </article>
+                ))}
               </div>
               <p className="mt-7 max-w-3xl text-sm leading-7 text-[#435B6B] font-medium">We explain suitable access and protect nearby surfaces before work begins.</p>
             </section>
@@ -274,20 +293,25 @@ export default function SplitSystemCleaning() {
           <section id="cleaning-next-step" className="scroll-mt-16 bg-[#FFF7E8] py-10 sm:py-16" data-testid="cleaning-next-step">
             <div className="sp-container mx-auto max-w-6xl">
               <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">For the home you work hard to look after</p>
-              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">YOU'VE DONE THE SURFACE CLEANING. <span className="text-[#008DB8]">LET'S LOOK AFTER WHAT'S INSIDE.</span></h2>
-              <p className="mt-6 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">A thorough deep clean is a practical, budget-conscious way to care for the split system you already own — reaching accessible internal areas that household cleaning cannot reach.</p>
+              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">KNOW WHAT YOUR AIRCON NEEDS. <span className="text-[#008DB8]">GET EXPERT ADVICE FOR FREE.</span></h2>
+              <p className="mt-6 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">If it's been ages since your last proper deep clean, this is the easiest first step: talk with an experienced air-conditioning professional, get useful information for your family home and decide what makes sense. No charge to speak with us.</p>
               <div className="mt-6 border-l-4 border-[#F4C620] bg-white px-5 py-4" data-testid="cleaning-urgency">
                 <p className="text-lg font-black text-[#0B2641] sm:text-xl">ANOTHER DAY, ANOTHER NIGHT WITH THE SAME BUILD-UP.</p>
-                <p className="mt-2 text-base font-semibold leading-7 text-[#30495B]">It's easy to say you'll sort the aircon out next week. Then dinner, school, work and life take over. If the hidden dust and grime is there today, putting it off doesn't clean it. Make the first move now: ask us what a proper clean would involve for your unit.</p>
+                <p className="mt-2 text-base font-semibold leading-7 text-[#30495B]">The aircon goes back on tonight. If there's years of dust and damp grime inside, another week of putting it off won't remove it. Your family is in those rooms every day. Take a few minutes now to find out what your system needs. The advice costs nothing.</p>
               </div>
               <div className="mt-7 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                 <form className="rounded-xl border border-[#C9DDE7] bg-white p-5 shadow-sm sm:p-7" data-testid="cleaning-consultation-form" onSubmit={submitConsultation}>
-                  <h3 className="text-2xl font-black uppercase leading-tight text-[#0B2641]">Book a consultation</h3>
-                  <p className="mt-2 text-sm font-semibold leading-6 text-[#375469] sm:text-base">Leave your details. We'll call you to talk through the cleaning and arrange what comes next. No calendar or payment required.</p>
+                  <h3 className="text-2xl font-black uppercase leading-tight text-[#0B2641]">Claim your free consultation</h3>
+                  <p className="mt-2 text-sm font-semibold leading-6 text-[#375469] sm:text-base">Get up to 30 minutes of practical advice from an experienced air-conditioning professional. Ask about mould, dust, the right cleaning methods for your unit and how to look after your home between services. No pressure to buy, no obligation and no card details.</p>
+                  <div className="mt-5 grid gap-3 rounded-lg bg-[#F0F9FC] p-4 text-sm font-bold leading-6 text-[#19415A] sm:text-base" data-testid="cleaning-free-consultation-benefits">
+                    <p>✓ Understand where grime and moisture hide inside your split system.</p>
+                    <p>✓ Learn how we remove accessible mould-prone build-up and what keeps it coming back.</p>
+                    <p>✓ Get useful home-care advice and an honest recommendation on whether your aircon needs professional cleaning.</p>
+                  </div>
                   {consultationStatus === "success" ? (
                     <div role="status" className="mt-5 rounded-md bg-[#EAF7EF] p-5 text-[#14532D]" data-testid="cleaning-consultation-success">
                       <p className="text-lg font-black">Request received.</p>
-                      <p className="mt-2 text-sm font-semibold">Thanks, {consultation.name.trim()}. SplitsPro has your details and will call you back to discuss your cleaning consultation.</p>
+                      <p className="mt-2 text-sm font-semibold">Thanks, {consultation.name.trim()}. SplitsPro has your details and will call you to arrange your free consultation.</p>
                     </div>
                   ) : (
                     <>
@@ -299,15 +323,15 @@ export default function SplitSystemCleaning() {
                       {consultationError && <p role="alert" className="mt-4 font-semibold text-red-700">{consultationError}</p>}
                       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
                         <button type="submit" disabled={consultationStatus === "saving"} className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-7 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] disabled:opacity-50 sm:w-auto" data-testid="cleaning-contact-cta">
-                          {consultationStatus === "saving" ? "Sending request…" : "Book a consultation"} <ArrowRight className="h-5 w-5" />
+                          {consultationStatus === "saving" ? "Sending request…" : "Claim your free consultation"} <ArrowRight className="h-5 w-5" />
                         </button>
-                        <div className="rounded-lg bg-white px-3 py-3" data-testid="cleaning-cta-google-rating" aria-label="SplitsPro Google rating and review count"><GoogleRating /></div>
+                        <div className="rounded-lg bg-white px-3 py-3" data-testid="cleaning-cta-google-rating" aria-label="SplitsPro Google rating and review count"><GoogleRating /><p className="mt-2 max-w-xs text-xs font-black uppercase leading-5 text-[#12384E]" data-testid="cleaning-rating-guarantee">✓ Satisfaction guaranteed — or you don't pay for the clean.</p></div>
                       </div>
                       <p className="mt-3 text-xs leading-5 text-[#567286]">We use your details to contact you about this request. If you include an email, we can send the relevant service information.</p>
                     </>
                   )}
                 </form>
-                <p className="max-w-xs text-base font-bold leading-8 text-[#30495B]">A couple of minutes now beats another month of wondering what is hidden behind the filter. <a className="font-black text-[#007EA7] underline" href={PHONE_TEL}>Prefer to call? Talk to us directly.</a></p>
+                <p className="max-w-xs text-base font-bold leading-8 text-[#30495B]">A few minutes to request advice now can save weeks of wondering what's hidden behind your filter. <a className="font-black text-[#007EA7] underline" href={PHONE_TEL}>Prefer to call? Talk to us directly.</a></p>
               </div>
               <p className="mt-4 text-sm font-bold text-[#244456] sm:text-base">✓ Licensed &amp; insured technicians &nbsp; ✓ We explain and show the work</p>
             </div>
