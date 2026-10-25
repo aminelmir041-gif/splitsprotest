@@ -210,6 +210,11 @@ export default function SplitSystemCleaning() {
             <button type="button" onClick={() => goStage(1)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
               <ArrowLeft className="h-4 w-4" /> Back
             </button>
+            <div className="mb-7 rounded-xl bg-white px-5 py-7 shadow-sm sm:px-9 sm:py-9" data-testid="cleaning-caring-home-message">
+              <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">For the people under your roof</p>
+              <h2 className="mt-2 font-serif text-3xl leading-tight text-[#0B2641] sm:text-4xl">Good homes start with <span className="text-[#008DB8]">people who care.</span></h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#3F5B6D] sm:text-base">Even the air your loved ones breathe is worth thinking about.</p>
+            </div>
             <div>
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro solution</p>
@@ -266,7 +271,7 @@ export default function SplitSystemCleaning() {
             <button type="button" onClick={() => goStage(3)}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-offer">
-              See How We Can Help <ArrowRight className="h-5 w-5" />
+              Make a Positive Change <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
