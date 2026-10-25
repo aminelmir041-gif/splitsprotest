@@ -194,8 +194,9 @@ def main() -> None:
     if nav_test.returncode:
         fail(f"homepage menu interaction test failed: {nav_test.stderr[:600]}")
 
-    # The old offer URL is deliberately a redirect to the SINGLE canonical
-    # React cleaning page. The booking form now lives there, not on the old page.
+    # The old offer URL redirects to the one canonical parent/carer-focused page.
+    # This page now explains the Hero Method without exposing an on-page
+    # booking calendar, payment selector or prices.
     cleaning = (ROOT / "split-system-cleaning-offer/index.html").read_text(encoding="utf-8")
     is_cleaning_redirect = (
         'href="https://splitspro.com.au/split-system-cleaning/"' in cleaning
@@ -204,53 +205,50 @@ def main() -> None:
     if not is_cleaning_redirect:
         fail("old cleaning-offer URL must redirect to the main split-system-cleaning page")
     cleaning_page = (ROOT / "src/pages/SplitSystemCleaning.jsx").read_text(encoding="utf-8")
-    if not all(token in cleaning_page for token in (
-        "CLEANING_QUANTITIES", "EXTRA_CLEAN_PRICE = 120", "firstPrice + Math.max(0, count - 1) * EXTRA_CLEAN_PRICE",
-        "getCleaningSlots", 'data-testid="cleaning-unit-count"',
-        "Continue to secure $50 booking", 'data-testid="cleaning-booking-full-payment"',
-    )):
-        fail("cleaning page must show the current server-verified $200 first system, $120 extras, $50 booking and live times")
-    # One continuous long-form cleaning landing page, with the same live calendar
-    # and secure checkout. Preserve the educational -> trust -> offer -> booking order.
     landing_sequence = (
         'data-testid="cleaning-diagnosis"',
+        'data-testid="cleaning-baby-hero-overlay"',
         'data-testid="cleaning-next-solution"',
         'data-testid="cleaning-solution-trust"',
-        'data-testid="cleaning-real-process-gallery"',
+        'data-testid="cleaning-process-benefits"',
+        'data-testid="cleaning-service-promise"',
         'data-testid="cleaning-trust"',
         'data-testid="cleaning-next-offer"',
-        'data-testid="cleaning-offer"',
-        'data-testid="cleaning-prices"',
-        'data-testid="cleaning-booking"',
+        'data-testid="cleaning-next-step"',
         'data-testid="cleaning-faq"',
     )
     positions = [cleaning_page.find(part) for part in landing_sequence]
     if any(position < 0 for position in positions) or positions != sorted(positions):
-        fail("cleaning funnel must follow diagnosis, solution/trust, offer and booking order")
+        fail("cleaning funnel must follow family concern, method, trust and contact sections")
     if "splitspro-cleaning-baby-approved.png" not in cleaning_page or "splitspro-cleaning-family-hero.webp" in cleaning_page:
-        fail("cleaning funnel must show approved baby hero only; secondary hero was intentionally removed")
+        fail("cleaning page must show only the approved baby hero")
     if not all(token in cleaning_page for token in (
-        'data-testid="cleaning-process-benefits"',
-        'id="hero-method"',
-        "6-STEP HERO METHOD",
-        "STICKY GRIME NEEDS MORE THAN PLAIN WATER",
-        "EVERY EXTRA SPLIT + $120",
-        'data-testid="cleaning-odour-guarantee"',
+        "For Sydney parents", "One visit. Guaranteed.",
+        "THE HIGHCHAIR IS CLEAN", "STICKY GRIME NEEDS MORE THAN PLAIN WATER",
+        "6-STEP HERO METHOD", 'id="hero-method"',
+        'data-testid="cleaning-contact-cta"', 'data-testid="cleaning-cta-google-rating"',
     )):
-        fail("cleaning page must show the scannable six-step Hero Method, clear $120 extra system price and odour guarantee")
+        fail("cleaning page must show the specific parent-focused hook, Hero Method and contact path")
+    if any(token in cleaning_page.lower() for token in (
+        "$50", "call-out fee", "see dates", "book online",
+        'data-testid="cleaning-booking"', "getcleaningslots",
+        'data-testid="cleaning-prices"', "paylaterreminder",
+        "paid for a clean", "still smells", "musty smell",
+    )):
+        fail("parent-focused cleaning page must have no booking, pricing or odour-led sales angle")
     if re.search(r"anti[- ]?(?:mould|corrosion)|coatings?", cleaning_page, re.I):
-        fail("cleaning page must not advertise retired anti-mould or anti-corrosion coating services")
+        fail("cleaning page must not advertise retired coating services")
     if any(stage in cleaning_page for stage in ("{stage === 1 && (", "{stage === 2 && (", "{stage === 3 && (")):
-        fail("the cleaning sales content must be one continuous page, not a gated three-stage funnel")
-    if "goStage(2)" not in cleaning_page or "goStage(3)" not in cleaning_page:
-        fail("cleaning page must retain smooth-scroll navigation to the method and price sections")
+        fail("cleaning sales content must be one continuous page, not a gated funnel")
+    if 'scrollToSection("hero-method")' not in cleaning_page or 'scrollToSection("cleaning-next-step")' not in cleaning_page:
+        fail("page must retain smooth-scroll exploration without a booking form")
     pricing_source = (ROOT / "src/lib/cleaningPricing.js").read_text(encoding="utf-8")
     if "scheduledCleaningPrice = () => 200" not in pricing_source:
-        fail("the first-unit local fallback must be $200")
+        fail("the separate cleaning checkout first-unit local fallback must remain $200")
     if "BLACK FRIDAY EARLY-BIRD SALE" in cleaning_page or "PRICE RISES $20 EVERY THURSDAY" in cleaning_page:
         fail("retired Black Friday promotion must not appear on the cleaning page")
     if cleaning_page.count("data-testid=\"cleaning-next-solution\"") != 1 or cleaning_page.count("data-testid=\"cleaning-next-offer\"") != 1:
-        fail("cleaning funnel must have one forward button on each persuasive step")
+        fail("cleaning page must have one forward exploration button on each persuasive step")
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
@@ -270,15 +268,9 @@ def main() -> None:
         if field not in secure_page:
             fail(f"cleaning checkout missing customer field {field}")
 
-    # SplitsPro standing sales rule: surface payment flexibility BEFORE booking,
-    # customer-detail forms and payment buttons, not only at the last checkout step.
+    # Payment flexibility still appears before forms/buttons on the separate checkout
+    # and on installation pages. The parent-focused cleaning sales page has no checkout.
     pay_later_positions = (
-        ("src/pages/SplitSystemCleaning.jsx",
-         "cleaning-before-booking-cta-pay-later-reminder",
-         '<button type="button" onClick={scrollBook}'),
-        ("src/pages/SplitSystemCleaning.jsx",
-         "cleaning-booking-pay-later-reminder",
-         'cleaning-unit-quantity'),
         ("src/pages/CleaningCheckout.jsx",
          "cleaning-checkout-before-payment-reminder",
          'PAY {money(dueNow)} TO'),

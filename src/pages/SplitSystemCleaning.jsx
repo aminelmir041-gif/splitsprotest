@@ -1,55 +1,25 @@
-import PayLaterReminder from "../components/PayLaterReminder";
-
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowRight, ArrowLeft, ChevronDown, Clock3, Loader2, ShieldCheck } from "lucide-react";
-import { api, getCleaningCheckoutConfig, getCleaningSlots } from "../lib/api";
-import { scheduledCleaningPrice } from "../lib/cleaningPricing";
+import { Link } from "react-router-dom";
+import { ArrowRight, ChevronDown, ShieldCheck } from "lucide-react";
+import { api } from "../lib/api";
 import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
 // This is the ONE consumer sales landing page for split-system cleaning.
-// One long-form cleaning landing page, using the existing secure checkout and live calendar.
-const CLEANING_QUANTITIES = Array.from({ length: 7 }, (_, index) => index + 1);
-const EXTRA_CLEAN_PRICE = 120;
-const cleaningPrice = (count, firstPrice) => firstPrice + Math.max(0, count - 1) * EXTRA_CLEAN_PRICE;
-const money = (value) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(value);
+// One continuous explanation of the Hero Method, with no on-page booking calendar.
 
 
 const FAQS = [
-  { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
-  { q: "How much do additional air conditioners cost?", a: "The current first-system price is displayed in the live offer and booking calculator. Every additional standard split system is $120 when cleaned at the same address and on the same visit. Your total is shown before you choose a secure payment method. Eligible pay-later options may be available." },
-  { q: "Do you have to remove the whole air conditioner?", a: "Normally no. We protect the area, open or remove suitable service-accessible covers and clean the accessible indoor components. We won't dismantle sealed refrigerant components as part of a cleaning job." },
-  { q: "Can cleaning repair an air conditioner that isn't cooling?", a: "Cleaning can help when dirt is affecting airflow, but it won't fix a refrigerant leak, electrical fault or failed part. If we find a likely fault, we'll discuss the next step before any separate repair work." },
-  { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." },
-  { q: "Can a deep clean help if we have children, pets or older relatives at home?", a: "Cleaning removes accessible dirt, dander and other buildup from inside the unit. If contamination is present, cleaning those surfaces can reduce a possible source of irritants and musty odours. It cannot guarantee better health, prevent infections, or replace asthma treatment, good ventilation or dealing with dampness." },
-  { q: "Will the aircon run like new, use less electricity or sound quieter?", a: "Cleaning may restore airflow and reduce certain noises or inefficiency when the cause is dirt. Results depend on the starting condition, and cleaning does not repair worn bearings, electrical problems, refrigerant leaks or other faults." },
-  { q: "Is there a $50 call-out fee?", a: "No. There is no separate $50 call-out or inspection charge for the standard booked clean. If you choose to reserve with $50 online, that is a booking payment credited toward your displayed total, not an extra fee. Any non-standard work is discussed and quoted first." },
-  { q: "What if the musty smell is still there after the clean?", a: "Contact us within seven days if the same cleaning-related musty smell remains or returns from the accessible parts we serviced. We will inspect and re-clean those affected areas once at no charge. If we still cannot resolve that cleaning-related odour, we'll refund the cleaning service charge, including your booking payment. Odours from leaks, building moisture, inaccessible contamination or other faults require separate diagnosis and are outside this cleaning guarantee. Australian Consumer Law rights always apply." },
-  { q: "Do you use harsh chemicals or perfume to mask smells?", a: "We use suitable professional coil cleaners, including low-odour, biodegradable enzyme-and-detergent formulas where appropriate, to loosen grime and organic residue. We follow each product's label, protect your home and never treat chemical use as a substitute for physically removing dirt. The exact product and rinse method depend on your unit." },
-  { q: "Is steam used on every part, and does it sterilise the aircon?", a: "We use controlled steam on suitable accessible components only, keeping it away from sensitive electrical parts and heat-sensitive materials. Steam can help loosen stubborn grime, but we do not claim that the whole system is sterile or that every mould spore or bacterium is eliminated." },
-  { q: "Can I pay later?", a: "Our cleaning checkout uses Stripe or PayPal. Some customers may see instalment or pay-later options if enabled for the purchase and offered by the provider. Availability and approval vary; always check the actual checkout before relying on an instalment arrangement." }
+  { q: "We already wash the filters. Why would the rest need cleaning?", a: "Filters are just the first layer. Dust, pet dander, airborne cooking residue and moisture can also collect on accessible coils, the blower wheel and the drain tray. Our Hero Method goes beyond the filter wash." },
+  { q: "Can dust and mould inside a home aggravate asthma or allergies?", a: "Yes. Dust and mould are recognised triggers for some people with asthma and allergies. Keeping accessible parts of a split system clean is a practical way to tackle one potential source of build-up." },
+  { q: "What do you clean in a baby's bedroom or a family living area?", a: "We protect nearby furniture and play areas, open suitable covers, clean accessible internal surfaces, look after drainage, clean the outdoor unit where appropriate, then reassemble and check operation." },
+  { q: "What about kitchens where we prepare family meals?", a: "Airborne cooking oils and fine dust can settle on indoor components over time. Suitable professional detergents help loosen those deposits so we can remove accessible grime rather than just wiping the outside." },
+  { q: "Will you need to take the entire air conditioner off the wall?", a: "Usually not. We open or remove suitable service-accessible covers and parts. The exact access and cleaning method depend on the unit's design." },
+  { q: "How do we know the work was properly done?", a: "We explain the service before starting, protect the area, reassemble and test the unit, and show accessible areas cleaned where practical. If agreed accessible areas were missed, contact us within seven days so we can inspect and make that work right." }
 ];
-
 export default function SplitSystemCleaning() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [stage, setStage] = useState(() => /^(#cleaning-booking|#cleaning-prices)$/.test(window.location.hash) ? 3 : 1);
-  const goStage = (next) => {
-    setStage(next);
-    window.setTimeout(() => document.getElementById("cleaning-stage-" + next)?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-  };
-  // Scroll guide visitors directly to this page's EXISTING live date picker.
-  // Route fade-in and the global ScrollToTop run before this delayed scroll.
-  useEffect(() => {
-    if (location.hash !== "#cleaning-booking" && location.hash !== "#cleaning-prices") return undefined;
-    setStage(3);
-    const timeout = window.setTimeout(() => {
-      document.getElementById(location.hash === "#cleaning-prices" ? "cleaning-prices" : "cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 650);
-    return () => window.clearTimeout(timeout);
-  }, [location.hash]);
+  const scrollToSection = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideEmail, setGuideEmail] = useState("");
   const [guideConsent, setGuideConsent] = useState(false);
@@ -57,7 +27,7 @@ export default function SplitSystemCleaning() {
   const [guideError, setGuideError] = useState("");
   const guideShown = useRef(false);
   useEffect(() => {
-    if (stage !== 1 || guideShown.current) return undefined;
+    if (guideShown.current) return undefined;
     const start = Date.now();
     let maxScroll = 0;
     let lastY = window.scrollY;
@@ -79,7 +49,7 @@ export default function SplitSystemCleaning() {
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("mouseout", onLeave);
     return () => { window.removeEventListener("scroll", onScroll); document.removeEventListener("mouseout", onLeave); };
-  }, [stage]);
+  }, []);
   const submitGuide = async (event) => {
     event.preventDefault();
     setGuideStatus("saving"); setGuideError("");
@@ -91,150 +61,49 @@ export default function SplitSystemCleaning() {
       setGuideError("Couldn't save your email. Please try again.");
     }
   };
-  const [quantity, setQuantity] = useState(1);
-  const [firstPrice, setFirstPrice] = useState(scheduledCleaningPrice);
-  const [priceReady, setPriceReady] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
-  const [slots, setSlots] = useState([]);
-  const [slotsLoading, setSlotsLoading] = useState(true);
-  const [slotsError, setSlotsError] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [showMoreSlots, setShowMoreSlots] = useState(false);
-  const [continuing, setContinuing] = useState(false);
-  // Unknown until the API responds: do not call an active Stripe integration unavailable while checking.
-  const [paymentReadiness, setPaymentReadiness] = useState({ stripe_ready: undefined, paypal_ready: undefined });
-  const requestId = useRef(0);
-  const scrollBook = () => document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  const scrollOffer = () => { setStage(3); window.setTimeout(() => document.getElementById("cleaning-prices")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); };
-  const choose = (count) => { setQuantity(count); scrollBook(); };
-
-  const refreshSlots = async (requestedQuantity = quantity, preserveSelection = true) => {
-    const token = ++requestId.current;
-    setSlotsLoading(true);
-    setSlotsError("");
-    try {
-      // Availability is server-filtered against both cleaning and installation
-      // holds/bookings. A checkout creates an atomic hold under a shared day lock.
-      const data = await getCleaningSlots(requestedQuantity, 85);
-      if (token !== requestId.current) return;
-      const next = (Array.isArray(data?.slots) ? data.slots : []).filter(
-        (slot) => slot?.date && /^\d{2}:\d{2}$/.test(slot?.time || "")
-      );
-      setSlots(next);
-      // Highlight an actual live opening by default, keeping a prior choice if still free.
-      if (!preserveSelection || !next.some((slot) => slot.date === selectedDate && slot.time === selectedTime)) {
-        const defaultSlot = next.find((slot) => slot.date === selectedDate) || next[0];
-        setSelectedDate(defaultSlot?.date || "");
-        setSelectedTime(defaultSlot?.time || "");
-      }
-    } catch {
-      if (token !== requestId.current) return;
-      setSlots([]);
-      setSlotsError("We couldn't check live availability. Refresh and try again.");
-    } finally {
-      if (token === requestId.current) setSlotsLoading(false);
-    }
-  };
-  useEffect(() => {
-    setSelectedDate("");
-    setSelectedTime("");
-    setShowMoreSlots(false);
-    refreshSlots(quantity, false);
-  }, [quantity]);
-  useEffect(() => {
-    const refresh = () => { if (document.visibilityState === "visible") refreshSlots(quantity); };
-    window.addEventListener("focus", refresh);
-    document.addEventListener("visibilitychange", refresh);
-    return () => {
-      window.removeEventListener("focus", refresh);
-      document.removeEventListener("visibilitychange", refresh);
-    };
-  }, [quantity, selectedDate, selectedTime]);
-
-  useEffect(() => {
-    let active = true;
-    getCleaningCheckoutConfig()
-      .then((data) => {
-        if (active) {
-          const latestPrice = Number(data?.first_system);
-          setPriceReady(latestPrice === scheduledCleaningPrice() && Number(data?.each_additional_system) === EXTRA_CLEAN_PRICE && Number(data?.booking_payment) === 50 && data?.enabled === true);
-           setFirstPrice(scheduledCleaningPrice());
-          setPaymentReadiness({
-          stripe_ready: Boolean(data?.stripe_ready),
-          paypal_ready: Boolean(data?.paypal_ready),
-          });
-        }
-      })
-      .catch(() => { if (active) { setFirstPrice(scheduledCleaningPrice()); setPriceReady(false); } });
-    return () => { active = false; };
-  }, []);
-
-  const currentTotal = cleaningPrice(quantity, firstPrice);
-  const formatDate = (day) => new Date(day + "T00:00:00").toLocaleDateString(
-    "en-AU", { weekday: "short", day: "numeric", month: "short" });
-  const formatTime = (time) => new Date("2026-01-01T" + time + ":00").toLocaleTimeString(
-    "en-AU", { hour: "numeric", minute: "2-digit" });
-  const availableDays = [...new Set(slots.map((slot) => slot.date))];
-  const availableTimes = slots.filter((slot) => slot.date === selectedDate);
-  const continueBooking = async () => {
-    if (!selectedDate || !selectedTime || continuing || !priceReady) return;
-    setContinuing(true);
-    try {
-      // The checkout server performs the authoritative conflict check under
-      // the shared day lock; a second page-side calendar request only delays buyers.
-      navigate("/secure-cleaning?" + new URLSearchParams({
-        count: String(quantity), date: selectedDate, time: selectedTime
-      }).toString());
-    } catch {
-      setSlotsError("Unable to verify that time right now. Please try again.");
-    } finally {
-      setContinuing(false);
-    }
-  };
 
   return (
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
         <title>Six-Step Hero Method | Split-System Deep Cleaning Sydney | SplitsPro</title>
-        <meta name="description" content="SplitsPro Bare-Bones Hero Method: a six-step split-system deep clean for accessible indoor parts, drainage and the outdoor unit. $200 for one split and $120 for every additional split at the same property. Book for $50 credited to the total, or pay in full." />
+        <meta name="description" content="For Sydney parents and carers: a proper one-visit Hero Method deep clean for the hidden dust and grime in the split system their family lives around. Learn how we care for indoor units, drains and outdoor coils." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
-        <meta property="og:title" content="We Strip It Back — The SplitsPro Bare-Bones Hero Method" />
-        <meta property="og:description" content="The six-step SplitsPro Hero Method: deep internal cleaning, careful steam and rinsing, drain cleaning and outdoor-unit care. $200 for the first split, $120 for each extra at the same property." />
+        <meta property="og:title" content="Sydney Parents & Carers: Hidden Aircon Dust Cleared in One Visit | SplitsPro" />
+        <meta property="og:description" content="You clean the highchair, the toys and the kitchen bench. Discover what a filter rinse can leave behind and how our six-step Hero Method reaches it." />
       </Helmet>
 
 
 
 
-      <div className="border-b border-[#D6E6EC] bg-white" data-testid="cleaning-no-callout-banner">
-        <div className="sp-container flex flex-wrap items-center justify-between gap-3 py-4 text-sm font-extrabold leading-6 text-[#12425D]">
-          <span>No $50 call-out fee · Clear price before booking · No pressure to upgrade</span>
-          <a href="#cleaning-booking" className="underline underline-offset-4 text-[#007EA7]">See dates &amp; book online</a>
-        </div>
-      </div>
-
       {(
         <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] pt-0 pb-6 sm:py-10" data-testid="cleaning-diagnosis">
           <div className="sp-container mx-auto max-w-6xl">
             <div className="mt-0">
-              <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby at home — if it's not nailed down, it's food. What about the aircon they breathe around?" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="-mx-4 block w-[calc(100%+2rem)] max-w-none h-auto object-contain sm:mx-auto sm:w-full sm:max-w-[680px] sm:rounded-xl" />
-              <div className="mt-5">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">Sydney split-system deep cleaning · Complete indoor and outdoor care</p>
-                <h1 className="max-w-5xl font-sans text-[clamp(2.15rem,6.5vw,4.25rem)] font-black leading-[1.08] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
-                <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">A clean-looking filter doesn't mean a clean aircon.</p>
-                <p className="mt-3 max-w-3xl text-base leading-8 text-[#294353] sm:text-lg font-semibold">Dust, pet hair and grime can collect deeper inside the coil and blower — well beyond a quick wipe.</p>
-                <p className="mt-4 max-w-3xl text-base leading-8 text-[#294353] sm:text-lg font-semibold">Add moisture to that build-up, and you may get <strong className="text-[#0B2641]">stale, musty smells</strong> when the unit starts running.</p>
+              <div className="relative isolate overflow-hidden sm:mx-auto sm:max-w-[680px] sm:rounded-xl" data-testid="cleaning-baby-hero-overlay">
+                <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby resting at home — a reminder of why parents care about the environment their family lives in" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="-mx-4 block w-[calc(100%+2rem)] max-w-none h-auto object-contain sm:mx-auto sm:w-full" />
+                <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-[#051D30]/95 via-[#051D30]/85 to-transparent px-5 pb-16 pt-5 text-white sm:px-8 sm:pb-24 sm:pt-8">
+                  <p className="text-[0.7rem] font-black uppercase tracking-[0.16em] text-[#F4C620] sm:text-sm">For Sydney parents &amp; families caring for older loved ones</p>
+                  <h1 className="mt-3 max-w-xl font-sans text-[clamp(1.6rem,5.5vw,3.2rem)] font-black uppercase leading-[1.08] tracking-tight text-white">A cleaner aircon for the rooms your family eats, plays and sleeps in. <span className="text-[#F4C620]">One visit. Guaranteed.</span></h1>
+                  <p className="mt-3 text-sm font-bold text-white/90 sm:text-base">Agreed accessible areas cleaned — or we return to put it right.</p>
+                </div>
+              </div>
+              <div className="mt-7 max-w-4xl">
+                <p className="text-xl font-black leading-8 text-[#12384E] sm:text-2xl">You wipe the highchair. The toys. The kitchen bench.</p>
+                <p className="mt-4 text-lg font-bold leading-8 text-[#294353] sm:text-xl">But what about the one place you rarely look — even though it runs while your baby naps or your parents visit?</p>
+                <p className="mt-5 border-l-4 border-[#F4C620] pl-5 text-base leading-8 text-[#294353] sm:text-lg font-semibold">There's a hidden part of the room that can collect damp grime even when everything else looks spotless. Most quick wipe-downs don't reach it. <strong className="text-[#0B2641]">We'll show you what it is.</strong></p>
               </div>
             </div>
             <section className="mt-10" aria-label="What can build up inside an air conditioner">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">The problem behind the cover</p>
-              <h2 className="mt-2 max-w-4xl text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">The dirt you can't see is the dirt a filter rinse misses.</h2>
+              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Why a spotless room can still feel stale</p>
+              <h2 className="mt-2 max-w-4xl text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">THE HIGHCHAIR IS CLEAN. <span className="text-[#008DB8]">IS THE AIRCON ABOVE IT?</span></h2>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2B4758] sm:text-lg font-semibold">You work hard to make home comfortable for the people who depend on you. It's easy to miss what sits behind the front panel of a split system.</p>
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 {[
-                  ["Clean filters. Dirty coil?", "Dust and pet dander can settle deeper inside the system, beyond the mesh you wash at home."],
-                  ["Where's that musty smell coming from?", "Damp, dirty trays and airways can develop slimy build-up and unwanted odours."],
-                  ["Mould can hide out of sight.", "Moisture and grime can encourage growth in parts of the unit that don't get a routine wipe."],
-                  ["Grime can make airflow struggle.", "Built-up dirt can restrict airflow and may leave the system smelling stale."]
+                  ["You clean where little hands reach.", "Filters may look clean while dust, dander and greasy residue remain on deeper, accessible parts."],
+                  ["You finally get the baby to sleep.", "While the split runs through nap time, airborne dust can settle on hidden surfaces beyond the filter you wash."],
+                  ["Someone at home has asthma.", "Dust and mould can trigger symptoms for some people. Cleaning accessible build-up addresses a possible source of irritants, not the whole home or a medical condition."],
+                  ["An older parent spends time in that room.", "You want the room to feel cared for — including the indoor unit everyone overlooks when cleaning the home."]
                 ].map(([title, description]) => (
                   <div key={title} className="rounded-lg bg-white p-5 border-l-4 border-[#008DB8]">
                     <h3 className="text-lg font-black leading-snug text-[#0B2641] sm:text-xl">{title}</h3>
@@ -242,19 +111,19 @@ export default function SplitSystemCleaning() {
                   </div>
                 ))}
               </div>
-              <p className="mt-6 max-w-3xl border-l-4 border-[#F4C620] pl-5 text-lg font-bold leading-8 text-[#244456]">A clean front cover can hide a dirty interior. That's why we go past the filters.</p>
+              <p className="mt-6 max-w-3xl border-l-4 border-[#F4C620] pl-5 text-lg font-bold leading-8 text-[#244456]">A clean front cover is reassuring. But it's the hidden build-up that a filter rinse can miss.</p>
             </section>
-            <section className="mt-12 rounded-xl border border-[#D4E5ED] bg-white px-5 py-8 sm:px-9 sm:py-10" aria-label="The concerns we answer">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Before you pay anyone to clean your aircon</p>
-              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">Paid for a clean. Still smells? That's exactly what people worry about.</h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Homeowners talk about cleaners who only wash the filters, leave the fan dirty, or change the price when they arrive.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Others worry about water on the carpet — or that musty smell coming straight back.</p>
-              <h3 className="mt-8 text-xl font-black text-[#0B2641] sm:text-2xl">Here's what you should expect from us:</h3>
-              <div className="mt-5 grid gap-5 sm:grid-cols-3">
+            <section className="mt-12 rounded-xl border border-[#D4E5ED] bg-white px-5 py-8 sm:px-9 sm:py-10" aria-label="Everyday spaces your family uses">
+              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">You know that feeling</p>
+              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">YOU'VE CLEANED THE ROOM. <span className="text-[#008DB8]">BUT WHAT'S STILL INSIDE THE UNIT?</span></h2>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">You wipe the highchair before meals, wash the toys after little hands have touched everything, and keep the kitchen benches ready for cooking.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">But air keeps moving through the split system while people cook, sneeze, play and sleep. Fine dust and cooking oils can settle inside. Add trapped moisture in dark internal areas, and it can create conditions where mould and bacteria grow.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">When someone at home has asthma or allergies, the thought of hidden dust and mould matters even more. That's why the inside deserves attention too.</p>
+              <div className="mt-6 grid gap-5 sm:grid-cols-3">
                 {[
-                  ["SEE WHAT WE CLEAN.", "We show the accessible parts we open, explain the work and document the results."],
-                  ["MUSTY SMELL? WE MAKE IT RIGHT.", "Our written cleaning-related odour guarantee covers a return visit and a refund when the specified conditions are met."],
-                  ["NO SURPRISE CALL-OUT FEES.", "Your price is shown before booking. Non-standard work is quoted first, never added without approval."]
+                  ["FOR THE LITTLE ONES.", "A proper clean of accessible internal parts in rooms where babies nap and children play."],
+                  ["FOR FAMILY MEALTIMES.", "Help clear airborne cooking grime that has settled inside the unit near busy kitchen spaces."],
+                  ["FOR OLDER LOVED ONES.", "Give the often-overlooked system in their living or sleeping area the same care as the rest of the home."]
                 ].map(([heading, detail]) => (
                   <div key={heading} className="rounded-lg bg-[#F5FAFC] p-5 border-l-4 border-[#F4C620]">
                     <h3 className="text-lg font-black leading-snug text-[#12384E] sm:text-xl">{heading}</h3>
@@ -263,10 +132,10 @@ export default function SplitSystemCleaning() {
                 ))}
               </div>
             </section>
-            <button type="button" onClick={() => goStage(2)}
+            <button type="button" onClick={() => scrollToSection("hero-method")}
               className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-solution">
-              See how we actually clean <ArrowRight className="h-5 w-5" />
+              See what most quick cleans miss <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
@@ -276,9 +145,9 @@ export default function SplitSystemCleaning() {
         <section id="cleaning-stage-2" className="scroll-mt-16 bg-[#F0F9FC] py-6 sm:py-12" data-testid="cleaning-solution-trust">
           <div className="sp-container mx-auto max-w-6xl">
             <div className="mb-10 rounded-xl bg-white px-6 py-8 shadow-sm sm:px-10 sm:py-10" data-testid="cleaning-caring-home-message">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">A better clean for the home you care about</p>
-              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">If it still smells inside, wiping the outside isn't enough.</h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">We want you to know exactly what happens during your cleaning visit — and why each part matters.</p>
+              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">For the rooms where your family sleeps, plays and eats</p>
+              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">A CHILD'S PLAY AREA DESERVES MORE THAN A SURFACE WIPE.</h2>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">If you keep the toys, kitchen bench and bedding clean, the hidden dust inside the system running nearby deserves attention too. Here is how we approach it.</p>
             </div>
             <div>
               <div>
@@ -286,7 +155,7 @@ export default function SplitSystemCleaning() {
                 <h2 className="mt-3 max-w-4xl font-sans text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">
                   We strip it back. <span className="text-[#008DB8]">Not just wipe over it.</span>
                 </h2>
-                <p className="mt-5 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">We open up suitable parts of the unit to reach build-up behind the front cover.</p>
+                <p className="mt-5 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">We open suitable accessible parts of the unit to reach the dirt that can linger behind a clean-looking front cover.</p>
                 <p className="mt-4 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">Then we use the right combination of <strong className="text-[#0B2641]">professional cleaning solutions, controlled steam and rinsing</strong> — followed by drain and outdoor-unit care.</p>
                 <p className="mt-4 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">Finally, we put it back together, check the operation and show you what we cleaned.</p>
               </div>
@@ -308,7 +177,7 @@ export default function SplitSystemCleaning() {
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">The SplitsPro Bare-Bones Deep Clean</p>
               <h3 className="mt-3 max-w-5xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">NOT JUST A FILTER RINSE. <span className="text-[#008DB8]">HERE'S OUR 6-STEP HERO METHOD.</span></h3>
               <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">We strip it back, get to the grime, clean the drain and outdoor unit — then check the result.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Different types of build-up need different tools. That's why we combine <strong className="text-[#0B2641]">coil-compatible chemicals, enzyme detergents, controlled steam and careful rinsing</strong>, instead of just masking smells.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Different types of build-up need different tools. That's why we combine <strong className="text-[#0B2641]">coil-compatible cleaners, enzyme detergents, controlled steam and careful rinsing</strong> to help lift and remove accessible dust and grime.</p>
               <div className="mt-9 grid gap-6 md:grid-cols-2">
                 {[
                   {number:"01",title:"Bare-Bones Teardown",hook:"WE OPEN IT UP. NOT JUST WIPE OVER IT.",paragraphs:["We protect the room, isolate power and remove suitable covers, filters and louvers. That gives us better access to dirt hiding behind the front panel.","We reach accessible coils, the blower wheel and the drain tray. Parts such as the wheel or tray are removed when the specific model allows it safely."]},
@@ -316,7 +185,7 @@ export default function SplitSystemCleaning() {
                   {number:"03",title:"Thermal Flush & Steam",hook:"LOOSEN THE DIRT. THEN REMOVE IT.",paragraphs:["Controlled steam helps soften stubborn build-up on suitable components. We use gentle, directed rinsing where appropriate to carry away the loosened grime.","Wastewater is collected to protect your home. Some enzyme products are designed to self-rinse with condensate, so we follow those instructions instead of washing them off too early."]},
                   {number:"04",title:"Electronic Protection",hook:"WE CLEAN THE AIRCON — NOT SOAK ITS ELECTRONICS.",paragraphs:["We isolate power and protect the indoor and outdoor circuit boards from water, steam and cleaning spray.","If we spot contamination or a possible board fault, we explain it. Specialist PCB cleaning and repairs are separate work, never an automatic extra charge."]},
                   {number:"05",title:"Drainage & Outdoor Clean",hook:"YES, THE DRAIN AND OUTDOOR UNIT TOO.",paragraphs:["We clean accessible drain components to remove sludge and help condensate flow as it should.","Outside, we clear debris and clean suitable condenser surfaces with safe water pressure. That can help airflow and performance when dirt is the problem."]},
-                  {number:"06",title:"Reassembly, Testing & Proof",hook:"PUT BACK PROPERLY. CHECKED BEFORE WE LEAVE.",paragraphs:["We reassemble the suitable parts, check the unit and accessible drainage, and tidy the work area.","Where practical, we'll show you before-and-after photos. Our written cleaning-related musty-odour guarantee backs the work."]}
+                  {number:"06",title:"Reassembly, Testing & Proof",hook:"PUT BACK PROPERLY. CHECKED BEFORE WE LEAVE.",paragraphs:["We reassemble the suitable parts, check the unit and accessible drainage, and tidy the work area.","Where practical, we'll show you before-and-after photos so you can see the care taken with the parts we serviced."]}
                 ].map((step) => (
                   <article key={step.number} className="rounded-xl border border-[#C7E2EB] bg-white px-6 py-7 shadow-sm sm:px-8 sm:py-9">
                     <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">STEP {step.number} OF 6 · {step.title}</p>
@@ -329,27 +198,17 @@ export default function SplitSystemCleaning() {
                   </article>
                 ))}
               </div>
-              <p className="mt-6 max-w-4xl border-l-4 border-[#F4C620] pl-5 text-sm leading-7 text-[#4B6575] sm:text-base font-semibold">Every split system is different. The access, chemicals, steam and rinsing we use depend on the unit and manufacturer's instructions. We do not promise sterile air, a fixed bacteria-kill percentage or a guaranteed reduction in electricity bills.</p>
+              <p className="mt-6 max-w-4xl border-l-4 border-[#F4C620] pl-5 text-sm leading-7 text-[#4B6575] sm:text-base font-semibold">Every split system is different. We choose suitable access, products, steam and rinsing based on the unit and manufacturer's instructions.</p>
             </section>
-            <section className="mt-14 rounded-xl bg-[#08263E] px-6 py-9 text-white sm:px-10 sm:py-12" data-testid="cleaning-odour-guarantee" id="cleaning-guarantee">
-              <p className="text-sm font-black uppercase tracking-widest text-[#62D1EC]">Our seven-day cleaning-related odour promise</p>
-              <h3 className="mt-4 max-w-4xl text-3xl font-black uppercase leading-tight sm:text-5xl">THE SAME MUSTY SMELL? <span className="text-[#F4C620]">WE COME BACK — OR REFUND YOU.</span></h3>
-              <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-white sm:text-xl">If a musty smell caused by build-up in the accessible parts we cleaned remains or returns within seven days, tell us within that period.</p>
-              <div className="mt-7 grid gap-5 sm:grid-cols-2">
-                <div className="border-l-4 border-[#45C6E7] pl-5">
-                  <h4 className="text-xl font-black uppercase text-white">First, we re-clean.</h4>
-                  <p className="mt-3 text-base leading-8 text-white/85 sm:text-lg font-semibold">We inspect those affected accessible areas and re-clean them once at no charge.</p>
-                </div>
-                <div className="border-l-4 border-[#F4C620] pl-5">
-                  <h4 className="text-xl font-black uppercase text-white">If we can't fix it, we refund.</h4>
-                  <p className="mt-3 text-base leading-8 text-white/85 sm:text-lg font-semibold">If the odour is from the serviced areas and cleaning cannot resolve it, we refund the cleaning service charge, including any $50 booking payment.</p>
-                </div>
-              </div>
-              <p className="mt-8 max-w-4xl border-t border-white/20 pt-5 text-sm leading-7 text-white/85 font-medium">Applies only to cleaning-related odours from accessible serviced parts, not unrelated building moisture, ongoing leaks, inaccessible contamination or mechanical faults. We'll explain anything beyond the cleaning scope before quoting extra work. Your Australian Consumer Law rights still apply.</p>
+            <section className="mt-14 rounded-xl bg-[#08263E] px-6 py-9 text-white sm:px-10 sm:py-12" data-testid="cleaning-service-promise" id="cleaning-guarantee">
+              <p className="text-sm font-black uppercase tracking-widest text-[#62D1EC]">Our work, backed by a simple promise</p>
+              <h3 className="mt-4 max-w-4xl text-3xl font-black uppercase leading-tight sm:text-5xl">AGREED ACCESSIBLE PARTS CLEANED. <span className="text-[#F4C620]">OR WE RETURN TO PUT IT RIGHT.</span></h3>
+              <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-white sm:text-xl">If we missed an agreed accessible area during the Hero Method service, contact us within seven days. We'll inspect it and complete that cleaning work without an extra service charge.</p>
+              <p className="mt-6 max-w-4xl border-t border-white/20 pt-5 text-sm leading-7 text-white/85 font-medium">We explain which parts are safely accessible for your model before starting. Your Australian Consumer Law rights continue to apply.</p>
             </section>
             <section className="mt-14 border-t-2 border-[#BCDDEB] pt-9" id="cleaning-trust" data-testid="cleaning-trust">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Why people choose SplitsPro</p>
-              <h3 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">WE LOOK AFTER YOUR HOME — AND SHOW YOU THE WORK.</h3>
+              <h3 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">WE TREAT YOUR CHILD'S PLAY SPACE AND YOUR FAMILY HOME WITH CARE.</h3>
               <div className="mt-7 grid gap-7 sm:grid-cols-[1fr_1fr] sm:items-start">
                 <div>
                   <GoogleRating />
@@ -361,12 +220,12 @@ export default function SplitSystemCleaning() {
                   <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> A cleaning checklist, job photos and completion certificate.</p>
                 </div>
               </div>
-              <p className="mt-7 max-w-3xl text-sm leading-7 text-[#435B6B] font-medium">Cleaning methods and access vary with the system. We'll tell you before doing anything outside the agreed service.</p>
+              <p className="mt-7 max-w-3xl text-sm leading-7 text-[#435B6B] font-medium">We explain suitable access and protect nearby surfaces before work begins.</p>
             </section>
-            <button type="button" onClick={() => goStage(3)}
+            <button type="button" onClick={() => scrollToSection("cleaning-next-step")}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-offer">
-              View the clear price &amp; book <ArrowRight className="h-5 w-5" />
+              See how we care for your home <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
@@ -374,135 +233,20 @@ export default function SplitSystemCleaning() {
 
       {(
         <>
-          <section id="cleaning-stage-3" className="scroll-mt-16 bg-[#FFF7E8] py-8 sm:py-14" data-testid="cleaning-offer">
+          <section id="cleaning-next-step" className="scroll-mt-16 bg-[#FFF7E8] py-10 sm:py-16" data-testid="cleaning-next-step">
             <div className="sp-container mx-auto max-w-6xl">
-              <div className="grid items-center gap-5 sm:grid-cols-[1fr_0.45fr]">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">Now, here's the offer</p>
-                  <h2 className="mt-2 max-w-3xl font-black uppercase text-3xl leading-tight text-[#0B2641] sm:text-5xl">
-                    ONE FULL HERO METHOD CLEAN. NO SURPRISE EXTRAS.
-                  </h2>
-                  <p className="mt-6 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">The six-step Hero Method includes suitable deep indoor cleaning, drain care, outdoor-unit cleaning and final checks.</p>
-                  <p className="mt-4 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">See the complete price before you pick your date. <strong className="text-[#0B2641]">Every extra split cleaned on the same visit is $120.</strong></p>
-                </div>
+              <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">For the home you work hard to look after</p>
+              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">YOU'VE DONE THE SURFACE CLEANING. <span className="text-[#008DB8]">LET'S LOOK AFTER WHAT'S INSIDE.</span></h2>
+              <p className="mt-6 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">A thorough deep clean is a practical, budget-conscious way to care for the split system you already own — reaching accessible internal areas that household cleaning cannot reach.</p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+                <a href={PHONE_TEL} className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-7 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto" data-testid="cleaning-contact-cta">
+                  Talk to SplitsPro <ArrowRight className="h-5 w-5" />
+                </a>
+                <div className="rounded-lg bg-white px-4 py-3 shadow-sm" data-testid="cleaning-cta-google-rating" aria-label="SplitsPro Google reviews"><GoogleRating /></div>
               </div>
-              <div className="mt-9 grid gap-9 rounded-xl bg-[#08263E] px-6 py-8 text-white sm:grid-cols-[1fr_1fr] sm:px-9 sm:py-11" id="cleaning-prices" data-testid="cleaning-prices">
-                <div>
-                  <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4BD0F0]">Complete split-system Hero Method</p>
-                  <h3 className="mt-4 text-2xl font-black uppercase leading-tight text-white sm:text-3xl">ONE PROPER CLEAN. INSIDE AND OUT.</h3>
-                  <p className="mt-5 text-base leading-8 text-white/90 sm:text-lg font-semibold">Accessible indoor cleaning, drainage, outdoor care and our cleaning-related musty-odour guarantee are included.</p>
-                  <p className="mt-4 text-base leading-8 text-white/90 sm:text-lg font-semibold"><strong className="text-[#F4C620]">No separate call-out fee.</strong> We quote any non-standard work before asking you to approve it.</p>
-                  <p className="mt-5 text-sm leading-7 text-white/85 font-medium">Applies to accessible wall-mounted splits at the same property and on the same visit. Your $50 online booking payment is part of the total — not an extra fee.</p>
-                </div>
-                <div>
-                  <p className="text-sm font-black uppercase tracking-widest text-[#F4C620]">First split system</p>
-                  <strong className="mt-1 block text-6xl font-black leading-none text-white sm:text-7xl">{money(firstPrice)}</strong>
-                  <p className="mt-5 text-2xl font-black uppercase leading-tight text-[#F4C620] sm:text-3xl">EVERY EXTRA SPLIT + $120</p>
-                  <p className="mt-3 text-base font-bold leading-8 text-white/90">2 systems {money(cleaningPrice(2, firstPrice))} · 3 systems {money(cleaningPrice(3, firstPrice))}</p>
-                  <div className="mt-7 space-y-4">
-                    <p className="text-base font-bold leading-8 text-white sm:text-lg">CHOOSE HOW YOU PAY.</p>
-                    <p className="text-base leading-8 text-white/85 font-semibold">Book online with <strong className="text-white">$50 towards the total</strong>, then pay the balance after cleaning.</p>
-                    <p className="text-base leading-8 text-white/85 font-semibold">Or pay the full amount now by card or an eligible buy-now-pay-later option at checkout.</p>
-                    <p className="text-sm leading-7 text-white/85 font-medium">Payment options and approval depend on the provider. Ask us in advance if you want to use instalments for a remaining balance.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-bold text-[#244456] sm:text-base" data-testid="cleaning-offer-reassurance"><GoogleRating /><span>✓ Licensed & insured technicians</span><span>✓ Secure $50 booking · balance after cleaning</span></div>
-              <div className="mt-5" data-testid="cleaning-before-booking-cta-pay-later-reminder">
-                <PayLaterReminder kind="cleaning" compact stripeReady={paymentReadiness.stripe_ready} paypalReady={paymentReadiness.paypal_ready} />
-              </div>
-              <button type="button" onClick={scrollBook}
-                className="mt-4 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-10">
-                Choose systems &amp; date <ArrowRight className="h-5 w-5" />
-              </button>
-              <p className="mt-5 text-sm leading-7 text-[#506979] font-medium">We tackle dirt and cleaning-related odours, but no cleaning can guarantee sterile air, prevent all future mould or repair mechanical faults.</p>
+              <p className="mt-4 text-sm font-bold text-[#244456] sm:text-base">✓ Licensed &amp; insured technicians &nbsp; ✓ We explain and show the work</p>
             </div>
           </section>
-
-      <section className="scroll-mt-24 bg-[#081726] py-16 text-white sm:py-20" id="cleaning-booking" data-testid="cleaning-booking">
-        <div className="sp-container mx-auto max-w-5xl">
-          <p className="text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">CHOOSE YOUR COMPLETE CLEAN</p>
-          <h2 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">
-            PICK THE SYSTEMS. <span className="text-[#45C6E7]">PICK THE TIME.</span>
-          </h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/85 font-semibold">
-            Choose the number of systems and an available start time. Then pay $50 online to reserve, or pay the full total securely. Cleaning and installation bookings share the same live calendar.
-          </p>
-          <div className="mt-6" data-testid="cleaning-booking-pay-later-reminder">
-            <PayLaterReminder kind="cleaning" theme="dark" />
-          </div>
-          <div className="mt-9 grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
-            <div className="border-t-[3px] border-[#45C6E7] pt-6">
-              <label htmlFor="cleaning-unit-quantity" className="block text-xs font-black uppercase tracking-[0.17em] text-[#F4C620]">How many split systems need cleaning?</label>
-              <select id="cleaning-unit-quantity" data-testid="cleaning-unit-count"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                className="mt-3 min-h-14 w-full rounded-md border border-white/25 bg-white px-4 py-3 text-lg font-extrabold text-[#082337]">
-                {CLEANING_QUANTITIES.map((count) => (
-                  <option key={count} value={count}>{count} split {count === 1 ? "system" : "systems"}</option>
-                ))}
-              </select>
-              <div className="mt-6 border-y border-white/20 py-5">
-                <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>{money(firstPrice)}</strong></div>
-                {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $120</span><strong>{money((quantity - 1) * EXTRA_CLEAN_PRICE)}</strong></div>}
-                <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-5">
-                  <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total</span>
-                  <strong className="text-4xl font-black text-[#F4C620]">{money(currentTotal)}</strong>
-                </div>
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-4" data-testid="cleaning-booking-full-payment">
-                  <span className="font-black uppercase text-[#F4C620]">Pay $50 online to reserve</span>
-                  <span className="text-sm font-semibold text-white/80">Balance after clean: {money(currentTotal - 50)}</span>
-                </div>
-              </div>
-              <p className="mt-5 text-sm leading-relaxed text-white/85 font-medium">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
-            </div>
-            <div className="border-t-[3px] border-[#F4C620] pt-6">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">Live calendar</p>
-                  <h3 className="mt-2 text-2xl font-black uppercase sm:text-3xl">Choose a date</h3>
-                </div>
-                <button type="button" onClick={() => refreshSlots(quantity)} disabled={slotsLoading}
-                  className="text-sm font-bold text-[#F4C620] underline underline-offset-4 disabled:opacity-50">Refresh openings</button>
-              </div>
-              {slotsLoading && <p className="mt-5 flex items-center gap-2 text-sm text-white/85 font-medium"><Loader2 className="h-4 w-4 animate-spin"/> Checking live bookings...</p>}
-              {slotsError && <p className="mt-5 border-l-[3px] border-[#F4C620] pl-3 text-sm font-semibold text-[#F4C620]" role="alert">{slotsError}</p>}
-              {!slotsLoading && availableDays.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/80 font-medium">No online openings are available for {quantity} systems right now. Call 0414 698 435 to ask about another date.</p>}
-              <p className="mt-4 text-xs text-white/85 font-medium">Soonest available opening is selected automatically. Choose another date or time if you prefer.</p>
-              <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {(showMoreSlots ? availableDays : availableDays.slice(0, 6)).map((day) => (
-                  <button type="button" key={day} aria-pressed={selectedDate === day}
-                    onClick={() => { const first = slots.find((slot) => slot.date === day); setSelectedDate(day); setSelectedTime(first?.time || ""); setSlotsError(""); }}
-                    className={"min-h-14 rounded-md border px-3 py-3 text-sm font-bold transition " + (selectedDate === day ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
-                    {formatDate(day)}
-                  </button>
-                ))}
-              </div>
-              {availableDays.length > 6 && <button type="button" onClick={() => setShowMoreSlots(!showMoreSlots)} className="mt-3 text-sm font-bold text-[#F4C620] underline underline-offset-4">{showMoreSlots ? "Show fewer dates" : "See more dates"}</button>}
-              {selectedDate && <div className="mt-7 border-t border-white/20 pt-5">
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#F4C620]">Available start times · {formatDate(selectedDate)}</p>
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {availableTimes.map((slot) => (
-                    <button type="button" key={slot.time} aria-pressed={selectedTime === slot.time}
-                      onClick={() => { setSelectedTime(slot.time); setSlotsError(""); }}
-                      className={"min-h-14 rounded-md border px-3 py-3 text-sm font-extrabold " + (selectedTime === slot.time ? "border-[#F4C620] bg-[#F4C620] text-[#071827]" : "border-white/25 bg-white/5 text-white hover:border-[#F4C620]")}>
-                      <Clock3 className="mr-2 inline h-4 w-4"/> {formatTime(slot.time)}
-                    </button>
-                  ))}
-                </div>
-              </div>}
-              {selectedDate && selectedTime && <p className="mt-5 text-sm font-bold text-[#FFFFFF]">Your booking: {formatDate(selectedDate)} at {formatTime(selectedTime)} · {quantity} {quantity === 1 ? "system" : "systems"}</p>}
-              {!priceReady && <p role="status" className="mt-4 text-xs text-[#F4C620] font-medium">We're verifying the $200 cleaning offer and $50 booking payment. Online booking will open when the secure checkout matches.</p>}
-              <button type="button" onClick={continueBooking}
-                disabled={!selectedDate || !selectedTime || continuing || slotsLoading || !!slotsError || !priceReady}
-                className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
-                {continuing ? "Opening secure booking..." : "Continue to secure $50 booking"} <ArrowRight className="h-5 w-5"/>
-              </button>
-              <p className="mt-3 text-xs leading-relaxed text-white/60 font-medium">Your time is held when checkout starts. Your date is confirmed after your $50 booking payment or full payment is verified.</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="bg-white py-14 sm:py-20" data-testid="cleaning-faq">
         <div className="sp-container grid gap-10 lg:grid-cols-[.68fr_1.32fr] lg:gap-16">
@@ -519,7 +263,7 @@ export default function SplitSystemCleaning() {
       </section>
         </>
       )}
-      {guideOpen && stage === 1 && (
+      {guideOpen && (
         <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/55 p-3 sm:items-center" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) setGuideOpen(false); }}>
           <div role="dialog" aria-modal="true" aria-labelledby="cleaning-guide-title" className="relative w-full max-w-md rounded-xl bg-white p-6 text-[#142E43] shadow-xl">
             <button type="button" aria-label="Close free guide offer" onClick={() => setGuideOpen(false)} className="absolute right-3 top-2 p-2 text-xl">×</button>
@@ -540,7 +284,7 @@ export default function SplitSystemCleaning() {
               </div>
             ) : (
               <form onSubmit={submitGuide} className="mt-4 space-y-3">
-                <p className="text-sm font-medium">Leave your email to unlock a handy five-point home-care guide. No booking required.</p>
+                <p className="text-sm font-medium">Leave your email to unlock a handy five-point home-care guide.</p>
                 <label className="block text-sm font-bold">Email address<input type="email" required autoComplete="email" value={guideEmail} onChange={(e) => setGuideEmail(e.target.value)} className="mt-1 w-full rounded border p-3" placeholder="you@example.com" /></label>
                 <label className="flex items-start gap-2 text-xs font-medium"><input type="checkbox" checked={guideConsent} onChange={(e) => setGuideConsent(e.target.checked)} className="mt-0.5" />Optional: I agree to receive occasional SplitsPro cleaning tips and offers by email. I can unsubscribe at any time.</label>
                 {guideError && <p role="alert" className="text-sm text-red-700 font-medium">{guideError}</p>}
@@ -553,7 +297,7 @@ export default function SplitSystemCleaning() {
       )}
       <div className="border-t border-[#E6E0D7] bg-[#FAF9F7] py-5">
         <div className="sp-container flex flex-wrap items-center justify-between gap-3 text-xs text-[#646970]">
-          <span>SplitsPro · Bass Hill and selected surrounding Western Sydney suburbs. Ask about your postcode before booking.</span>
+          <span>SplitsPro · Bass Hill and selected surrounding Western Sydney suburbs. Call to confirm service in your postcode.</span>
           <Link to="/cleaning" className="font-bold text-[#946F3C] underline">All cleaning services</Link>
         </div>
       </div>
