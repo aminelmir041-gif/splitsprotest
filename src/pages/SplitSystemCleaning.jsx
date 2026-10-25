@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowRight, ArrowLeft, ChevronDown, Clock3, Loader2, ShieldCheck } from "lucide-react";
-import { getCleaningCheckoutConfig, getCleaningSlots } from "../lib/api";
+import { api, getCleaningCheckoutConfig, getCleaningSlots } from "../lib/api";
 import { scheduledCleaningPrice } from "../lib/cleaningPricing";
 import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
@@ -46,6 +46,47 @@ export default function SplitSystemCleaning() {
     }, 650);
     return () => window.clearTimeout(timeout);
   }, [location.hash]);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [guideEmail, setGuideEmail] = useState("");
+  const [guideConsent, setGuideConsent] = useState(false);
+  const [guideStatus, setGuideStatus] = useState("idle");
+  const [guideError, setGuideError] = useState("");
+  const guideShown = useRef(false);
+  useEffect(() => {
+    if (stage !== 1 || guideShown.current) return undefined;
+    const start = Date.now();
+    let maxScroll = 0;
+    let lastY = window.scrollY;
+    const show = () => {
+      if (guideShown.current || Date.now() - start < 20000 || document.visibilityState !== "visible") return;
+      guideShown.current = true;
+      try { sessionStorage.setItem("splitspro-cleaning-guide-shown", "1"); } catch {}
+      setGuideOpen(true);
+    };
+    try { if (sessionStorage.getItem("splitspro-cleaning-guide-shown")) return undefined; } catch {}
+    const onScroll = () => {
+      const y = window.scrollY;
+      const range = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+      maxScroll = Math.max(maxScroll, y / range);
+      if (maxScroll >= 0.6 && lastY - y > 50 && y / range < 0.3) show();
+      lastY = y;
+    };
+    const onLeave = (event) => { if (event.clientY <= 0 && window.matchMedia("(hover: hover)").matches) show(); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("mouseout", onLeave);
+    return () => { window.removeEventListener("scroll", onScroll); document.removeEventListener("mouseout", onLeave); };
+  }, [stage]);
+  const submitGuide = async (event) => {
+    event.preventDefault();
+    setGuideStatus("saving"); setGuideError("");
+    try {
+      await api.post("/cleaning-guide-leads", { email: guideEmail, marketing_consent: guideConsent });
+      setGuideStatus("success");
+    } catch {
+      setGuideStatus("idle");
+      setGuideError("Couldn't save your email. Please try again.");
+    }
+  };
   const [quantity, setQuantity] = useState(1);
   const [firstPrice, setFirstPrice] = useState(scheduledCleaningPrice);
   const [priceReady, setPriceReady] = useState(false);
@@ -420,6 +461,38 @@ export default function SplitSystemCleaning() {
         </div>
       </section>
         </>
+      )}
+      {guideOpen && stage === 1 && (
+        <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/55 p-3 sm:items-center" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) setGuideOpen(false); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="cleaning-guide-title" className="relative w-full max-w-md rounded-xl bg-white p-6 text-[#142E43] shadow-xl">
+            <button type="button" aria-label="Close free guide offer" onClick={() => setGuideOpen(false)} className="absolute right-3 top-2 p-2 text-xl">×</button>
+            <p className="text-xs font-black uppercase tracking-widest text-[#008DB8]">Something useful for your home</p>
+            <h2 id="cleaning-guide-title" className="mt-2 text-2xl font-black">5 places dust, mould and grime hide at home</h2>
+            {guideStatus === "success" ? (
+              <div className="mt-4 text-sm leading-relaxed">
+                <p className="font-bold">Here's your quick home-care guide:</p>
+                <ol className="mt-2 list-decimal space-y-2 pl-5">
+                  <li>Aircon filters and accessible vents: check and clean as the manufacturer recommends.</li>
+                  <li>Bathroom grout and exhaust fans: remove buildup and improve ventilation.</li>
+                  <li>Window tracks: vacuum dust and wipe away trapped moisture.</li>
+                  <li>Kitchen rangehood filters: degrease regularly.</li>
+                  <li>Under sinks and behind furniture: check for leaks and dampness.</li>
+                </ol>
+                <p className="mt-3">If mould keeps returning, address the moisture source rather than just wiping the surface.</p>
+                <button type="button" onClick={() => setGuideOpen(false)} className="mt-4 rounded bg-[#F4C620] px-5 py-3 font-bold">Back to the page</button>
+              </div>
+            ) : (
+              <form onSubmit={submitGuide} className="mt-4 space-y-3">
+                <p className="text-sm">Leave your email to unlock a handy five-point home-care guide. No booking required.</p>
+                <label className="block text-sm font-bold">Email address<input type="email" required autoComplete="email" value={guideEmail} onChange={(e) => setGuideEmail(e.target.value)} className="mt-1 w-full rounded border p-3" placeholder="you@example.com" /></label>
+                <label className="flex items-start gap-2 text-xs"><input type="checkbox" checked={guideConsent} onChange={(e) => setGuideConsent(e.target.checked)} className="mt-0.5" />Optional: I agree to receive occasional SplitsPro cleaning tips and offers by email. I can unsubscribe at any time.</label>
+                {guideError && <p role="alert" className="text-sm text-red-700">{guideError}</p>}
+                <button type="submit" disabled={guideStatus === "saving"} className="w-full rounded bg-[#F4C620] p-3 font-black disabled:opacity-50">{guideStatus === "saving" ? "Please wait…" : "Get the free guide"}</button>
+                <button type="button" onClick={() => setGuideOpen(false)} className="w-full p-2 text-sm underline">No thanks</button>
+              </form>
+            )}
+          </div>
+        </div>
       )}
       <div className="border-t border-[#E6E0D7] bg-[#FAF9F7] py-5">
         <div className="sp-container flex flex-wrap items-center justify-between gap-3 text-xs text-[#646970]">
