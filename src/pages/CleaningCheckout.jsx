@@ -30,6 +30,7 @@ export default function CleaningCheckout() {
   const localToday = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(day) && day >= localToday;
   const [firstPrice, setFirstPrice] = useState(scheduledCleaningPrice);
+  const [priceReady, setPriceReady] = useState(false);
   const price = (validCount ? firstPrice + EXTRA_PRICE * (count - 1) : firstPrice);
   const totalDuration = count * 90;
   const backUrl = "/split-system-cleaning/#cleaning-booking";
@@ -60,7 +61,15 @@ export default function CleaningCheckout() {
       .then((data) => { if (live) {
         setSettings(data);
         const advertisedPrice = Number(data?.first_system);
-        setFirstPrice(Number.isFinite(advertisedPrice) && advertisedPrice >= 200 ? advertisedPrice : scheduledCleaningPrice());
+        setFirstPrice(scheduledCleaningPrice());
+        const matchesOffer = advertisedPrice === scheduledCleaningPrice()
+          && Number(data?.each_additional_system) === EXTRA_PRICE
+          && Number(data?.booking_payment) === 50
+          && data?.enabled === true;
+        setPriceReady(matchesOffer);
+        if (!matchesOffer) {
+          setSettingsError("The $200 deep-clean offer is being synchronized with our payment provider. Please try again shortly.");
+        }
         setSettingsLoading(false);
         if (!data.stripe_ready && data.paypal_ready) setProvider("paypal");
         if (!data.stripe_ready && !data.paypal_ready) setSettingsError("Secure full-payment checkout is temporarily unavailable. Please contact SplitsPro.");
@@ -181,7 +190,7 @@ export default function CleaningCheckout() {
 
   const pay = async (event) => {
     event.preventDefault();
-    if (!formReady || processing || settingsError || !settings) return;
+    if (!formReady || processing || settingsError || !settings || !priceReady) return;
     if (provider === "stripe" && !settings.stripe_ready) return;
     if (provider === "paypal" && !settings.paypal_ready) return;
     setProcessing(true);
@@ -261,7 +270,7 @@ export default function CleaningCheckout() {
             <div className="mt-7 border-y-2 border-[#CDDCE5] py-6">
               <p className="text-lg font-bold">{count} wall-mounted split system{count > 1 ? "s" : ""}</p>
               <p className="mt-3 text-5xl font-black text-[#007FA4]">{money(price)}</p>
-              <p className="mt-2 text-sm font-semibold text-[#496070]">Reserve your date for $50 and pay the balance after cleaning, or pay the full amount now (including eligible pay-later options).</p>
+              <p className="mt-2 text-sm font-semibold text-[#496070]">Pay $50 online to book your cleaning, with the remaining balance due after the service. Or pay the full amount now (including eligible pay-later options).</p>
               <div className="mt-5 border-t border-[#D3E2EB] pt-4" data-testid="cleaning-checkout-before-payment-reminder">
                 <PayLaterReminder kind="cleaning" compact
                   stripeReady={settings?.stripe_ready}
@@ -298,7 +307,7 @@ export default function CleaningCheckout() {
                   </label>
                 ))}
               </fieldset>
-              <p className="mt-3 text-sm font-medium text-[#466073]">Want to spread payments? Select the <strong>full amount</strong>, then choose an eligible <strong>Afterpay, Klarna, Zip or PayPal Pay in 4</strong> option if offered. The provider pays SplitsPro for the full job; you repay the provider.</p>
+              <p className="mt-3 text-sm font-medium text-[#466073]">We accept major credit and debit cards through secure Stripe checkout. PayPal may also be available. Want to spread payments? Select the <strong>full amount</strong>, then choose an eligible <strong>Afterpay, Klarna, Zip or PayPal Pay in 4</strong> option if offered. The provider pays SplitsPro for the full job; you repay the provider.</p>
               <div className="mt-4 flex flex-wrap items-end justify-between gap-4 border-t border-[#D7E2E9] pt-4">
                 <div><p className="text-xs font-black uppercase tracking-wide text-[#007FA4]">DUE TODAY</p><strong className="block text-3xl font-black text-[#0B2641]">{money(dueNow)}</strong></div>
                 <div className="text-right"><p className="text-xs font-black uppercase tracking-wide text-[#526677]">AFTER CLEANING</p><strong className="block text-2xl font-black text-[#0B2641]">{money(remainingBalance)}</strong></div>
@@ -331,7 +340,7 @@ export default function CleaningCheckout() {
                   ))}
                 </div>
               </fieldset>
-              <button type="submit" disabled={!formReady || !settings || !!settingsError || processing || !(provider === "stripe" ? settings?.stripe_ready : settings?.paypal_ready)}
+              <button type="submit" disabled={!formReady || !settings || !!settingsError || !priceReady || processing || !(provider === "stripe" ? settings?.stripe_ready : settings?.paypal_ready)}
                 className="flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] p-4 text-base font-black uppercase text-[#09243B] disabled:opacity-40">
                 {processing ? <><Loader2 className="h-5 w-5 animate-spin"/>Opening secure payment…</>
                   : <><CreditCard className="h-5 w-5"/>PAY {money(dueNow)} TO {paymentChoice === "booking" ? "BOOK" : "COMPLETE"} · {provider === "paypal" ? "PAYPAL" : "STRIPE"} <ArrowRight className="h-5 w-5"/></>}

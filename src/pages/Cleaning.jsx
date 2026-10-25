@@ -9,9 +9,9 @@ const SERVICE_CARDS = [
     eyebrow: "Wall-mounted units",
     title: "Split System Cleaning",
     cheeky: "A complete deep clean. Just $150 for each extra unit on the same visit.",
-    body: "One complete split-system deep clean is $300, with each additional unit at the same property just $150. Choose an available date, then pay $200 to book or pay the full amount securely through Stripe.",
+    body: "One complete split-system deep clean is $200, with each additional unit at the same property just $150. Choose your date and securely pay the full total online.",
     icons: [Bug, Sparkles, Wind],
-    chips: ["$300 · First Deep Clean", "$150 · Each Additional Unit", "$200 · Book Now or Pay in Full"],
+    chips: ["$200 · First Deep Clean", "$150 · Each Additional Unit", "Book Online · Pay in Full"],
   },
   {
     href: "/ducted-cleaning",
