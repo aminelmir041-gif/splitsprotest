@@ -3,22 +3,23 @@ import PayLaterReminder from "../components/PayLaterReminder";
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock3, Droplets, Loader2, ShieldCheck, Sun, Wind } from "lucide-react";
+import { ArrowRight, ArrowLeft, ChevronDown, Clock3, Loader2, ShieldCheck } from "lucide-react";
 import { getCleaningCheckoutConfig, getCleaningSlots } from "../lib/api";
 import { scheduledCleaningPrice } from "../lib/cleaningPricing";
 import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
 // This is the ONE consumer sales landing page for split-system cleaning.
-// No separate cleaning funnel; the old /split-system-cleaning-offer/ URL redirects here.
+// Three short stages share one live offer and checkout.
 const CLEANING_QUANTITIES = Array.from({ length: 7 }, (_, index) => index + 1);
-const cleaningPrice = (count, firstPrice) => firstPrice + Math.max(0, count - 1) * 150;
+const EXTRA_CLEAN_PRICE = 120;
+const cleaningPrice = (count, firstPrice) => firstPrice + Math.max(0, count - 1) * EXTRA_CLEAN_PRICE;
 const money = (value) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(value);
 
 
 const FAQS = [
   { q: "Is a deep clean different to washing the filters?", a: "Yes. A filter wash is only one part. Our deep clean also targets accessible internal coil, blower wheel, drain tray and airflow path surfaces. The exact method depends on the unit and its condition." },
-  { q: "How much do additional air conditioners cost?", a: "The current first-system price is displayed in the live offer and booking calculator. Every additional standard split system is $150 when cleaned at the same address and on the same visit. Your total is shown before you choose a secure payment method. Eligible pay-later options may be available." },
+  { q: "How much do additional air conditioners cost?", a: "The current first-system price is displayed in the live offer and booking calculator. Every additional standard split system is $120 when cleaned at the same address and on the same visit. Your total is shown before you choose a secure payment method. Eligible pay-later options may be available." },
   { q: "Do you have to remove the whole air conditioner?", a: "Normally no. We protect the area, open or remove suitable service-accessible covers and clean the accessible indoor components. We won't dismantle sealed refrigerant components as part of a cleaning job." },
   { q: "Can cleaning repair an air conditioner that isn't cooling?", a: "Cleaning can help when dirt is affecting airflow, but it won't fix a refrigerant leak, electrical fault or failed part. If we find a likely fault, we'll discuss the next step before any separate repair work." },
   { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." },
@@ -30,12 +31,18 @@ const FAQS = [
 export default function SplitSystemCleaning() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [stage, setStage] = useState(() => /^(#cleaning-booking|#cleaning-prices)$/.test(window.location.hash) ? 3 : 1);
+  const goStage = (next) => {
+    setStage(next);
+    window.setTimeout(() => document.getElementById("cleaning-stage-" + next)?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  };
   // Scroll guide visitors directly to this page's EXISTING live date picker.
   // Route fade-in and the global ScrollToTop run before this delayed scroll.
   useEffect(() => {
-    if (location.hash !== "#cleaning-booking") return undefined;
+    if (location.hash !== "#cleaning-booking" && location.hash !== "#cleaning-prices") return undefined;
+    setStage(3);
     const timeout = window.setTimeout(() => {
-      document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById(location.hash === "#cleaning-prices" ? "cleaning-prices" : "cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 650);
     return () => window.clearTimeout(timeout);
   }, [location.hash]);
@@ -54,7 +61,7 @@ export default function SplitSystemCleaning() {
   const [paymentReadiness, setPaymentReadiness] = useState({ stripe_ready: undefined, paypal_ready: undefined });
   const requestId = useRef(0);
   const scrollBook = () => document.getElementById("cleaning-booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  const scrollOffer = () => document.getElementById("cleaning-prices")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const scrollOffer = () => { setStage(3); window.setTimeout(() => document.getElementById("cleaning-prices")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); };
   const choose = (count) => { setQuantity(count); scrollBook(); };
 
   const refreshSlots = async (requestedQuantity = quantity) => {
@@ -106,7 +113,7 @@ export default function SplitSystemCleaning() {
       .then((data) => {
         if (active) {
           const latestPrice = Number(data?.first_system);
-          setPriceReady(latestPrice === scheduledCleaningPrice() && Number(data?.each_additional_system) === 150 && Number(data?.booking_payment) === 50 && data?.enabled === true);
+          setPriceReady(latestPrice === scheduledCleaningPrice() && Number(data?.each_additional_system) === EXTRA_CLEAN_PRICE && Number(data?.booking_payment) === 50 && data?.enabled === true);
            setFirstPrice(scheduledCleaningPrice());
           setPaymentReadiness({
           stripe_ready: Boolean(data?.stripe_ready),
@@ -145,361 +152,173 @@ export default function SplitSystemCleaning() {
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
         <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | SplitsPro Sydney</title>
-        <meta name="description" content="SplitsPro complete split-system deep cleaning for $200 for one system, plus $150 for each additional system at the same address. Choose a date and book online for $50, with the balance due after cleaning. Full payment and eligible pay-later options are also available. Protective treatments where suitable." />
+        <meta name="description" content="SplitsPro complete split-system deep cleaning for $200 for one system, plus $120 for each additional system at the same address. Choose a date and book online for $50, with the balance due after cleaning. Full payment and eligible pay-later options are also available. Protective treatments where suitable." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
-        <meta property="og:description" content="$200 complete deep clean with suitable protective treatments. Each extra split system $150 at the same property. Book online for $50 and pay the balance after cleaning, or pay the full total online." />
+        <meta property="og:description" content="$200 complete deep clean with suitable protective treatments. Each extra split system $120 at the same property. Book online for $50 and pay the balance after cleaning, or pay the full total online." />
       </Helmet>
 
 
 
-      {/* Keep the approved desktop artwork. On mobile display only the right-hand
-          family and aircon photograph to avoid repeating/cropping the headline
-          already rendered as accessible HTML above it. */}
-      <section className="w-full overflow-hidden bg-[#FCFBF8]" data-testid="cleaning-hero"
-        style={{ paddingTop: "max(52px, calc(var(--sp-site-header-height, 104px) - 36px))" }}>
-        <div className="sp-container pb-5 pt-7 md:hidden">
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] leading-relaxed text-[#9B753E]">For mums, dads, pet owners and older loved ones</p>
-          <h1 className="mt-3 max-w-xl font-serif text-[clamp(2rem,8.5vw,3rem)] leading-[1.1] tracking-tight text-[#0B0B0B]">
-            You clean everything they touch. <span className="text-[#805F2F]">What about the aircon they breathe around?</span>
-          </h1>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-[#555D63]">The floors sparkle. The benches shine. But one of the hardest-working things in the house can still be hiding grime where you can't see it.</p>
-          <button type="button" onClick={scrollOffer}
-            className="mt-5 inline-flex min-h-14 items-center justify-center gap-2 rounded-md bg-[#F4C620] px-7 py-3 text-base font-black uppercase text-[#082337] shadow-sm hover:bg-[#FBDD42]"
-            data-testid="cleaning-hero-book-now-mobile">See Our Offer <ArrowRight className="h-5 w-5" /></button>
-        </div>
-        <div className="relative w-full overflow-hidden md:hidden" style={{ aspectRatio: "936 / 1024" }}>
-          <img
-            src="/landing/splitspro-cleaning-family-hero.webp"
-            alt="Family with a young child, dog and older loved one beneath an air conditioner with visible hidden grime"
-            width={1536} height={1024} loading="eager" decoding="async" fetchPriority="high" data-no-fallback="true"
-            style={{ position: "absolute", top: 0, left: "-64.1026%", height: "100%", width: "164.1026%", maxWidth: "none" }}
-          />
-        </div>
-        <div className="sp-container hidden justify-end py-3 md:flex">
-          <button type="button" onClick={scrollOffer}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#F4C620] px-7 py-3 text-sm font-black uppercase text-[#082337] shadow-sm hover:bg-[#FBDD42]"
-            data-testid="cleaning-hero-book-now-desktop">See Our Offer <ArrowRight className="h-4 w-4" /></button>
-        </div>
-        <img
-          src="/landing/splitspro-cleaning-family-hero.webp"
-          alt="You clean everything they touch — what about the aircon they breathe around? A family with a dog and an elderly relative next to a dirty split-system aircon."
-          width={1536} height={1024} loading="eager" decoding="async" data-no-fallback="true"
-          className="hidden h-auto w-full md:block"
-        />
-      </section>
 
-      <section className="bg-[#EAF7FC] py-10 sm:py-14" data-testid="cleaning-guardian-story"><div className="sp-container grid items-center gap-7 md:grid-cols-2"><img src="/landing/splitspro-guardian-petri-approved.png" alt="The outside looks spotless, but what about behind the cover? Illustrative petri dishes comparing microbial growth in samples." width={516} height={387} loading="lazy" decoding="async" className="h-auto w-full rounded-xl object-contain"/><div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#147BA6]">Care you can see. Care you can't.</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#102C43] sm:text-4xl">The baby's toys. Grandpa's favourite chair. And the aircon quietly working above it all.</h2><p className="mt-4 text-base leading-relaxed text-[#53616B]">A cared-for home is built from small everyday habits. We help you look after one easy-to-miss part of it — without scare tactics or dramatic promises.</p></div></div></section>
-
-      <section className="bg-white py-12 sm:py-20" data-testid="cleaning-benefits">
-        <div className="sp-container">
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#007FA4]">THE PART OF YOUR HOME YOU DON'T SEE</p>
-          <h2 className="mt-3 max-w-4xl font-serif text-4xl leading-[1.12] tracking-tight text-[#102A41] sm:text-5xl">
-            You clean the surfaces. What about behind the aircon cover?
-          </h2>
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#485E6C] sm:text-lg">
-            The benches get wiped. Toys get washed. But dust, damp grime and sometimes mould can collect behind an aircon's clean-looking front panel. Washing its filters doesn't always reach those hidden areas.
-          </p>
-
-          <div className="mt-8 border-y-2 border-[#DCE7EC] py-7 sm:mt-10 sm:py-9" data-testid="cleaning-benchtop-airflow-punchline">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007FA4]">HERE'S SOMETHING TO THINK ABOUT</p>
-            <h3 className="mt-3 max-w-5xl text-[clamp(1.8rem,4.2vw,3.5rem)] font-black uppercase leading-[1.07] tracking-tight text-[#082743]">
-              YOU WOULDN'T LET SOMEONE <span className="bg-[#F4C620] px-1 text-[#081F34]">SNEEZE ALL OVER YOUR BENCHTOP</span> JUST AFTER YOU'VE WIPED IT DOWN.
-            </h3>
-            <p className="mt-4 max-w-4xl text-base font-bold leading-relaxed text-[#173C54] sm:text-xl">
-              So why overlook what a dirty aircon could blow around the room — including onto surfaces you've just cleaned?
-            </p>
-            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#52616C]">
-              If buildup is present, circulating airflow can carry some particles into the room. It isn't the same as a sneeze, and not every aircon has mould — but it's a good reason to clean beyond the filters.
-            </p>
-          </div>
-
-          <div className="mt-9 grid items-center gap-7 md:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] sm:mt-11">
-            <img src="/landing/splitspro-cleaning-baby-approved.png"
-              alt="Baby holding a teething toy in a family home — reminder to care for the aircon as well as frequently touched surfaces"
-              width={409} height={487} loading="lazy" decoding="async"
-              className="mx-auto h-auto max-h-[460px] w-full max-w-sm rounded-lg object-contain md:max-w-none" />
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007FA4]">WHY FAMILIES NOTICE THE DIFFERENCE</p>
-              <h3 className="mt-3 font-serif text-3xl leading-tight text-[#122B40] sm:text-4xl">It's more than a bit of dust on a filter.</h3>
-              <div className="mt-5 divide-y divide-[#DFE8EC] border-t border-b border-[#DFE8EC]">
-                <div className="py-4">
-                  <h4 className="text-lg font-black text-[#153249]">Kids and the everyday mess</h4>
-                  <p className="mt-1 text-sm leading-relaxed text-[#4B6170]">You already look after the floors and toys. Hidden buildup inside the unit deserves that same attention.</p>
-                </div>
-                <div className="py-4">
-                  <h4 className="text-lg font-black text-[#153249]">Pets and older loved ones</h4>
-                  <p className="mt-1 text-sm leading-relaxed text-[#4B6170]">Pet hair, household dust and musty smells make a comfortable room harder to enjoy.</p>
-                </div>
-                <div className="py-4">
-                  <h4 className="text-lg font-black text-[#153249]">The aircon itself</h4>
-                  <p className="mt-1 text-sm leading-relaxed text-[#4B6170]">Grime in the blower, coil or drain can affect airflow, efficiency or drainage. Cleaning may help when dirt is the cause.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mt-7 max-w-4xl text-xs leading-relaxed text-[#667781]">
-            Cleaning does not guarantee sterile air, prevent illness or replace mould-remediation and moisture control.
+      <div className="border-b border-[#D6E6EC] bg-white" aria-label="Cleaning booking progress">
+        <div className="sp-container flex items-center justify-between gap-3 py-3">
+          <p className="text-xs font-black uppercase tracking-wide text-[#28506A]">Step {stage} of 3 · {stage === 1 ? "Your home" : stage === 2 ? "How we protect it" : "Offer & booking"}</p>
+          <div className="flex gap-1.5" aria-hidden="true">
+            {[1, 2, 3].map((step) => <span key={step} className={"h-1.5 w-9 rounded-full " + (step <= stage ? "bg-[#008DB8]" : "bg-[#D8E4EA]")} />)}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* The offer stays below the complete solution and company-proof story. */}
-      <section className="bg-[#081C2B] py-16 text-white sm:py-24" id="cleaning-solution" data-testid="cleaning-solution">
-        <div className="sp-container">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#40C9EE]">THE SPLITSPRO SOLUTION</p>
-          <h2 className="mt-5 max-w-5xl text-4xl font-black uppercase leading-[1.03] tracking-tight sm:text-5xl xl:text-6xl">
-            A FILTER WASH IS A START.
-            <span className="mt-2 block text-[#45C6E7]">WE GO DEEPER.</span>
-          </h2>
-          <p className="mt-6 max-w-4xl text-base leading-relaxed text-[#D5E6EF] sm:text-lg">
-            Anyone can pull out a filter and give it a rinse. We take the time to open the unit, get the covers and accessible drain pan out of the way, and reach the grime a filter wash leaves behind. Here's what that actually looks like.
-          </p>
-
-          <div className="mt-10 grid gap-9 md:grid-cols-3" data-testid="cleaning-real-process-gallery">
-            <figure className="min-w-0">
-              <div className="relative overflow-hidden rounded-lg bg-[#E9F5FB]">
-                <img
-                  src="/landing/splitspro-process-filter.png"
-                  alt="Real SplitsPro cleaning photo showing the split system opened for filter and cover removal"
-                  width={387} height={515} loading="lazy" decoding="async"
-                  className="aspect-[4/5] w-full object-cover"
-                />
-                <span className="absolute left-4 top-4 bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#081C2B]">01 · OPEN IT UP</span>
-              </div>
-              <figcaption className="mt-5">
-                <h3 className="text-2xl font-extrabold uppercase leading-tight text-white">More than the filters.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#CBDFE9] sm:text-base">
-                  We open the indoor unit, remove the washable filters and carefully strip back the cover. We also remove the drain pan where the model allows, exposing areas you'd never reach during ordinary household cleaning.
-                </p>
-              </figcaption>
-            </figure>
-
-            <figure className="min-w-0">
-              <div className="relative overflow-hidden rounded-lg bg-[#E9F5FB]">
-                <img
-                  src="/landing/splitspro-process-coil.png"
-                  alt="Real SplitsPro job photograph showing the indoor cooling coil and internal components exposed after cover removal"
-                  width={387} height={516} loading="lazy" decoding="async"
-                  className="aspect-[4/5] w-full object-cover"
-                />
-                <span className="absolute left-4 top-4 bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#081C2B]">02 · REACH THE HIDDEN PARTS</span>
-              </div>
-              <figcaption className="mt-5">
-                <h3 className="text-2xl font-extrabold uppercase leading-tight text-white">Right into the inside.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#CBDFE9] sm:text-base">
-                  We clean accessible cooling-coil surfaces, behind the coil wherever access safely allows, the fan barrel, airflow path and drain areas. That's where dust and grime can build up behind a perfectly ordinary-looking white cover.
-                </p>
-              </figcaption>
-            </figure>
-
-            <figure className="min-w-0">
-              <div className="relative overflow-hidden rounded-lg bg-[#E9F5FB]">
-                <img
-                  src="/landing/splitspro-process-covers.png"
-                  alt="Removed white split-system cover and trim presented neatly on blue professional microfiber towels after cleaning"
-                  width={400} height={499} loading="lazy" decoding="async"
-                  className="aspect-[4/5] w-full object-cover"
-                />
-                <span className="absolute left-4 top-4 bg-[#F4C620] px-3 py-2 text-xs font-black uppercase tracking-wide text-[#081C2B]">03 · WASH WHAT WE REMOVE</span>
-              </div>
-              <figcaption className="mt-5">
-                <h3 className="text-2xl font-extrabold uppercase leading-tight text-white">The covers get cleaned too.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#CBDFE9] sm:text-base">
-                  Front covers, filters, accessible drain-pan surfaces and removable parts get their own attention — including the backs and awkward corners. We protect the surrounding work area and handle the parts with care.
-                </p>
-              </figcaption>
-            </figure>
-          </div>
-
-          <div className="mt-12 flex flex-col gap-5 border-t border-white/20 pt-8 sm:flex-row sm:items-start sm:gap-8" data-testid="cleaning-protective-finish">
-            <span className="w-fit shrink-0 bg-[#F4C620] px-4 py-3 text-2xl font-black text-[#081C2B]">04</span>
-            <div className="max-w-4xl">
-              <h3 className="text-2xl font-extrabold uppercase leading-tight text-white sm:text-3xl">Protect it. Put it back. Check it.</h3>
-              <p className="mt-3 text-base leading-relaxed text-[#CBDFE9]">
-                Once the parts are clean, we apply compatible anti-mould and anti-corrosion protective products where suitable. Depending on the unit and agreed scope, that can include approved indoor and outdoor surfaces and appropriate PCB-area protection. We then reassemble the unit and check it operates correctly.
-              </p>
-            </div>
-          </div>
-
-          <p className="mt-9 max-w-5xl border-l-[3px] border-[#F4C620] pl-5 text-base font-extrabold uppercase leading-relaxed text-white sm:text-lg">
-            FILTERS OUT. COVERS OFF. DRAIN PAN ACCESSED. COIL, FAN AND HIDDEN AREAS CLEANED. PROTECTION APPLIED WHERE SUITABLE. THEN IT ALL GOES BACK TOGETHER.
-          </p>
-          <p className="mt-5 max-w-4xl text-xs leading-relaxed text-[#AFC8D5]">
-            Access and dismantling depend on the unit design. Protective treatments are used only where compatible with the product instructions and agreed service scope.
-          </p>
-        </div>
-      </section>
-
-      <section className="bg-white py-16 sm:py-24" id="cleaning-trust" data-testid="cleaning-trust">
-        <div className="sp-container">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#008DB8]">WHY HOMEOWNERS CHOOSE SPLITSPRO</p>
-          <h2 className="mt-4 max-w-5xl text-[clamp(2.5rem,5.2vw,4.7rem)] font-black uppercase leading-[1.02] tracking-tight text-[#0B2641]">
-            YOU'RE TRUSTING US WITH YOUR HOME.
-            <span className="mt-2 block text-[#008DB8]">WE TAKE THAT SERIOUSLY.</span>
-          </h2>
-          <p className="mt-6 max-w-3xl text-lg font-medium leading-relaxed text-[#39566A] sm:text-xl">
-            A proper deep clean isn't just about getting dirt out. It's knowing the person doing the job cares about your home, understands the equipment and shows you what they've done.
-          </p>
-          <div className="mt-11 grid gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16">
-            <div className="border-t-[5px] border-[#F4C620] pt-6">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007FA4]">DON'T JUST TAKE OUR WORD FOR IT</p>
-              <h3 className="mt-4 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">REAL REVIEWS.<span className="block text-[#008DB8]">REAL LOCAL WORK.</span></h3>
-              <div className="mt-6"><GoogleRating /></div>
-              <p className="mt-5 text-base font-medium leading-relaxed text-[#475F6F]">
-                See customer feedback for SplitsPro's air-conditioning work. We prefer genuine reviews and actual job photos over promises you can't check.
-              </p>
-              <Link to="/reviews" className="mt-6 inline-flex min-h-12 items-center gap-2 border-b-[3px] border-[#F4C620] text-base font-black uppercase text-[#085E7E]">
-                READ CUSTOMER REVIEWS <ArrowUpRight className="h-5 w-5"/>
-              </Link>
-            </div>
-            <div className="border-t-[5px] border-[#36BCE4] pt-6">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007FA4]">THE STANDARDS YOU SHOULD EXPECT</p>
-
-              <div className="mt-5 divide-y-2 divide-[#E3EAF0]">
-                {[
-                  {title:"WE STRIP IT BACK. NOT JUST WIPE IT OVER.",body:"Our real work photos show the exposed coil and the removable covers and drain parts that get their own clean."},
-                  {title:"WE LOOK AFTER YOUR HOME.",body:"We protect the work area, take care around furniture and walls, and tidy up when we're finished."},
-                  {title:"WE EXPLAIN THE JOB BEFORE WE START.",body:"Extra work is quoted first. Once the cleaning is done, we reassemble your unit and check operation."}
-                ].map((item) => (
-                  <div className="py-5" key={item.title}>
-                    <h3 className="flex items-start gap-3 text-xl font-black uppercase leading-tight text-[#0B2641] sm:text-2xl">
-                      <ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#009AC6]" aria-hidden="true"/>
-                      <span>{item.title}</span>
-                    </h3>
-                    <p className="mt-2 pl-9 text-sm leading-relaxed text-[#425D6D] sm:text-base">{item.body}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="mt-12 border-y-[5px] border-[#008DB8] bg-[#F0F9FC] px-5 py-8 sm:px-9 sm:py-10" data-testid="cleaning-certificate-trust">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
-              <div className="max-w-3xl">
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#007EA7]">PROOF OF THE JOB — INCLUDED WITH YOUR CLEAN</p>
-                <h3 className="mt-3 text-3xl font-black uppercase leading-[1.07] tracking-tight text-[#0B2641] sm:text-4xl">
-                  DON'T JUST TAKE OUR WORD FOR IT.
-                  <span className="mt-2 block text-[#008DB8]">TAKE HOME THE PROOF.</span>
-                </h3>
-                <p className="mt-5 text-base font-medium leading-relaxed text-[#3B596B] sm:text-lg">
-                  After your service, we'll provide a SplitsPro Cleaning Completion Certificate showing which parts of your actual aircon were cleaned, which protective treatments were applied and before-and-after job photos. So you can see the work for yourself — no guesswork, no vague promises.
-                </p>
-              </div>
-              <div className="min-w-0 border-l-[4px] border-[#F4C620] pl-5 lg:w-[19rem] lg:shrink-0">
-                <p className="text-base font-black uppercase tracking-wide text-[#0B2641]">YOUR CERTIFICATE RECORDS</p>
-                <div className="mt-4 space-y-3">
-                  {[
-                    "Your service date and system details",
-                    "An itemised checklist of areas actually cleaned",
-                    "Anti-mould and anti-corrosion treatments applied",
-                    "Before-and-after photos from your service"
-                  ].map((item) => (
-                    <p key={item} className="flex items-start gap-3 text-sm font-bold leading-relaxed text-[#244254]">
-                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#008DB8]" aria-hidden="true" />{item}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="mt-6 text-xs leading-relaxed text-[#637680]">
-              The certificate records work completed on your unit, not a warranty against future mould, corrosion or refrigerant leaks. Photos and treatment entries reflect what was accessible and actually carried out.
-            </p>
-          </div>
-          <p className="mt-10 max-w-5xl border-l-[5px] border-[#F4C620] pl-5 text-base font-semibold leading-relaxed text-[#233C4D]">
-            A thorough, honest cleaning process — not an unrealistic promise to make the entire house sterile or guarantee a health outcome.
-          </p>
-        </div>
-      </section>
-
-      <section className="scroll-mt-24 bg-[#F1F9FC] py-16 sm:py-24" id="cleaning-prices" data-testid="cleaning-prices">
-        <div className="sp-container">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#007EA7]">NOW, HERE'S THE DEAL</p>
-          <h2 className="mt-4 max-w-5xl text-4xl font-black uppercase leading-[1.04] tracking-tight text-[#0B2641] sm:text-5xl">
-            NOT ALL DEEP CLEANS ARE CREATED EQUAL.
-            <span className="mt-2 block text-[#008DB8]">THE DIFFERENCE IS WHAT HAPPENS AFTER THE CLEAN.</span>
-          </h2>
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#50616D] sm:text-lg">
-            We strip back the service-accessible covers, filters and drain parts; deep-clean the indoor coil, blower and drainage; use steam, pressure rinsing, hospital-grade disinfectant and targeted mould treatment where suitable; then clean the outdoor unit and apply compatible anti-mould and anti-corrosion protective coatings. Finally, we reassemble and check the system.
-          </p>
-          <div className="mt-8 border-y-[6px] border-[#F4C620] bg-[#08263E] px-5 py-8 text-white sm:px-10 sm:py-11" data-testid="cleaning-200-complete-offer">
-
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#50D3F3]">THE COMPLETE SPLITSPRO CLEAN</p>
-            <div className="mt-4 grid items-start gap-7 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12">
+      {stage === 1 && (
+        <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] py-6 sm:py-14" data-testid="cleaning-diagnosis">
+          <div className="sp-container mx-auto max-w-6xl">
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#8D6325]">For the little ones, the older ones and everyone in between</p>
+            <div className="mt-4 grid items-center gap-5 md:grid-cols-[1.1fr_0.9fr] md:gap-12">
               <div>
-                <h3 className="max-w-xl text-3xl font-black uppercase leading-[1.04] tracking-tight sm:text-4xl">
-                  THE FULL DEEP CLEAN. <span className="text-[#F4C620]">NOT A FILTER RINSE.</span>
-                </h3>
-                <p className="mt-4 max-w-xl text-base leading-relaxed text-[#D6E7EF]">
-                  Covers off. Indoor coil, fan and drain cleaned. Steam, pressure rinse, suitable disinfectant and mould treatment. Outdoor clean, compatible protective coatings, reassembly and operation check.
+                <h1 className="font-serif text-[clamp(2.05rem,7.6vw,4.25rem)] leading-[1.08] tracking-tight text-[#0B2641]">
+                  You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span>
+                </h1>
+                <p className="mt-4 max-w-xl text-base font-semibold leading-relaxed text-[#3B5969] sm:text-lg">
+                  You wouldn't let someone sneeze all over a freshly wiped benchtop. So why overlook the dust a neglected aircon could blow back around the room?
                 </p>
-                <p className="mt-4 border-l-[3px] border-[#45C6E7] pl-4 text-sm font-extrabold leading-relaxed text-white">
-                  Includes a cleaning certificate listing the work done, plus photos from your service.
-                </p>
-              </div>
-              <div className="border-t border-white/25 pt-5 lg:border-l lg:border-t-0 lg:pl-9 lg:pt-0">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#F4C620]">FIRST SPLIT SYSTEM</p>
-                <strong className="mt-1 block text-[clamp(5.2rem,15vw,8rem)] font-black leading-[1] tracking-tighter text-white">{money(firstPrice)}</strong>
-
-                <p className="mt-3 text-[clamp(1.55rem,4vw,2.45rem)] font-black uppercase leading-tight text-[#F4C620]">
-                  + $150 EACH EXTRA SYSTEM
-                </p>
-                <p className="mt-2 text-sm font-bold leading-relaxed text-[#D2E6F0]">Same property. Same visit. Same complete clean.</p>
-                <p className="mt-4 border-t border-white/20 pt-4 text-sm font-extrabold text-white sm:text-base">
-                  2 systems <span className="text-[#F4C620]">{money(cleaningPrice(2, firstPrice))}</span> <span className="mx-2 text-white/45">|</span> 3 systems <span className="text-[#F4C620]">{money(cleaningPrice(3, firstPrice))}</span>
+                <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#526978] sm:text-base">
+                  Behind a clean-looking cover, dust, pet dander, damp grime and sometimes mould can build up. Airflow may recirculate particles into the rooms your children, pets and older loved ones share.
                 </p>
               </div>
+              <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby playing at home — a reminder to care for hidden dirt inside the air conditioner"
+                width={409} height={487} loading="eager" decoding="async"
+                className="mx-auto h-[220px] w-full max-w-md rounded-xl object-contain sm:h-[330px] md:h-[460px]" />
             </div>
-            <div className="mt-7 border-t border-white/20 pt-5" data-testid="cleaning-booking-invitation">
-              <div className="mb-4" data-testid="cleaning-before-booking-cta-pay-later-reminder">
-                <PayLaterReminder kind="cleaning" compact theme="dark" stripeReady={paymentReadiness.stripe_ready} paypalReady={paymentReadiness.paypal_ready} />
-              </div>
-              <button type="button" onClick={() => choose(1)}
-                className="flex min-h-14 w-full max-w-lg items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#081D2F] hover:bg-[#FBDD42] sm:text-lg">
-                Choose systems &amp; booking time <ArrowRight className="h-5 w-5" />
-              </button>
-              <p className="mt-3 text-sm text-white/70">Choose an available date and pay $50 online to book. Pay the balance after cleaning, or choose full payment and eligible instalments at secure checkout.</p>
-            </div>
+            <p className="mt-4 border-l-4 border-[#F4C620] pl-4 text-sm font-bold leading-relaxed text-[#244456]">
+              Looking after the people you love starts with caring for the parts of your home you can't easily see.
+            </p>
+            <p className="mt-3 text-xs leading-relaxed text-[#637782]">
+              Not every aircon has mould. Cleaning can remove accessible buildup; it cannot guarantee sterile air or prevent illness.
+            </p>
+            <button type="button" onClick={() => goStage(2)}
+              className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
+              data-testid="cleaning-next-solution">
+              See how we clean &amp; protect it <ArrowRight className="h-5 w-5" />
+            </button>
           </div>
+        </section>
+      )}
 
-          <p className="mt-5 text-sm leading-relaxed text-[#566D7B]">Standard-access wall-mounted splits; additional systems are at the same address and visit. Coatings are applied only where suitable and compatible. Your agreed price is confirmed at payment.</p>
-        </div>
-      </section>
+      {stage === 2 && (
+        <section id="cleaning-stage-2" className="scroll-mt-16 bg-[#F0F9FC] py-6 sm:py-12" data-testid="cleaning-solution-trust">
+          <div className="sp-container mx-auto max-w-6xl">
+            <button type="button" onClick={() => goStage(1)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
+              <ArrowLeft className="h-4 w-4" /> Back
+            </button>
+            <div className="grid items-center gap-5 sm:grid-cols-[1.3fr_0.7fr]">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro solution</p>
+                <h2 className="mt-2 font-serif text-3xl leading-[1.1] text-[#0B2641] sm:text-4xl">
+                  We strip it back. <span className="text-[#008DB8]">Not just wipe over it.</span>
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-[#3F5B6D] sm:text-base">A proper clean reaches past the filters, targets hidden buildup and finishes with protection where suitable.</p>
+              </div>
+              <img src="/landing/splitspro-cleaning-family-hero.webp" alt="Family with their dog at home"
+                width={1536} height={1024} loading="lazy" decoding="async"
+                className="h-28 w-full rounded-lg object-cover object-[78%_55%] sm:h-36" />
+            </div>
 
-      <section className="bg-[#F1F9FC] py-12" data-testid="cleaning-offer-details">
-        <div className="sp-container">
-          <h2 className="mb-4 font-serif text-3xl text-[#0B2641]">Everything included, in detail</h2>
-          <div className="mt-7 border-y border-[#C7DDE7] py-6" data-testid="cleaning-deal-sweetener">
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#007EA7]">WHAT YOUR COMPLETE CLEAN INCLUDES</p>
-            <div className="mt-4 grid gap-x-7 gap-y-3 sm:grid-cols-2">
+            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4" data-testid="cleaning-real-process-gallery">
               {[
-                "Strip service-accessible indoor covers, filters and drain parts",
-                "Steam, pressure rinse, disinfect and treat accessible coil, fan and drain surfaces where suitable",
-                "Targeted mould treatment and compatible indoor anti-mould coating",
-                "Clean accessible outdoor parts and apply compatible anti-corrosion protection",
-                "Reassemble, test operation, provide certificate and job photos"
-              ].map((value) => (
-                <p key={value} className="flex items-start gap-2 text-sm font-bold leading-relaxed text-[#153249] sm:text-base">
-                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#007FA4]" aria-hidden="true"/>{value}
-                </p>
+                {src:"/landing/splitspro-process-filter.png",alt:"Real job — covers and filters opened",label:"01 · Strip back"},
+                {src:"/landing/splitspro-process-coil.png",alt:"Real job — indoor coil exposed",label:"02 · Deep clean"},
+                {src:"/landing/splitspro-process-covers.png",alt:"Real job — cleaned removable covers",label:"03 · Protect"}
+              ].map((photo) => (
+                <figure key={photo.src}>
+                  <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="h-24 w-full rounded-md object-cover sm:h-40" />
+                  <figcaption className="mt-2 text-center text-[11px] font-black uppercase leading-tight text-[#0B3650] sm:text-sm">{photo.label}</figcaption>
+                </figure>
               ))}
             </div>
-          </div>
+            <div className="mt-5 grid gap-3 md:grid-cols-3" data-testid="cleaning-process-benefits">
+              <div className="border-l-[3px] border-[#008DB8] pl-3">
+                <h3 className="text-sm font-black uppercase text-[#0B2641]">We expose hidden dirt.</h3>
+                <p className="mt-1 text-sm leading-snug text-[#435F70]">Filters and accessible covers come off, so we reach buildup a quick filter rinse leaves behind.</p>
+              </div>
+              <div className="border-l-[3px] border-[#008DB8] pl-3">
+                <h3 className="text-sm font-black uppercase text-[#0B2641]">We spray, rinse and clear.</h3>
+                <p className="mt-1 text-sm leading-snug text-[#435F70]">We clean accessible coils, fan and drain with suitable sprays, steam and pressure rinsing. Clear drainage helps reduce blockages and drips.</p>
+              </div>
+              <div className="border-l-[3px] border-[#008DB8] pl-3">
+                <h3 className="text-sm font-black uppercase text-[#0B2641]">We help protect surfaces.</h3>
+                <p className="mt-1 text-sm leading-snug text-[#435F70]">Compatible anti-mould and anti-corrosion coatings go on suitable indoor and outdoor surfaces. Then we reassemble and test.</p>
+              </div>
+            </div>
 
-          <div className="mt-5 border-b border-[#C7DDE7] pb-5" data-testid="cleaning-competitor-prices">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#426173]">WHY THIS IS GOOD VALUE</p>
-            <p className="mt-2 text-sm leading-relaxed text-[#456173]">
-              For context, separately advertised services include a deep clean from <strong>$385</strong> (A Grade Air Con) and coastal anti-corrosion treatment up to <strong>$250+</strong> (Denali Air).
-              These are different providers, scopes and inclusions — not one combined competitor quote or a like-for-like comparison.
-            </p>
+            <div className="mt-6 border-t-2 border-[#BCDDEB] pt-5" id="cleaning-trust" data-testid="cleaning-trust">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">Why trust SplitsPro with your home?</p>
+              <div className="mt-3 grid gap-4 sm:grid-cols-[1fr_1fr] sm:items-center">
+                <div>
+                  <GoogleRating />
+                  <p className="mt-2 text-xs leading-relaxed text-[#526B7B]">Genuine customer reviews and real work photos.</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="flex items-start gap-2 text-sm font-bold text-[#14394E]"><ShieldCheck className="h-5 w-5 shrink-0 text-[#008DB8]" /> Licensed and insured technicians.</p>
+                  <p className="flex items-start gap-2 text-sm font-bold text-[#14394E]"><ShieldCheck className="h-5 w-5 shrink-0 text-[#008DB8]" /> We protect the work area, explain the job and leave it tidy.</p>
+                  <p className="flex items-start gap-2 text-sm font-bold text-[#14394E]"><ShieldCheck className="h-5 w-5 shrink-0 text-[#008DB8]" /> Cleaning checklist, job photos and completion certificate.</p>
+                </div>
+              </div>
+            </div>
+            <p className="mt-4 text-xs leading-relaxed text-[#607889]">Cleaning access and treatments depend on the unit and product compatibility. Coatings cannot guarantee that mould or corrosion will never return.</p>
+            <button type="button" onClick={() => goStage(3)}
+              className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
+              data-testid="cleaning-next-offer">
+              See the complete clean offer <ArrowRight className="h-5 w-5" />
+            </button>
           </div>
-          <p className="mt-5 text-sm leading-relaxed text-[#566D7B]">
-            Standard-access wall-mounted splits only. Additional-system pricing applies at one address during one visit. Protective products are only applied where suitable and compatible; they do not repair existing damage or leaks. Any additional work is quoted first.
-          </p>
-          <p className="mt-3 text-sm leading-relaxed text-[#566D7B]">
-            Pay $50 online to secure your booking, credited toward the total, and settle the remaining balance after cleaning. You can instead pay the full amount using a card or eligible buy now, pay later provider. Provider limits and terms apply.
-          </p>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {stage === 3 && (
+        <>
+          <section id="cleaning-stage-3" className="scroll-mt-16 bg-[#F1F9FC] py-8 sm:py-14" data-testid="cleaning-offer">
+            <div className="sp-container mx-auto max-w-6xl">
+              <button type="button" onClick={() => goStage(2)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
+                <ArrowLeft className="h-4 w-4" /> Back to how we clean
+              </button>
+              <div className="grid items-center gap-5 sm:grid-cols-[1fr_0.45fr]">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">Now, here's the offer</p>
+                  <h2 className="mt-2 max-w-3xl font-serif text-3xl leading-tight text-[#0B2641] sm:text-5xl">
+                    A small price for a cleaner, better-protected aircon at home.
+                  </h2>
+                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4F6575] sm:text-base">
+                    The full deep clean, outdoor care and compatible anti-mould and anti-corrosion treatments are included. More than a filter wash, with one clear price.
+                  </p>
+                </div>
+                <img src="/landing/splitspro-process-covers.png" alt="Real SplitsPro cleaning work with removed covers neatly cleaned"
+                  loading="lazy" decoding="async" className="h-36 w-full rounded-xl object-cover sm:h-52" />
+              </div>
+              <div className="mt-6 grid gap-6 rounded-xl bg-[#08263E] p-5 text-white sm:grid-cols-[1fr_1fr] sm:p-8" id="cleaning-prices" data-testid="cleaning-prices">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#4BD0F0]">Complete split-system deep clean</p>
+                  <p className="mt-3 text-sm leading-relaxed text-white/85">We clean accessible covers, filters, coil, fan and drainage, plus the outdoor unit. Suitable anti-mould and anti-corrosion protection, operation check and job photos are included.</p>
+                  <p className="mt-3 text-xs text-white/60">Standard wall-mounted systems, same property and visit. Any non-standard work is quoted first.</p>
+                </div>
+                <div>
+                  <p className="text-xs font-black uppercase tracking-widest text-[#F4C620]">First split system</p>
+                  <strong className="mt-1 block text-6xl font-black leading-none text-white sm:text-7xl">{money(firstPrice)}</strong>
+                  <p className="mt-2 text-2xl font-black uppercase text-[#F4C620]">+ $120 each extra system</p>
+                  <p className="mt-2 text-sm font-bold text-white/85">2 systems {money(cleaningPrice(2, firstPrice))} · 3 systems {money(cleaningPrice(3, firstPrice))}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-white/75">Only $50 to book online, credited toward your total. Balance after cleaning, or pay in full with eligible instalments at checkout.</p>
+                </div>
+              </div>
+              <div className="mt-5" data-testid="cleaning-before-booking-cta-pay-later-reminder">
+                <PayLaterReminder kind="cleaning" compact stripeReady={paymentReadiness.stripe_ready} paypalReady={paymentReadiness.paypal_ready} />
+              </div>
+              <button type="button" onClick={scrollBook}
+                className="mt-4 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-10">
+                Choose systems &amp; date <ArrowRight className="h-5 w-5" />
+              </button>
+              <p className="mt-3 text-xs text-[#506979]">Protective coatings help care for treated surfaces; they are not a promise of permanent mould prevention or medical protection.</p>
+            </div>
+          </section>
 
       <section className="scroll-mt-24 bg-[#081726] py-16 text-white sm:py-20" id="cleaning-booking" data-testid="cleaning-booking">
         <div className="sp-container mx-auto max-w-5xl">
@@ -526,7 +345,7 @@ export default function SplitSystemCleaning() {
               </select>
               <div className="mt-6 border-y border-white/20 py-5">
                 <div className="flex justify-between gap-3 text-sm text-white/80"><span>First complete deep clean</span><strong>{money(firstPrice)}</strong></div>
-                {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $150</span><strong>{money((quantity - 1) * 150)}</strong></div>}
+                {quantity > 1 && <div className="mt-3 flex justify-between gap-3 text-sm text-white/80"><span>{quantity - 1} additional system{quantity > 2 ? "s" : ""} × $120</span><strong>{money((quantity - 1) * EXTRA_CLEAN_PRICE)}</strong></div>}
                 <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-5">
                   <span className="text-sm font-black uppercase tracking-[0.12em] text-[#F4C620]">Total</span>
                   <strong className="text-4xl font-black text-[#F4C620]">{money(currentTotal)}</strong>
@@ -599,6 +418,8 @@ export default function SplitSystemCleaning() {
           </div>
         </div>
       </section>
+        </>
+      )}
       <div className="border-t border-[#E6E0D7] bg-[#FAF9F7] py-5">
         <div className="sp-container flex flex-wrap items-center justify-between gap-3 text-xs text-[#646970]">
           <span>SplitsPro · Bass Hill and selected surrounding Western Sydney suburbs. Ask about your postcode before booking.</span>

@@ -29,7 +29,7 @@ jobs:
           print("Additional system:", cfg.get("each_additional_system"))
           assert cfg.get("enabled") is True
           assert cfg.get("first_system") == 200
-          assert cfg.get("each_additional_system") == 150
+          assert cfg.get("each_additional_system") == 120
           assert cfg.get("booking_payment") == 50
           assert cfg.get("default_payment_choice") == "booking"
           print("Default $50 booking payment confirmed for $200 cleaning service; full-payment choice remains available.")
