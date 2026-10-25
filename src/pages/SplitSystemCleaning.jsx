@@ -196,11 +196,11 @@ export default function SplitSystemCleaning() {
   return (
     <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
       <Helmet>
-        <title>Split System Deep Clean + Anti-Mould & Anti-Corrosion | SplitsPro Sydney</title>
-        <meta name="description" content="SplitsPro complete split-system deep cleaning for $200 for one system, plus $120 for each additional system at the same address. Choose a date and book online for $50, with the balance due after cleaning. Full payment and eligible pay-later options are also available. Protective treatments where suitable." />
+        <title>Six-Step Hero Method | Split-System Deep Cleaning Sydney | SplitsPro</title>
+        <meta name="description" content="SplitsPro Bare-Bones Hero Method: a six-step split-system deep clean for accessible indoor parts, drainage and the outdoor unit. $200 for one split and $120 for every additional split at the same property. Book for $50 credited to the total, or pay in full." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
-        <meta property="og:title" content="You Clean Everything They Touch. What About Your Aircon? | SplitsPro" />
-        <meta property="og:description" content="$200 complete deep clean with suitable protective treatments. Each extra split system $120 at the same property. Book online for $50 and pay the balance after cleaning, or pay the full total online." />
+        <meta property="og:title" content="We Strip It Back — The SplitsPro Bare-Bones Hero Method" />
+        <meta property="og:description" content="The six-step SplitsPro Hero Method: deep internal cleaning, careful steam and rinsing, drain cleaning and outdoor-unit care. $200 for the first split, $120 for each extra at the same property." />
       </Helmet>
 
 
@@ -273,11 +273,11 @@ export default function SplitSystemCleaning() {
             </div>
             <div>
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro solution</p>
+                <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro Hero Method</p>
                 <h2 className="mt-2 font-serif text-3xl leading-[1.1] text-[#0B2641] sm:text-4xl">
                   We strip it back. <span className="text-[#008DB8]">Not just wipe over it.</span>
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-[#3F5B6D] sm:text-base">We first expose the accessible dirt, then use the right combination of professional coil-safe chemistry, targeted steam and appropriate rinsing to lift it away. Outdoor care and compatible protective coatings complete the visit.</p>
+                <p className="mt-3 text-sm leading-relaxed text-[#3F5B6D] sm:text-base">Our six-step Bare-Bones Hero Method gets behind accessible covers, combines professional coil-compatible chemistry with targeted steam and appropriate rinsing, looks after the drain and outdoor unit, and finishes with careful reassembly and testing.</p>
               </div>
             </div>
 
@@ -293,22 +293,29 @@ export default function SplitSystemCleaning() {
                 </figure>
               ))}
             </div>
-            <section className="mt-7" data-testid="cleaning-process-benefits">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">The SplitsPro method</p>
-              <h3 className="mt-2 text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">THE 3-FRONT DEEP CLEAN. <span className="text-[#008DB8]">LAND. SEA. AIR.</span></h3>
-              <p className="mt-3 max-w-4xl text-sm leading-relaxed text-[#405E6E] sm:text-base">We use three different approaches because dust, grease and musty organic build-up don't all respond to the same treatment. It's a cleaning process, not an air freshener.</p>
-              <div className="mt-6 grid gap-4 md:grid-cols-3">
+            <section className="mt-7" id="hero-method" data-testid="cleaning-process-benefits">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">The SplitsPro Bare-Bones Deep Clean</p>
+              <h3 className="mt-2 text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">OUR 6-STEP <span className="text-[#008DB8]">HERO METHOD.</span></h3>
+              <p className="mt-3 text-base font-semibold leading-relaxed text-[#24485D]">We don't just wipe the cover and rinse the filters. We get into accessible components, tackle the build-up, look after the outdoor unit and test the result.</p>
+              <p className="mt-3 text-sm leading-relaxed text-[#405E6E] sm:text-base">Our Bare-Bones Hero Method combines specialised coil-compatible cleaning solutions, enzyme-based detergents, carefully controlled steam and physical dirt removal — without disguising odours with perfume or spraying sensitive electrical parts.</p>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 {[
-                  { number:"01", title:"LAND — Strip it back", subtitle:"Reach what a quick filter wash misses", description:"We protect the room and take off suitable, service-accessible covers and filters. We inspect the coil, blower, tray and airflow path, then remove accessible dust and grime so it doesn't stay hidden behind the fascia."},
-                  { number:"02", title:"SEA — Loosen & flush", subtitle:"Enzyme-powered professional cleaning", description:"Coil-compatible, low-odour, biodegradable enzyme-and-detergent cleaners help loosen oily residues and organic film on suitable surfaces. Slow-release enzymes can keep working with condensate when the selected product instructions allow. We use controlled rinsing and collect the dirty water; products that are designed to self-rinse are used according to their own label directions."},
-                  { number:"03", title:"AIR — Targeted steam", subtitle:"Controlled heat for stubborn build-up", description:"Where the air-conditioner design allows it, carefully applied steam helps soften deposits and release grime without relying on perfume to mask smells. We avoid sensitive electrics, plastics and components that aren't suited to heat, then check the accessible drainage and operation."}
-                ].map((item) => <div key={item.number} className="rounded-lg border border-[#C7E2EB] bg-white p-5 shadow-sm"><span className="text-sm font-black tracking-widest text-[#008DB8]">{item.number} / 03</span><h4 className="mt-2 text-xl font-black uppercase text-[#0B2641]">{item.title}</h4><p className="mt-1 text-sm font-extrabold text-[#008DB8]">{item.subtitle}</p><p className="mt-3 text-sm leading-relaxed text-[#496374]">{item.description}</p></div>)}
+                  {number:"01",title:"The Bare-Bones Teardown",subtitle:"We strip it back, not just wipe over it.",description:"We protect the room and safely open the indoor head unit, removing suitable covers, filters and louvers. We reach the coil, blower wheel and drain pan, and remove the wheel and pan when the model permits safe removal. Hidden dust and grime are exposed instead of left behind the fascia."},
+                  {number:"02",title:"Triple-Action Chemical Attack",subtitle:"Professional cleaners loosen what's stuck.",description:"Coil-compatible surfactants and enzyme-based detergents help break down oily dirt, sticky residues and organic film. Suitable labelled sanitising treatments may be used when appropriate for the surfaces and the job. We follow the chemical instructions and give the solution time to work."},
+                  {number:"03",title:"The Thermal Flush & Steam Treatment",subtitle:"Loosen, lift and carefully flush.",description:"We use controlled steam on suitable accessible components to soften stubborn dirt, with gentle rinsing to physically wash away loosened debris where appropriate. Some enzyme cleaners are made to self-rinse with condensate, so those are used as directed rather than washed away prematurely. Wastewater is captured to protect the room."},
+                  {number:"04",title:"Electronic Protection",subtitle:"We look after the brains of your aircon.",description:"We isolate power and keep indoor and outdoor printed circuit boards protected from cleaning water, steam and chemicals. We can check for visible signs of contamination, but any specialised PCB cleaning, fault repair or electrical work would be assessed and quoted separately — never sprayed as part of an ordinary deep clean."},
+                  {number:"05",title:"Full Drainage & Outdoor Clean",subtitle:"Indoor drain and outdoor condenser included.",description:"We clean the accessible drain pan and drainage path to help remove sludge and reduce the risk of blockages and stale smells. Outside, we clear debris and gently clean accessible condenser surfaces with suitable water pressure, without crushing delicate fins. A clean coil can improve performance when dirt was the cause, but savings vary."},
+                  {number:"06",title:"Reassembly, Testing & Proof",subtitle:"Rebuilt carefully. Checked before we go.",description:"We refit the removed parts, clean up, check operation and accessible drainage, and show you the completed work with photos where practical. We also check for cleaning-related musty smells, backed by our written seven-day odour guarantee."}
+                ].map((step) => (
+                  <article key={step.number} className="rounded-lg border border-[#C7E2EB] bg-white p-5 shadow-sm">
+                    <span className="text-xs font-black tracking-[0.16em] text-[#008DB8]">STEP {step.number} OF 6</span>
+                    <h4 className="mt-2 text-xl font-black uppercase text-[#0B2641]">{step.title}</h4>
+                    <p className="mt-2 text-sm font-extrabold text-[#008DB8]">{step.subtitle}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-[#496374]">{step.description}</p>
+                  </article>
+                ))}
               </div>
-              <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                <div className="border-l-4 border-[#008DB8] pl-4"><h4 className="font-black text-[#10364C]">Outdoor unit included</h4><p className="mt-1 text-sm leading-relaxed text-[#526978]">We also clear accessible dust and debris around the outdoor condenser and clean suitable components using methods safe for the unit.</p></div>
-                <div className="border-l-4 border-[#008DB8] pl-4"><h4 className="font-black text-[#10364C]">Protective treatment included</h4><p className="mt-1 text-sm leading-relaxed text-[#526978]">Appropriate anti-mould and anti-corrosion coatings are applied only to compatible indoor and outdoor surfaces as per product instructions. No coating can permanently prevent mould or corrosion.</p></div>
-              </div>
-              <p className="mt-4 text-xs leading-relaxed text-[#647B87]">Methods vary by model. Products used on evaporators, condensers and electrical areas are selected separately for compatibility; the job is not a claim of complete sterilisation or guaranteed elimination of airborne bacteria.</p>
+              <p className="mt-4 border-l-4 border-[#F4C620] pl-4 text-xs leading-relaxed text-[#4B6575]">Access, disassembly, chemicals, steam and rinsing are selected for the model and condition of the unit. We do not claim completely sterile air, a fixed bacteria-kill percentage or guaranteed energy savings.</p>
             </section>
             <section className="mt-8 rounded-xl bg-[#08263E] p-6 text-white sm:p-9" data-testid="cleaning-odour-guarantee" id="cleaning-guarantee">
               <p className="text-xs font-black uppercase tracking-[0.17em] text-[#62D1EC]">Our cleaning promise</p>
@@ -330,7 +337,7 @@ export default function SplitSystemCleaning() {
                 </div>
               </div>
             </div>
-            <p className="mt-4 text-xs leading-relaxed text-[#607889]">Cleaning access and treatments depend on the unit and product compatibility. Coatings cannot guarantee that mould or corrosion will never return.</p>
+            <p className="mt-4 text-xs leading-relaxed text-[#607889]">Cleaning steps depend on the unit's design and product compatibility. We explain any access limits and protect your room and electronics during the service.</p>
             <button type="button" onClick={() => goStage(3)}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-offer">
@@ -351,17 +358,17 @@ export default function SplitSystemCleaning() {
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">Now, here's the offer</p>
                   <h2 className="mt-2 max-w-3xl font-black uppercase text-3xl leading-tight text-[#0B2641] sm:text-5xl">
-                    A small price for a cleaner, better-protected aircon at home.
+                    The complete six-step Hero Method. One straightforward price.
                   </h2>
                   <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4F6575] sm:text-base">
-                    The full deep clean, outdoor care and compatible anti-mould and anti-corrosion treatments are included. Choose your systems and date below.
+                    The six-step Hero Method includes suitable deep indoor cleaning, drain care, outdoor unit cleaning and final checks. Choose your systems and date below.
                   </p>
                 </div>
               </div>
               <div className="mt-6 grid gap-6 rounded-xl bg-[#08263E] p-5 text-white sm:grid-cols-[1fr_1fr] sm:p-8" id="cleaning-prices" data-testid="cleaning-prices">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.16em] text-[#4BD0F0]">Complete split-system deep clean</p>
-                  <p className="mt-3 text-sm leading-relaxed text-white/85">One complete indoor and outdoor deep clean, with suitable protective treatments and our cleaning-related musty-odour guarantee included. No $50 call-out fee or surprise extras for a standard accessible split.</p>
+                  <p className="mt-3 text-sm leading-relaxed text-white/85">One complete six-step Hero Method service, including accessible indoor cleaning, drainage and outdoor care, with our cleaning-related musty-odour guarantee. No $50 call-out fee or surprise extras for a standard accessible split.</p>
                   <p className="mt-3 text-xs text-white/60">Standard accessible wall-mounted systems, same property and visit. Non-standard work is always quoted before you approve it. Your $50 online booking payment counts towards the service price; it is not a call-out fee.</p>
                 </div>
                 <div>
@@ -380,7 +387,7 @@ export default function SplitSystemCleaning() {
                 className="mt-4 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-10">
                 Choose systems &amp; date <ArrowRight className="h-5 w-5" />
               </button>
-              <p className="mt-3 text-xs text-[#506979]">Protective coatings help care for treated surfaces; they are not a promise of permanent mould prevention or medical protection.</p>
+              <p className="mt-3 text-xs text-[#506979]">We tackle dirt and cleaning-related odours, but no cleaning can guarantee sterile air, prevent all future mould or repair mechanical faults.</p>
             </div>
           </section>
 
