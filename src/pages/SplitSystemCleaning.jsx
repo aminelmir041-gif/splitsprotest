@@ -222,8 +222,8 @@ export default function SplitSystemCleaning() {
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">Sydney split-system deep cleaning · Complete indoor and outdoor care</p>
                 <h1 className="max-w-5xl font-sans text-[clamp(2.15rem,6.5vw,4.25rem)] font-black leading-[1.08] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
                 <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">A clean-looking filter doesn't mean a clean aircon.</p>
-                <p className="mt-3 max-w-3xl text-base leading-8 text-[#3B5969] sm:text-lg">Dust, pet hair and grime can collect deeper inside the coil and blower — well beyond a quick wipe.</p>
-                <p className="mt-4 max-w-3xl text-base leading-8 text-[#3B5969] sm:text-lg">Add moisture to that build-up, and you may get <strong className="text-[#0B2641]">stale, musty smells</strong> when the unit starts running.</p>
+                <p className="mt-3 max-w-3xl text-base leading-8 text-[#294353] sm:text-lg font-semibold">Dust, pet hair and grime can collect deeper inside the coil and blower — well beyond a quick wipe.</p>
+                <p className="mt-4 max-w-3xl text-base leading-8 text-[#294353] sm:text-lg font-semibold">Add moisture to that build-up, and you may get <strong className="text-[#0B2641]">stale, musty smells</strong> when the unit starts running.</p>
               </div>
             </div>
             <section className="mt-10" aria-label="What can build up inside an air conditioner">
@@ -238,7 +238,7 @@ export default function SplitSystemCleaning() {
                 ].map(([title, description]) => (
                   <div key={title} className="rounded-lg bg-white p-5 border-l-4 border-[#008DB8]">
                     <h3 className="text-lg font-black leading-snug text-[#0B2641] sm:text-xl">{title}</h3>
-                    <p className="mt-3 text-base leading-7 text-[#405D6D]">{description}</p>
+                    <p className="mt-3 text-base leading-7 text-[#2B4758] font-semibold">{description}</p>
                   </div>
                 ))}
               </div>
@@ -247,8 +247,8 @@ export default function SplitSystemCleaning() {
             <section className="mt-12 rounded-xl border border-[#D4E5ED] bg-white px-5 py-8 sm:px-9 sm:py-10" aria-label="The concerns we answer">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Before you pay anyone to clean your aircon</p>
               <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">Paid for a clean. Still smells? That's exactly what people worry about.</h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#405E6E] sm:text-lg">Homeowners talk about cleaners who only wash the filters, leave the fan dirty, or change the price when they arrive.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#405E6E] sm:text-lg">Others worry about water on the carpet — or that musty smell coming straight back.</p>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Homeowners talk about cleaners who only wash the filters, leave the fan dirty, or change the price when they arrive.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Others worry about water on the carpet — or that musty smell coming straight back.</p>
               <h3 className="mt-8 text-xl font-black text-[#0B2641] sm:text-2xl">Here's what you should expect from us:</h3>
               <div className="mt-5 grid gap-5 sm:grid-cols-3">
                 {[
@@ -258,7 +258,7 @@ export default function SplitSystemCleaning() {
                 ].map(([heading, detail]) => (
                   <div key={heading} className="rounded-lg bg-[#F5FAFC] p-5 border-l-4 border-[#F4C620]">
                     <h3 className="text-lg font-black leading-snug text-[#12384E] sm:text-xl">{heading}</h3>
-                    <p className="mt-3 text-base leading-7 text-[#4E6674]">{detail}</p>
+                    <p className="mt-3 text-base leading-7 text-[#365163] font-semibold">{detail}</p>
                   </div>
                 ))}
               </div>
@@ -278,7 +278,7 @@ export default function SplitSystemCleaning() {
             <div className="mb-10 rounded-xl bg-white px-6 py-8 shadow-sm sm:px-10 sm:py-10" data-testid="cleaning-caring-home-message">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">A better clean for the home you care about</p>
               <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">If it still smells inside, wiping the outside isn't enough.</h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#3F5B6D] sm:text-lg">We want you to know exactly what happens during your cleaning visit — and why each part matters.</p>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">We want you to know exactly what happens during your cleaning visit — and why each part matters.</p>
             </div>
             <div>
               <div>
@@ -286,9 +286,9 @@ export default function SplitSystemCleaning() {
                 <h2 className="mt-3 max-w-4xl font-sans text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">
                   We strip it back. <span className="text-[#008DB8]">Not just wipe over it.</span>
                 </h2>
-                <p className="mt-5 max-w-3xl text-base leading-8 text-[#3F5B6D] sm:text-lg">We open up suitable parts of the unit to reach build-up behind the front cover.</p>
-                <p className="mt-4 max-w-3xl text-base leading-8 text-[#3F5B6D] sm:text-lg">Then we use the right combination of <strong className="text-[#0B2641]">professional cleaning solutions, controlled steam and rinsing</strong> — followed by drain and outdoor-unit care.</p>
-                <p className="mt-4 max-w-3xl text-base leading-8 text-[#3F5B6D] sm:text-lg">Finally, we put it back together, check the operation and show you what we cleaned.</p>
+                <p className="mt-5 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">We open up suitable parts of the unit to reach build-up behind the front cover.</p>
+                <p className="mt-4 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">Then we use the right combination of <strong className="text-[#0B2641]">professional cleaning solutions, controlled steam and rinsing</strong> — followed by drain and outdoor-unit care.</p>
+                <p className="mt-4 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">Finally, we put it back together, check the operation and show you what we cleaned.</p>
               </div>
             </div>
 
@@ -308,7 +308,7 @@ export default function SplitSystemCleaning() {
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">The SplitsPro Bare-Bones Deep Clean</p>
               <h3 className="mt-3 max-w-5xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">NOT JUST A FILTER RINSE. <span className="text-[#008DB8]">HERE'S OUR 6-STEP HERO METHOD.</span></h3>
               <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">We strip it back, get to the grime, clean the drain and outdoor unit — then check the result.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#405E6E] sm:text-lg">Different types of build-up need different tools. That's why we combine <strong className="text-[#0B2641]">coil-compatible chemicals, enzyme detergents, controlled steam and careful rinsing</strong>, instead of just masking smells.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Different types of build-up need different tools. That's why we combine <strong className="text-[#0B2641]">coil-compatible chemicals, enzyme detergents, controlled steam and careful rinsing</strong>, instead of just masking smells.</p>
               <div className="mt-9 grid gap-6 md:grid-cols-2">
                 {[
                   {number:"01",title:"Bare-Bones Teardown",hook:"WE OPEN IT UP. NOT JUST WIPE OVER IT.",paragraphs:["We protect the room, isolate power and remove suitable covers, filters and louvers. That gives us better access to dirt hiding behind the front panel.","We reach accessible coils, the blower wheel and the drain tray. Parts such as the wheel or tray are removed when the specific model allows it safely."]},
@@ -323,13 +323,13 @@ export default function SplitSystemCleaning() {
                     <h4 className="mt-4 text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-[1.8rem]">{step.hook}</h4>
                     <div className="mt-5 space-y-4">
                       {step.paragraphs.map((paragraph, index) => (
-                        <p key={index} className="text-base leading-8 text-[#435F70] sm:text-lg">{paragraph}</p>
+                        <p key={index} className="text-base leading-8 text-[#30495A] sm:text-lg font-semibold">{paragraph}</p>
                       ))}
                     </div>
                   </article>
                 ))}
               </div>
-              <p className="mt-6 max-w-4xl border-l-4 border-[#F4C620] pl-5 text-sm leading-7 text-[#4B6575] sm:text-base">Every split system is different. The access, chemicals, steam and rinsing we use depend on the unit and manufacturer's instructions. We do not promise sterile air, a fixed bacteria-kill percentage or a guaranteed reduction in electricity bills.</p>
+              <p className="mt-6 max-w-4xl border-l-4 border-[#F4C620] pl-5 text-sm leading-7 text-[#4B6575] sm:text-base font-semibold">Every split system is different. The access, chemicals, steam and rinsing we use depend on the unit and manufacturer's instructions. We do not promise sterile air, a fixed bacteria-kill percentage or a guaranteed reduction in electricity bills.</p>
             </section>
             <section className="mt-14 rounded-xl bg-[#08263E] px-6 py-9 text-white sm:px-10 sm:py-12" data-testid="cleaning-odour-guarantee" id="cleaning-guarantee">
               <p className="text-sm font-black uppercase tracking-widest text-[#62D1EC]">Our seven-day cleaning-related odour promise</p>
@@ -338,14 +338,14 @@ export default function SplitSystemCleaning() {
               <div className="mt-7 grid gap-5 sm:grid-cols-2">
                 <div className="border-l-4 border-[#45C6E7] pl-5">
                   <h4 className="text-xl font-black uppercase text-white">First, we re-clean.</h4>
-                  <p className="mt-3 text-base leading-8 text-white/85 sm:text-lg">We inspect those affected accessible areas and re-clean them once at no charge.</p>
+                  <p className="mt-3 text-base leading-8 text-white/85 sm:text-lg font-semibold">We inspect those affected accessible areas and re-clean them once at no charge.</p>
                 </div>
                 <div className="border-l-4 border-[#F4C620] pl-5">
                   <h4 className="text-xl font-black uppercase text-white">If we can't fix it, we refund.</h4>
-                  <p className="mt-3 text-base leading-8 text-white/85 sm:text-lg">If the odour is from the serviced areas and cleaning cannot resolve it, we refund the cleaning service charge, including any $50 booking payment.</p>
+                  <p className="mt-3 text-base leading-8 text-white/85 sm:text-lg font-semibold">If the odour is from the serviced areas and cleaning cannot resolve it, we refund the cleaning service charge, including any $50 booking payment.</p>
                 </div>
               </div>
-              <p className="mt-8 max-w-4xl border-t border-white/20 pt-5 text-sm leading-7 text-white/75">Applies only to cleaning-related odours from accessible serviced parts, not unrelated building moisture, ongoing leaks, inaccessible contamination or mechanical faults. We'll explain anything beyond the cleaning scope before quoting extra work. Your Australian Consumer Law rights still apply.</p>
+              <p className="mt-8 max-w-4xl border-t border-white/20 pt-5 text-sm leading-7 text-white/85 font-medium">Applies only to cleaning-related odours from accessible serviced parts, not unrelated building moisture, ongoing leaks, inaccessible contamination or mechanical faults. We'll explain anything beyond the cleaning scope before quoting extra work. Your Australian Consumer Law rights still apply.</p>
             </section>
             <section className="mt-14 border-t-2 border-[#BCDDEB] pt-9" id="cleaning-trust" data-testid="cleaning-trust">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Why people choose SplitsPro</p>
@@ -353,7 +353,7 @@ export default function SplitSystemCleaning() {
               <div className="mt-7 grid gap-7 sm:grid-cols-[1fr_1fr] sm:items-start">
                 <div>
                   <GoogleRating />
-                  <p className="mt-4 max-w-md text-base leading-8 text-[#526B7B] sm:text-lg">Genuine reviews. Real cleaning photos. A clear explanation of what we can safely clean.</p>
+                  <p className="mt-4 max-w-md text-base leading-8 text-[#3B5667] sm:text-lg font-semibold">Genuine reviews. Real cleaning photos. A clear explanation of what we can safely clean.</p>
                 </div>
                 <div className="space-y-5">
                   <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> Licensed and insured technicians.</p>
@@ -361,7 +361,7 @@ export default function SplitSystemCleaning() {
                   <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> A cleaning checklist, job photos and completion certificate.</p>
                 </div>
               </div>
-              <p className="mt-7 max-w-3xl text-sm leading-7 text-[#607889]">Cleaning methods and access vary with the system. We'll tell you before doing anything outside the agreed service.</p>
+              <p className="mt-7 max-w-3xl text-sm leading-7 text-[#435B6B] font-medium">Cleaning methods and access vary with the system. We'll tell you before doing anything outside the agreed service.</p>
             </section>
             <button type="button" onClick={() => goStage(3)}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
@@ -382,17 +382,17 @@ export default function SplitSystemCleaning() {
                   <h2 className="mt-2 max-w-3xl font-black uppercase text-3xl leading-tight text-[#0B2641] sm:text-5xl">
                     ONE FULL HERO METHOD CLEAN. NO SURPRISE EXTRAS.
                   </h2>
-                  <p className="mt-6 max-w-3xl text-base leading-8 text-[#405B6D] sm:text-lg">The six-step Hero Method includes suitable deep indoor cleaning, drain care, outdoor-unit cleaning and final checks.</p>
-                  <p className="mt-4 max-w-3xl text-base leading-8 text-[#405B6D] sm:text-lg">See the complete price before you pick your date. <strong className="text-[#0B2641]">Every extra split cleaned on the same visit is $120.</strong></p>
+                  <p className="mt-6 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">The six-step Hero Method includes suitable deep indoor cleaning, drain care, outdoor-unit cleaning and final checks.</p>
+                  <p className="mt-4 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">See the complete price before you pick your date. <strong className="text-[#0B2641]">Every extra split cleaned on the same visit is $120.</strong></p>
                 </div>
               </div>
               <div className="mt-9 grid gap-9 rounded-xl bg-[#08263E] px-6 py-8 text-white sm:grid-cols-[1fr_1fr] sm:px-9 sm:py-11" id="cleaning-prices" data-testid="cleaning-prices">
                 <div>
                   <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4BD0F0]">Complete split-system Hero Method</p>
                   <h3 className="mt-4 text-2xl font-black uppercase leading-tight text-white sm:text-3xl">ONE PROPER CLEAN. INSIDE AND OUT.</h3>
-                  <p className="mt-5 text-base leading-8 text-white/90 sm:text-lg">Accessible indoor cleaning, drainage, outdoor care and our cleaning-related musty-odour guarantee are included.</p>
-                  <p className="mt-4 text-base leading-8 text-white/90 sm:text-lg"><strong className="text-[#F4C620]">No separate call-out fee.</strong> We quote any non-standard work before asking you to approve it.</p>
-                  <p className="mt-5 text-sm leading-7 text-white/70">Applies to accessible wall-mounted splits at the same property and on the same visit. Your $50 online booking payment is part of the total — not an extra fee.</p>
+                  <p className="mt-5 text-base leading-8 text-white/90 sm:text-lg font-semibold">Accessible indoor cleaning, drainage, outdoor care and our cleaning-related musty-odour guarantee are included.</p>
+                  <p className="mt-4 text-base leading-8 text-white/90 sm:text-lg font-semibold"><strong className="text-[#F4C620]">No separate call-out fee.</strong> We quote any non-standard work before asking you to approve it.</p>
+                  <p className="mt-5 text-sm leading-7 text-white/85 font-medium">Applies to accessible wall-mounted splits at the same property and on the same visit. Your $50 online booking payment is part of the total — not an extra fee.</p>
                 </div>
                 <div>
                   <p className="text-sm font-black uppercase tracking-widest text-[#F4C620]">First split system</p>
@@ -401,9 +401,9 @@ export default function SplitSystemCleaning() {
                   <p className="mt-3 text-base font-bold leading-8 text-white/90">2 systems {money(cleaningPrice(2, firstPrice))} · 3 systems {money(cleaningPrice(3, firstPrice))}</p>
                   <div className="mt-7 space-y-4">
                     <p className="text-base font-bold leading-8 text-white sm:text-lg">CHOOSE HOW YOU PAY.</p>
-                    <p className="text-base leading-8 text-white/85">Book online with <strong className="text-white">$50 towards the total</strong>, then pay the balance after cleaning.</p>
-                    <p className="text-base leading-8 text-white/85">Or pay the full amount now by card or an eligible buy-now-pay-later option at checkout.</p>
-                    <p className="text-sm leading-7 text-white/65">Payment options and approval depend on the provider. Ask us in advance if you want to use instalments for a remaining balance.</p>
+                    <p className="text-base leading-8 text-white/85 font-semibold">Book online with <strong className="text-white">$50 towards the total</strong>, then pay the balance after cleaning.</p>
+                    <p className="text-base leading-8 text-white/85 font-semibold">Or pay the full amount now by card or an eligible buy-now-pay-later option at checkout.</p>
+                    <p className="text-sm leading-7 text-white/85 font-medium">Payment options and approval depend on the provider. Ask us in advance if you want to use instalments for a remaining balance.</p>
                   </div>
                 </div>
               </div>
@@ -415,7 +415,7 @@ export default function SplitSystemCleaning() {
                 className="mt-4 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-10">
                 Choose systems &amp; date <ArrowRight className="h-5 w-5" />
               </button>
-              <p className="mt-5 text-sm leading-7 text-[#506979]">We tackle dirt and cleaning-related odours, but no cleaning can guarantee sterile air, prevent all future mould or repair mechanical faults.</p>
+              <p className="mt-5 text-sm leading-7 text-[#506979] font-medium">We tackle dirt and cleaning-related odours, but no cleaning can guarantee sterile air, prevent all future mould or repair mechanical faults.</p>
             </div>
           </section>
 
@@ -425,7 +425,7 @@ export default function SplitSystemCleaning() {
           <h2 className="mt-4 text-4xl font-black uppercase leading-tight sm:text-5xl">
             PICK THE SYSTEMS. <span className="text-[#45C6E7]">PICK THE TIME.</span>
           </h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/75">
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/85 font-semibold">
             Choose the number of systems and an available start time. Then pay $50 online to reserve, or pay the full total securely. Cleaning and installation bookings share the same live calendar.
           </p>
           <div className="mt-6" data-testid="cleaning-booking-pay-later-reminder">
@@ -454,7 +454,7 @@ export default function SplitSystemCleaning() {
                   <span className="text-sm font-semibold text-white/80">Balance after clean: {money(currentTotal - 50)}</span>
                 </div>
               </div>
-              <p className="mt-5 text-sm leading-relaxed text-white/70">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
+              <p className="mt-5 text-sm leading-relaxed text-white/85 font-medium">We allow 90 minutes per system, so {quantity} {quantity === 1 ? "system needs" : "systems need"} {quantity * 90} minutes. Multiple systems must be at the same address.</p>
             </div>
             <div className="border-t-[3px] border-[#F4C620] pt-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
@@ -465,10 +465,10 @@ export default function SplitSystemCleaning() {
                 <button type="button" onClick={() => refreshSlots(quantity)} disabled={slotsLoading}
                   className="text-sm font-bold text-[#F4C620] underline underline-offset-4 disabled:opacity-50">Refresh openings</button>
               </div>
-              {slotsLoading && <p className="mt-5 flex items-center gap-2 text-sm text-white/75"><Loader2 className="h-4 w-4 animate-spin"/> Checking live bookings...</p>}
+              {slotsLoading && <p className="mt-5 flex items-center gap-2 text-sm text-white/85 font-medium"><Loader2 className="h-4 w-4 animate-spin"/> Checking live bookings...</p>}
               {slotsError && <p className="mt-5 border-l-[3px] border-[#F4C620] pl-3 text-sm font-semibold text-[#F4C620]" role="alert">{slotsError}</p>}
-              {!slotsLoading && availableDays.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/80">No online openings are available for {quantity} systems right now. Call 0414 698 435 to ask about another date.</p>}
-              <p className="mt-4 text-xs text-white/65">Soonest available opening is selected automatically. Choose another date or time if you prefer.</p>
+              {!slotsLoading && availableDays.length === 0 && !slotsError && <p className="mt-5 text-sm text-white/80 font-medium">No online openings are available for {quantity} systems right now. Call 0414 698 435 to ask about another date.</p>}
+              <p className="mt-4 text-xs text-white/85 font-medium">Soonest available opening is selected automatically. Choose another date or time if you prefer.</p>
               <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {(showMoreSlots ? availableDays : availableDays.slice(0, 6)).map((day) => (
                   <button type="button" key={day} aria-pressed={selectedDate === day}
@@ -492,13 +492,13 @@ export default function SplitSystemCleaning() {
                 </div>
               </div>}
               {selectedDate && selectedTime && <p className="mt-5 text-sm font-bold text-[#FFFFFF]">Your booking: {formatDate(selectedDate)} at {formatTime(selectedTime)} · {quantity} {quantity === 1 ? "system" : "systems"}</p>}
-              {!priceReady && <p role="status" className="mt-4 text-xs text-[#F4C620]">We're verifying the $200 cleaning offer and $50 booking payment. Online booking will open when the secure checkout matches.</p>}
+              {!priceReady && <p role="status" className="mt-4 text-xs text-[#F4C620] font-medium">We're verifying the $200 cleaning offer and $50 booking payment. Online booking will open when the secure checkout matches.</p>}
               <button type="button" onClick={continueBooking}
                 disabled={!selectedDate || !selectedTime || continuing || slotsLoading || !!slotsError || !priceReady}
                 className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#071827] disabled:cursor-not-allowed disabled:opacity-40">
                 {continuing ? "Opening secure booking..." : "Continue to secure $50 booking"} <ArrowRight className="h-5 w-5"/>
               </button>
-              <p className="mt-3 text-xs leading-relaxed text-white/60">Your time is held when checkout starts. Your date is confirmed after your $50 booking payment or full payment is verified.</p>
+              <p className="mt-3 text-xs leading-relaxed text-white/60 font-medium">Your time is held when checkout starts. Your date is confirmed after your $50 booking payment or full payment is verified.</p>
             </div>
           </div>
         </div>
@@ -511,7 +511,7 @@ export default function SplitSystemCleaning() {
             {FAQS.map((item, index) => (
               <div className="border-b border-[#E6E0D7]" key={item.q}>
                 <button type="button" aria-expanded={openFaq === index} onClick={() => setOpenFaq(openFaq === index ? -1 : index)} className="flex w-full items-center justify-between gap-5 py-6 text-left text-base font-black leading-7 text-[#192532] sm:text-lg"><span>{item.q}</span><ChevronDown className={"h-4 w-4 shrink-0 transition-transform " + (openFaq === index ? "rotate-180" : "")} /></button>
-                {openFaq === index && <p className="max-w-3xl pb-7 text-base leading-8 text-[#536675] sm:text-lg">{item.a}</p>}
+                {openFaq === index && <p className="max-w-3xl pb-7 text-base leading-8 text-[#536675] sm:text-lg font-semibold">{item.a}</p>}
               </div>
             ))}
           </div>
@@ -540,10 +540,10 @@ export default function SplitSystemCleaning() {
               </div>
             ) : (
               <form onSubmit={submitGuide} className="mt-4 space-y-3">
-                <p className="text-sm">Leave your email to unlock a handy five-point home-care guide. No booking required.</p>
+                <p className="text-sm font-medium">Leave your email to unlock a handy five-point home-care guide. No booking required.</p>
                 <label className="block text-sm font-bold">Email address<input type="email" required autoComplete="email" value={guideEmail} onChange={(e) => setGuideEmail(e.target.value)} className="mt-1 w-full rounded border p-3" placeholder="you@example.com" /></label>
-                <label className="flex items-start gap-2 text-xs"><input type="checkbox" checked={guideConsent} onChange={(e) => setGuideConsent(e.target.checked)} className="mt-0.5" />Optional: I agree to receive occasional SplitsPro cleaning tips and offers by email. I can unsubscribe at any time.</label>
-                {guideError && <p role="alert" className="text-sm text-red-700">{guideError}</p>}
+                <label className="flex items-start gap-2 text-xs font-medium"><input type="checkbox" checked={guideConsent} onChange={(e) => setGuideConsent(e.target.checked)} className="mt-0.5" />Optional: I agree to receive occasional SplitsPro cleaning tips and offers by email. I can unsubscribe at any time.</label>
+                {guideError && <p role="alert" className="text-sm text-red-700 font-medium">{guideError}</p>}
                 <button type="submit" disabled={guideStatus === "saving"} className="w-full rounded bg-[#F4C620] p-3 font-black disabled:opacity-50">{guideStatus === "saving" ? "Please wait…" : "Get the free guide"}</button>
                 <button type="button" onClick={() => setGuideOpen(false)} className="w-full p-2 text-sm underline">No thanks</button>
               </form>
