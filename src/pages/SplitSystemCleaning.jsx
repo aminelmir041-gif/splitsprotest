@@ -207,7 +207,7 @@ export default function SplitSystemCleaning() {
 
 
       <div className="border-b border-[#D6E6EC] bg-white" data-testid="cleaning-no-callout-banner">
-        <div className="sp-container flex flex-wrap items-center justify-between gap-3 py-3 text-xs font-black text-[#12425D]">
+        <div className="sp-container flex flex-wrap items-center justify-between gap-3 py-4 text-sm font-extrabold leading-6 text-[#12425D]">
           <span>No $50 call-out fee · Clear price before booking · No pressure to upgrade</span>
           <a href="#cleaning-booking" className="underline underline-offset-4 text-[#007EA7]">See dates &amp; book online</a>
         </div>
@@ -220,41 +220,53 @@ export default function SplitSystemCleaning() {
               <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby at home — if it's not nailed down, it's food. What about the aircon they breathe around?" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="-mx-4 block w-[calc(100%+2rem)] max-w-none h-auto object-contain sm:mx-auto sm:w-full sm:max-w-[680px] sm:rounded-xl" />
               <div className="mt-5">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">Sydney split-system deep cleaning · Complete indoor and outdoor care</p>
-                <h1 className="font-serif text-[clamp(1.8rem,6vw,3.5rem)] leading-[1.1] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
-                <p className="mt-3 max-w-2xl text-base font-semibold leading-relaxed text-[#3B5969]">You wouldn't let someone sneeze all over a freshly wiped benchtop. So why overlook the dust a neglected aircon could blow back around the room?</p>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#526978]">A filter can look clean while dust, pet dander and grime build up deeper inside the coil and blower wheel. Damp areas can also develop biofilm, musty smells and sometimes mould. When the fan runs, some particles and odours may be carried into the room.</p>
+                <h1 className="max-w-5xl font-sans text-[clamp(2.15rem,6.5vw,4.25rem)] font-black leading-[1.08] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
+                <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">A clean-looking filter doesn't mean a clean aircon.</p>
+                <p className="mt-3 max-w-3xl text-base leading-8 text-[#3B5969] sm:text-lg">Dust, pet hair and grime can collect deeper inside the coil and blower — well beyond a quick wipe.</p>
+                <p className="mt-4 max-w-3xl text-base leading-8 text-[#3B5969] sm:text-lg">Add moisture to that build-up, and you may get <strong className="text-[#0B2641]">stale, musty smells</strong> when the unit starts running.</p>
               </div>
             </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="What can build up inside an air conditioner">
-              {[
-                ["Dust and pet dander", "Can settle beyond the filters on the coil and blower."],
-                ["Moisture and slimy buildup", "Condensation in the drain tray can allow biofilm and unpleasant smells."],
-                ["Mould in damp areas", "May develop where moisture and dirt remain, even out of sight."],
-                ["Trapped grime", "Can restrict airflow and leave a stale or musty smell when the unit runs."]
-              ].map(([title, description]) => <div key={title} className="border-l-[3px] border-[#008DB8] pl-3"><h2 className="text-sm font-black text-[#0B2641]">{title}</h2><p className="mt-1 text-sm leading-relaxed text-[#526978]">{description}</p></div>)}
-            </div>
-            <p className="mt-4 border-l-4 border-[#F4C620] pl-4 text-sm font-bold leading-relaxed text-[#244456]">
-              The nasties aren't always on the filter. Some buildup hides deeper inside, where a quick wipe won't reach.
-            </p>
-            <p className="mt-3 text-xs leading-relaxed text-[#637782]">
-              That's why cleaning beyond the filter matters, especially in homes with children, pets or older loved ones.
-            </p>
-            <section className="mt-7 rounded-xl border border-[#D4E5ED] bg-white px-5 py-6 sm:px-8" aria-label="The concerns we answer">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">The questions people are afraid to ask</p>
-              <h2 className="mt-2 text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-3xl">What if I pay someone and the aircon still smells?</h2>
-              <p className="mt-3 max-w-4xl text-sm leading-relaxed text-[#405E6E] sm:text-base">You hear it in homeowner discussions: the cleaner only washed the filters; the fan still looks dirty; the musty smell comes back; the price changes after arrival; or dirty water ends up on the carpet. You shouldn't have to guess what you paid for.</p>
-              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+            <section className="mt-10" aria-label="What can build up inside an air conditioner">
+              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">The problem behind the cover</p>
+              <h2 className="mt-2 max-w-4xl text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">The dirt you can't see is the dirt a filter rinse misses.</h2>
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 {[
-                  ["Did they clean inside?", "We explain what we can safely open, show the actual components cleaned and document the work."],
-                  ["Will it smell again?", "Our written cleaning-related musty-odour guarantee provides a return visit and, if we cannot fix the cleaned-area odour, a refund."],
-                  ["Will there be extra fees?", "No separate $50 call-out fee, no mystery diagnostic fee and no extra work without your approval."]
-                ].map(([heading, detail]) => <div key={heading} className="border-l-4 border-[#F4C620] pl-4"><h3 className="text-sm font-black text-[#12384E]">{heading}</h3><p className="mt-1 text-sm leading-relaxed text-[#4E6674]">{detail}</p></div>)}
+                  ["Clean filters. Dirty coil?", "Dust and pet dander can settle deeper inside the system, beyond the mesh you wash at home."],
+                  ["Where's that musty smell coming from?", "Damp, dirty trays and airways can develop slimy build-up and unwanted odours."],
+                  ["Mould can hide out of sight.", "Moisture and grime can encourage growth in parts of the unit that don't get a routine wipe."],
+                  ["Grime can make airflow struggle.", "Built-up dirt can restrict airflow and may leave the system smelling stale."]
+                ].map(([title, description]) => (
+                  <div key={title} className="rounded-lg bg-white p-5 border-l-4 border-[#008DB8]">
+                    <h3 className="text-lg font-black leading-snug text-[#0B2641] sm:text-xl">{title}</h3>
+                    <p className="mt-3 text-base leading-7 text-[#405D6D]">{description}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-6 max-w-3xl border-l-4 border-[#F4C620] pl-5 text-lg font-bold leading-8 text-[#244456]">A clean front cover can hide a dirty interior. That's why we go past the filters.</p>
+            </section>
+            <section className="mt-12 rounded-xl border border-[#D4E5ED] bg-white px-5 py-8 sm:px-9 sm:py-10" aria-label="The concerns we answer">
+              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Before you pay anyone to clean your aircon</p>
+              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">Paid for a clean. Still smells? That's exactly what people worry about.</h2>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#405E6E] sm:text-lg">Homeowners talk about cleaners who only wash the filters, leave the fan dirty, or change the price when they arrive.</p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[#405E6E] sm:text-lg">Others worry about water on the carpet — or that musty smell coming straight back.</p>
+              <h3 className="mt-8 text-xl font-black text-[#0B2641] sm:text-2xl">Here's what you should expect from us:</h3>
+              <div className="mt-5 grid gap-5 sm:grid-cols-3">
+                {[
+                  ["SEE WHAT WE CLEAN.", "We show the accessible parts we open, explain the work and document the results."],
+                  ["MUSTY SMELL? WE MAKE IT RIGHT.", "Our written cleaning-related odour guarantee covers a return visit and a refund when the specified conditions are met."],
+                  ["NO SURPRISE CALL-OUT FEES.", "Your price is shown before booking. Non-standard work is quoted first, never added without approval."]
+                ].map(([heading, detail]) => (
+                  <div key={heading} className="rounded-lg bg-[#F5FAFC] p-5 border-l-4 border-[#F4C620]">
+                    <h3 className="text-lg font-black leading-snug text-[#12384E] sm:text-xl">{heading}</h3>
+                    <p className="mt-3 text-base leading-7 text-[#4E6674]">{detail}</p>
+                  </div>
+                ))}
               </div>
             </section>
             <button type="button" onClick={() => goStage(2)}
               className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-solution">
-              Learn more <ArrowRight className="h-5 w-5" />
+              See how we actually clean <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
@@ -266,18 +278,20 @@ export default function SplitSystemCleaning() {
             <button type="button" onClick={() => goStage(1)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
               <ArrowLeft className="h-4 w-4" /> Back
             </button>
-            <div className="mb-7 rounded-xl bg-white px-5 py-7 shadow-sm sm:px-9 sm:py-9" data-testid="cleaning-caring-home-message">
-              <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">For the people under your roof</p>
-              <h2 className="mt-2 font-serif text-3xl leading-tight text-[#0B2641] sm:text-4xl">Good homes start with <span className="text-[#008DB8]">people who care.</span></h2>
-              <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#3F5B6D] sm:text-base">Even the air your loved ones breathe is worth thinking about.</p>
+            <div className="mb-10 rounded-xl bg-white px-6 py-8 shadow-sm sm:px-10 sm:py-10" data-testid="cleaning-caring-home-message">
+              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">A better clean for the home you care about</p>
+              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">If it still smells inside, wiping the outside isn't enough.</h2>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#3F5B6D] sm:text-lg">We want you to know exactly what happens during your cleaning visit — and why each part matters.</p>
             </div>
             <div>
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro Hero Method</p>
-                <h2 className="mt-2 font-serif text-3xl leading-[1.1] text-[#0B2641] sm:text-4xl">
+                <h2 className="mt-3 max-w-4xl font-sans text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">
                   We strip it back. <span className="text-[#008DB8]">Not just wipe over it.</span>
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-[#3F5B6D] sm:text-base">Our six-step Bare-Bones Hero Method gets behind accessible covers, combines professional coil-compatible chemistry with targeted steam and appropriate rinsing, looks after the drain and outdoor unit, and finishes with careful reassembly and testing.</p>
+                <p className="mt-5 max-w-3xl text-base leading-8 text-[#3F5B6D] sm:text-lg">We open up suitable parts of the unit to reach build-up behind the front cover.</p>
+                <p className="mt-4 max-w-3xl text-base leading-8 text-[#3F5B6D] sm:text-lg">Then we use the right combination of <strong className="text-[#0B2641]">professional cleaning solutions, controlled steam and rinsing</strong> — followed by drain and outdoor-unit care.</p>
+                <p className="mt-4 max-w-3xl text-base leading-8 text-[#3F5B6D] sm:text-lg">Finally, we put it back together, check the operation and show you what we cleaned.</p>
               </div>
             </div>
 
