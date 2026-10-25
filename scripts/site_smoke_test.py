@@ -229,7 +229,7 @@ def main() -> None:
         'data-testid="cleaning-sneeze-analogy"', 'data-testid="cleaning-urgency"',
         'data-testid="cleaning-consultation-form"',
         'data-testid="cleaning-contact-cta"', 'data-testid="cleaning-cta-google-rating"',
-        'data-testid="cleaning-customer-testimonials"',
+        'data-testid="cleaning-google-reviews-proof"',
     )):
         fail("cleaning page must show the family hook, gold-standard process, urgency, testimonials and consultation CTA")
     if any(token in cleaning_page.lower() for token in (

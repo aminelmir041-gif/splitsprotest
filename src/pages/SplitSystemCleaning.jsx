@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ChevronDown, ShieldCheck } from "lucide-react";
 import { api } from "../lib/api";
 import { GoogleRating } from "../components/sections";
-import { PHONE_TEL, FEATURED_REVIEW } from "../lib/data";
+import { PHONE_TEL } from "../lib/data";
 
 // This is the ONE consumer sales landing page for split-system cleaning.
 // One continuous explanation of the Hero Method, with no on-page booking calendar.
@@ -253,17 +253,11 @@ export default function SplitSystemCleaning() {
                   <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> A cleaning checklist, job photos and completion certificate.</p>
                 </div>
               </div>
-              <div className="mt-8 grid gap-4 md:grid-cols-2" data-testid="cleaning-customer-testimonials">
-                <blockquote className="rounded-lg border border-[#D4E5ED] bg-white p-5">
-                  <p className="text-base font-bold leading-7 text-[#23465A]">“{FEATURED_REVIEW.text}”</p>
-                  <footer className="mt-4 text-sm font-black text-[#0B2641]">Sia · SplitsPro installation customer</footer>
-                </blockquote>
-                <blockquote className="rounded-lg border border-[#D4E5ED] bg-white p-5">
-                  <p className="text-base font-bold leading-7 text-[#23465A]">“Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy.”</p>
-                  <footer className="mt-4 text-sm font-black text-[#0B2641]">Gill McPhee · SplitsPro installation customer</footer>
-                </blockquote>
+              <div className="mt-8 rounded-lg border-l-4 border-[#F4C620] bg-white p-5" data-testid="cleaning-google-reviews-proof">
+                <p className="text-xl font-black text-[#0B2641]">See what local customers actually say.</p>
+                <p className="mt-2 text-base font-semibold leading-7 text-[#3B5667]">Read current, first-hand feedback on SplitsPro's Google Business Profile, alongside our rating and review count. The reviews belong to the customers who wrote them.</p>
+                <a href="https://g.page/r/CYTvO1ipeYUtEBM/" target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 font-black text-[#007EA7] underline">Read genuine Google reviews <ArrowRight className="h-4 w-4" /></a>
               </div>
-              <p className="mt-4 text-sm font-semibold text-[#435B6B]">These existing customer testimonials are about installation workmanship. <a href="https://g.page/r/CYTvO1ipeYUtEBM/" target="_blank" rel="noreferrer" className="font-black text-[#007EA7] underline">Read SplitsPro's Google reviews</a>.</p>
               <p className="mt-7 max-w-3xl text-sm leading-7 text-[#435B6B] font-medium">We explain suitable access and protect nearby surfaces before work begins.</p>
             </section>
             <button type="button" onClick={() => scrollToSection("cleaning-next-step")}
