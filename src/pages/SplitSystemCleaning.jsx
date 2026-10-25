@@ -10,7 +10,7 @@ import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
 // This is the ONE consumer sales landing page for split-system cleaning.
-// Three short stages share one live offer and checkout.
+// One long-form cleaning landing page, using the existing secure checkout and live calendar.
 const CLEANING_QUANTITIES = Array.from({ length: 7 }, (_, index) => index + 1);
 const EXTRA_CLEAN_PRICE = 120;
 const cleaningPrice = (count, firstPrice) => firstPrice + Math.max(0, count - 1) * EXTRA_CLEAN_PRICE;
@@ -25,6 +25,10 @@ const FAQS = [
   { q: "What if there is heavy contamination or difficult access?", a: "These prices apply to standard accessible wall-mounted splits in our local offer area. We will explain and quote any additional cleaning or repair work before proceeding." },
   { q: "Can a deep clean help if we have children, pets or older relatives at home?", a: "Cleaning removes accessible dirt, dander and other buildup from inside the unit. If contamination is present, cleaning those surfaces can reduce a possible source of irritants and musty odours. It cannot guarantee better health, prevent infections, or replace asthma treatment, good ventilation or dealing with dampness." },
   { q: "Will the aircon run like new, use less electricity or sound quieter?", a: "Cleaning may restore airflow and reduce certain noises or inefficiency when the cause is dirt. Results depend on the starting condition, and cleaning does not repair worn bearings, electrical problems, refrigerant leaks or other faults." },
+  { q: "Is there a $50 call-out fee?", a: "No. There is no separate $50 call-out or inspection charge for the standard booked clean. If you choose to reserve with $50 online, that is a booking payment credited toward your displayed total, not an extra fee. Any non-standard work is discussed and quoted first." },
+  { q: "What if the musty smell is still there after the clean?", a: "Contact us within seven days if the same cleaning-related musty smell remains or returns from the accessible parts we serviced. We will inspect and re-clean those affected areas once at no charge. If we still cannot resolve that cleaning-related odour, we'll refund the cleaning service charge, including your booking payment. Odours from leaks, building moisture, inaccessible contamination or other faults require separate diagnosis and are outside this cleaning guarantee. Australian Consumer Law rights always apply." },
+  { q: "Do you use harsh chemicals or perfume to mask smells?", a: "We use suitable professional coil cleaners, including low-odour, biodegradable enzyme-and-detergent formulas where appropriate, to loosen grime and organic residue. We follow each product's label, protect your home and never treat chemical use as a substitute for physically removing dirt. The exact product and rinse method depend on your unit." },
+  { q: "Is steam used on every part, and does it sterilise the aircon?", a: "We use controlled steam on suitable accessible components only, keeping it away from sensitive electrical parts and heat-sensitive materials. Steam can help loosen stubborn grime, but we do not claim that the whole system is sterile or that every mould spore or bacterium is eliminated." },
   { q: "Can I pay later?", a: "Our cleaning checkout uses Stripe or PayPal. Some customers may see instalment or pay-later options if enabled for the purchase and offered by the provider. Availability and approval vary; always check the actual checkout before relying on an instalment arrangement." }
 ];
 
@@ -202,21 +206,20 @@ export default function SplitSystemCleaning() {
 
 
 
-      <div className="border-b border-[#D6E6EC] bg-white" aria-label="Cleaning booking progress">
-        <div className="sp-container flex items-center justify-between gap-3 py-3">
-          <p className="text-xs font-black uppercase tracking-wide text-[#28506A]">Step {stage} of 3 · {stage === 1 ? "Your home" : stage === 2 ? "How we protect it" : "Offer & booking"}</p>
-          <div className="flex gap-1.5" aria-hidden="true">
-            {[1, 2, 3].map((step) => <span key={step} className={"h-1.5 w-9 rounded-full " + (step <= stage ? "bg-[#008DB8]" : "bg-[#D8E4EA]")} />)}
-          </div>
+      <div className="border-b border-[#D6E6EC] bg-white" data-testid="cleaning-no-callout-banner">
+        <div className="sp-container flex flex-wrap items-center justify-between gap-3 py-3 text-xs font-black text-[#12425D]">
+          <span>No $50 call-out fee · Clear price before booking · No pressure to upgrade</span>
+          <a href="#cleaning-booking" className="underline underline-offset-4 text-[#007EA7]">See dates &amp; book online</a>
         </div>
       </div>
 
-      {stage === 1 && (
+      {(
         <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] pt-0 pb-6 sm:py-10" data-testid="cleaning-diagnosis">
           <div className="sp-container mx-auto max-w-6xl">
             <div className="mt-0">
               <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby at home — if it's not nailed down, it's food. What about the aircon they breathe around?" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="-mx-4 block w-[calc(100%+2rem)] max-w-none h-auto object-contain sm:mx-auto sm:w-full sm:max-w-[680px] sm:rounded-xl" />
               <div className="mt-5">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">Sydney split-system deep cleaning · Complete indoor and outdoor care</p>
                 <h1 className="font-serif text-[clamp(1.8rem,6vw,3.5rem)] leading-[1.1] tracking-tight text-[#0B2641]">You clean everything they touch. <span className="text-[#008DB8]">What about the aircon they breathe around?</span></h1>
                 <p className="mt-3 max-w-2xl text-base font-semibold leading-relaxed text-[#3B5969]">You wouldn't let someone sneeze all over a freshly wiped benchtop. So why overlook the dust a neglected aircon could blow back around the room?</p>
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#526978]">A filter can look clean while dust, pet dander and grime build up deeper inside the coil and blower wheel. Damp areas can also develop biofilm, musty smells and sometimes mould. When the fan runs, some particles and odours may be carried into the room.</p>
@@ -236,6 +239,18 @@ export default function SplitSystemCleaning() {
             <p className="mt-3 text-xs leading-relaxed text-[#637782]">
               That's why cleaning beyond the filter matters, especially in homes with children, pets or older loved ones.
             </p>
+            <section className="mt-7 rounded-xl border border-[#D4E5ED] bg-white px-5 py-6 sm:px-8" aria-label="The concerns we answer">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">The questions people are afraid to ask</p>
+              <h2 className="mt-2 text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-3xl">What if I pay someone and the aircon still smells?</h2>
+              <p className="mt-3 max-w-4xl text-sm leading-relaxed text-[#405E6E] sm:text-base">You hear it in homeowner discussions: the cleaner only washed the filters; the fan still looks dirty; the musty smell comes back; the price changes after arrival; or dirty water ends up on the carpet. You shouldn't have to guess what you paid for.</p>
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                {[
+                  ["Did they clean inside?", "We explain what we can safely open, show the actual components cleaned and document the work."],
+                  ["Will it smell again?", "Our written cleaning-related musty-odour guarantee provides a return visit and, if we cannot fix the cleaned-area odour, a refund."],
+                  ["Will there be extra fees?", "No separate $50 call-out fee, no mystery diagnostic fee and no extra work without your approval."]
+                ].map(([heading, detail]) => <div key={heading} className="border-l-4 border-[#F4C620] pl-4"><h3 className="text-sm font-black text-[#12384E]">{heading}</h3><p className="mt-1 text-sm leading-relaxed text-[#4E6674]">{detail}</p></div>)}
+              </div>
+            </section>
             <button type="button" onClick={() => goStage(2)}
               className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-solution">
@@ -245,7 +260,7 @@ export default function SplitSystemCleaning() {
         </section>
       )}
 
-      {stage === 2 && (
+      {(
         <section id="cleaning-stage-2" className="scroll-mt-16 bg-[#F0F9FC] py-6 sm:py-12" data-testid="cleaning-solution-trust">
           <div className="sp-container mx-auto max-w-6xl">
             <button type="button" onClick={() => goStage(1)} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#176A88]">
@@ -262,7 +277,7 @@ export default function SplitSystemCleaning() {
                 <h2 className="mt-2 font-serif text-3xl leading-[1.1] text-[#0B2641] sm:text-4xl">
                   We strip it back. <span className="text-[#008DB8]">Not just wipe over it.</span>
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-[#3F5B6D] sm:text-base">A proper clean reaches past the filters, targets hidden buildup and finishes with protection where suitable.</p>
+                <p className="mt-3 text-sm leading-relaxed text-[#3F5B6D] sm:text-base">We first expose the accessible dirt, then use the right combination of professional coil-safe chemistry, targeted steam and appropriate rinsing to lift it away. Outdoor care and compatible protective coatings complete the visit.</p>
               </div>
             </div>
 
@@ -278,22 +293,29 @@ export default function SplitSystemCleaning() {
                 </figure>
               ))}
             </div>
-            <div className="mt-5 grid gap-x-5 gap-y-3 sm:grid-cols-2" data-testid="cleaning-process-benefits">
-              {[
-                ["We strip it back, not just wipe over it.", "We remove suitable covers and filters to reach dirt hidden behind the front panel."],
-                ["We clean the coil and blower.", "HVAC-compatible cleaning products, steam where safe, and gentle rinsing lift accessible dust and grime."],
-                ["We clear the drain.", "We clean the tray and accessible drainage to help prevent blockages, leaks and stale odours."],
-                ["We clean the outdoor unit.", "We remove accessible dirt and debris to help keep the outdoor unit in good condition."],
-                ["We apply anti-mould protection.", "A compatible treatment on suitable surfaces helps discourage future mould growth."],
-                ["We apply anti-corrosion protection.", "Suitable indoor and outdoor surfaces receive protective treatment to help resist corrosion."],
-              ].map(([heading, detail]) => (
-                <div key={heading} className="border-l-[3px] border-[#008DB8] pl-3">
-                  <h3 className="text-sm font-black text-[#0B2641]">{heading}</h3>
-                  <p className="mt-1 text-sm leading-snug text-[#435F70]">{detail}</p>
-                </div>
-              ))}
-            </div>
-
+            <section className="mt-7" data-testid="cleaning-process-benefits">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">The SplitsPro method</p>
+              <h3 className="mt-2 text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">THE 3-FRONT DEEP CLEAN. <span className="text-[#008DB8]">LAND. SEA. AIR.</span></h3>
+              <p className="mt-3 max-w-4xl text-sm leading-relaxed text-[#405E6E] sm:text-base">We use three different approaches because dust, grease and musty organic build-up don't all respond to the same treatment. It's a cleaning process, not an air freshener.</p>
+              <div className="mt-6 grid gap-4 md:grid-cols-3">
+                {[
+                  { number:"01", title:"LAND — Strip it back", subtitle:"Reach what a quick filter wash misses", description:"We protect the room and take off suitable, service-accessible covers and filters. We inspect the coil, blower, tray and airflow path, then remove accessible dust and grime so it doesn't stay hidden behind the fascia."},
+                  { number:"02", title:"SEA — Loosen & flush", subtitle:"Enzyme-powered professional cleaning", description:"Coil-compatible, low-odour, biodegradable enzyme-and-detergent cleaners help loosen oily residues and organic film on suitable surfaces. Slow-release enzymes can keep working with condensate when the selected product instructions allow. We use controlled rinsing and collect the dirty water; products that are designed to self-rinse are used according to their own label directions."},
+                  { number:"03", title:"AIR — Targeted steam", subtitle:"Controlled heat for stubborn build-up", description:"Where the air-conditioner design allows it, carefully applied steam helps soften deposits and release grime without relying on perfume to mask smells. We avoid sensitive electrics, plastics and components that aren't suited to heat, then check the accessible drainage and operation."}
+                ].map((item) => <div key={item.number} className="rounded-lg border border-[#C7E2EB] bg-white p-5 shadow-sm"><span className="text-sm font-black tracking-widest text-[#008DB8]">{item.number} / 03</span><h4 className="mt-2 text-xl font-black uppercase text-[#0B2641]">{item.title}</h4><p className="mt-1 text-sm font-extrabold text-[#008DB8]">{item.subtitle}</p><p className="mt-3 text-sm leading-relaxed text-[#496374]">{item.description}</p></div>)}
+              </div>
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div className="border-l-4 border-[#008DB8] pl-4"><h4 className="font-black text-[#10364C]">Outdoor unit included</h4><p className="mt-1 text-sm leading-relaxed text-[#526978]">We also clear accessible dust and debris around the outdoor condenser and clean suitable components using methods safe for the unit.</p></div>
+                <div className="border-l-4 border-[#008DB8] pl-4"><h4 className="font-black text-[#10364C]">Protective treatment included</h4><p className="mt-1 text-sm leading-relaxed text-[#526978]">Appropriate anti-mould and anti-corrosion coatings are applied only to compatible indoor and outdoor surfaces as per product instructions. No coating can permanently prevent mould or corrosion.</p></div>
+              </div>
+              <p className="mt-4 text-xs leading-relaxed text-[#647B87]">Methods vary by model. Products used on evaporators, condensers and electrical areas are selected separately for compatibility; the job is not a claim of complete sterilisation or guaranteed elimination of airborne bacteria.</p>
+            </section>
+            <section className="mt-8 rounded-xl bg-[#08263E] p-6 text-white sm:p-9" data-testid="cleaning-odour-guarantee" id="cleaning-guarantee">
+              <p className="text-xs font-black uppercase tracking-[0.17em] text-[#62D1EC]">Our cleaning promise</p>
+              <h3 className="mt-2 text-3xl font-black uppercase leading-tight sm:text-4xl">Musty smell from the parts we clean? <span className="text-[#F4C620]">We'll make it right — or you don't pay.</span></h3>
+              <p className="mt-4 text-sm leading-relaxed text-white/90 sm:text-base">If the same musty odour caused by build-up in the accessible components we've cleaned remains after the service, or returns within seven days, tell us within seven days. We'll inspect those areas and re-clean the affected accessible parts once at no extra charge. If we cannot resolve a cleaning-related odour from those serviced areas, we'll refund the cleaning service charge, including any $50 booking payment.</p>
+              <p className="mt-3 text-xs leading-relaxed text-white/70">This covers cleaning of accessible split-system parts, not odours caused by other building areas, ongoing leaks, inaccessible contamination, refrigerant or electrical faults, or new moisture problems outside our cleaning scope. We explain any such issue before extra work. This promise is in addition to your rights under Australian Consumer Law.</p>
+            </section>
             <div className="mt-6 border-t-2 border-[#BCDDEB] pt-5" id="cleaning-trust" data-testid="cleaning-trust">
               <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007EA7]">Why trust SplitsPro with your home?</p>
               <div className="mt-3 grid gap-4 sm:grid-cols-[1fr_1fr] sm:items-center">
@@ -312,13 +334,13 @@ export default function SplitSystemCleaning() {
             <button type="button" onClick={() => goStage(3)}
               className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
               data-testid="cleaning-next-offer">
-              Make a Positive Change <ArrowRight className="h-5 w-5" />
+              View the clear price &amp; book <ArrowRight className="h-5 w-5" />
             </button>
           </div>
         </section>
       )}
 
-      {stage === 3 && (
+      {(
         <>
           <section id="cleaning-stage-3" className="scroll-mt-16 bg-[#FFF7E8] py-8 sm:py-14" data-testid="cleaning-offer">
             <div className="sp-container mx-auto max-w-6xl">
@@ -339,8 +361,8 @@ export default function SplitSystemCleaning() {
               <div className="mt-6 grid gap-6 rounded-xl bg-[#08263E] p-5 text-white sm:grid-cols-[1fr_1fr] sm:p-8" id="cleaning-prices" data-testid="cleaning-prices">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.16em] text-[#4BD0F0]">Complete split-system deep clean</p>
-                  <p className="mt-3 text-sm leading-relaxed text-white/85">One complete clean, with suitable protective treatments included. No surprise extras for a standard accessible split.</p>
-                  <p className="mt-3 text-xs text-white/60">Standard wall-mounted systems, same property and visit. Any non-standard work is quoted first.</p>
+                  <p className="mt-3 text-sm leading-relaxed text-white/85">One complete indoor and outdoor deep clean, with suitable protective treatments and our cleaning-related musty-odour guarantee included. No $50 call-out fee or surprise extras for a standard accessible split.</p>
+                  <p className="mt-3 text-xs text-white/60">Standard accessible wall-mounted systems, same property and visit. Non-standard work is always quoted before you approve it. Your $50 online booking payment counts towards the service price; it is not a call-out fee.</p>
                 </div>
                 <div>
                   <p className="text-xs font-black uppercase tracking-widest text-[#F4C620]">First split system</p>
