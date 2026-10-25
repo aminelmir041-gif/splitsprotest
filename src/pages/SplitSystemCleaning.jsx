@@ -226,29 +226,30 @@ export default function SplitSystemCleaning() {
 
             <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4" data-testid="cleaning-real-process-gallery">
               {[
-                {src:"/landing/splitspro-process-filter.png",alt:"Real job — covers and filters opened",label:"01 · Strip back"},
-                {src:"/landing/splitspro-process-coil.png",alt:"Real job — indoor coil exposed",label:"02 · Deep clean"},
-                {src:"/landing/splitspro-process-covers.png",alt:"Real job — cleaned removable covers",label:"03 · Protect"}
+                {src:"/landing/splitspro-process-filter.png",alt:"Real job — covers and filters opened",label:""},
+                {src:"/landing/splitspro-process-coil.png",alt:"Real job — indoor coil exposed",label:""},
+                {src:"/landing/splitspro-process-covers.png",alt:"Real job — cleaned removable covers",label:""}
               ].map((photo) => (
                 <figure key={photo.src}>
                   <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="h-24 w-full rounded-md object-cover sm:h-40" />
-                  <figcaption className="mt-2 text-center text-[11px] font-black uppercase leading-tight text-[#0B3650] sm:text-sm">{photo.label}</figcaption>
+                  
                 </figure>
               ))}
             </div>
-            <div className="mt-5 grid gap-3 md:grid-cols-3" data-testid="cleaning-process-benefits">
-              <div className="border-l-[3px] border-[#008DB8] pl-3">
-                <h3 className="text-sm font-black uppercase text-[#0B2641]">We expose hidden dirt.</h3>
-                <p className="mt-1 text-sm leading-snug text-[#435F70]">Filters and accessible covers come off, so we reach buildup a quick filter rinse leaves behind.</p>
-              </div>
-              <div className="border-l-[3px] border-[#008DB8] pl-3">
-                <h3 className="text-sm font-black uppercase text-[#0B2641]">We spray, rinse and clear.</h3>
-                <p className="mt-1 text-sm leading-snug text-[#435F70]">We use HVAC-appropriate cleaning chemicals, including hospital- and food-area-grade products where suitable, followed by steam and controlled rinsing on accessible coils and fans. We clear the drain to help prevent blockages and leaks.</p>
-              </div>
-              <div className="border-l-[3px] border-[#008DB8] pl-3">
-                <h3 className="text-sm font-black uppercase text-[#0B2641]">We help protect surfaces.</h3>
-                <p className="mt-1 text-sm leading-snug text-[#435F70]">We finish with compatible anti-mould and anti-corrosion coatings on suitable indoor and outdoor surfaces to help protect against future buildup and corrosion. Then we reassemble and test.</p>
-              </div>
+            <div className="mt-5 grid gap-x-5 gap-y-3 sm:grid-cols-2" data-testid="cleaning-process-benefits">
+              {[
+                ["We strip it back, not just wipe over it.", "We remove suitable covers and filters to reach dirt hidden behind the front panel."],
+                ["We clean the coil and blower.", "HVAC-compatible cleaning products, steam where safe, and gentle rinsing lift accessible dust and grime."],
+                ["We clear the drain.", "We clean the tray and accessible drainage to help prevent blockages, leaks and stale odours."],
+                ["We clean the outdoor unit.", "We remove accessible dirt and debris to help keep the outdoor unit in good condition."],
+                ["We apply anti-mould protection.", "A compatible treatment on suitable surfaces helps discourage future mould growth."],
+                ["We apply anti-corrosion protection.", "Suitable indoor and outdoor surfaces receive protective treatment to help resist corrosion."],
+              ].map(([heading, detail]) => (
+                <div key={heading} className="border-l-[3px] border-[#008DB8] pl-3">
+                  <h3 className="text-sm font-black text-[#0B2641]">{heading}</h3>
+                  <p className="mt-1 text-sm leading-snug text-[#435F70]">{detail}</p>
+                </div>
+              ))}
             </div>
 
             <div className="mt-6 border-t-2 border-[#BCDDEB] pt-5" id="cleaning-trust" data-testid="cleaning-trust">
@@ -286,18 +287,18 @@ export default function SplitSystemCleaning() {
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">Now, here's the offer</p>
                   <h2 className="mt-2 max-w-3xl font-black uppercase text-3xl leading-tight text-[#0B2641] sm:text-5xl">
-                    Everything included. One clear price.
+                    A small price for a cleaner, better-protected aircon at home.
                   </h2>
                   <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4F6575] sm:text-base">
-                    No basic filter wipe: indoor deep clean, outdoor care, drain clearing, suitable protective coatings and an operation check. Choose your systems and book a time below.
+                    The full deep clean, outdoor care and compatible anti-mould and anti-corrosion treatments are included. Choose your systems and date below.
                   </p>
                 </div>
-                
+                <img src="/landing/splitspro-cleaning-hero.webp" alt="SplitsPro air conditioner cleaning" loading="lazy" className="w-full max-h-48 rounded-lg object-contain" />
               </div>
               <div className="mt-6 grid gap-6 rounded-xl bg-[#08263E] p-5 text-white sm:grid-cols-[1fr_1fr] sm:p-8" id="cleaning-prices" data-testid="cleaning-prices">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.16em] text-[#4BD0F0]">Complete split-system deep clean</p>
-                  <p className="mt-3 text-sm leading-relaxed text-white/85">We clean accessible covers, filters, coil, fan and drainage, plus the outdoor unit. Suitable anti-mould and anti-corrosion protection, operation check and job photos are included.</p>
+                  <p className="mt-3 text-sm leading-relaxed text-white/85">One complete clean, with suitable protective treatments included. No surprise extras for a standard accessible split.</p>
                   <p className="mt-3 text-xs text-white/60">Standard wall-mounted systems, same property and visit. Any non-standard work is quoted first.</p>
                 </div>
                 <div>
@@ -308,6 +309,7 @@ export default function SplitSystemCleaning() {
                   <p className="mt-3 text-sm leading-relaxed text-white/75">Only $50 to book online, credited toward your total. Balance after cleaning, or pay in full with eligible instalments at checkout.</p>
                 </div>
               </div>
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold text-[#244456]" data-testid="cleaning-offer-reassurance"><GoogleRating /><span>✓ Licensed & insured technicians</span><span>✓ Secure $50 booking · balance after cleaning</span></div>
               <div className="mt-5" data-testid="cleaning-before-booking-cta-pay-later-reminder">
                 <PayLaterReminder kind="cleaning" compact stripeReady={paymentReadiness.stripe_ready} paypalReady={paymentReadiness.paypal_ready} />
               </div>
