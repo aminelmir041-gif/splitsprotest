@@ -44,9 +44,9 @@ def future_date():
 
 def test_server_calculates_full_upfront_price():
     assert cb.price_cents(1) == 20000
-    assert cb.price_cents(2) == 35000
-    assert cb.price_cents(3) == 50000
-    assert cb.price_cents(7) == 110000
+    assert cb.price_cents(2) == 32000
+    assert cb.price_cents(3) == 44000
+    assert cb.price_cents(7) == 92000
     for q in (0, 8, -1, 1.0, "2"):
         with pytest.raises(ValueError):
             cb.price_cents(q)
@@ -119,7 +119,7 @@ def test_payment_confirmation_stores_booking_and_is_idempotent(calendar):
     reference = "a" * 32
     record = {
         "reference": reference, "booking_date": d,
-        "start_time": "09:30", "quantity": 2, "total_cents": 35000,
+        "start_time": "09:30", "quantity": 2, "total_cents": 32000,
         "lead": {"name": "Test Client", "email": "example@example.com"},
     }
     store.set(cb.hold_key(reference), json.dumps(record), ex=1000)
@@ -127,7 +127,7 @@ def test_payment_confirmation_stores_booking_and_is_idempotent(calendar):
     second = cb._finalize_paid_cleaning(store, record)
     assert first == second
     assert first["status"] == "confirmed"
-    assert first["total_amount"] == 350
+    assert first["total_amount"] == 320
     assert store.exists(cb.confirmed_key(reference))
     assert not store.exists(cb.hold_key(reference))
     assert not cb._slot_is_free(store, d, "09:30", 1)
@@ -154,9 +154,9 @@ def test_expired_payment_hold_confirms_only_if_still_free(calendar):
 
 @pytest.mark.parametrize("quantity,total,book_due,balance", [
     (1, 20000, 5000, 15000),
-    (2, 35000, 5000, 30000),
-    (3, 50000, 5000, 45000),
-    (7, 110000, 5000, 105000),
+    (2, 32000, 5000, 27000),
+    (3, 44000, 5000, 39000),
+    (7, 92000, 5000, 87000),
 ])
 def test_payment_options_never_change_total_price(quantity, total, book_due, balance):
     assert cb.price_cents(quantity) == total
@@ -179,8 +179,8 @@ def test_old_checkout_clients_still_default_to_full_payment():
 
 
 @pytest.mark.parametrize("choice,charged,balance", [
-    ("booking", 50, 300),
-    ("full", 350, 0),
+    ("booking", 50, 270),
+    ("full", 320, 0),
 ])
 def test_checkout_creates_precisely_priced_hold_and_preserves_shared_calendar(
     calendar, monkeypatch, choice, charged, balance
@@ -201,7 +201,7 @@ def test_checkout_creates_precisely_priced_hold_and_preserves_shared_calendar(
         phone="0414698435", email="person@example.com"
     )
     response = cb.create_cleaning_checkout(payload)
-    assert response["total_amount"] == 350
+    assert response["total_amount"] == 320
     assert response["amount_due_now"] == charged
     assert response["balance_amount"] == balance
     assert response["payment_choice"] == choice
@@ -209,7 +209,7 @@ def test_checkout_creates_precisely_priced_hold_and_preserves_shared_calendar(
     hold = cb._get_json(store, cb.hold_key(response["checkout_ref"]))
     assert hold["payment_cents"] == charged * 100
     assert hold["balance_cents"] == balance * 100
-    assert hold["total_cents"] == 35000
+    assert hold["total_cents"] == 32000
     assert not cb._slot_is_free(store, day, "08:00", 1)
     assert cb.cleaning_blocks_installation(store, day, "Morning")
 
@@ -220,8 +220,8 @@ def test_booking_deposit_webhook_verifies_charged_amount_and_records_balance(cal
     reference = "c" * 32
     hold = {
         "reference": reference, "booking_date": day, "start_time": "09:30",
-        "quantity": 2, "total_cents": 35000,
-        "payment_cents": 5000, "balance_cents": 30000,
+        "quantity": 2, "total_cents": 32000,
+        "payment_cents": 5000, "balance_cents": 27000,
         "payment_choice": "booking", "payment_provider": "stripe",
         "stripe_session_id": "cs_test_verified",
         "lead": {"name": "Customer", "email": "example@example.com"},
@@ -230,7 +230,7 @@ def test_booking_deposit_webhook_verifies_charged_amount_and_records_balance(cal
     session = {
         "metadata": {"checkout_type": "cleaning", "cleaning_ref": reference},
         "id": "cs_test_verified", "client_reference_id": reference,
-        "amount_total": 35000, "currency": "aud", "payment_status": "paid",
+        "amount_total": 32000, "currency": "aud", "payment_status": "paid",
     }
     # The full job total must NOT be accepted as proof of the $50 transaction.
     assert cb.confirm_stripe_cleaning_payment(session)
@@ -240,7 +240,7 @@ def test_booking_deposit_webhook_verifies_charged_amount_and_records_balance(cal
     paid = cb._get_json(store, cb.paid_key(reference))
     assert paid["status"] == "confirmed"
     assert paid["amount_paid"] == 50
-    assert paid["balance_amount"] == 300
+    assert paid["balance_amount"] == 270
     assert paid["paid_upfront"] is False
     assert paid["payment_choice"] == "booking"
     assert store.exists(cb.confirmed_key(reference))
@@ -263,7 +263,7 @@ def test_stripe_checkout_uses_authoritative_amount_by_payment_choice(monkeypatch
         hold = {
             "reference": "d" * 32, "quantity": 2, "payment_choice": choice,
             "payment_cents": cb.amount_to_charge_cents(2, choice),
-            "total_cents": 35000, "balance_cents": 30000 if choice == "booking" else 0,
+            "total_cents": 32000, "balance_cents": 27000 if choice == "booking" else 0,
             "booking_date": future_date(), "start_time": "08:00",
             "payment_provider": "stripe", "lead": {"email":"test@example.com"}
         }
@@ -274,7 +274,7 @@ def test_stripe_checkout_uses_authoritative_amount_by_payment_choice(monkeypatch
     assert "line_items[0][price]" not in deposit
     assert "line_items[1][price]" not in deposit
     assert deposit["metadata[payment_choice]"] == "booking"
-    assert full["line_items[0][price_data][unit_amount]"] == "35000"
+    assert full["line_items[0][price_data][unit_amount]"] == "32000"
     assert full["line_items[0][price_data][currency]"] == "aud"
     assert "line_items[0][price]" not in full
     assert "line_items[1][price]" not in full
@@ -319,7 +319,7 @@ def test_stripe_full_payment_supports_server_priced_non_catalogue_total(monkeypa
 def test_live_config_advertises_book_50_default():
     result = cb.cleaning_config(Response())
     assert result["first_system"] == 200
-    assert result["each_additional_system"] == 150
+    assert result["each_additional_system"] == 120
     assert result["booking_payment"] == 50
     assert result["default_payment_choice"] == "booking"
 
