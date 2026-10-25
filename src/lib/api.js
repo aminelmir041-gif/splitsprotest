@@ -57,7 +57,7 @@ export const getCleaningSlots = async (quantity = 1, limit = 70) => {
 // Prefetch on the cleaning offer page and reuse on the next checkout route.
 // This removes a duplicate Render cold-start request without trusting a
 // cached amount at payment: /cleaning-checkout verifies the actual price.
-const CLEANING_CONFIG_CACHE_KEY = "splitspro:cleaning-config:v2";
+const CLEANING_CONFIG_CACHE_KEY = "splitspro:cleaning-config:v3";
 const CLEANING_CONFIG_TTL_MS = 300000;
 let cleaningConfigInFlight = null;
 export const getCachedCleaningCheckoutConfig = () => {
