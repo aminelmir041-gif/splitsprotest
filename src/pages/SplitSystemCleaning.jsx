@@ -284,7 +284,6 @@ export default function SplitSystemCleaning() {
                     The full deep clean, outdoor care and compatible anti-mould and anti-corrosion treatments are included. Choose your systems and date below.
                   </p>
                 </div>
-                <img src="/landing/splitspro-cleaning-hero.webp" alt="SplitsPro air conditioner cleaning" loading="lazy" className="w-full max-h-48 rounded-lg object-contain" />
               </div>
               <div className="mt-6 grid gap-6 rounded-xl bg-[#08263E] p-5 text-white sm:grid-cols-[1fr_1fr] sm:p-8" id="cleaning-prices" data-testid="cleaning-prices">
                 <div>
