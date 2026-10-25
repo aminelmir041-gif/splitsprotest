@@ -27,8 +27,10 @@ jobs:
                   print("PayPal configured:", result.get("paypal_ready"))
                   print("First system:", result.get("first_system"))
                   print("Additional system:", result.get("each_additional_system"))
-                  assert result.get("first_system") == 300
+                  assert result.get("first_system") == 200
                   assert result.get("each_additional_system") == 150
+                  assert result.get("booking_payment") == 50
+                  assert result.get("default_payment_choice") == "booking"
                   assert result.get("enabled") is True, "Timed cleaning booking rollout is still disabled"
               else:
                   print("Health:", result.get("status"))
