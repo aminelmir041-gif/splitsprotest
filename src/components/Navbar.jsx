@@ -10,7 +10,9 @@ export const Navbar = () => {
   const headerRef = useRef(null);
   const location = useLocation();
   const isFinancePage = location.pathname.startsWith("/payment-options");
-  const isCleaningPage = location.pathname === "/split-system-cleaning" || location.pathname === "/secure-cleaning" || location.pathname === "/colony-forming-units" || location.pathname === "/aircon-colony-forming-units";
+  // Trailing-slash URLs are common on the public site; keep the header legible on both forms.
+  const normalizedPath = location.pathname.replace(/\/+$/, "") || "/";
+  const isCleaningPage = ["/split-system-cleaning", "/secure-cleaning", "/colony-forming-units", "/aircon-colony-forming-units"].includes(normalizedPath);
   const solid = scrolled || open || isFinancePage || isCleaningPage;
 
   // The payment announcement is part of the fixed header. Keep its largest
