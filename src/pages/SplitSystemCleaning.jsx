@@ -77,35 +77,6 @@ export default function SplitSystemCleaning() {
       setGuideError("Couldn't save your email. Please try again.");
     }
   };
-  const [consultation, setConsultation] = useState({ name: "", phone: "", email: "" });
-  const [consultationStatus, setConsultationStatus] = useState("idle");
-  const [consultationError, setConsultationError] = useState("");
-  const updateConsultation = (field, value) => setConsultation((previous) => ({ ...previous, [field]: value }));
-  const submitConsultation = async (event) => {
-    event.preventDefault();
-    const phoneDigits = consultation.phone.replace(/[^0-9]/g, "");
-    if (!consultation.name.trim() || phoneDigits.length < 8) {
-      setConsultationError("Please enter your name and a phone number we can call.");
-      return;
-    }
-    setConsultationStatus("saving");
-    setConsultationError("");
-    try {
-      await api.post("/quotes", {
-        name: consultation.name.trim(),
-        phone: consultation.phone.trim(),
-        email: consultation.email.trim(),
-        service: "Split System Cleaning Consultation",
-        suburb: "To be confirmed on callback",
-        message: "Family-focused deep-clean consultation requested. If email provided, customer requests service information by email.",
-        photo_url: "",
-      });
-      setConsultationStatus("success");
-    } catch {
-      setConsultationStatus("idle");
-      setConsultationError("Your request could not be sent just now. Please try again or call us.");
-    }
-  };
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
@@ -309,40 +280,14 @@ export default function SplitSystemCleaning() {
                 <p className="text-lg font-black text-[#0B2641] sm:text-xl">ANOTHER DAY, ANOTHER NIGHT WITH THE SAME BUILD-UP.</p>
                 <p className="mt-2 text-base font-semibold leading-7 text-[#30495B]">The aircon goes back on tonight. If there's years of dust and damp grime inside, another week of putting it off won't remove it. Your family is in those rooms every day. Take a few minutes now to find out what your system needs. The advice costs nothing.</p>
               </div>
-              <div className="mt-7 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-                <form className="rounded-xl border border-[#C9DDE7] bg-white p-5 shadow-sm sm:p-7" data-testid="cleaning-consultation-form" onSubmit={submitConsultation}>
-                  <h3 className="text-2xl font-black uppercase leading-tight text-[#0B2641]">Claim your free consultation</h3>
-                  <p className="mt-2 text-sm font-semibold leading-6 text-[#375469] sm:text-base">Get up to 30 minutes of practical advice from an experienced air-conditioning professional. Ask about mould, dust, the right cleaning methods for your unit and how to look after your home between services. No pressure to buy, no obligation and no card details.</p>
-                  <div className="mt-5 grid gap-3 rounded-lg bg-[#F0F9FC] p-4 text-sm font-bold leading-6 text-[#19415A] sm:text-base" data-testid="cleaning-free-consultation-benefits">
-                    <p>✓ Understand where grime and moisture hide inside your split system.</p>
-                    <p>✓ Learn how we remove accessible mould-prone build-up and what keeps it coming back.</p>
-                    <p>✓ Get useful home-care advice and an honest recommendation on whether your aircon needs professional cleaning.</p>
-                  </div>
-                  {consultationStatus === "success" ? (
-                    <div role="status" className="mt-5 rounded-md bg-[#EAF7EF] p-5 text-[#14532D]" data-testid="cleaning-consultation-success">
-                      <p className="text-lg font-black">Request received.</p>
-                      <p className="mt-2 text-sm font-semibold">Thanks, {consultation.name.trim()}. SplitsPro has your details and will call you to arrange your free consultation.</p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                        <label className="block text-sm font-black text-[#0B2641]">Your name <span aria-hidden="true">*</span><input name="name" type="text" required autoComplete="name" value={consultation.name} onChange={(event) => updateConsultation("name", event.target.value)} placeholder="First and last name" className="mt-2 w-full rounded-md border border-[#B4CDD9] px-4 py-3 text-base font-semibold text-[#0B2641] focus:outline-[#008DB8]" /></label>
-                        <label className="block text-sm font-black text-[#0B2641]">Phone number <span aria-hidden="true">*</span><input name="phone" type="tel" required autoComplete="tel" value={consultation.phone} onChange={(event) => updateConsultation("phone", event.target.value)} placeholder="Your best number" className="mt-2 w-full rounded-md border border-[#B4CDD9] px-4 py-3 text-base font-semibold text-[#0B2641] focus:outline-[#008DB8]" /></label>
-                      </div>
-                      <label className="mt-4 block text-sm font-black text-[#0B2641]">Email <span className="font-semibold text-[#567286]">(optional, for the service information)</span><input name="email" type="email" autoComplete="email" value={consultation.email} onChange={(event) => updateConsultation("email", event.target.value)} placeholder="you@example.com" className="mt-2 w-full rounded-md border border-[#B4CDD9] px-4 py-3 text-base font-semibold text-[#0B2641] focus:outline-[#008DB8]" /></label>
-                      {consultationError && <p role="alert" className="mt-4 font-semibold text-red-700">{consultationError}</p>}
-                      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-                        <button type="submit" disabled={consultationStatus === "saving"} className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-7 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] disabled:opacity-50 sm:w-auto" data-testid="cleaning-contact-cta">
-                          {consultationStatus === "saving" ? "Sending request…" : "Claim your free consultation"} <ArrowRight className="h-5 w-5" />
-                        </button>
-                        <div className="rounded-lg bg-white px-3 py-3" data-testid="cleaning-cta-google-rating" aria-label="SplitsPro Google rating and review count"><GoogleRating /><p className="mt-2 max-w-xs text-xs font-black uppercase leading-5 text-[#12384E]" data-testid="cleaning-rating-guarantee">✓ Satisfaction guaranteed — or you don't pay for the clean.</p></div>
-                      </div>
-                      <p className="mt-3 text-xs leading-5 text-[#567286]">We use your details to contact you about this request. If you include an email, we can send the relevant service information.</p>
-                    </>
-                  )}
-                </form>
-                <p className="max-w-xs text-base font-bold leading-8 text-[#30495B]">A few minutes to request advice now can save weeks of wondering what's hidden behind your filter. <a className="font-black text-[#007EA7] underline" href={PHONE_TEL}>Prefer to call? Talk to us directly.</a></p>
+              <div className="mt-8 flex flex-col gap-5 rounded-xl bg-[#08263E] px-6 py-7 text-white sm:flex-row sm:items-center sm:justify-between sm:px-8">
+                <div>
+                  <h3 className="text-xl font-black uppercase leading-snug sm:text-2xl">Questions about your aircon? Talk to us.</h3>
+                  <p className="mt-2 max-w-2xl text-base font-semibold leading-7 text-[#D7EAF2]">No form to fill out. Ask us what a proper deep clean includes and whether it makes sense for your unit.</p>
+                </div>
+                <a href={PHONE_TEL} className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-lg bg-[#F4C620] px-6 py-4 text-sm font-black uppercase tracking-wide text-[#082337] hover:bg-[#FFE06B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Call SplitsPro <ArrowRight className="h-4 w-4" /></a>
               </div>
+              <div className="mt-5" aria-label="SplitsPro Google rating"><GoogleRating /></div>
               <p className="mt-4 text-sm font-bold text-[#244456] sm:text-base">✓ Licensed &amp; insured technicians &nbsp; ✓ We explain and show the work</p>
             </div>
           </section>
