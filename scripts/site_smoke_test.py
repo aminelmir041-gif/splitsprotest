@@ -226,13 +226,10 @@ def main() -> None:
         "YOU'VE DONE EVERYTHING TO KEEP HOME CLEAN", "STICKY GRIME NEEDS MORE THAN PLAIN WATER",
         "6-STEP GOLD-STANDARD DEEP CLEAN", 'id="gold-standard-clean"',
         'data-testid="cleaning-sneeze-analogy"', 'data-testid="cleaning-urgency"',
-        'data-testid="cleaning-consultation-form"',
-        'data-testid="cleaning-contact-cta"', 'data-testid="cleaning-cta-google-rating"',
         'data-testid="cleaning-google-review-cards"', 'data-testid="cleaning-google-review-card"',
-        'data-testid="cleaning-free-consultation-benefits"',
-        'data-testid="cleaning-rating-guarantee"',
+        'Call SplitsPro', 'href={PHONE_TEL}', 'No form to fill out',
     )):
-        fail("cleaning page must show the family hook, gold-standard process, urgency, testimonials and consultation CTA")
+        fail("cleaning page must show the family hook, gold-standard process, urgency, testimonials and phone CTA")
     if any(token in cleaning_page.lower() for token in (
         "$50", "call-out fee", "see dates", "book online",
         'data-testid="cleaning-booking"', "getcleaningslots",
@@ -240,14 +237,13 @@ def main() -> None:
         "paid for a clean",
     )):
         fail("parent-focused cleaning page must have no booking, pricing or odour-led sales angle")
-    if not all(token in cleaning_page for token in (
-        'api.post("/quotes"', 'service: "Split System Cleaning Consultation"',
-        'name="name" type="text" required', 'name="phone" type="tel" required',
-        'name="email" type="email"', 'data-testid="cleaning-consultation-success"',
+    if any(token in cleaning_page for token in (
+        'data-testid="cleaning-consultation-form"',
+        'data-testid="cleaning-contact-cta"',
+        'data-testid="cleaning-consultation-success"',
+        'submitConsultation',
     )):
-        fail("cleaning consultation must capture required name and phone plus optional email through existing quotes API")
-    if re.search(r"name=\"email\"[^>]*required", cleaning_page):
-        fail("consultation email must be optional")
+        fail("retired cleaning consultation form must remain removed")
     if "highchair" in cleaning_page.lower() or "we'll show you what it is" in cleaning_page.lower():
         fail("retired highchair framing or broken open-loop must not return")
     if re.search(r"anti[- ]?(?:mould|corrosion)|coatings?", cleaning_page, re.I):
@@ -255,14 +251,14 @@ def main() -> None:
     if any(stage in cleaning_page for stage in ("{stage === 1 && (", "{stage === 2 && (", "{stage === 3 && (")):
         fail("cleaning sales content must be one continuous page, not a gated funnel")
     if 'scrollToSection("cleaning-next-step")' not in cleaning_page:
-        fail("page must retain smooth-scroll exploration to the consultation form")
+        fail("page must retain smooth-scroll exploration to the phone CTA")
     if "Hero Method" in cleaning_page or "HERO METHOD" in cleaning_page or "Specialist PCB cleaning" in cleaning_page:
         fail("retired internal terminology and charge caveat must be absent")
     for objection in ("Isn't that enough?", "still smells after a clean", "What actually gets rid of mould?", "genuinely free?"):
         if objection not in cleaning_page:
             fail(f"cleaning FAQ missing real customer objection {objection}")
-    if "Claim your free consultation" not in cleaning_page or "No pressure to buy" not in cleaning_page:
-        fail("free, pressure-free consultation offer must be clear before the form")
+    if "No form to fill out" not in cleaning_page or "No charge to speak with us" not in cleaning_page:
+        fail("free phone advice offer must remain clear without a lead form")
     pricing_source = (ROOT / "src/lib/cleaningPricing.js").read_text(encoding="utf-8")
     if "scheduledCleaningPrice = () => 200" not in pricing_source:
         fail("the separate cleaning checkout first-unit local fallback must remain $200")
