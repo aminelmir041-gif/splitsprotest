@@ -109,7 +109,7 @@ export default function SplitSystemCleaning() {
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <div className="bg-[#FBFAF8] text-[#18232F]" data-testid="split-cleaning-landing">
+    <div className="bg-[#FBFAF8] pt-5 text-[#18232F] sm:pt-6" data-testid="split-cleaning-landing">
       <Helmet>
         <title>Six-Step Gold-Standard Deep Clean | Split-System Deep Cleaning Sydney | SplitsPro</title>
         <meta name="description" content="For Sydney parents and carers: a proper one-visit Gold-Standard Deep Clean deep clean for the hidden dust and grime in the split system their family lives around. Learn how we care for indoor units, drains and outdoor coils." />
@@ -125,16 +125,26 @@ export default function SplitSystemCleaning() {
         <section id="cleaning-stage-1" className="scroll-mt-16 bg-[#FCFBF8] pt-0 pb-6 sm:py-10" data-testid="cleaning-diagnosis">
           <div className="sp-container mx-auto max-w-6xl">
             <div className="mt-0">
-              <div className="overflow-hidden bg-[#08263E] sm:mx-auto sm:max-w-[680px] sm:rounded-xl" data-testid="cleaning-baby-hero-overlay">
-                <div className="relative z-10 bg-[#052137] px-4 py-4 text-white sm:px-7 sm:py-5" data-testid="cleaning-hero-title-over-photo">
-                  <p className="text-[0.7rem] font-black uppercase tracking-[0.12em] text-[#F4C620] sm:text-xs">For Sydney mums, parents &amp; everyone who looks after family</p>
-                  <h1 className="mt-2 max-w-2xl font-sans text-[clamp(1.35rem,5.2vw,2rem)] font-black uppercase leading-[1.12] tracking-tight text-white">FRESHER AIR WHERE YOUR FAMILY <span className="text-[#F4C620]">EATS, PLAYS &amp; SLEEPS.</span></h1>
+              <div className="mx-auto grid max-w-6xl overflow-hidden rounded-2xl bg-[#052137] shadow-[0_16px_40px_rgba(5,33,55,0.12)] md:grid-cols-[1.12fr_0.88fr]" data-testid="cleaning-baby-hero-overlay">
+                <div className="relative z-10 flex flex-col justify-center px-5 py-7 text-white sm:px-8 sm:py-10 md:px-10 md:py-12" data-testid="cleaning-hero-title-over-photo">
+                  <p className="max-w-md text-[0.7rem] font-black uppercase leading-5 tracking-[0.12em] text-[#F4C620] sm:text-xs">For Sydney mums, parents &amp; everyone who looks after family</p>
+                  <h1 className="mt-3 max-w-2xl font-sans text-[clamp(2rem,7.6vw,3rem)] font-black uppercase leading-[1.06] tracking-tight text-white md:text-[clamp(2.35rem,3.5vw,3.6rem)]">FRESHER AIR WHERE YOUR FAMILY <span className="text-[#F4C620]">EATS, PLAYS &amp; SLEEPS.</span></h1>
+                  <p className="mt-4 max-w-xl text-base font-semibold leading-7 text-[#E8F2F7] sm:text-lg">Clean filters don't tell the whole story. Dust and damp grime can still be hiding deeper inside your split system.</p>
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    <button type="button" onClick={() => scrollToSection("cleaning-next-step")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#08263E] transition hover:bg-[#FFE06B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Get free expert advice <ArrowRight className="h-4 w-4" /></button>
+                    <button type="button" onClick={() => scrollToSection("gold-standard-clean")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-white/60 px-5 py-3 text-sm font-black uppercase tracking-wide text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">See our 6-step clean <ArrowRight className="h-4 w-4" /></button>
+                  </div>
+                  <p className="mt-5 text-sm font-bold leading-6 text-[#BDEAF5]">Satisfaction guaranteed — or you don't pay for the clean.</p>
                 </div>
-                <div className="relative h-[370px] overflow-hidden bg-[#E6F3FA] sm:h-[540px]" data-testid="cleaning-baby-photo-crop">
-                  <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby smiling and playing at home" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="absolute -left-[85%] -top-[25%] block h-auto w-[180%] max-w-none sm:-left-[84%] sm:-top-[62%] sm:w-[180%]" />
+                <div className="relative h-[250px] overflow-hidden bg-[#E6F3FA] sm:h-[340px] md:h-auto md:min-h-[480px]" data-testid="cleaning-baby-photo-crop">
+                  <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby smiling and playing at home" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="absolute right-0 top-[30%] block h-auto w-[250%] max-w-none -translate-y-1/2" />
                 </div>
               </div>
-              <p className="mx-auto mt-4 max-w-[680px] text-base font-black leading-7 text-[#12384E] sm:text-xl">One thorough visit to tackle hidden dust and mould-prone grime inside your split system. <span className="text-[#008DB8]">Satisfaction guaranteed, or you don't pay for the clean.</span></p>
+              <div className="mx-auto mt-5 grid max-w-6xl gap-3 text-sm font-black leading-6 text-[#12384E] sm:grid-cols-3 sm:text-base">
+                <p className="rounded-lg bg-white px-4 py-3"><span className="text-[#008DB8]">01.</span> We reach beyond a filter rinse.</p>
+                <p className="rounded-lg bg-white px-4 py-3"><span className="text-[#008DB8]">02.</span> We care for the drain and outdoor unit.</p>
+                <p className="rounded-lg bg-white px-4 py-3"><span className="text-[#008DB8]">03.</span> We protect your home and explain the work.</p>
+              </div>
               <div className="mt-7 max-w-4xl">
                 <p className="text-xl font-black leading-8 text-[#12384E] sm:text-2xl">Being a mum is a full-time job that doesn't clock off.</p>
                 <p className="mt-4 text-lg font-bold leading-8 text-[#294353] sm:text-xl">From meals and washing to school runs and bedtime, you're already doing a hundred little things to give your kids the best. You want them to grow up happy, healthy and ready to take on the world.</p>
@@ -214,7 +224,7 @@ export default function SplitSystemCleaning() {
                 </figure>
               ))}
             </div>
-            <section className="mt-14" id="gold-standard-clean" data-testid="cleaning-process-benefits">
+            <section className="mt-14 scroll-mt-24" id="gold-standard-clean" data-testid="cleaning-process-benefits">
               <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">The SplitsPro Bare-Bones Deep Clean</p>
               <h3 className="mt-3 max-w-5xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">NOT JUST A FILTER RINSE. <span className="text-[#008DB8]">HERE'S OUR 6-STEP GOLD-STANDARD DEEP CLEAN.</span></h3>
               <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">We strip it back, get to the grime, clean the drain and outdoor unit — then check the result.</p>
@@ -290,7 +300,7 @@ export default function SplitSystemCleaning() {
 
       {(
         <>
-          <section id="cleaning-next-step" className="scroll-mt-16 bg-[#FFF7E8] py-10 sm:py-16" data-testid="cleaning-next-step">
+          <section id="cleaning-next-step" className="scroll-mt-24 bg-[#FFF7E8] py-10 sm:py-16" data-testid="cleaning-next-step">
             <div className="sp-container mx-auto max-w-6xl">
               <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">For the home you work hard to look after</p>
               <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">KNOW WHAT YOUR AIRCON NEEDS. <span className="text-[#008DB8]">GET EXPERT ADVICE FOR FREE.</span></h2>
