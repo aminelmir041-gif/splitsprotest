@@ -80,7 +80,7 @@ export default function SplitSystemCleaning() {
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <div className="bg-[#FBFAF8] pt-5 text-[#18232F] sm:pt-6" data-testid="split-cleaning-landing">
+    <div className="bg-[#FBFAF8] text-[#18232F]" style={{ paddingTop: "max(0px, calc(var(--sp-site-header-height, 96px) - 24px))" }} data-testid="split-cleaning-landing">
       <Helmet>
         <title>Six-Step Gold-Standard Deep Clean | Split-System Deep Cleaning Sydney | SplitsPro</title>
         <meta name="description" content="For Sydney parents and carers: a proper one-visit Gold-Standard Deep Clean deep clean for the hidden dust and grime in the split system their family lives around. Learn how we care for indoor units, drains and outdoor coils." />
