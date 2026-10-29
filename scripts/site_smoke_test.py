@@ -222,8 +222,8 @@ def main() -> None:
         fail("cleaning page must show only the approved baby hero")
     if not all(token in cleaning_page for token in (
         "Sydney mums", "FRESHER AIR WHERE YOUR FAMILY",
-        "MUMS, YOU WORK SO HARD TO", "STICKY GRIME NEEDS MORE THAN PLAIN WATER",
-        "6-STEP GOLD-STANDARD DEEP CLEAN", 'id="gold-standard-clean"',
+        "MUMS, YOU WORK SO HARD TO", "WE STRIP IT BACK", "MOULD, BACTERIA AND FUNGI.",
+        "GOLD STANDARD", "WE HELP PROTECT IT.", "THE VIP TREATMENT.", 'id="gold-standard-clean"',
         'data-testid="cleaning-mums-problem-copy"',
         'data-testid="cleaning-consultation-benefits"', 'data-testid="cleaning-consultation-offer"',
         'data-testid="cleaning-consultation-cta"', 'Claim Your Free Consultation',
