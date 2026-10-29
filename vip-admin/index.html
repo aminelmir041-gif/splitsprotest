@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b0b">
+<meta name="robots" content="noindex,nofollow">
+<title>SplitsPro | VIP Partner Pass Manager</title>
+<link rel="icon" href="/logo.png">
+<style>
+:root{--bg:#0b0b0b;--gold:#cfad77;--ivory:#faf3e9}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ivory);font:16px/1.55 system-ui,-apple-system,Arial,sans-serif}
+main{max-width:780px;margin:auto;padding:28px 20px 90px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:48px;gap:10px}
+header img{width:120px;max-height:95px;object-fit:contain;filter:brightness(0) invert(1)}
+header span{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:.17em;text-align:right}
+h1{font-family:Georgia,serif;font-size:clamp(35px,6vw,65px);line-height:1.08;margin:0 0 15px;letter-spacing:-.04em}
+p{color:#bdb4a6}strong{color:white}
+.kicker{font-size:11px;letter-spacing:.22em;color:var(--gold);font-weight:800}
+.panel{margin-top:38px;padding:26px;background:#181612;border:1px solid #55422e;border-radius:6px}
+label{display:block;text-transform:uppercase;font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--gold);margin:18px 0}
+input{display:block;width:100%;font:16px Arial,sans-serif;color:#222;background:white;border:1px solid #bda685;border-radius:3px;margin-top:8px;height:54px;padding:0 13px}
+button{width:100%;background:linear-gradient(120deg,#f0d49c,#bd9458);color:#1c160f;border:0;border-radius:4px;min-height:54px;font-weight:800;letter-spacing:.06em;font-size:14px;margin-top:18px;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+button.secondary{color:var(--gold);background:transparent;border:1px solid #a58452}
+.result{display:none;margin-top:24px;border-top:1px solid #6b5439;padding-top:22px}
+.result a{color:#e7cb97;word-break:break-all;text-decoration:underline}
+.indicator{font-size:15px;color:#f0dcae;margin-top:15px;white-space:pre-line}
+.note{font-size:12px;color:#a8a095}
+.line{height:1px;background:#463828;margin:45px 0}
+</style>
+</head>
+<body><main>
+<header><a href="/"><img src="/logo.png" alt="SplitsPro"></a><span>INTERNAL PARTNER PASS MANAGER</span></header>
+<div class="kicker">SPLITSPRO VIP NETWORK</div><h1>Give five people<br>a <em style="color:var(--gold)">private gift.</em></h1>
+<p>Create one shareable $100 deep-clean link per builder, property manager or business owner. The system accepts <strong>five claims maximum</strong> from that link within 14 days, for approved local suburbs.</p>
+<div class="panel"><h2 style="font-family:Georgia,serif;font-weight:400">Issue a partner link</h2>
+<form id="new-partner">
+<label>Partner / business name<input name="label" type="text" required minlength="2" maxlength="100" placeholder="e.g. Chester Hill Real Estate"></label>
+<label>Admin key from your SplitsPro Render settings<input name="key" type="password" required autocomplete="off" placeholder="Enter your admin key"></label>
+<button id="issue" type="submit">Create five-claim VIP link</button>
+</form>
+<div class="indicator" id="status" aria-live="polite"></div>
+<section class="result" id="result"><div class="kicker">YOUR NEW PARTNER LINK</div><p id="meta"></p>
+<a id="outlink" href="#" target="_blank" rel="noopener">View invitation</a>
+<button type="button" id="copy">Copy partner link</button>
+<p class="note">Each partner gets a different link. You may forward it in your introduction email, with your letter and insurance documents.</p></section>
+<p class="note">The admin key is sent securely to your own Render service only when you press Create. It is not saved by this webpage. Do not forward the admin manager or key to partners.</p>
+</div>
+<div class="line"></div>
+<h2 style="font:400 31px Georgia,serif">Check a partner's balance</h2>
+<p>Paste any VIP partner link to see how many places are left. No admin key needed for the status.</p>
+<div class="panel"><label>Existing VIP link<input id="check-url" type="url" placeholder="https://splitspro.com.au/vip-deep-clean/?pass=…"></label>
+<button class="secondary" id="check" type="button">Check places remaining</button><div class="indicator" id="check-status" aria-live="polite"></div></div>
+</main>
+<script>
+(function(){
+'use strict';
+var api='https://splitspro-leads.onrender.com/api/vip';
+var form=document.getElementById('new-partner'),btn=document.getElementById('issue'),status=document.getElementById('status'),result=document.getElementById('result'),out=document.getElementById('outlink');
+form.addEventListener('submit',async function(e){
+ e.preventDefault();result.style.display='none';status.textContent='Issuing secure invitation…';btn.disabled=true;
+ var d=new FormData(form);
+ try{
+  var r=await fetch(api+'/partners',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Key':String(d.get('key'))},body:JSON.stringify({label:String(d.get('label')).trim()})});
+  var data=await r.json();
+  if(!r.ok)throw new Error(typeof data.detail==='string'?data.detail:'Could not issue invitation');
+  out.href=data.url;out.textContent=data.url;
+  document.getElementById('meta').textContent=data.partner+' • 5 claims maximum • Use by '+data.use_by;
+  result.style.display='block';status.textContent='Invitation created. Copy the link below.';
+  form.querySelector('input[name="label"]').value='';
+ }catch(err){status.textContent='Could not create pass: '+err.message;}
+ finally{btn.disabled=false;}
+});
+document.getElementById('copy').addEventListener('click',async function(){
+ try{await navigator.clipboard.writeText(out.href);status.textContent='Partner link copied.';}
+ catch(e){status.textContent='Hold the link to copy it.';}
+});
+document.getElementById('check').addEventListener('click',async function(){
+ var el=document.getElementById('check-status'),value=document.getElementById('check-url').value,code='';
+ try{code=new URL(value).searchParams.get('pass')||'';}catch(e){}
+ if(!code){el.textContent='Paste the full partner link.';return;}
+ el.textContent='Checking…';
+ try{var r=await fetch(api+'/status?code='+encodeURIComponent(code),{cache:'no-store'});var v=await r.json();if(!r.ok)throw new Error(v.detail||'Unavailable');el.textContent=v.partner+': '+v.claimed+' of 5 claimed. '+v.remaining+' remaining. Use by '+v.use_by+'. Status: '+v.status+'.';}
+ catch(e){el.textContent='Unable to check: '+e.message;}
+});
+})();
+</script></body></html>
