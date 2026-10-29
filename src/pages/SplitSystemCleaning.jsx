@@ -220,7 +220,7 @@ export default function SplitSystemCleaning() {
             <header className="relative overflow-hidden rounded-[1.75rem] bg-[#08263E] px-6 py-10 text-white sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-14 lg:py-16">
               <div aria-hidden="true" className="absolute right-0 top-0 h-1.5 w-2/3 bg-[#F4C620]" />
               <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#A5E7F4] sm:text-sm">A deeper clean. A fresher-feeling home.</p>
-              <h2 className="mt-6 max-w-5xl text-[2.8rem] font-black leading-[1.05] tracking-[-0.055em] sm:text-6xl lg:text-[5.25rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>
+              <h2 className="mt-6 max-w-5xl text-[clamp(1.6rem,7vw,4rem)] font-black leading-[1.05] tracking-[-0.05em] sm:text-6xl lg:text-[5.25rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>
                 THE SPLITSPRO<br />
                 <span className="text-[#F4C620]">GOLD STANDARD</span><br />
                 DEEP CLEAN.
