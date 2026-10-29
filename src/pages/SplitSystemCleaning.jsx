@@ -101,14 +101,10 @@ export default function SplitSystemCleaning() {
                   <p className="max-w-md text-[0.7rem] font-black uppercase leading-5 tracking-[0.12em] text-[#F4C620] sm:text-xs">For Sydney mums, parents &amp; everyone who looks after family</p>
                   <h1 className="mt-3 max-w-2xl font-sans text-[clamp(2rem,7.6vw,3rem)] font-black uppercase leading-[1.06] tracking-tight text-white md:text-[clamp(2.35rem,3.5vw,3.6rem)]">FRESHER AIR WHERE YOUR FAMILY <span className="text-[#F4C620]">EATS, PLAYS &amp; SLEEPS.</span></h1>
                   <p className="mt-4 max-w-xl text-base font-semibold leading-7 text-[#E8F2F7] sm:text-lg">Clean filters don't tell the whole story. Dust and damp grime can still be hiding deeper inside your split system.</p>
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                    <button type="button" onClick={() => scrollToSection("cleaning-next-step")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#F4C620] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#08263E] transition hover:bg-[#FFE06B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Get free expert advice <ArrowRight className="h-4 w-4" /></button>
-                    <button type="button" onClick={() => scrollToSection("gold-standard-clean")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-white/60 px-5 py-3 text-sm font-black uppercase tracking-wide text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">See our 6-step clean <ArrowRight className="h-4 w-4" /></button>
-                  </div>
                   <p className="mt-5 text-sm font-bold leading-6 text-[#BDEAF5]">Satisfaction guaranteed — or you don't pay for the clean.</p>
                 </div>
-                <div className="relative h-[250px] overflow-hidden bg-[#E6F3FA] sm:h-[340px] md:h-auto md:min-h-[480px]" data-testid="cleaning-baby-photo-crop">
-                  <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby smiling and playing at home" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="absolute right-0 top-[30%] block h-auto w-[250%] max-w-none -translate-y-1/2" />
+                <div className="relative h-[290px] overflow-hidden bg-[#E6F3FA] sm:h-[340px] md:h-auto md:min-h-[480px]" data-testid="cleaning-baby-photo-crop">
+                  <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby smiling and playing at home" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="absolute inset-0 block h-full w-full object-contain object-center md:object-cover" />
                 </div>
               </div>
               <div className="mx-auto mt-5 grid max-w-6xl gap-3 text-sm font-black leading-6 text-[#12384E] sm:grid-cols-3 sm:text-base">
