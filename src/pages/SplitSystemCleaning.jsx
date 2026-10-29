@@ -165,54 +165,50 @@ export default function SplitSystemCleaning() {
                 <p className="rounded-lg bg-white px-4 py-3"><span className="text-[#008DB8]">02.</span> We care for the drain and outdoor unit.</p>
                 <p className="rounded-lg bg-white px-4 py-3"><span className="text-[#008DB8]">03.</span> We protect your home and explain the work.</p>
               </div>
-              <div className="mt-7 max-w-4xl">
-                <p className="text-xl font-black leading-8 text-[#12384E] sm:text-2xl">Being a mum is a full-time job that doesn't clock off.</p>
-                <p className="mt-4 text-lg font-bold leading-8 text-[#294353] sm:text-xl">From meals and washing to school runs and bedtime, you're already doing a hundred little things to give your kids the best. You want them to grow up happy, healthy and ready to take on the world.</p>
-                <p className="mt-5 border-l-4 border-[#F4C620] pl-5 text-base leading-8 text-[#294353] sm:text-lg font-semibold">And while you're doing all that, the aircon keeps drawing air in and sending it back into the rooms where they eat, play and sleep. The question isn't whether you care enough — you clearly do. <strong className="text-[#0B2641]">It's what a gold-standard clean reaches behind the filter that matters.</strong></p>
+              <div className="mx-auto mt-10 max-w-5xl rounded-2xl border border-[#D4E5ED] bg-white px-5 py-8 shadow-[0_12px_34px_rgba(5,33,55,0.06)] sm:px-10 sm:py-12" data-testid="cleaning-mums-problem-copy">
+                <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">For the mums keeping everyone looked after</p>
+                <h2 className="mt-3 max-w-4xl text-3xl font-black leading-tight text-[#0B2641] sm:text-4xl">MUMS, YOU WORK SO HARD TO <span className="text-[#008DB8]">KEEP YOUR FAMILY HEALTHY.</span></h2>
+                <div className="mt-5 max-w-4xl space-y-4 text-lg font-semibold leading-8 text-[#2C4658]">
+                  <p>Being a mum is a full-time job.</p>
+                  <p>You make healthy meals, wash baby bottles, clean toys, mop floors and look after your family every day.</p>
+                  <p>You want your children to grow up happy, healthy and ready to take on the world.</p>
+                </div>
+                <div className="mt-8 border-l-8 border-[#F4C620] bg-[#FFF2AD] px-5 py-6">
+                  <h3 className="text-xl font-black leading-8 text-[#0B2641] sm:text-2xl">BUT WHILE YOU'RE BUSY CLEANING YOUR HOME, SOMETHING COULD BE GROWING INSIDE YOUR AIR CONDITIONER.</h3>
+                  <p className="mt-4 text-lg font-bold leading-8 text-[#203D51]">Studies show that harmful bacteria, mould and fungi can grow inside air conditioners. Scientists have found harmful bacteria on the parts that cool the air your family breathes.</p>
+                </div>
+                <h3 className="mt-10 text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-3xl">HERE'S WHY.</h3>
+                <p className="mt-4 max-w-4xl text-lg font-semibold leading-8 text-[#2C4658]">Your air conditioner pulls in air from around your home. Think about everything that moves through that air each day:</p>
+                <ul className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="Everyday particles and smells in household air">
+                  {[
+                    ["Cooking smoke", "from frying meat, fish, onions and other foods."],
+                    ["Tiny grease and oil particles", "released when food sizzles in a hot pan."],
+                    ["Smoke from burnt food", "burnt toast and overheated cooking oil."],
+                    ["Steam and cooking fumes", "from boiling pots and hot meals."],
+                    ["Food smells and bad odours", "from leftovers and kitchen rubbish bins."],
+                    ["Cigarette and shisha smoke", "that can linger inside the house."],
+                    ["Dust, pet hair and dirt", "floating around your rooms."]
+                  ].map(([name, detail]) => (
+                    <li key={name} className="rounded-lg border-l-4 border-[#008DB8] bg-[#F3F9FC] px-4 py-4 text-base font-semibold leading-7 text-[#294353] sm:text-lg"><strong className="text-[#0B2641]">{name}</strong> {detail}</li>
+                  ))}
+                </ul>
+                <p className="mt-7 text-xl font-black leading-8 text-[#0B2641]">YOUR AIR CONDITIONER PULLS IN THIS AIR AGAIN AND AGAIN.</p>
+                <div className="mt-4 max-w-4xl space-y-4 text-lg font-semibold leading-8 text-[#2C4658]">
+                  <p>Over time, dust, smoke particles, grease and dirt can collect inside.</p>
+                  <p>And when your air conditioner runs, water forms on its cold parts.</p>
+                  <p><strong className="text-[#0B2641]">Now you've got dirt, grease and moisture sitting together in a dark place.</strong></p>
+                  <p>Bacteria and mould love dark, damp places.</p>
+                </div>
+                <p className="mt-6 rounded-lg bg-[#08263E] px-5 py-6 text-xl font-black leading-8 text-white sm:text-2xl">THIS CREATES THE PERFECT BREEDING GROUND FOR MOULD, FUNGI AND HARMFUL BACTERIA THAT CAN AFFECT YOUR FAMILY'S HEALTH.</p>
+                <h3 className="mt-10 text-2xl font-black uppercase text-[#0B2641] sm:text-3xl">AND HERE'S THE WORRYING PART.</h3>
+                <div className="mt-4 max-w-4xl space-y-4 text-lg font-semibold leading-8 text-[#2C4658]">
+                  <p>When your air conditioner runs, it blows air straight back into your home. Dust, mould spores and bacteria caught in that moving air go with it.</p>
+                  <p>They move through the rooms and can settle on things around your house.</p>
+                  <p className="font-black text-[#0B2641]">The same air moves through your living room, your children's bedrooms and the kitchen where you prepare your family's food.</p>
+                  <p>You spend so much time keeping your floors, benches and bedrooms clean.</p>
+                </div>
+                <p className="mt-8 border-l-8 border-[#F4C620] bg-[#FFF2AD] px-5 py-6 text-xl font-black leading-8 text-[#0B2641] sm:text-2xl">BUT WHEN WAS THE LAST TIME YOU CLEANED THE INSIDE OF THE MACHINE BLOWING AIR AROUND YOUR HOME?</p>
               </div>
-            </div>
-            <section className="mt-10" aria-label="What can build up inside an air conditioner">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Why a spotless room can still feel stale</p>
-              <h2 className="mt-2 max-w-4xl text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">YOU'VE DONE EVERYTHING TO KEEP HOME CLEAN. <span className="text-[#008DB8]">WHAT ABOUT THE AIRCON RUNNING THROUGH IT?</span></h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2B4758] sm:text-lg font-semibold">You're already putting in the work: the clean sheets, the dinner prep, the toys off the floor. But it's easy to overlook the aircon's internal parts while the unit keeps moving room air around the people you love.</p>
-              <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                {[
-                  ["You clean the surfaces your kids touch.", "But every time the split runs, room air is pulled through the unit and sent back into the spaces where they eat, play and sleep. A washed filter is only part of the clean."],
-                  ["You finally settle the kids for the night.", "Then the split runs for hours while they sleep. The dust and residue on internal parts do not disappear because you washed the front filter."],
-                  ["You want to give your children the world.", "A good start in life isn't just big moments. It's the everyday home you work so hard to make comfortable. The hidden parts of the aircon deserve that same effort."],
-                  ["And you want the best for your parents, too.", "For older loved ones and the rest of your family, a cared-for home includes the things you can't easily see — like the build-up inside a split system."]
-                ].map(([title, description]) => (
-                  <div key={title} className="rounded-lg bg-white p-5 border-l-4 border-[#008DB8]">
-                    <h3 className="text-lg font-black leading-snug text-[#0B2641] sm:text-xl">{title}</h3>
-                    <p className="mt-3 text-base leading-7 text-[#2B4758] font-semibold">{description}</p>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-6 max-w-3xl border-l-4 border-[#F4C620] pl-5 text-lg font-bold leading-8 text-[#244456]">A clean front cover is reassuring. But it's the hidden build-up that a filter rinse can miss.</p>
-            </section>
-            <section className="mt-12 rounded-xl border border-[#D4E5ED] bg-white px-5 py-8 sm:px-9 sm:py-10" aria-label="Everyday spaces your family uses">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">You know that feeling</p>
-              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">YOU'VE CLEANED THE ROOM. <span className="text-[#008DB8]">BUT WHAT'S STILL INSIDE THE UNIT?</span></h2>
-              <p className="mt-5 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">You put real effort into the home: food prepared properly, clean bedding, washed toys, wiped benches. That's the everyday work of looking after your family — and it deserves to count.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Yet the aircon in those same rooms keeps pulling air in and blowing it back out. Behind a clean-looking filter, dust and damp residue build up on parts you cannot see. Those deposits can support mould and bacterial growth. It's worth cleaning the system itself, not just everything around it.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">You shouldn't have to wonder whether the aircon is the one thing your household cleaning never reaches. A proper deep clean helps you deal with that overlooked build-up so you can get on with family life.</p>
-              <div className="mt-6 rounded-lg border-l-8 border-[#F4C620] bg-[#FFF0A8] px-5 py-5" data-testid="cleaning-sneeze-analogy">
-                <p className="text-xl font-black uppercase leading-8 text-[#0B2641] sm:text-2xl">YOU WOULDN'T LET SOMEONE <span className="bg-[#F4C620] px-1">SNEEZE OVER YOUR FAMILY'S DINNER.</span></p>
-                <p className="mt-3 text-base font-bold leading-7 text-[#294353] sm:text-lg">So why leave years of dust and grime sitting in the aircon running while you cook, eat and settle the kids? The gold standard starts where a quick filter wash stops.</p>
-              </div>
-              <div className="mt-6 grid gap-5 sm:grid-cols-3">
-                {[
-                  ["FOR THE LITTLE ONES.", "A proper clean of accessible internal parts in rooms where babies nap and children play."],
-                  ["FOR FAMILY MEALTIMES.", "Help clear airborne cooking grime that has settled inside the unit near busy kitchen spaces."],
-                  ["FOR THE FAMILY YOU LOOK AFTER.", "When children, grandparents and loved ones are around, a clean-feeling home means taking care of the parts you cannot see as well."]
-                ].map(([heading, detail]) => (
-                  <div key={heading} className="rounded-lg bg-[#F5FAFC] p-5 border-l-4 border-[#F4C620]">
-                    <h3 className="text-lg font-black leading-snug text-[#12384E] sm:text-xl">{heading}</h3>
-                    <p className="mt-3 text-base leading-7 text-[#365163] font-semibold">{detail}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
           </div>
         </section>
       )}
