@@ -41,7 +41,6 @@ const FAQS = [
   { q: "Is the consultation genuinely free? Do we have to buy a clean?", a: "It's free and there is no pressure or obligation to book anything. You'll speak with an experienced air-conditioning professional about your unit, what deep cleaning involves, how to reduce build-up at home and what options make sense. You decide what happens next." }
 ];
 export default function SplitSystemCleaning() {
-  const scrollToSection = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideEmail, setGuideEmail] = useState("");
   const [guideConsent, setGuideConsent] = useState(false);
@@ -294,11 +293,6 @@ export default function SplitSystemCleaning() {
               </div>
               <p className="mt-7 max-w-3xl text-sm leading-7 text-[#435B6B] font-medium">We explain suitable access and protect nearby surfaces before work begins.</p>
             </section>
-            <button type="button" onClick={() => scrollToSection("cleaning-next-step")}
-              className="mt-5 flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-[#F4C620] px-5 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FBDD42] sm:w-auto sm:px-9"
-              data-testid="cleaning-next-offer">
-              See how we care for your home <ArrowRight className="h-5 w-5" />
-            </button>
           </div>
         </section>
       )}

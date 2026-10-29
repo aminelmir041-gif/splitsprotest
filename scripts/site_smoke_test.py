@@ -212,7 +212,6 @@ def main() -> None:
         'data-testid="cleaning-process-benefits"',
         'data-testid="cleaning-service-promise"',
         'data-testid="cleaning-trust"',
-        'data-testid="cleaning-next-offer"',
         'data-testid="cleaning-next-step"',
         'data-testid="cleaning-faq"',
     )
@@ -251,8 +250,8 @@ def main() -> None:
         fail("cleaning page must not advertise retired coating services")
     if any(stage in cleaning_page for stage in ("{stage === 1 && (", "{stage === 2 && (", "{stage === 3 && (")):
         fail("cleaning sales content must be one continuous page, not a gated funnel")
-    if 'scrollToSection("cleaning-next-step")' not in cleaning_page:
-        fail("page must retain smooth-scroll exploration to the consultation CTA")
+    if 'data-testid="cleaning-next-offer"' in cleaning_page:
+        fail("the redundant exploration CTA must remain removed")
     if "Hero Method" in cleaning_page or "HERO METHOD" in cleaning_page or "Specialist PCB cleaning" in cleaning_page:
         fail("retired internal terminology and charge caveat must be absent")
     for objection in ("Isn't that enough?", "still smells after a clean", "What actually gets rid of mould?", "genuinely free?"):
@@ -268,8 +267,8 @@ def main() -> None:
         fail("the separate cleaning checkout first-unit local fallback must remain $200")
     if "BLACK FRIDAY EARLY-BIRD SALE" in cleaning_page or "PRICE RISES $20 EVERY THURSDAY" in cleaning_page:
         fail("retired Black Friday promotion must not appear on the cleaning page")
-    if "data-testid=\"cleaning-next-solution\"" in cleaning_page or cleaning_page.count("data-testid=\"cleaning-next-offer\"") != 1:
-        fail("cleaning page must have no redundant first-stage CTA and only one final exploration CTA")
+    if "data-testid=\"cleaning-next-solution\"" in cleaning_page:
+        fail("cleaning page must not revive a redundant first-stage CTA")
     secure_page = (ROOT / "src/pages/CleaningCheckout.jsx").read_text(encoding="utf-8")
     if not all(token in secure_page for token in (
         '"/cleaning-checkout"', '"/cleaning-payment-status"',
