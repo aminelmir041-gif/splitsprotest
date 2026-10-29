@@ -246,8 +246,10 @@ def main() -> None:
         fail("consultation section must focus on no-pressure advice without money language")
     if "highchair" in cleaning_page.lower() or "we'll show you what it is" in cleaning_page.lower():
         fail("retired highchair framing or broken open-loop must not return")
-    if re.search(r"anti[- ]?(?:mould|corrosion)|coatings?", cleaning_page, re.I):
-        fail("cleaning page must not advertise retired coating services")
+    if re.search(r"anti[- ]?corrosion|corrosion coating", cleaning_page, re.I):
+        fail("cleaning page must not advertise the retired anti-corrosion service")
+    if "protective anti-mould coating" not in cleaning_page:
+        fail("Gold Standard method must explain the approved anti-mould coating benefit")
     if any(stage in cleaning_page for stage in ("{stage === 1 && (", "{stage === 2 && (", "{stage === 3 && (")):
         fail("cleaning sales content must be one continuous page, not a gated funnel")
     if 'data-testid="cleaning-next-offer"' in cleaning_page:
