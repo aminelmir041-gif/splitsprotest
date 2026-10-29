@@ -210,10 +210,12 @@ def main() -> None:
         'data-testid="cleaning-baby-hero-overlay"',
         'data-testid="cleaning-solution-trust"',
         'data-testid="cleaning-process-benefits"',
-        'data-testid="cleaning-service-promise"',
         'data-testid="cleaning-trust"',
+        'data-testid="cleaning-consultation-reviews"',
+        'data-testid="cleaning-service-promise"',
         'data-testid="cleaning-next-step"',
         'data-testid="cleaning-faq"',
+        'data-testid="cleaning-final-cta"',
     )
     positions = [cleaning_page.find(part) for part in landing_sequence]
     if any(position < 0 for position in positions) or positions != sorted(positions):
@@ -230,6 +232,7 @@ def main() -> None:
         'data-testid="cleaning-consultation-reviews"',
         'data-testid="cleaning-google-review-cards"', 'data-testid="cleaning-google-review-card"',
         'data-testid="cleaning-consultation-form"', 'submitConsultation',
+        'data-testid="cleaning-final-cta"', 'selectedProcessPhoto',
     )):
         fail("cleaning page must show the family hook, gold-standard process, consultation, reviews and working form")
     if any(token in cleaning_page.lower() for token in (
@@ -239,8 +242,13 @@ def main() -> None:
         "paid for a clean",
     )):
         fail("parent-focused cleaning page must have no booking, pricing or odour-led sales angle")
-    if cleaning_page.find('data-testid="cleaning-consultation-reviews"') < cleaning_page.find('data-testid="cleaning-consultation-cta"'):
-        fail("5-star reviews must appear beneath the free consultation call to action")
+    if not (cleaning_page.find('data-testid="cleaning-trust"') < cleaning_page.find('data-testid="cleaning-consultation-reviews"') < cleaning_page.find('id="cleaning-guarantee"')):
+        fail("reviews and trust must come before the satisfaction guarantee")
+    hero_copy = cleaning_page.split('data-testid="cleaning-hero-title-over-photo"', 1)[1].split('data-testid="cleaning-baby-photo-crop"', 1)[0]
+    if "Satisfaction guaranteed" in hero_copy or "We reach beyond a filter rinse" in cleaning_page:
+        fail("the problem-first hero must not reveal the solution or satisfaction guarantee")
+    if 'window.fbq("track", "Lead"' not in cleaning_page or 'window.gtag("event", "generate_lead"' not in cleaning_page:
+        fail("successful consultation request must report Meta and GA4 lead events")
     consultation_section = cleaning_page.split('id="cleaning-next-step"', 1)[1].split('data-testid="cleaning-faq"', 1)[0]
     if re.search(r"\b(?:price|cost|fee|charge|money|payment|savings)\b", consultation_section, re.I):
         fail("consultation section must focus on no-pressure advice without money language")
@@ -261,9 +269,9 @@ def main() -> None:
             fail(f"cleaning FAQ missing real customer objection {objection}")
     if not all(token in consultation_section for token in (
         "NO PRESSURE", "NOTHING TO LOSE", "indoor air quality",
-        "children and older loved ones", "around your family routine",
+        "Know what a deep clean can change.", "Stay in control.",
     )):
-        fail("consultation must offer honest advice and practical family-focused air-quality guidance")
+        fail("consultation must give short, honest and practical no-pressure advice")
     pricing_source = (ROOT / "src/lib/cleaningPricing.js").read_text(encoding="utf-8")
     if "scheduledCleaningPrice = () => 200" not in pricing_source:
         fail("the separate cleaning checkout first-unit local fallback must remain $200")
