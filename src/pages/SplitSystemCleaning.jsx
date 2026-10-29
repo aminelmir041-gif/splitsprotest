@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronDown, ShieldCheck } from "lucide-react";
-import { api } from "../lib/api";
+import { api, getReviews, submitQuote } from "../lib/api";
 import { GoogleRating } from "../components/sections";
 import { PHONE_TEL } from "../lib/data";
 
@@ -21,6 +21,12 @@ const GoogleReviewBadge = () => (
     Google review
   </span>
 );
+
+const CONSULTATION_REVIEW_FALLBACK = [
+  { id: "erfaan", name: "Erfaan Khan", rating: 5, text: "They were polite, helpful, and took the time to explain everything…" },
+  { id: "gill", name: "Gill McPhee", rating: 5, text: "Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy." },
+  { id: "mat", name: "Mat 134", rating: 5, text: "Best in the business, amazing work." },
+];
 
 const FAQS = [
   { q: "We wash the filters. Isn't that enough?", a: "Filters catch some of the dust passing through, but they are only the first layer. The blower wheel, accessible coils and drain tray can still collect dust, greasy residue and moisture. A filter rinse doesn't reach that build-up." },
@@ -78,6 +84,54 @@ export default function SplitSystemCleaning() {
     }
   };
   const [openFaq, setOpenFaq] = useState(0);
+  const [consultationOpen, setConsultationOpen] = useState(false);
+  const [consultationForm, setConsultationForm] = useState({ name: "", suburb: "", phone: "" });
+  const [consultationStatus, setConsultationStatus] = useState("idle");
+  const [consultationError, setConsultationError] = useState("");
+  const [consultationReviews, setConsultationReviews] = useState(CONSULTATION_REVIEW_FALLBACK);
+
+  useEffect(() => {
+    let active = true;
+    getReviews().then((items) => {
+      if (!active || !Array.isArray(items)) return;
+      const fiveStars = items.filter((item) => Number(item.rating) === 5 && typeof item.text === "string" && item.text.trim().length > 20);
+      if (fiveStars.length >= 2) setConsultationReviews(fiveStars.slice(0, 3));
+    }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!consultationOpen) return undefined;
+    const closeOnEscape = (event) => { if (event.key === "Escape") setConsultationOpen(false); };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [consultationOpen]);
+
+  const submitConsultation = async (event) => {
+    event.preventDefault();
+    const name = consultationForm.name.trim();
+    const suburb = consultationForm.suburb.trim();
+    const phone = consultationForm.phone.trim();
+    if (!name || !suburb || phone.replace(/\D/g, "").length < 8) {
+      setConsultationError("Please enter your name, suburb and a valid phone number.");
+      return;
+    }
+    setConsultationError("");
+    setConsultationStatus("saving");
+    try {
+      await submitQuote({
+        name, suburb, phone, service: "Split System Cleaning",
+        email: "", address: "", preferred_date: "",
+        message: "Free Gold-Standard Deep Clean consultation. Honest advice, no pressure.",
+        page_url: window.location.href, landing_page: window.location.href, referrer: document.referrer || ""
+      });
+      setConsultationStatus("success");
+      setConsultationForm({ name: "", suburb: "", phone: "" });
+    } catch {
+      setConsultationStatus("idle");
+      setConsultationError("We couldn't send your request. Please try again or call SplitsPro.");
+    }
+  };
 
   return (
     <div className="bg-[#FBFAF8] text-[#18232F]" style={{ paddingTop: "max(0px, calc(var(--sp-site-header-height, 96px) - 24px))" }} data-testid="split-cleaning-landing">
@@ -238,22 +292,6 @@ export default function SplitSystemCleaning() {
                   <p className="flex items-start gap-3 text-base font-bold leading-7 text-[#14394E] sm:text-lg"><ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-[#008DB8]" /> A cleaning checklist, job photos and completion certificate.</p>
                 </div>
               </div>
-              <div className="mt-8 grid gap-4 md:grid-cols-2" data-testid="cleaning-google-review-cards">
-                {[
-                  { name: "Erfaan Khan", quote: "They were polite, helpful, and took the time to explain everything…" },
-                  { name: "Gill McPhee", quote: "Amin and Ibrahim were excellent installers." }
-                ].map((review) => (
-                  <article key={review.name} className="rounded-xl border border-[#DEE4E8] bg-white p-5 shadow-sm sm:p-6" data-testid="cleaning-google-review-card">
-                    <div className="flex items-start justify-between gap-3">
-                      <GoogleReviewBadge />
-                      <span className="text-lg font-black tracking-[0.12em] text-[#FBBC04]" role="img" aria-label="5 out of 5 stars">★★★★★</span>
-                    </div>
-                    <blockquote className="mt-5 text-lg font-bold leading-8 text-[#243F51]">“{review.quote}”</blockquote>
-                    <p className="mt-4 text-sm font-black text-[#0B2641]">{review.name}</p>
-                    <a href="https://g.page/r/CYTvO1ipeYUtEBM/" target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-[#007EA7] underline">View on Google <ArrowRight className="h-3 w-3" /></a>
-                  </article>
-                ))}
-              </div>
               <p className="mt-7 max-w-3xl text-sm leading-7 text-[#435B6B] font-medium">We explain suitable access and protect nearby surfaces before work begins.</p>
             </section>
             <button type="button" onClick={() => scrollToSection("cleaning-next-step")}
@@ -267,24 +305,67 @@ export default function SplitSystemCleaning() {
 
       {(
         <>
-          <section id="cleaning-next-step" className="scroll-mt-24 bg-[#FFF7E8] py-10 sm:py-16" data-testid="cleaning-next-step">
+          <section id="cleaning-next-step" className="scroll-mt-24 bg-[#FFF7E8] py-12 sm:py-20" data-testid="cleaning-next-step">
             <div className="sp-container mx-auto max-w-6xl">
-              <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">For the home you work hard to look after</p>
-              <h2 className="mt-3 max-w-4xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">KNOW WHAT YOUR AIRCON NEEDS. <span className="text-[#008DB8]">GET EXPERT ADVICE FOR FREE.</span></h2>
-              <p className="mt-6 max-w-3xl text-base leading-8 text-[#30495B] sm:text-lg font-semibold">If it's been ages since your last proper deep clean, this is the easiest first step: talk with an experienced air-conditioning professional, get useful information for your family home and decide what makes sense. No charge to speak with us.</p>
-              <div className="mt-6 border-l-4 border-[#F4C620] bg-white px-5 py-4" data-testid="cleaning-urgency">
-                <p className="text-lg font-black text-[#0B2641] sm:text-xl">ANOTHER DAY, ANOTHER NIGHT WITH THE SAME BUILD-UP.</p>
-                <p className="mt-2 text-base font-semibold leading-7 text-[#30495B]">The aircon goes back on tonight. If there's years of dust and damp grime inside, another week of putting it off won't remove it. Your family is in those rooms every day. Take a few minutes now to find out what your system needs. The advice costs nothing.</p>
+              <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">Real advice for the family you look after</p>
+              <h2 className="mt-3 max-w-5xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">
+                YOU KEEP THEIR HOME CLEAN. <span className="text-[#008DB8]">LET US HELP WITH THE AIR THEY LIVE IN.</span>
+              </h2>
+              <p className="mt-6 max-w-4xl text-lg font-bold leading-8 text-[#294556] sm:text-xl">
+                Whether you're caring for little ones, elderly parents or the whole family, you deserve straight answers about the air conditioner running in their rooms. Talk with a professional who'll listen, explain what to expect and give you advice you can actually use.
+              </p>
+              <p className="mt-4 max-w-4xl text-base font-semibold leading-8 text-[#40586A] sm:text-lg">
+                No sales pitch. No pressure to arrange a clean. Even if you decide to do nothing else, you'll leave knowing more about caring for your home.
+              </p>
+              <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="cleaning-consultation-benefits">
+                {[
+                  ["01", "Know what results to expect.", "We'll be honest about what a deep clean could improve, and what it won't fix. You can decide with confidence."],
+                  ["02", "Understand the air your family lives in.", "Get useful information about household dust, moisture, mould, ventilation and air-quality considerations for children and older loved ones."],
+                  ["03", "Know why each step matters.", "We'll explain our Gold-Standard Deep Clean, from internal grime and airflow to drainage and careful protection of your system."],
+                  ["04", "Look after your system with confidence.", "Learn practical maintenance habits and the signs your air conditioner might need attention."],
+                  ["05", "Keep the home feeling fresher.", "Get simple advice on managing dust, moisture and stale smells in the rooms where your family eats, plays and rests."],
+                  ["06", "Stay in control of your home and time.", "We'll explain the work before anyone starts, protect your space and arrange a suitable time around your family routine."]
+                ].map(([number, title, description]) => (
+                  <article key={number} className="rounded-xl border border-[#D6E5EA] bg-white p-5 shadow-sm sm:p-6">
+                    <span className="text-sm font-black tracking-widest text-[#008DB8]">{number}</span>
+                    <h3 className="mt-3 text-xl font-black leading-snug text-[#0B2641]">{title}</h3>
+                    <p className="mt-3 text-base font-semibold leading-7 text-[#395469]">{description}</p>
+                  </article>
+                ))}
               </div>
-              <div className="mt-8 flex flex-col gap-5 rounded-xl bg-[#08263E] px-6 py-7 text-white sm:flex-row sm:items-center sm:justify-between sm:px-8">
-                <div>
-                  <h3 className="text-xl font-black uppercase leading-snug sm:text-2xl">Questions about your aircon? Talk to us.</h3>
-                  <p className="mt-2 max-w-2xl text-base font-semibold leading-7 text-[#D7EAF2]">No form to fill out. Ask us what a proper deep clean includes and whether it makes sense for your unit.</p>
+              <div className="mt-9 rounded-xl bg-[#08263E] px-6 py-9 text-center text-white sm:px-10 sm:py-11" data-testid="cleaning-consultation-offer">
+                <p className="text-sm font-black uppercase tracking-widest text-[#77D8EF]">For mums, carers and anyone looking after family</p>
+                <h3 className="mx-auto mt-3 max-w-3xl text-2xl font-black uppercase leading-tight sm:text-4xl">REAL ADVICE. NO PRESSURE. <span className="text-[#F4C620]">NOTHING TO LOSE.</span></h3>
+                <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-8 text-[#E5F3F7] sm:text-lg">Ask us anything about your split system and indoor air quality. We'll help you understand your options and leave the decision with you.</p>
+                <button type="button" onClick={() => { setConsultationStatus("idle"); setConsultationError(""); setConsultationOpen(true); }}
+                  className="mx-auto mt-7 flex min-h-14 w-full max-w-md items-center justify-center gap-2 rounded-lg bg-[#F4C620] px-6 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FFE06B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  data-testid="cleaning-consultation-cta">Claim Your Free Consultation <ArrowRight className="h-5 w-5" /></button>
+                <p className="mt-4 text-sm font-bold text-[#D5EAF2]">No obligation. No awkward sales conversation. Just guidance for your home.</p>
+              </div>
+              <div className="mt-9" data-testid="cleaning-consultation-reviews">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">Real Google feedback</p>
+                    <h3 className="mt-2 text-2xl font-black uppercase text-[#0B2641] sm:text-3xl">Trusted in local family homes.</h3>
+                  </div>
+                  <GoogleRating />
                 </div>
-                <a href={PHONE_TEL} className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-lg bg-[#F4C620] px-6 py-4 text-sm font-black uppercase tracking-wide text-[#082337] hover:bg-[#FFE06B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Call SplitsPro <ArrowRight className="h-4 w-4" /></a>
+                <div className="mt-5 grid gap-4 md:grid-cols-3" data-testid="cleaning-google-review-cards">
+                  {consultationReviews.map((review, index) => (
+                    <figure key={review.id || review.name || index} className="rounded-xl border border-[#DEE4E8] bg-white p-5 shadow-sm sm:p-6" data-testid="cleaning-google-review-card">
+                      <div className="flex items-center justify-between gap-2">
+                        <GoogleReviewBadge />
+                        <span className="text-base font-black tracking-wider text-[#FBBC04]" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+                      </div>
+                      <blockquote className="mt-4 text-base font-bold leading-7 text-[#243F51]">
+                        “{review.text.slice(0, 160).trimEnd() + (review.text.length > 160 ? "…" : "")}”
+                      </blockquote>
+                      <figcaption className="mt-4 text-sm font-bold text-[#0B2641]">{review.name || "SplitsPro customer"}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+                <a href="https://g.page/r/CYTvO1ipeYUtEBM/" target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#007EA7] underline">Read more Google reviews <ArrowRight className="h-4 w-4" /></a>
               </div>
-              <div className="mt-5" aria-label="SplitsPro Google rating"><GoogleRating /></div>
-              <p className="mt-4 text-sm font-bold text-[#244456] sm:text-base">✓ Licensed &amp; insured technicians &nbsp; ✓ We explain and show the work</p>
             </div>
           </section>
 
@@ -302,6 +383,41 @@ export default function SplitSystemCleaning() {
         </div>
       </section>
         </>
+      )}
+      {consultationOpen && (
+        <div className="fixed inset-0 z-[210] flex items-center justify-center bg-[#061A2A]/75 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConsultationOpen(false); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="cleaning-consultation-title" className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-xl bg-white p-6 text-[#102B40] shadow-2xl sm:p-8" data-testid="cleaning-consultation-popup">
+            <button type="button" aria-label="Close consultation request" onClick={() => setConsultationOpen(false)} className="absolute right-3 top-2 rounded p-2 text-2xl text-[#294353] hover:bg-[#F0F9FC]">×</button>
+            {consultationStatus === "success" ? (
+              <div className="py-5 text-center" role="status">
+                <p className="text-4xl text-[#008DB8]">✓</p>
+                <h2 id="cleaning-consultation-title" className="mt-4 text-2xl font-black">You're all set.</h2>
+                <p className="mt-3 text-base leading-7">We'll call to talk through your air conditioner and arrange a suitable time. No pressure to book a clean.</p>
+                <button type="button" onClick={() => setConsultationOpen(false)} className="mt-5 rounded-lg bg-[#F4C620] px-6 py-3 font-black text-[#082337]">Back to the page</button>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs font-black uppercase tracking-widest text-[#008DB8]">Friendly, honest cleaning advice</p>
+                <h2 id="cleaning-consultation-title" className="mt-2 text-2xl font-black uppercase leading-tight">Claim your free consultation</h2>
+                <p className="mt-3 text-sm font-semibold leading-6 text-[#395469]">Tell us where to reach you. We'll explain your options honestly, with no obligation to book.</p>
+                <form onSubmit={submitConsultation} className="mt-6 space-y-4" data-testid="cleaning-consultation-form">
+                  <label className="block text-sm font-bold">Name
+                    <input type="text" required autoFocus autoComplete="name" value={consultationForm.name} onChange={(event) => setConsultationForm((current) => ({ ...current, name: event.target.value }))} className="mt-1 block min-h-12 w-full rounded-lg border border-[#B5CCD7] bg-white px-4 text-base text-[#102B40]" placeholder="Your name" />
+                  </label>
+                  <label className="block text-sm font-bold">Suburb
+                    <input type="text" required autoComplete="address-level2" value={consultationForm.suburb} onChange={(event) => setConsultationForm((current) => ({ ...current, suburb: event.target.value }))} className="mt-1 block min-h-12 w-full rounded-lg border border-[#B5CCD7] bg-white px-4 text-base text-[#102B40]" placeholder="Your suburb" />
+                  </label>
+                  <label className="block text-sm font-bold">Phone number
+                    <input type="tel" required autoComplete="tel" value={consultationForm.phone} onChange={(event) => setConsultationForm((current) => ({ ...current, phone: event.target.value }))} className="mt-1 block min-h-12 w-full rounded-lg border border-[#B5CCD7] bg-white px-4 text-base text-[#102B40]" placeholder="04xx xxx xxx" />
+                  </label>
+                  {consultationError && <p role="alert" className="text-sm font-semibold text-red-700">{consultationError}</p>}
+                  <button type="submit" disabled={consultationStatus === "saving"} className="w-full rounded-lg bg-[#F4C620] px-5 py-4 text-sm font-black uppercase text-[#082337] hover:bg-[#FFE06B] disabled:opacity-60">{consultationStatus === "saving" ? "Sending…" : "Request My Free Consultation"}</button>
+                  <p className="text-center text-xs font-semibold text-[#526878]">Nothing to lose. Just useful advice for your home.</p>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
       )}
       {guideOpen && (
         <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/55 p-3 sm:items-center" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) setGuideOpen(false); }}>
