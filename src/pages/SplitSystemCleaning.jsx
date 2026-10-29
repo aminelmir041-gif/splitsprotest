@@ -215,58 +215,106 @@ export default function SplitSystemCleaning() {
       )}
 
       {(
-        <section id="cleaning-stage-2" className="scroll-mt-16 bg-[#F0F9FC] py-6 sm:py-12" data-testid="cleaning-solution-trust">
+        <section id="cleaning-stage-2" className="scroll-mt-16 bg-[#F0F9FC] py-10 sm:py-16" data-testid="cleaning-solution-trust">
           <div className="sp-container mx-auto max-w-6xl">
-            <div>
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.17em] text-[#007EA7]">The SplitsPro Gold-Standard Deep Clean</p>
-                <h2 className="mt-3 max-w-4xl font-sans text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-4xl">
-                  We strip it back. <span className="text-[#008DB8]">Not just wipe over it.</span>
-                </h2>
-                <p className="mt-5 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">We open suitable accessible parts of the unit to reach the dirt that can linger behind a clean-looking front cover.</p>
-                <p className="mt-4 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">Then we use the right combination of <strong className="text-[#0B2641]">professional cleaning solutions, controlled steam and rinsing</strong> — followed by drain and outdoor-unit care.</p>
-                <p className="mt-4 max-w-3xl text-base leading-8 text-[#294556] sm:text-lg font-semibold">Finally, we put it back together, check the operation and show you what we cleaned.</p>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4" data-testid="cleaning-real-process-gallery">
+            <header className="relative overflow-hidden rounded-[1.75rem] bg-[#08263E] px-6 py-10 text-white sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-14 lg:py-16">
+              <div aria-hidden="true" className="absolute right-0 top-0 h-1.5 w-2/3 bg-[#F4C620]" />
+              <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#A5E7F4] sm:text-sm">A deeper clean. A fresher-feeling home.</p>
+              <h2 className="mt-6 max-w-5xl text-[2.8rem] font-black leading-[1.05] tracking-[-0.055em] sm:text-6xl lg:text-[5.25rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>
+                THE SPLITSPRO<br />
+                <span className="text-[#F4C620]">GOLD STANDARD</span><br />
+                DEEP CLEAN.
+              </h2>
+            </header>
+            <div className="mt-5 grid grid-cols-3 gap-2 sm:mt-7 sm:gap-4" data-testid="cleaning-real-process-gallery">
               {[
-                {src:"/landing/splitspro-process-filter.png",alt:"Real job — covers and filters opened",label:""},
-                {src:"/landing/splitspro-process-coil.png",alt:"Real job — indoor coil exposed",label:""},
-                {src:"/landing/splitspro-process-covers.png",alt:"Real job — cleaned removable covers",label:""}
+                {src:"/landing/splitspro-process-filter.png",alt:"Real job — covers and filters opened"},
+                {src:"/landing/splitspro-process-coil.png",alt:"Real job — indoor coil exposed"},
+                {src:"/landing/splitspro-process-covers.png",alt:"Real job — cleaned removable covers"}
               ].map((photo) => (
-                <figure key={photo.src}>
-                  <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="h-24 w-full rounded-md object-cover sm:h-40" />
-                  
+                <figure key={photo.src} className="overflow-hidden rounded-xl border border-[#C4DAE6] bg-white shadow-sm">
+                  <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover sm:aspect-[3/2]" />
                 </figure>
               ))}
             </div>
-            <section className="mt-14 scroll-mt-24" id="gold-standard-clean" data-testid="cleaning-process-benefits">
-              <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">The SplitsPro Bare-Bones Deep Clean</p>
-              <h3 className="mt-3 max-w-5xl text-3xl font-black uppercase leading-tight text-[#0B2641] sm:text-5xl">NOT JUST A FILTER RINSE. <span className="text-[#008DB8]">HERE'S OUR 6-STEP GOLD-STANDARD DEEP CLEAN.</span></h3>
-              <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-[#24485D] sm:text-xl">We strip it back, get to the grime, clean the drain and outdoor unit — then check the result.</p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#2C4658] sm:text-lg font-semibold">Different types of build-up need different tools. That's why we combine <strong className="text-[#0B2641]">coil-compatible cleaners, enzyme detergents, controlled steam and careful rinsing</strong> to help lift and remove accessible dust and grime.</p>
-              <div className="mt-9 grid gap-6 md:grid-cols-2">
-                {[
-                  {number:"01",title:"Bare-Bones Teardown",hook:"WE OPEN IT UP. NOT JUST WIPE OVER IT.",paragraphs:["We protect the room, isolate power and remove suitable covers, filters and louvers. That gives us better access to dirt hiding behind the front panel.","We reach accessible coils, the blower wheel and the drain tray. Parts such as the wheel or tray are removed when the specific model allows it safely."]},
-                  {number:"02",title:"Triple-Action Chemical Attack",hook:"STICKY GRIME NEEDS MORE THAN PLAIN WATER.",paragraphs:["Professional coil-compatible surfactants and enzyme-based detergents help loosen oils, dust and organic build-up.","We select the right product for the unit and give it the contact time it needs. Any sanitising product is used only where suitable and according to its label."]},
-                  {number:"03",title:"Thermal Flush & Steam",hook:"LOOSEN THE DIRT. THEN REMOVE IT.",paragraphs:["Controlled steam helps soften stubborn build-up on suitable components. We use gentle, directed rinsing where appropriate to carry away the loosened grime.","Wastewater is collected to protect your home. Some enzyme products are designed to self-rinse with condensate, so we follow those instructions instead of washing them off too early."]},
-                  {number:"04",title:"Electronic Protection",hook:"WE CLEAN THE AIRCON — NOT SOAK ITS ELECTRONICS.",paragraphs:["We isolate power and protect the indoor and outdoor circuit boards from water, steam and cleaning spray.","If we spot contamination or a possible board fault, we explain what we've found and how we'll protect the unit while cleaning."]},
-                  {number:"05",title:"Drainage & Outdoor Clean",hook:"YES, THE DRAIN AND OUTDOOR UNIT TOO.",paragraphs:["We clean accessible drain components to remove sludge and help condensate flow as it should.","Outside, we clear debris and clean suitable condenser surfaces with safe water pressure. That can help airflow and performance when dirt is the problem."]},
-                  {number:"06",title:"Reassembly, Testing & Proof",hook:"PUT BACK PROPERLY. CHECKED BEFORE WE LEAVE.",paragraphs:["We reassemble the suitable parts, check the unit and accessible drainage, and tidy the work area.","Where practical, we'll show you before-and-after photos so you can see the care taken with the parts we serviced."]}
-                ].map((step) => (
-                  <article key={step.number} className="rounded-xl border border-[#C7E2EB] bg-white px-6 py-7 shadow-sm sm:px-8 sm:py-9">
-                    <p className="text-sm font-black uppercase tracking-widest text-[#007EA7]">STEP {step.number} OF 6 · {step.title}</p>
-                    <h4 className="mt-4 text-2xl font-black uppercase leading-tight text-[#0B2641] sm:text-[1.8rem]">{step.hook}</h4>
-                    <div className="mt-5 space-y-4">
-                      {step.paragraphs.map((paragraph, index) => (
-                        <p key={index} className="text-base leading-8 text-[#30495A] sm:text-lg font-semibold">{paragraph}</p>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-              <p className="mt-6 max-w-4xl border-l-4 border-[#F4C620] pl-5 text-sm leading-7 text-[#4B6575] sm:text-base font-semibold">Every split system is different. We choose suitable access, products, steam and rinsing based on the unit and manufacturer's instructions.</p>
+            <section className="mt-10 space-y-5 scroll-mt-24 sm:mt-14 sm:space-y-7" id="gold-standard-clean" data-testid="cleaning-process-benefits">
+              <article className="grid gap-5 rounded-[1.5rem] bg-white shadow-sm ring-1 ring-[#D1E4EB] px-6 py-9 sm:px-10 sm:py-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+                <div>
+                  <div className="mb-5 h-1.5 w-14 rounded-full bg-[#008DB8]" />
+                  <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>WE STRIP IT BACK <span className="text-[#007EA7]">TO BARE BONES.</span></h3>
+                </div>
+                <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
+                  <p>We don't just wipe what you can see.</p>
+                  <p>We strip your air conditioner back to reach the hidden places where mould, bacteria and dirt build up.</p>
+                  <p className="border-l-4 border-[#F4C620] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">Every corner gets the attention it deserves.</p>
+
+                </div>
+              </article>
+
+              <article className="grid gap-5 rounded-[1.5rem] bg-[#E5F4F9] ring-1 ring-[#C8E3EB] px-6 py-9 sm:px-10 sm:py-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+                <div>
+                  <div className="mb-5 h-1.5 w-14 rounded-full bg-[#008DB8]" />
+                  <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>WE GO AFTER THE <span className="text-[#007EA7]">MOULD, BACTERIA AND FUNGI.</span></h3>
+                </div>
+                <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
+                  <p>We use specially designed cleaning chemicals that target harmful bacteria, mould and fungi hiding deep inside your air conditioner.</p>
+                  <p>Our powerful enzyme-based treatments help break down the sticky buildup and slimy sludge that collect inside — the very stuff that helps mould grow.</p>
+                  <p className="border-l-4 border-[#008DB8] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">Because if you leave the buildup behind, you're leaving the problem behind.</p>
+
+                </div>
+              </article>
+
+              <article className="grid gap-5 rounded-[1.5rem] bg-white shadow-sm ring-1 ring-[#D1E4EB] px-6 py-9 sm:px-10 sm:py-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+                <div>
+                  <div className="mb-5 h-1.5 w-14 rounded-full bg-[#008DB8]" />
+                  <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>THEN WE BRING IN <span className="text-[#007EA7]">THE STEAM AND PRESSURE.</span></h3>
+                </div>
+                <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
+                  <p>We thoroughly steam-clean and pressure-rinse your air conditioner, washing away loosened dirt, mould residue and grime.</p>
+                  <p className="border-l-4 border-[#F4C620] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">Leaving the inside cleaner, airflow less restricted and your air conditioner feeling fresh again.</p>
+
+                </div>
+              </article>
+
+              <article className="grid gap-5 rounded-[1.5rem] bg-[#08263E] text-white shadow-lg px-6 py-9 sm:px-10 sm:py-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+                <div>
+                  <div className="mb-5 h-1.5 w-14 rounded-full bg-[#F4C620]" />
+                  <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-white sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>WE DON'T JUST CLEAN IT. <span className="text-[#F4C620]">WE HELP PROTECT IT.</span></h3>
+                </div>
+                <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#E2EEF4] sm:text-[1.18rem]">
+                  <p>Here's what makes our Gold Standard different.</p>
+                  <p>We apply a protective anti-mould coating to help stop mould from growing back.</p>
+                  <p>Combined with our enzyme-based cleaning treatment, it helps tackle existing buildup and leaves your air conditioner better protected against future grime and mould.</p>
+                  <p className="border-l-4 border-[#F4C620] pl-4 text-xl font-extrabold leading-snug text-[#F4C620] sm:text-2xl">A deeper clean today. Longer-lasting freshness tomorrow.</p>
+
+                </div>
+              </article>
+
+              <article className="grid gap-5 rounded-[1.5rem] bg-white shadow-sm ring-1 ring-[#D1E4EB] px-6 py-9 sm:px-10 sm:py-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+                <div>
+                  <div className="mb-5 h-1.5 w-14 rounded-full bg-[#008DB8]" />
+                  <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>YOUR AIR CONDITIONER GETS <span className="text-[#007EA7]">THE VIP TREATMENT.</span></h3>
+                </div>
+                <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
+                  <p>We carefully clean the casing, treat sensitive electrical areas with suitable specialist cleaners, clear the drain and give the outdoor unit the attention it needs.</p>
+                  <p>We use soft microfibre towels and protect the surrounding area, so your home and air conditioner are treated with care.</p>
+                  <p className="border-l-4 border-[#F4C620] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">No careless mess. No cutting corners. Just proper care from start to finish.</p>
+
+                </div>
+              </article>
+
+              <article className="grid gap-5 rounded-[1.5rem] bg-[#E5F4F9] ring-1 ring-[#C8E3EB] px-6 py-9 sm:px-10 sm:py-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+                <div>
+                  <div className="mb-5 h-1.5 w-14 rounded-full bg-[#008DB8]" />
+                  <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>WE DON'T LEAVE UNTIL <span className="text-[#007EA7]">WE'VE CHECKED OUR WORK.</span></h3>
+                </div>
+                <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
+                  <p>We carefully put everything back together and test your air conditioner before leaving.</p>
+                  <p>The result?</p>
+                  <p className="border-l-4 border-[#008DB8] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">A cleaner air conditioner. Fresher-feeling air. Better airflow. And a home that feels that little bit nicer for the people you love.</p>
+                  <p className="pt-3 text-lg font-black uppercase tracking-[-0.02em] text-[#007EA7] sm:text-xl">That's what we call the SplitsPro Gold Standard.</p>
+                </div>
+              </article>
             </section>
             <section className="mt-14 rounded-xl bg-[#08263E] px-6 py-9 text-white sm:px-10 sm:py-12" data-testid="cleaning-service-promise" id="cleaning-guarantee">
               <p className="text-sm font-black uppercase tracking-widest text-[#62D1EC]">Our work, backed by a simple promise</p>
