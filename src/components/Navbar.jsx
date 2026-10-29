@@ -12,6 +12,7 @@ export const Navbar = () => {
   const isFinancePage = location.pathname.startsWith("/payment-options");
   // Trailing-slash URLs are common on the public site; keep the header legible on both forms.
   const normalizedPath = location.pathname.replace(/\/+$/, "") || "/";
+  const isCleaningLanding = normalizedPath === "/split-system-cleaning";
   const isCleaningPage = ["/split-system-cleaning", "/secure-cleaning", "/colony-forming-units", "/aircon-colony-forming-units"].includes(normalizedPath);
   const solid = scrolled || open || isFinancePage || isCleaningPage;
 
@@ -85,7 +86,7 @@ export const Navbar = () => {
       <nav className="sp-container relative flex items-center justify-between gap-6 lg:gap-14">
         <Logo onDark={!solid} scrolled={scrolled} />
 
-        <div className="hidden items-center gap-6 lg:flex lg:gap-10">
+        {!isCleaningLanding && <div className="hidden items-center gap-6 lg:flex lg:gap-10">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -103,9 +104,9 @@ export const Navbar = () => {
               {item.label}
             </NavLink>
           ))}
-        </div>
+        </div>}
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        {!isCleaningLanding && <div className="flex items-center gap-2 sm:gap-3">
           <NavLink
             to="/split-system-installation-sydney"
             data-testid="nav-deals-btn"
@@ -141,12 +142,12 @@ export const Navbar = () => {
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
-        </div>
+        </div>}
       </nav>
 
 
 
-      {open && (
+      {open && !isCleaningLanding && (
         <>
           <button
             type="button"
