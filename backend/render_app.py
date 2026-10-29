@@ -21,6 +21,7 @@ import requests
 from redis.exceptions import WatchError
 
 from .crm_admin import assign_client_owner, client_hubspot_url, get_active_owners
+from .vip_vouchers import router as vip_router
 from .lead_integrations import (
     derive_lead_source,
     get_hubspot_clients,
@@ -40,6 +41,7 @@ from .cleaning_bookings import (
 app = FastAPI(title="SplitsPro Lead API")
 app.include_router(equipment_checkout_router)
 app.include_router(cleaning_router)
+app.include_router(vip_router)
 
 # Log configuration presence only (never credentials) for payment diagnostics.
 logging.warning(
