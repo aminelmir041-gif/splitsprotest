@@ -968,6 +968,8 @@ def create_booking(payload: BookingCreate, background_tasks: BackgroundTasks):
 
 @app.post("/api/quotes")
 def create_quote(payload: QuoteCreate, background_tasks: BackgroundTasks):
+    if (os.environ.get("VIP_VOUCHER_STRICT_MODE") or "").strip() == "1" and "vip bare-bones deep clean" in payload.service.casefold():
+        raise HTTPException(status_code=403, detail="VIP offers must be claimed through a valid partner invitation")
     lead = payload.model_dump()
     lead["id"] = str(uuid.uuid4())
     lead["created_at"] = now_iso()
