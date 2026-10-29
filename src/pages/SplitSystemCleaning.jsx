@@ -209,6 +209,7 @@ export default function SplitSystemCleaning() {
                 </div>
                 <p className="mt-8 border-l-8 border-[#F4C620] bg-[#FFF2AD] px-5 py-6 text-xl font-black leading-8 text-[#0B2641] sm:text-2xl">BUT WHEN WAS THE LAST TIME YOU CLEANED THE INSIDE OF THE MACHINE BLOWING AIR AROUND YOUR HOME?</p>
               </div>
+            </div>
           </div>
         </section>
       )}
