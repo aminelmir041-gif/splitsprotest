@@ -51,6 +51,11 @@ return 1
 """
 
 
+def _require_enabled():
+    if (os.environ.get("VIP_VOUCHER_ENABLED") or "").strip() != "1":
+        raise HTTPException(status_code=503, detail="VIP voucher service is not enabled")
+
+
 def _redis():
     url = (os.environ.get("REDIS_URL") or "").strip()
     if not url:
@@ -147,6 +152,7 @@ class VipClaim(BaseModel):
 def create_partner(payload: PartnerIssue, x_admin_key: str | None = Header(default=None, alias="X-Admin-Key")):
     if not valid_admin_key(x_admin_key):
         raise HTTPException(status_code=401, detail="Unauthorized")
+    _require_enabled()
     conn = _redis()
     now = datetime.now(SYDNEY)
     deadline = now + timedelta(days=14)
@@ -176,6 +182,7 @@ def create_partner(payload: PartnerIssue, x_admin_key: str | None = Header(defau
 
 @router.get("/status")
 def voucher_status(code: str):
+    _require_enabled()
     code = _valid_code(code)
     conn = _redis()
     try:
@@ -187,6 +194,7 @@ def voucher_status(code: str):
 
 @router.post("/claim")
 def voucher_claim(payload: VipClaim, background_tasks: BackgroundTasks):
+    _require_enabled()
     code = _valid_code(payload.code)
     suburb = payload.suburb.strip()
     if suburb.casefold() not in ALLOWED_SUBURBS:
