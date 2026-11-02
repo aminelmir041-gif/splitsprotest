@@ -182,32 +182,22 @@ const GoogleAdsLanding = () => {
           <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Fully installed split systems</p>
           <h2 className="mt-3 font-serif text-4xl text-[#111]">Choose your system. See your price.</h2>
           <p className="mt-3 text-[#555]">No online bookings, dates or payments. Select a system to compare the standard installed price, then call us to arrange your installation.</p>
-          <h3 className="mt-8 font-serif text-2xl">1 · Choose a brand</h3>
+          <h3 className="mt-8 font-serif text-2xl">Choose a brand to see installed prices</h3>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {RINNAI_LOCAL_OFFER_RANGES.map(range => <button key={range.slug} type="button" onClick={() => {setSelectedBrand(range.slug);setSelectedUnit(null);}} className={`rounded-xl border p-6 text-left transition-colors ${selectedBrand === range.slug ? "border-[#B88A48] bg-[#FBF5E9]" : "border-[#E5E1D9] bg-white hover:border-[#B88A48]"}`}>
+            {RINNAI_LOCAL_OFFER_RANGES.map(range => <button key={range.slug} type="button" onClick={() => setSelectedBrand(range.slug)} className={`rounded-xl border p-6 text-left transition-colors ${selectedBrand === range.slug ? "border-[#B88A48] bg-[#FBF5E9]" : "border-[#E5E1D9] bg-white hover:border-[#B88A48]"}`}>
               <span className="block font-serif text-2xl text-[#111]">{range.displayName}</span>
-              <span className="mt-2 block text-sm text-[#666]">{range.prices.length} sizes available · Choose brand →</span>
+              <span className="mt-2 block text-sm text-[#666]">View all sizes and prices</span>
             </button>)}
           </div>
-          {selectedBrand && <div className="mt-8">
-            <h3 className="font-serif text-2xl">2 · Choose your size</h3>
-            <p className="mt-2 text-sm text-[#666]">Tap a size to see its fully installed price.</p>
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {RINNAI_LOCAL_OFFER_RANGES.filter(range => range.slug === selectedBrand).flatMap(range => range.prices.map(unit => <button key={range.slug + unit.kw} type="button" onClick={() => setSelectedUnit({productKey:range.slug,displayName:range.displayName,kw:unit.kw,price:unit.localOfferPrice || unit.price})} className={`rounded-xl border p-5 text-left transition-colors ${selectedUnit?.productKey === range.slug && selectedUnit?.kw === unit.kw ? "border-[#B88A48] bg-[#FBF5E9]" : "border-[#E5E1D9] bg-white hover:border-[#B88A48]"}`}>
-                <span className="block text-xl font-bold text-[#111]">{unit.kw}</span>
-                <span className="mt-2 block text-xl font-bold text-[#8F6A34]">{unit.localOfferPrice || unit.price}</span>
-                <span className="mt-1 block text-xs text-[#666]">Fully installed</span>
-              </button>))}
-            </div>
-          </div>}
-          {selectedUnit && <div className="mt-7 rounded-xl bg-[#F7F5F1] p-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Selected system</p>
-            <h3 className="mt-2 font-serif text-2xl">{selectedUnit.displayName} · {selectedUnit.kw}</h3>
-            <p className="mt-2 text-3xl font-bold text-[#8F6A34]">{selectedUnit.price}</p>
-            <p className="mt-2 text-sm text-[#555]">Standard supply and installation. Non-standard work is quoted before proceeding.</p>
+          {selectedBrand && <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {RINNAI_LOCAL_OFFER_RANGES.filter(range => range.slug === selectedBrand).flatMap(range => range.prices.map(unit => <div key={range.slug + unit.kw} className="rounded-xl border border-[#E5E1D9] bg-[#FCFBF8] p-5">
+              <span className="block text-xl font-bold text-[#111]">{unit.kw}</span>
+              <span className="mt-2 block text-2xl font-bold text-[#8F6A34]">{unit.localOfferPrice || unit.price}</span>
+              <span className="mt-1 block text-xs text-[#666]">Standard fully installed price</span>
+            </div>))}
           </div>}
           <p className="mt-6 text-sm font-semibold text-[#555]">Installation within 2 business days for eligible standard jobs, subject to availability.</p>
-          {selectedUnit && <a href={PHONE_TEL} className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>}
+          <a href={PHONE_TEL} className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>
         </div>
       </section>
 
