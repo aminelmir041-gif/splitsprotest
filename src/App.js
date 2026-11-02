@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/Navbar";
 import AnalyticsTracking from "@/components/AnalyticsTracking";
 import Footer from "@/components/Footer";
+import AfterHoursCallback from "@/components/AfterHoursCallback";
 import CustomCursor from "@/components/CustomCursor";
 import { LOGO } from "@/lib/data";
 
@@ -133,6 +134,7 @@ function App() {
               <AnimatedRoutes />
             </main>
             <Footer />
+            <AfterHoursCallback />
             <Toaster position="top-center" richColors />
           </BrowserRouter>
         </ReactLenis>
