@@ -108,11 +108,11 @@ const GoogleAdsLanding = () => {
               Rinnai and Daikin Cora. One clear standard-install price covers the unit, labour, wall bracket, isolator, up to 3m of pipework and an electrical circuit up to 20m where required. No chasing extra trades or surprise essential add-ons.
             </p>
             <a href={PHONE_TEL} className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-[#0B0B0B] transition-colors hover:bg-[#E4CFA6]">
-              Get My Free Consultation <ArrowDown className="h-4 w-4" />
+              Call to Book <ArrowDown className="h-4 w-4" />
             </a>
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
-              <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Fast installation dates</span>
+              <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Installation within 2 business days, subject to availability</span>
               <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Installation guarantee</span>
             </div>
           </div>
@@ -173,8 +173,8 @@ const GoogleAdsLanding = () => {
           </div>
           <div className="mt-8 rounded-2xl bg-[#0B0B0B] p-7 text-white">
             <h3 className="font-serif text-3xl text-[#E4CFA6]">Free advice. No sales pressure.</h3>
-            <p className="mt-3 max-w-3xl leading-relaxed text-white/80">No consultation fee, no deposit and no obligation to book. Even if you're just comparing options, you're welcome to call. It helps to have your suburb, rough room dimensions and photos, but you don't need them to start.</p>
-            <a href={PHONE_TEL} className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase text-[#0B0B0B]"><Phone className="h-4 w-4" /> Get My Free Consultation</a>
+            <p className="mt-3 max-w-3xl leading-relaxed text-white/80">No consultation fee and no obligation to book. Installation within 2 business days for eligible standard jobs, subject to availability. Even if you're just comparing options, you're welcome to call. It helps to have your suburb, rough room dimensions and photos, but you don't need them to start.</p>
+            <a href={PHONE_TEL} className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase text-[#0B0B0B]"><Phone className="h-4 w-4" /> Call to Book</a>
           </div>
         </div>
       </section>
@@ -183,7 +183,7 @@ const GoogleAdsLanding = () => {
         <div className="sp-container max-w-6xl">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Complete standard-install prices · No booking or deposit needed</p>
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Complete standard-install prices · Installation within 2 business days, subject to availability</p>
               <h2 className="mt-2 font-serif text-3xl font-medium text-[#111] sm:text-4xl">Compare fully installed options before you call</h2>
             </div>
             <a href={PHONE_TEL} className="inline-flex items-center gap-2 text-sm font-bold text-[#7B5A28] underline"><Phone className="h-4 w-4" /> Talk to us: {PHONE}</a>
@@ -207,8 +207,8 @@ const GoogleAdsLanding = () => {
             <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Your selected system</p>
             <h3 className="mt-2 font-serif text-2xl text-[#111]">{selectedUnit.displayName} · {selectedUnit.kw}</h3>
             <p className="mt-2 text-3xl font-bold text-[#8F6A34]">{selectedUnit.price} <span className="text-sm font-normal text-[#555]">standard supply &amp; installation</span></p>
-            <p className="mt-3 text-sm text-[#555]">We'll confirm suitability and any non-standard requirements during your free consultation. No booking or payment required.</p>
-            <a href={PHONE_TEL} className="mt-5 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Get My Free Consultation</a>
+            <p className="mt-3 text-sm text-[#555]">We'll confirm suitability and any non-standard requirements during your free consultation. Call to confirm an installation date. No online booking or payment.</p>
+            <a href={PHONE_TEL} className="mt-5 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book</a>
           </div>}
         </div>
       </section>
@@ -261,7 +261,7 @@ const GoogleAdsLanding = () => {
             </div>
           </div>
           <a href={PHONE_TEL} className="mt-7 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 text-sm font-extrabold uppercase text-white">
-            Get My Free Consultation <ArrowRight className="h-4 w-4" />
+            Call to Book <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </section>
