@@ -10,7 +10,7 @@ import {
 
 import QuoteForm from "../components/QuoteForm";
 import { GoogleRating } from "../components/sections";
-import { PHONE, PHONE_TEL, FEATURED_REVIEW } from "../lib/data";
+import { PHONE, PHONE_TEL, FEATURED_REVIEW, IMAGES } from "../lib/data";
 import { getReviews } from "../lib/api";
 import { RINNAI_LOCAL_OFFER_RANGES } from "./BrandPage";
 
@@ -208,6 +208,19 @@ const GoogleAdsLanding = () => {
             <span className="rounded-xl border p-4">Written quote upfront</span>
             <span className="rounded-xl border p-4">Workmanship support</span>
             <span className="rounded-xl border p-4">Manufacturer warranty</span>
+          </div>
+          <h3 className="mt-12 font-serif text-3xl">Real SplitsPro installations</h3>
+          <p className="mt-2 text-sm text-[#666]">Swipe through real installation photographs. Tap a picture to view it larger.</p>
+          <div className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5" aria-label="Installation photo gallery">
+            {[
+              {src:IMAGES.installDaikinIndoorCorner,alt:"Daikin indoor installation"},
+              {src:IMAGES.installDaikinOutdoorBracket,alt:"Outdoor bracket installation"},
+              {src:IMAGES.installDaikinIndoorLabel,alt:"Installed Daikin unit"},
+              {src:IMAGES.installDaikinOutdoorClose,alt:"Daikin outdoor system"},
+              {src:IMAGES.installDaikinIndoorStraight,alt:"Finished indoor split installation"}
+            ].map((photo,i) => <a key={i} href={photo.src} target="_blank" rel="noreferrer" className="min-w-[80%] snap-start overflow-hidden rounded-2xl border border-[#E5E1D9] sm:min-w-[42%]">
+              <img src={photo.src} alt={photo.alt} loading="lazy" className="h-64 w-full object-contain bg-[#F7F5F1]" style={i===4 ? {transform:"rotate(180deg)"} : undefined} />
+            </a>)}
           </div>
           <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
           <p className="mt-2 text-sm text-[#666]">Swipe to read our available customer reviews.</p>
