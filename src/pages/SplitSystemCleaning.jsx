@@ -33,7 +33,7 @@ const CONSULTATION_REVIEW_FALLBACK = [
 
 const FAQS = [
   { q: "We wash the filters. Isn't that enough?", a: "A filter wash is useful, but dirt can still build up deeper inside the air conditioner. Our Gold Standard clean reaches the parts a filter rinse misses." },
-  { q: "My aircon still smells after a clean. Why would yours be different?", a: "A quick spray can miss the dirt and damp sludge inside. Our deeper clean tackles the buildup and drainage. If a smell returns, we'll explain what else may be causing it." },
+  { q: "My aircon still smells after a clean. Why would yours be different?", a: "A quick spray or basic filter rinse may miss buildup on the internal coil, blower wheel and drainage. We physically clean safely accessible indoor parts. If the same musty smell returns after our service, we'll come back and clean the indoor unit again at no extra cost. Some odours have causes cleaning cannot correct, which we explain honestly." },
   { q: "What actually gets rid of mould? Do you just spray something over it?", a: "No. We open up the unit, use professional cleaning treatments and physically remove buildup with careful rinsing and steam where suitable. Our anti-mould coating then helps protect the cleaned surfaces against regrowth." },
   { q: "Can dust and mould trigger asthma or allergies?", a: "Yes. Dust and mould can trigger asthma and allergies. Cleaning buildup inside the air conditioner is one practical part of looking after your home; managing dampness and ventilation matters too." },
   { q: "What about cleaning chemicals near my children or kitchen?", a: "We protect your room, use suitable professional products and follow their directions. We keep water away from sensitive parts, clean up and check the air conditioner before we leave." },
@@ -180,7 +180,16 @@ export default function SplitSystemCleaning() {
                   <p className="font-black text-[#0B2641]">The same air moves through your living room, your children's bedrooms and the kitchen where you prepare your family's food.</p>
                   <p>You spend so much time keeping your floors, benches and bedrooms clean.</p>
                 </div>
-                <p className="mt-8 border-l-8 border-[#F4C620] bg-[#FFF2AD] px-5 py-6 text-xl font-black leading-8 text-[#0B2641] sm:text-2xl">BUT WHEN WAS THE LAST TIME YOU CLEANED THE INSIDE OF THE MACHINE BLOWING AIR AROUND YOUR HOME?</p>
+                <div className="mt-8 space-y-4 rounded-xl border border-[#B9D9E5] bg-white px-5 py-6 text-[#123449]">
+<p className="text-sm font-black uppercase tracking-wide text-[#007EA7]">What parents have actually experienced</p>
+<blockquote className="border-l-4 border-[#F4C620] pl-4 font-semibold italic">“Our AC is cleaned regularly (filters/strip and cleans) however the room/house still gets a musty smell.”</blockquote>
+<p className="text-xs">Australian parent discussing an ongoing musty smell. <a className="underline" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/BabyBumpsandBeyondAu/comments/1j8njuw/">Read the original discussion</a>. Independent public discussion, not a SplitsPro review.</p>
+<p><strong>The frustrating part:</strong> washing filters or cleaning visible surfaces may leave residue on the blower wheel, coil or drainage components. A recurring smell can also have causes outside the unit. That's why we first establish whether a deep indoor clean is appropriate rather than guessing.</p>
+<blockquote className="border-l-4 border-[#F4C620] pl-4 font-semibold italic">“I dont know how youre meant to access up deep in the back.”</blockquote>
+<p className="text-xs">Australian homeowner describing inaccessible buildup. <a className="underline" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/AusRenovation/comments/1rzclmc/">Original discussion</a>.</p>
+<p><strong>Why the usual clean misses it:</strong> removable filters are only the first layer. Dirt deeper inside needs safe access and hands-on cleaning, not just a spray through the front grille.</p>
+</div>
+<p className="mt-8 border-l-8 border-[#F4C620] bg-[#FFF2AD] px-5 py-6 text-xl font-black leading-8 text-[#0B2641] sm:text-2xl">BUT WHEN WAS THE LAST TIME YOU CLEANED THE INSIDE OF THE MACHINE BLOWING AIR AROUND YOUR HOME?</p>
               </div>
             </div>
           </div>
@@ -214,7 +223,7 @@ export default function SplitSystemCleaning() {
                   <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>WE STRIP IT BACK <span className="text-[#007EA7]">TO BARE BONES.</span></h3>
                 </div>
                 <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
-                  <p>We don't just wipe what you can see.</p>
+                  <p><strong>Problem:</strong> Filter washing can leave hidden grime behind the visible covers. <strong>Our solution:</strong> a thorough deep clean of safely accessible indoor components.</p><p>We don't just wipe what you can see.</p>
                   <p>We strip your air conditioner back to reach the hidden places where mould, bacteria and dirt build up.</p>
                   <p className="border-l-4 border-[#F4C620] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">Every corner gets the attention it deserves.</p>
 
@@ -266,7 +275,7 @@ export default function SplitSystemCleaning() {
                   <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>YOUR AIR CONDITIONER GETS <span className="text-[#007EA7]">THE VIP TREATMENT.</span></h3>
                 </div>
                 <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
-                  <p>We carefully clean the casing, treat sensitive electrical areas with suitable specialist cleaners, clear the drain and give the outdoor unit the attention it needs.</p>
+                  <p>We carefully clean the indoor casing, filters, accessible evaporator coil, blower wheel, drain pan and indoor drainage pathway, protecting electrical components as we work. This service is for the indoor unit only; outdoor-unit cleaning is not included.</p>
                   <p>We use soft microfibre towels and protect the surrounding area, so your home and air conditioner are treated with care.</p>
                   <p className="border-l-4 border-[#F4C620] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">No careless mess. No cutting corners. Just proper care from start to finish.</p>
 
@@ -279,7 +288,7 @@ export default function SplitSystemCleaning() {
                   <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>WE DON'T LEAVE UNTIL <span className="text-[#007EA7]">WE'VE CHECKED OUR WORK.</span></h3>
                 </div>
                 <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
-                  <p>We carefully put everything back together and test your air conditioner before leaving.</p>
+                  <p>We carefully put the indoor unit back together and test your air conditioner before leaving.</p>
                   <p>The result?</p>
                   <p className="border-l-4 border-[#008DB8] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">A cleaner air conditioner. Fresher-feeling air. Better airflow. And a home that feels that little bit nicer for the people you love.</p>
                   <p className="pt-3 text-lg font-black uppercase tracking-[-0.02em] text-[#007EA7] sm:text-xl">That's what we call the SplitsPro Gold Standard.</p>
@@ -329,7 +338,8 @@ export default function SplitSystemCleaning() {
               <p className="text-sm font-black uppercase tracking-widest text-[#62D1EC]">Our work, backed by a simple promise</p>
               <h3 className="mt-4 max-w-4xl text-3xl font-black uppercase leading-tight sm:text-5xl">SATISFACTION GUARANTEED. <span className="text-[#F4C620]">OR YOU DON'T PAY FOR THE CLEAN.</span></h3>
               <p className="mt-6 max-w-3xl text-lg font-bold leading-8 text-white sm:text-xl">We explain the agreed accessible cleaning work before we begin. If you're not satisfied with that cleaning result, tell us so we can put it right. If we can't, you don't pay for the cleaning service — or we'll refund that cleaning charge if already paid.</p>
-              <p className="mt-6 max-w-4xl border-t border-white/20 pt-5 text-sm leading-7 text-white/85 font-medium">We explain which parts are safely accessible for your model before starting. Your Australian Consumer Law rights continue to apply.</p>
+              <p className="mt-5 max-w-3xl rounded-lg border border-[#F4C620]/50 bg-white/10 px-5 py-4 text-lg font-bold leading-8"><strong className="text-[#F4C620]">If the same musty smell comes back, so do we.</strong> We'll return and deep-clean your indoor unit again at no extra cost. We also explain upfront that odours from unrelated faults or moisture sources may require a different solution.</p>
+<p className="mt-6 max-w-4xl border-t border-white/20 pt-5 text-sm leading-7 text-white/85 font-medium">We explain which parts are safely accessible for your model before starting. Your Australian Consumer Law rights continue to apply.</p>
             </section>
 
           </div>
@@ -365,7 +375,7 @@ export default function SplitSystemCleaning() {
               <div className="mt-9 rounded-xl bg-[#08263E] px-6 py-9 text-center text-white sm:px-10 sm:py-11" data-testid="cleaning-consultation-offer">
                 <p className="text-sm font-black uppercase tracking-widest text-[#77D8EF]">For mums, carers and anyone looking after family</p>
                 <h3 className="mx-auto mt-3 max-w-3xl text-2xl font-black uppercase leading-tight sm:text-4xl">REAL ADVICE. NO PRESSURE. <span className="text-[#F4C620]">NOTHING TO LOSE.</span></h3>
-                <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-8 text-[#E5F3F7] sm:text-lg">Ask us anything about your split system and indoor air quality. We'll help you understand your options and leave the decision with you.</p>
+                <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-8 text-[#E5F3F7] sm:text-lg">Your free consultation is a quick phone call. Our experienced team will listen, assess your situation over the phone and give honest answers about what an indoor deep clean can and cannot do. We don't want unhappy customers or repeated visits because we recommended the wrong service. If a deep clean is appropriate, we can usually arrange a visit within 2 business days, depending on your suburb and availability.</p>
                 <button type="button" onClick={() => { setConsultationStatus("idle"); setConsultationError(""); setConsultationOpen(true); }}
                   className="mx-auto mt-7 flex min-h-14 w-full max-w-md items-center justify-center gap-2 rounded-lg bg-[#F4C620] px-6 py-4 text-base font-black uppercase text-[#082337] hover:bg-[#FFE06B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   data-testid="cleaning-consultation-cta">Claim Your Free Consultation <ArrowRight className="h-5 w-5" /></button>
