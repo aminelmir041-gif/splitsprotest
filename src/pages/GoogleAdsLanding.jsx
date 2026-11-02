@@ -214,15 +214,17 @@ const GoogleAdsLanding = () => {
           <p className="mt-2 text-sm text-[#666]">Swipe to see more real installation photos. Tap any image to enlarge.</p>
           <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-5" aria-label="Installation photo gallery">
             {[
-              {src:IMAGES.installDaikinBathroom,alt:"Daikin installation"},
-              {src:IMAGES.installRinnaiWall,alt:"Rinnai indoor installation"},
-              {src:IMAGES.installDaikinOutdoor2,alt:"Daikin outdoor installation"},
-              {src:IMAGES.installDaikinGarage,alt:"Daikin garage installation"},
+              {src:IMAGES.installDaikinBathroom,alt:"Daikin installation",rotation:90},
+              {src:IMAGES.installRinnaiWall,alt:"Rinnai indoor installation",rotation:90},
+              {src:IMAGES.installDaikinOutdoor2,alt:"Daikin outdoor installation",rotation:90},
+              {src:IMAGES.installDaikinGarage,alt:"Daikin garage installation",rotation:90},
               {src:IMAGES.installDaikinIndoorCorner,alt:"Daikin indoor corner installation"},
               {src:IMAGES.installDaikinOutdoorBracket,alt:"Daikin outdoor bracket"},
               {src:IMAGES.installDaikinIndoorLabel,alt:"Daikin indoor unit"},
               {src:IMAGES.installDaikinOutdoorClose,alt:"Daikin outdoor system"},
-              {src:IMAGES.installDaikinIndoorStraight,alt:"Finished indoor installation",rotation:180}
+              {src:IMAGES.installDaikinIndoorStraight,alt:"Finished indoor installation",rotation:180},
+              {src:IMAGES.splitIndoor,alt:"Completed indoor split installation"},
+              {src:IMAGES.splitOutdoorInstall,alt:"Outdoor split installation"}
             ].map((photo,i) => <button key={i} type="button" onClick={() => setActivePhoto(photo)} className="w-[74%] shrink-0 snap-start overflow-hidden rounded-xl border border-[#E5E1D9] bg-[#F7F5F1] sm:w-[35%]" aria-label={`Enlarge photo ${i+1}`}>
               <img src={photo.src} alt={photo.alt} loading="lazy" className="h-64 w-full object-contain" style={{transform: `rotate(${photo.rotation || 0}deg)`}} />
             </button>)}
