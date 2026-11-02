@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 
@@ -10,7 +10,8 @@ import {
 
 import QuoteForm from "../components/QuoteForm";
 import { GoogleRating } from "../components/sections";
-import { PHONE, PHONE_TEL } from "../lib/data";
+import { PHONE, PHONE_TEL, FEATURED_REVIEW } from "../lib/data";
+import { getReviews } from "../lib/api";
 import { RINNAI_LOCAL_OFFER_RANGES } from "./BrandPage";
 
 // Google Search visitors are actively comparing an installed deal.
@@ -58,7 +59,8 @@ const included = [
 const GoogleAdsLanding = () => {
   const { search } = useLocation();
 
-  const [selectedUnit, setSelectedUnit] = useState(null);
+  const [reviews, setReviews] = useState([{ id: "featured", ...FEATURED_REVIEW }]);
+  useEffect(() => { let active = true; getReviews().then(items => { if (active && Array.isArray(items) && items.length) setReviews(items); }).catch(() => {}); return () => { active = false; }; }, []);
   const requestedBrand = new URLSearchParams(search).get("brand")?.toLowerCase();
   const initialBrand = requestedBrand === "daikin" ? "daikin-lite-local"
     : requestedBrand === "rinnai" ? "rinnai-local" : "";
@@ -150,33 +152,6 @@ const GoogleAdsLanding = () => {
         </div>
       </div>
 
-      <section id="google-consultation" className="scroll-mt-20 bg-white py-12 sm:py-16">
-        <div className="sp-container max-w-6xl">
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Free consultation · No obligation</p>
-          <h2 className="mt-3 font-serif text-4xl text-[#111]">Know what suits your home before spending a dollar.</h2>
-          <p className="mt-4 max-w-3xl text-lg leading-relaxed text-[#555]">This is a practical conversation, not a sales pitch. We'll help you understand the right size, installation options, inclusions and possible costs. You can take the advice away and decide in your own time.</p>
-          <h3 className="mt-10 font-serif text-3xl text-[#111]">Exactly what happens when you call</h3>
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            {[
-              ["1. Tell us about your space","We'll ask which suburb you're in, which room needs cooling or heating, its approximate size, ceiling height, sun exposure and insulation. Rough measurements are fine."],
-              ["2. We explain suitable systems","We'll talk through likely capacity, brands, noise, comfort and features, explaining the trade-offs in plain English rather than pushing the most expensive unit."],
-              ["3. We discuss the installation","We'll ask about indoor and outdoor locations, pipework, drainage, electrical supply and access. Photos can help us identify any complications before a quote."],
-              ["4. You leave with a clear next step","We'll explain the standard installed price, what might cost extra and likely availability. If photos or a site assessment are needed for an accurate quote, we'll tell you. You choose whether to proceed."]
-            ].map(([heading,description]) => (
-              <div key={heading} className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6">
-                <h4 className="text-lg font-bold text-[#191919]">{heading}</h4>
-                <p className="mt-3 text-sm leading-relaxed text-[#5E5E60]">{description}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 rounded-2xl bg-[#0B0B0B] p-7 text-white">
-            <h3 className="font-serif text-3xl text-[#E4CFA6]">Free advice. No sales pressure.</h3>
-            <p className="mt-3 max-w-3xl leading-relaxed text-white/80">No consultation fee and no obligation to book. Installation within 2 business days for eligible standard jobs, subject to availability. Even if you're just comparing options, you're welcome to call. It helps to have your suburb, rough room dimensions and photos, but you don't need them to start.</p>
-            
-          </div>
-        </div>
-      </section>
-
       <section id="google-booking" className="scroll-mt-20 bg-white py-12 sm:py-16" data-testid="google-ads-prices">
         <div className="sp-container max-w-5xl">
           <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Fully installed split systems</p>
@@ -197,7 +172,7 @@ const GoogleAdsLanding = () => {
             </div>))}
           </div>}
           <p className="mt-6 text-sm font-semibold text-[#555]">Installation within 2 business days for eligible standard jobs, subject to availability.</p>
-          <a href={PHONE_TEL} className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>
+
         </div>
       </section>
 
@@ -225,32 +200,36 @@ const GoogleAdsLanding = () => {
 
       <section id="local-offer-trust" className="scroll-mt-20 bg-white py-12 sm:py-16" data-testid="google-ads-proof">
         <div className="sp-container max-w-5xl">
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Confidence before you book</p>
-          <h2 className="mt-2 font-serif text-4xl text-[#111]">Know who is installing your air conditioner.</h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#606064]">
-            SplitsPro uses licensed and insured installers, backs the installation workmanship, and supplies systems with manufacturer warranties. See the Google reviews and ask us anything before paying.
-          </p>
-          <div className="mt-7 grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-[#E5E1D9] p-6">
-              <Star className="h-6 w-6 text-[#B88A48]" />
-              <p className="mt-4 font-serif text-2xl">Google reviews</p>
-              <p className="mt-2 text-sm text-[#65656A]">Real customer feedback on our service and installations.</p>
-              <div className="mt-4"><GoogleRating /></div>
-            </div>
-            <div className="rounded-2xl border border-[#E5E1D9] p-6">
-              <BadgeCheck className="h-6 w-6 text-[#B88A48]" />
-              <p className="mt-4 font-serif text-2xl">Licensed &amp; insured</p>
-              <p className="mt-2 text-sm text-[#65656A]">Qualified trades working on your air conditioning installation.</p>
-            </div>
-            <div className="rounded-2xl border border-[#E5E1D9] p-6">
-              <ShieldCheck className="h-6 w-6 text-[#B88A48]" />
-              <p className="mt-4 font-serif text-2xl">Warranty protection</p>
-              <p className="mt-2 text-sm text-[#65656A]">Rinnai 7-year and Daikin 5-year manufacturer warranties, plus our installation guarantee.</p>
-            </div>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Our workmanship promise</p>
+          <h2 className="mt-3 font-serif text-4xl text-[#111]">Your home, treated with care.</h2>
+          <p className="mt-4 max-w-3xl leading-relaxed text-[#555]">Licensed and insured installation, a clear written quote before work begins, protection of your home while we work, tidy workmanship and a clean-up when the job is done. We commission and check the system, explain how to use it and stand behind our installation workmanship. Any non-standard extras are discussed before proceeding.</p>
+          <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold text-[#333]">
+            <span className="rounded-xl border p-4">Licensed &amp; insured</span>
+            <span className="rounded-xl border p-4">Written quote upfront</span>
+            <span className="rounded-xl border p-4">Workmanship support</span>
+            <span className="rounded-xl border p-4">Manufacturer warranty</span>
           </div>
-          <a href={PHONE_TEL} className="mt-7 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 text-sm font-extrabold uppercase text-white">
-            Call to Book <ArrowRight className="h-4 w-4" />
-          </a>
+          <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
+          <p className="mt-2 text-sm text-[#666]">Swipe to read our available customer reviews.</p>
+          <div className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5" aria-label="Customer review carousel">
+            {reviews.map((r, i) => <figure key={r.id || i} className="min-w-[82%] snap-start rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:min-w-[45%]">
+              <div className="text-[#A3793B]" aria-label={`${r.rating || 5} out of 5 stars`}>{"★".repeat(Math.max(1, Math.min(5, Number(r.rating) || 5)))}</div>
+              <blockquote className="mt-3 leading-relaxed text-[#333]">“{r.text}”</blockquote>
+              <figcaption className="mt-4 text-sm font-bold">{r.name || "SplitsPro customer"}</figcaption>
+            </figure>)}
+          </div>
+          <h3 className="mt-10 font-serif text-3xl">Find the right system size</h3>
+          <p className="mt-3 max-w-3xl leading-relaxed text-[#555]">Our sizing calculator is being prepared. Until then, we can help estimate capacity from your room dimensions, ceiling height, insulation, windows and sun exposure during your free call. A final recommendation depends on the property and installation conditions.</p>
+        </div>
+      </section>
+
+      <section id="google-consultation" className="scroll-mt-20 bg-[#F7F5F1] py-12 sm:py-16">
+        <div className="sp-container max-w-4xl">
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Free phone consultation · No obligation</p>
+          <h2 className="mt-3 font-serif text-4xl text-[#111]">Here's what happens when you call.</h2>
+          <p className="mt-5 leading-relaxed text-[#555]">We'll ask about the layout of your home, the room dimensions, ceiling height, insulation and sun exposure. We'll discuss where the indoor and outdoor units could go, electrical access and any installation challenges. Then we'll recommend a suitable system size and explain the Rinnai and Daikin options, fully installed prices, what is included and whether anything needs a separate quote. You can ask questions and decide in your own time — no payment or online booking is required.</p>
+          <p className="mt-4 text-sm text-[#666]">Have your suburb and rough measurements ready if possible. Photos can help, but you can call without them.</p>
+          <a href={PHONE_TEL} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>
         </div>
       </section>
 
