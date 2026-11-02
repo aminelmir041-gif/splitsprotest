@@ -207,7 +207,7 @@ const GoogleAdsLanding = () => {
             <p className="mt-2 text-sm text-[#555]">Standard supply and installation. Non-standard work is quoted before proceeding.</p>
           </div>}
           <p className="mt-6 text-sm font-semibold text-[#555]">Installation within 2 business days for eligible standard jobs, subject to availability.</p>
-          <a href={PHONE_TEL} className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>
+          {selectedUnit && <a href={PHONE_TEL} className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>}
         </div>
       </section>
 
