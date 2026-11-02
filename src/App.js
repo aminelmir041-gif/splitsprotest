@@ -33,6 +33,7 @@ import Contact from "@/pages/Contact";
 import BrandPage from "@/pages/BrandPage";
 import ZenaSpecial from "@/pages/ZenaSpecial";
 import GoogleAdsLanding from "@/pages/GoogleAdsLanding";
+import AirconDeals from "@/pages/AirconDeals";
 import PaymentOptions from "@/pages/PaymentOptions";
 import DealPayment from "@/pages/DealPayment";
 
@@ -75,6 +76,7 @@ const AnimatedRoutes = () => {
           <Route path="/book-installation" element={<Navigate to="/split-system-installation-sydney" replace />} />
           <Route path="/secure-installation" element={<Navigate to="/split-system-installation-sydney" replace />} />
           <Route path="/split-system-installation-sydney" element={<GoogleAdsLanding />} />
+          <Route path="/aircon-deals" element={<AirconDeals />} />
           <Route path="/daikin-zena-special" element={<ZenaSpecial />} />
           <Route path="/split-systems/:slug" element={<BrandPage />} />
           <Route path="/ducted" element={<Ducted />} />
