@@ -33,7 +33,10 @@ jobs:
       - name: Build React site
         run: CI=false npm run build
       - name: Preserve client-side routes
-        run: cp build/index.html build/404.html
+        run: |
+          cp build/index.html build/404.html
+          mkdir -p build/aircon-deals
+          cp build/index.html build/aircon-deals/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
