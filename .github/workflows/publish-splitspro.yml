@@ -1,4 +1,5 @@
 name: Build and deploy SplitsPro
+# Rebuild requested after fixing missing lockfile
 on:
   push:
     branches: [main]
