@@ -121,8 +121,8 @@ const GoogleAdsLanding = () => {
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">
               Rinnai and Daikin Cora. One clear standard-install price covers the unit, labour, wall bracket, isolator, up to 3m of pipework and an electrical circuit up to 20m where required. No chasing extra trades or surprise essential add-ons.
             </p>
-            <a href="#google-booking" className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-[#0B0B0B] transition-colors hover:bg-[#E4CFA6]">
-              See fully installed prices &amp; dates <ArrowDown className="h-4 w-4" />
+            <a href={PHONE_TEL} className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-[#0B0B0B] transition-colors hover:bg-[#E4CFA6]">
+              Get My Free Consultation <ArrowDown className="h-4 w-4" />
             </a>
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
@@ -166,12 +166,39 @@ const GoogleAdsLanding = () => {
         </div>
       </div>
 
+      <section id="google-consultation" className="scroll-mt-20 bg-white py-12 sm:py-16">
+        <div className="sp-container max-w-6xl">
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Free consultation · No obligation</p>
+          <h2 className="mt-3 font-serif text-4xl text-[#111]">Know what suits your home before spending a dollar.</h2>
+          <p className="mt-4 max-w-3xl text-lg leading-relaxed text-[#555]">This is a practical conversation, not a sales pitch. We'll help you understand the right size, installation options, inclusions and possible costs. You can take the advice away and decide in your own time.</p>
+          <h3 className="mt-10 font-serif text-3xl text-[#111]">Exactly what happens when you call</h3>
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            {[
+              ["1. Tell us about your space","We'll ask which suburb you're in, which room needs cooling or heating, its approximate size, ceiling height, sun exposure and insulation. Rough measurements are fine."],
+              ["2. We explain suitable systems","We'll talk through likely capacity, brands, noise, comfort and features, explaining the trade-offs in plain English rather than pushing the most expensive unit."],
+              ["3. We discuss the installation","We'll ask about indoor and outdoor locations, pipework, drainage, electrical supply and access. Photos can help us identify any complications before a quote."],
+              ["4. You leave with a clear next step","We'll explain the standard installed price, what might cost extra and likely availability. If photos or a site assessment are needed for an accurate quote, we'll tell you. You choose whether to proceed."]
+            ].map(([heading,description]) => (
+              <div key={heading} className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6">
+                <h4 className="text-lg font-bold text-[#191919]">{heading}</h4>
+                <p className="mt-3 text-sm leading-relaxed text-[#5E5E60]">{description}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 rounded-2xl bg-[#0B0B0B] p-7 text-white">
+            <h3 className="font-serif text-3xl text-[#E4CFA6]">Free advice. No sales pressure.</h3>
+            <p className="mt-3 max-w-3xl leading-relaxed text-white/80">No consultation fee, no deposit and no obligation to book. Even if you're just comparing options, you're welcome to call. It helps to have your suburb, rough room dimensions and photos, but you don't need them to start.</p>
+            <a href={PHONE_TEL} className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase text-[#0B0B0B]"><Phone className="h-4 w-4" /> Get My Free Consultation</a>
+          </div>
+        </div>
+      </section>
+
       <section id="google-booking" className="scroll-mt-20 bg-white py-10 sm:py-14" data-testid="google-ads-booking">
         <div className="sp-container max-w-6xl">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Complete standard-install prices · Real appointment availability</p>
-              <h2 className="mt-2 font-serif text-3xl font-medium text-[#111] sm:text-4xl">Choose your all-inclusive installed deal</h2>
+              <h2 className="mt-2 font-serif text-3xl font-medium text-[#111] sm:text-4xl">Compare fully installed options before you call</h2>
             </div>
             <a href={PHONE_TEL} className="inline-flex items-center gap-2 text-sm font-bold text-[#7B5A28] underline"><Phone className="h-4 w-4" /> Talk to us: {PHONE}</a>
           </div>
@@ -236,15 +263,15 @@ const GoogleAdsLanding = () => {
               <p className="mt-2 text-sm text-[#65656A]">Rinnai 7-year and Daikin 5-year manufacturer warranties, plus our installation guarantee.</p>
             </div>
           </div>
-          <a href="#google-booking" className="mt-7 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 text-sm font-extrabold uppercase text-white">
-            Back to systems &amp; dates <ArrowRight className="h-4 w-4" />
+          <a href={PHONE_TEL} className="mt-7 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 text-sm font-extrabold uppercase text-white">
+            Get My Free Consultation <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </section>
 
       <section className="bg-[#F7F5F1] py-12 sm:py-16" data-testid="google-ads-faq">
         <div className="sp-container max-w-4xl">
-          <h2 className="font-serif text-4xl text-[#111]">Quick answers before you book</h2>
+          <h2 className="font-serif text-4xl text-[#111]">Quick answers before you call</h2>
           <div className="mt-7 divide-y divide-[#DED8CF]">
             {FAQs.map((item) => (
               <details key={item.question} className="group py-5">
