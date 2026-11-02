@@ -172,7 +172,7 @@ const GoogleAdsLanding = () => {
           <div className="mt-8 rounded-2xl bg-[#0B0B0B] p-7 text-white">
             <h3 className="font-serif text-3xl text-[#E4CFA6]">Free advice. No sales pressure.</h3>
             <p className="mt-3 max-w-3xl leading-relaxed text-white/80">No consultation fee and no obligation to book. Installation within 2 business days for eligible standard jobs, subject to availability. Even if you're just comparing options, you're welcome to call. It helps to have your suburb, rough room dimensions and photos, but you don't need them to start.</p>
-            <a href={PHONE_TEL} className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase text-[#0B0B0B]"><Phone className="h-4 w-4" /> Call to Book</a>
+            
           </div>
         </div>
       </section>
