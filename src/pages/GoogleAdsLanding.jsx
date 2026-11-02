@@ -108,9 +108,6 @@ const GoogleAdsLanding = () => {
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">
               Rinnai and Daikin Cora. One clear standard-install price covers the unit, labour, wall bracket, isolator, up to 3m of pipework and an electrical circuit up to 20m where required. No chasing extra trades or surprise essential add-ons.
             </p>
-            <a href={PHONE_TEL} className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-md bg-[#C8A46A] px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-[#0B0B0B] transition-colors hover:bg-[#E4CFA6]">
-              Call to Book <ArrowDown className="h-4 w-4" />
-            </a>
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
               <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Installation within 2 business days, subject to availability</span>
