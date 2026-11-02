@@ -1,5 +1,4 @@
 import PayLaterReminder from "../components/PayLaterReminder";
-import InlineDealsBooking from "../components/InlineDealsBooking";
 import ExitQuoteCapture from "../components/ExitQuoteCapture";
 import FloatingBookingShortcut from "../components/FloatingBookingShortcut";
 import { useEffect, useState } from "react";
@@ -667,20 +666,17 @@ const BrandPage = ({ offerMode = null }) => {
                   <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#606064]">Tap the large Rinnai or Daikin card, select your system size, and pick a live installation time. Then choose a 10% booking payment, full payment or eligible pay-later options.</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <a href="#local-deal-booking" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">Choose unit &amp; date ↓</a>
-                  <a href="#local-deal-booking" className="text-xs font-bold text-[#08778D] underline underline-offset-4">Pay-later: choose date first ↓</a>
+                  <a href="#local-deal-booking" className="rounded-md bg-[#0B0B0B] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.08em] text-white">View installed prices ↓</a>
+                  <a href="#local-deal-booking" className="text-xs font-bold text-[#08778D] underline underline-offset-4">Ask us about payment options ↓</a>
                 </div>
               </div>
               <div className="mt-6" data-testid="installation-offer-pay-later-reminder">
                 <PayLaterReminder kind="equipment" equipmentHref="/split-systems/rinnai-local-offer#local-deal-booking" />
               </div>
-              <div id="local-deal-booking" className="mt-9 scroll-mt-24" data-testid="local-deal-booking">
-                <InlineDealsBooking
-                  selectedUnit={selected?.productKey ? selected : null}
-                  offerRanges={displayRanges}
-                  onChooseUnit={handleBook}
-                  onClearUnit={() => setSelected(null)}
-                />
+              <div id="local-deal-booking" className="mt-9 rounded-xl border border-[#E5E1D9] bg-white p-6">
+                <h3 className="font-serif text-2xl">See installed prices, then call us</h3>
+                <p className="mt-2 text-sm text-[#555]">No online date selection, booking or deposit. Compare system sizes and prices, then arrange installation over the phone.</p>
+                <a href="tel:0414698435" className="mt-4 inline-flex rounded-md bg-[#0B0B0B] px-6 py-3 font-bold text-white">Call to Book</a>
               </div>
               <div id="pay-later-deals" className="mt-8 border-l-4 border-[#087D94] bg-[#EEF8FA] p-5 sm:p-7" data-testid="payment-options">
                 <h3 className="font-serif text-2xl text-[#0B0B0B]">Buy now. Pay later. Stay cool.</h3>
