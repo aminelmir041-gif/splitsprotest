@@ -179,37 +179,31 @@ const GoogleAdsLanding = () => {
         </div>
       </section>
 
-      <section id="google-booking" className="scroll-mt-20 bg-white py-10 sm:py-14" data-testid="google-ads-booking">
-        <div className="sp-container max-w-6xl">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Complete standard-install prices · Installation within 2 business days, subject to availability</p>
-              <h2 className="mt-2 font-serif text-3xl font-medium text-[#111] sm:text-4xl">Compare fully installed options before you call</h2>
-            </div>
-            <a href={PHONE_TEL} className="inline-flex items-center gap-2 text-sm font-bold text-[#7B5A28] underline"><Phone className="h-4 w-4" /> Talk to us: {PHONE}</a>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {RINNAI_LOCAL_OFFER_RANGES.filter((range) => !initialBrand || range.slug === initialBrand).map((range) => (
-              <div key={range.slug} className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-5">
+      <section id="google-booking" className="scroll-mt-20 bg-white py-12 sm:py-16" data-testid="google-ads-prices">
+        <div className="sp-container max-w-5xl">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Fully installed split systems</p>
+          <h2 className="mt-3 font-serif text-4xl text-[#111]">Choose your system. See your price.</h2>
+          <p className="mt-3 text-[#555]">No online bookings, dates or payments. Select a system to compare the standard installed price, then call us to arrange your installation.</p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {RINNAI_LOCAL_OFFER_RANGES.filter(range => !initialBrand || range.slug === initialBrand).map(range => (
+              <div key={range.slug} className="rounded-xl border border-[#E5E1D9] p-5">
                 <h3 className="font-serif text-2xl text-[#111]">{range.displayName}</h3>
-                <div className="mt-4 grid gap-2">
-                  {range.prices.map((unit) => {
-                    const active = selectedUnit?.productKey === range.slug && selectedUnit?.kw === unit.kw;
-                    return <button key={unit.kw} type="button" onClick={() => setSelectedUnit({productKey:range.slug,displayName:range.displayName,kw:unit.kw,price:unit.localOfferPrice || unit.price})} className={`flex w-full items-center justify-between rounded-xl border p-4 text-left transition-colors ${active ? "border-[#A3793B] bg-[#F4E9D6]" : "border-[#E5E1D9] bg-white hover:border-[#A3793B]"}`}>
-                      <span className="font-bold text-[#222]">{unit.kw}</span><span className="font-bold text-[#8F6A34]">{unit.localOfferPrice || unit.price}</span>
-                    </button>;
-                  })}
+                <div className="mt-4 space-y-2">
+                  {range.prices.map(unit => <button key={unit.kw} type="button" onClick={() => setSelectedUnit({productKey:range.slug,displayName:range.displayName,kw:unit.kw,price:unit.localOfferPrice || unit.price})} className={`flex w-full items-center justify-between rounded-lg border p-4 text-left font-semibold ${selectedUnit?.productKey === range.slug && selectedUnit?.kw === unit.kw ? "border-[#B88A48] bg-[#FBF5E9]" : "border-[#E5E1D9] hover:border-[#B88A48]"}`}>
+                    <span>{unit.kw}</span><span className="text-[#8F6A34]">{unit.localOfferPrice || unit.price}</span>
+                  </button>)}
                 </div>
               </div>
             ))}
           </div>
-          {selectedUnit && <div className="mt-6 rounded-2xl border border-[#C8A46A] bg-[#FBF6EC] p-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Your selected system</p>
-            <h3 className="mt-2 font-serif text-2xl text-[#111]">{selectedUnit.displayName} · {selectedUnit.kw}</h3>
-            <p className="mt-2 text-3xl font-bold text-[#8F6A34]">{selectedUnit.price} <span className="text-sm font-normal text-[#555]">standard supply &amp; installation</span></p>
-            <p className="mt-3 text-sm text-[#555]">We'll confirm suitability and any non-standard requirements during your free consultation. Call to confirm an installation date. No online booking or payment.</p>
-            <a href={PHONE_TEL} className="mt-5 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book</a>
+          {selectedUnit && <div className="mt-7 rounded-xl bg-[#F7F5F1] p-6">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Selected system</p>
+            <h3 className="mt-2 font-serif text-2xl">{selectedUnit.displayName} · {selectedUnit.kw}</h3>
+            <p className="mt-2 text-3xl font-bold text-[#8F6A34]">{selectedUnit.price}</p>
+            <p className="mt-2 text-sm text-[#555]">Standard supply and installation. Non-standard work is quoted before proceeding.</p>
           </div>}
+          <p className="mt-6 text-sm font-semibold text-[#555]">Installation within 2 business days for eligible standard jobs, subject to availability.</p>
+          <a href={PHONE_TEL} className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>
         </div>
       </section>
 
