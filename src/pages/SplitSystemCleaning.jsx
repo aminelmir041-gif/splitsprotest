@@ -199,6 +199,16 @@ export default function SplitSystemCleaning() {
       {(
         <section id="cleaning-stage-2" className="scroll-mt-16 bg-[#F0F9FC] py-10 sm:py-16" data-testid="cleaning-solution-trust">
           <div className="sp-container mx-auto max-w-6xl">
+            <div className="mb-8 rounded-2xl border border-[#B9D9E5] bg-white px-6 py-7 text-[#173B50] shadow-sm sm:px-10 sm:py-10" data-testid="cleaning-why-previous-attempts-failed">
+              <p className="text-lg font-black leading-8">Why hasn't that fresh, clean feeling lasted?</p>
+              <p className="mt-3 text-base leading-8">You may have washed your filters, wiped the vents or even paid for a quick service, only to notice the same musty smell again. That doesn't mean you haven't tried hard enough. It may mean the cleaning never reached the buildup responsible.</p>
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                <div><p className="font-black">Filters are only the start.</p><p className="mt-1 leading-7">Dust and grime can collect on the internal fan and coil, beyond the removable filters.</p></div>
+                <div><p className="font-black">A surface spray may miss the source.</p><p className="mt-1 leading-7">Stubborn residue and damp sludge can remain on accessible internal surfaces and in drainage areas.</p></div>
+                <div><p className="font-black">The cause may be different.</p><p className="mt-1 leading-7">Not every odour comes from dirt inside the aircon. A quick, honest phone assessment helps determine whether cleaning makes sense.</p></div>
+              </div>
+              <p className="mt-5 border-l-4 border-[#F4C620] pl-4 font-bold leading-8">That's why our next step isn't another filter rinse. It's a proper assessment followed, where appropriate, by our indoor Gold Standard Deep Clean.</p>
+            </div>
             <header className="relative overflow-hidden rounded-[1.75rem] bg-[#08263E] px-6 py-10 text-white sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-14 lg:py-16">
               <div aria-hidden="true" className="absolute right-0 top-0 h-1.5 w-2/3 bg-[#F4C620]" />
               <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#A5E7F4] sm:text-sm">A deeper clean. A fresher-feeling home.</p>
@@ -275,7 +285,7 @@ export default function SplitSystemCleaning() {
                   <h3 className="text-[2rem] font-black uppercase leading-[1.09] tracking-[-0.045em] text-[#09263D] sm:text-[2.9rem]" style={{fontFamily:"'Manrope', Arial, sans-serif"}}>YOUR AIR CONDITIONER GETS <span className="text-[#007EA7]">THE VIP TREATMENT.</span></h3>
                 </div>
                 <div className="space-y-4 text-[1.06rem] font-medium leading-[1.8] text-[#284658] sm:text-[1.18rem]">
-                  <p>We carefully clean the indoor casing, filters, accessible evaporator coil, blower wheel, drain pan and indoor drainage pathway, protecting electrical components as we work. This service is for the indoor unit only; outdoor-unit cleaning is not included.</p>
+                  <p>We carefully clean the indoor casing, filters, accessible evaporator coil, blower wheel, drain pan and indoor drainage pathway, protecting electrical components as we work. Our Gold Standard service focuses entirely on the indoor split-system unit.</p>
                   <p>We use soft microfibre towels and protect the surrounding area, so your home and air conditioner are treated with care.</p>
                   <p className="border-l-4 border-[#F4C620] pl-4 text-xl font-extrabold leading-snug text-[#09263D] sm:text-2xl">No careless mess. No cutting corners. Just proper care from start to finish.</p>
 
