@@ -32,6 +32,13 @@ jobs:
         run: npm install --no-save --legacy-peer-deps ajv@8.17.1 ajv-keywords@5.1.0
       - name: Build React site
         run: CI=false npm run build
+      - name: Include original workmanship certificate and installation photos
+        run: |
+          mkdir -p build/workmanship
+          cp workmanship/splitspro-installation-certificate.png build/workmanship/
+          cp -R workmanship/photo-gallery build/workmanship/photo-gallery
+          test -s build/workmanship/splitspro-installation-certificate.png
+          test -s build/workmanship/photo-gallery/01-100144.jpg
       - name: Preserve client-side routes
         run: |
           cp build/index.html build/404.html
