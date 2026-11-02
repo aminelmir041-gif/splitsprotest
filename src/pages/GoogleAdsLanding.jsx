@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
-import { useLenis } from "lenis/react";
+
 import {
   ArrowDown, ArrowRight, BadgeCheck, Check, CheckCircle2,
   Clock3, CreditCard, Phone, ShieldCheck, Star,
 } from "lucide-react";
-import InlineDealsBooking from "../components/InlineDealsBooking";
-import ExitQuoteCapture from "../components/ExitQuoteCapture";
+
+
 import QuoteForm from "../components/QuoteForm";
 import { GoogleRating } from "../components/sections";
 import { PHONE, PHONE_TEL } from "../lib/data";
@@ -35,11 +35,11 @@ const FAQs = [
   },
   {
     question: "How quickly can you install?",
-    answer: "We aim to install eligible standard systems within 2 business days where appointments are available. Choose a live available day in the booking form, or call us if you need a different time.",
+    answer: "We aim to install eligible standard systems within 2 business days where appointments are available. Call us to discuss availability.",
   },
   {
     question: "Can I book without paying the whole amount?",
-    answer: "Yes. After choosing a unit and installation day, you can book with 10% upfront and pay the balance later. The checkout also offers full payment and eligible buy now, pay later options, subject to provider approval and availability.",
+    answer: "Yes. No payment is required to discuss options. We explain payment arrangements if you decide to proceed.",
   },
   {
     question: "Which areas do you cover?",
@@ -57,26 +57,12 @@ const included = [
 ];
 const GoogleAdsLanding = () => {
   const { search } = useLocation();
-  const lenis = useLenis();
+
   const [selectedUnit, setSelectedUnit] = useState(null);
   const requestedBrand = new URLSearchParams(search).get("brand")?.toLowerCase();
   const initialBrand = requestedBrand === "daikin" ? "daikin-lite-local"
     : requestedBrand === "rinnai" ? "rinnai-local" : "";
 
-  const chooseUnit = (range, row) => {
-    setSelectedUnit({
-      productKey: range.slug,
-      displayName: range.displayName,
-      kw: row.kw,
-      price: row.localOfferPrice || row.price,
-    });
-    window.setTimeout(() => {
-      const el = document.getElementById("deals-select-day");
-      if (!el) return;
-      if (lenis) lenis.scrollTo(el, { offset: -95 });
-      else el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 80);
-  };
   const schema = {
     "@context": "https://schema.org",
     "@type": "HVACBusiness",
@@ -106,7 +92,7 @@ const GoogleAdsLanding = () => {
         <meta name="description" content="Rinnai 2.5kW $1,700 fully installed. Daikin Cora 2.5kW $2,000. Standard installation includes electrical circuit, bracket, isolator and pipework." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-installation-sydney" />
         <meta property="og:title" content="Rinnai & Daikin Split Systems Supplied & Installed | SplitsPro Sydney" />
-        <meta property="og:description" content="Your standard-install price includes the unit, electrical circuit, isolator, bracket and pipework. Compare sizes and book a real installation date." />
+        <meta property="og:description" content="Your standard-install price includes the unit, electrical circuit, isolator, bracket and pipework. Compare sizes and prices, then call for a free no-pressure consultation." />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
@@ -197,22 +183,33 @@ const GoogleAdsLanding = () => {
         <div className="sp-container max-w-6xl">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Complete standard-install prices · Real appointment availability</p>
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Complete standard-install prices · No booking or deposit needed</p>
               <h2 className="mt-2 font-serif text-3xl font-medium text-[#111] sm:text-4xl">Compare fully installed options before you call</h2>
             </div>
             <a href={PHONE_TEL} className="inline-flex items-center gap-2 text-sm font-bold text-[#7B5A28] underline"><Phone className="h-4 w-4" /> Talk to us: {PHONE}</a>
           </div>
-          <InlineDealsBooking
-            selectedUnit={selectedUnit}
-            offerRanges={RINNAI_LOCAL_OFFER_RANGES}
-            onChooseUnit={chooseUnit}
-            onClearUnit={() => setSelectedUnit(null)}
-            initialBrand={initialBrand}
-          />
-          <div className="mt-5 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm font-semibold text-[#555]">
-            <span className="inline-flex items-center gap-2"><CreditCard className="h-4 w-4 text-[#8F6A34]" /> 10% to book, full payment or eligible pay-later</span>
-            <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#8F6A34]" /> Choose how to pay after choosing your date</span>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {RINNAI_LOCAL_OFFER_RANGES.filter((range) => !initialBrand || range.slug === initialBrand).map((range) => (
+              <div key={range.slug} className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-5">
+                <h3 className="font-serif text-2xl text-[#111]">{range.displayName}</h3>
+                <div className="mt-4 grid gap-2">
+                  {range.prices.map((unit) => {
+                    const active = selectedUnit?.productKey === range.slug && selectedUnit?.kw === unit.kw;
+                    return <button key={unit.kw} type="button" onClick={() => setSelectedUnit({productKey:range.slug,displayName:range.displayName,kw:unit.kw,price:unit.localOfferPrice || unit.price})} className={`flex w-full items-center justify-between rounded-xl border p-4 text-left transition-colors ${active ? "border-[#A3793B] bg-[#F4E9D6]" : "border-[#E5E1D9] bg-white hover:border-[#A3793B]"}`}>
+                      <span className="font-bold text-[#222]">{unit.kw}</span><span className="font-bold text-[#8F6A34]">{unit.localOfferPrice || unit.price}</span>
+                    </button>;
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
+          {selectedUnit && <div className="mt-6 rounded-2xl border border-[#C8A46A] bg-[#FBF6EC] p-6">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Your selected system</p>
+            <h3 className="mt-2 font-serif text-2xl text-[#111]">{selectedUnit.displayName} · {selectedUnit.kw}</h3>
+            <p className="mt-2 text-3xl font-bold text-[#8F6A34]">{selectedUnit.price} <span className="text-sm font-normal text-[#555]">standard supply &amp; installation</span></p>
+            <p className="mt-3 text-sm text-[#555]">We'll confirm suitability and any non-standard requirements during your free consultation. No booking or payment required.</p>
+            <a href={PHONE_TEL} className="mt-5 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] px-6 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Get My Free Consultation</a>
+          </div>}
         </div>
       </section>
 
@@ -305,7 +302,7 @@ const GoogleAdsLanding = () => {
           </div>
         </div>
       </section>
-      <ExitQuoteCapture selectedUnit={selectedUnit} />
+
     </>
   );
 };
