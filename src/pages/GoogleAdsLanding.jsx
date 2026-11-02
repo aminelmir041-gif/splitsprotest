@@ -233,18 +233,18 @@ const GoogleAdsLanding = () => {
               {src:"/workmanship/photo-gallery/08-90009.jpg",alt:"Daikin above-window installation"},
               {src:"/workmanship/photo-gallery/09-86696.jpg",alt:"Daikin outdoor installation"},
               {src:"/workmanship/photo-gallery/10-100215.jpg",alt:"Large Daikin outdoor installation"},
-              {src:IMAGES.installDaikinBathroom,alt:"Daikin indoor installation"},
+              {src:IMAGES.installDaikinBathroom,alt:"Daikin indoor installation",rotation:180},
               {src:IMAGES.installRinnaiWall,alt:"Rinnai living room installation"},
               {src:IMAGES.installDaikinOutdoor2,alt:"Outdoor bracket installation"},
               {src:IMAGES.installDaikinGarage,alt:"Daikin utility room installation"},
               {src:IMAGES.splitIndoor,alt:"Rinnai indoor installation"}
             ].map((photo,i) => <button key={i} type="button" onClick={() => setActivePhoto(photo)} className="w-[72%] shrink-0 snap-start overflow-hidden rounded-xl border border-[#E5E1D9] bg-[#F7F5F1] sm:w-[35%]" aria-label={`Enlarge installation photo ${i+1}`}>
-              <img src={photo.src} alt={photo.alt} loading="lazy" className="h-64 w-full object-contain" />
+              <img src={photo.src} alt={photo.alt} loading="lazy" className="h-64 w-full object-contain" style={{transform:`rotate(${photo.rotation || 0}deg)`}} />
             </button>)}
           </div>
           {activePhoto && <div role="dialog" aria-modal="true" aria-label="Enlarged installation photo" className="fixed inset-0 z-[10060] flex items-center justify-center bg-black/90 p-4" onClick={() => setActivePhoto(null)}>
             <button type="button" onClick={() => setActivePhoto(null)} className="absolute right-5 top-5 rounded-full bg-white px-4 py-2 font-bold text-black">Close ×</button>
-            <img src={activePhoto.src} alt={activePhoto.alt} className="max-h-[85vh] max-w-full object-contain" onClick={e => e.stopPropagation()} />
+            <img src={activePhoto.src} alt={activePhoto.alt} className="max-h-[85vh] max-w-full object-contain" style={{transform:`rotate(${activePhoto.rotation || 0}deg)`}} onClick={e => e.stopPropagation()} />
           </div>
           <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
           <p className="mt-2 text-sm text-[#666]">Swipe to read our available customer reviews.</p>
