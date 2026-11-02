@@ -24,6 +24,10 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm install --legacy-peer-deps --no-audit --no-fund
+      - name: Repair AJV dependency tree
+        run: |
+          npm install --no-save --legacy-peer-deps ajv@8.17.1 ajv-keywords@5.1.0
+          npm ls ajv ajv-keywords || true
       - name: Build React site
         run: CI=false npm run build
       - name: Preserve client-side routes
