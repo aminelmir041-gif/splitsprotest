@@ -382,6 +382,12 @@ export default function SplitSystemCleaning() {
                   </article>
                 ))}
               </div>
+              <div className="mt-9 rounded-xl border-2 border-[#D9B03C] bg-white px-6 py-8 text-center shadow-sm sm:px-10" data-testid="cleaning-promo-value">
+                <p className="text-xs font-black uppercase tracking-widest text-[#007EA7]">Special SplitsPro cleaning offer</p>
+                <p className="mx-auto mt-3 max-w-3xl text-2xl font-black leading-tight text-[#08263E] sm:text-4xl">A PROPER DEEP CLEAN DOESN'T HAVE TO COST $300–$350.</p>
+                <p className="mx-auto mt-4 max-w-2xl text-lg font-semibold leading-8 text-[#284658]">Some companies charge $300–$350 for a professional air conditioning deep clean. <strong>But you won't be paying anything like that with SplitsPro.</strong></p>
+                <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-[#284658]">Ask about our special promotional rate for the Gold Standard <strong>indoor-unit</strong> Deep Clean. We’ll explain the full price during your free phone consultation before you choose whether to book.</p>
+              </div>
               <div className="mt-9 rounded-xl bg-[#08263E] px-6 py-9 text-center text-white sm:px-10 sm:py-11" data-testid="cleaning-consultation-offer">
                 <p className="text-sm font-black uppercase tracking-widest text-[#77D8EF]">For mums, carers and anyone looking after family</p>
                 <h3 className="mx-auto mt-3 max-w-3xl text-2xl font-black uppercase leading-tight sm:text-4xl">REAL ADVICE. NO PRESSURE. <span className="text-[#F4C620]">NOTHING TO LOSE.</span></h3>
