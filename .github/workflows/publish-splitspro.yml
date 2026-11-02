@@ -28,6 +28,8 @@ jobs:
         run: |
           npm install --no-save --legacy-peer-deps ajv@8.17.1 ajv-keywords@5.1.0
           npm ls ajv ajv-keywords || true
+      - name: Repair AJV versions for webpack build
+        run: npm install --no-save --legacy-peer-deps ajv@8.17.1 ajv-keywords@5.1.0
       - name: Build React site
         run: CI=false npm run build
       - name: Preserve client-side routes
