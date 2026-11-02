@@ -22,9 +22,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: corepack enable
-      - run: yarn install --no-lockfile
-      - run: CI=false yarn build
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps --no-audit --no-fund
+      - name: Build React site
+        run: CI=false npm run build
       - name: Preserve client-side routes
         run: cp build/index.html build/404.html
       - uses: actions/configure-pages@v5
