@@ -9,6 +9,7 @@ import {
 
 
 import QuoteForm from "../components/QuoteForm";
+import { isAfterHours } from "../components/AfterHoursCallback";
 import { GoogleRating } from "../components/sections";
 import { PHONE, PHONE_TEL, FEATURED_REVIEW, GOOGLE_RATING, IMAGES } from "../lib/data";
 import { getReviews } from "../lib/api";
@@ -77,6 +78,11 @@ const AirconDeals = () => {
   const [showFloatingPrices, setShowFloatingPrices] = useState(false);
   const [showFloatingCall, setShowFloatingCall] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const [afterHours, setAfterHours] = useState(isAfterHours);
+  useEffect(() => {
+    const timer = window.setInterval(() => setAfterHours(isAfterHours()), 30000);
+    return () => window.clearInterval(timer);
+  }, []);
   useEffect(() => {
     const updateFloatingPrices = () => {
       const prices = document.getElementById("aircon-deals-prices");
@@ -142,8 +148,8 @@ const AirconDeals = () => {
               See Prices <ArrowDown className="h-4 w-4" />
             </a>
           )}
-          <a href={PHONE_TEL} data-testid="deals-floating-call" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#D8B77C] bg-[#17130E] px-4 py-3 text-sm font-extrabold text-white shadow-[0_8px_32px_rgba(0,0,0,.28)] hover:bg-[#29231C] sm:px-7" aria-label="Call SplitsPro to book">
-            <Phone className="h-4 w-4" /> Call Now
+          <a href={PHONE_TEL} data-testid="deals-floating-call" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#D8B77C] bg-[#17130E] px-4 py-3 text-sm font-extrabold text-white shadow-[0_8px_32px_rgba(0,0,0,.28)] hover:bg-[#29231C] sm:px-7" aria-label={afterHours ? "We are currently closed. Request a callback" : "Call SplitsPro to book"}>
+            <Phone className="h-4 w-4" /> {afterHours ? "Closed · Callback" : "Call Now"}
           </a>
         </div>
       )}
