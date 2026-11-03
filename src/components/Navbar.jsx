@@ -108,7 +108,7 @@ export const Navbar = () => {
 
         {!isCleaningLanding && <div className="flex items-center gap-2 sm:gap-3">
           <NavLink
-            to="/split-system-installation-sydney"
+            to="/aircon-deals"
             data-testid="nav-deals-btn"
             className={({ isActive }) =>
               `inline-flex h-9 items-center justify-center rounded-full border px-3 text-[11px] font-bold uppercase tracking-[0.12em] transition-all sm:h-10 sm:px-4 sm:text-xs ${
