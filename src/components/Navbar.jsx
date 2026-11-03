@@ -107,21 +107,6 @@ export const Navbar = () => {
         </div>}
 
         {!isCleaningLanding && <div className="flex items-center gap-2 sm:gap-3">
-          <NavLink
-            to="/aircon-deals"
-            data-testid="nav-deals-btn"
-            className={({ isActive }) =>
-              `inline-flex h-9 items-center justify-center rounded-full border px-3 text-[11px] font-bold uppercase tracking-[0.12em] transition-all sm:h-10 sm:px-4 sm:text-xs ${
-                solid
-                  ? isActive
-                    ? "border-[#C8A46A] bg-[#C8A46A] text-white"
-                    : "border-[#C8A46A] bg-white text-[#9A7540] hover:bg-[#C8A46A] hover:text-white"
-                  : "border-white/60 bg-black/10 text-white hover:bg-white hover:text-[#1D1D1F]"
-              }`
-            }
-          >
-            Deals
-          </NavLink>
           <a
             href={PHONE_TEL}
             data-testid="nav-call-btn"
@@ -161,17 +146,6 @@ export const Navbar = () => {
             className="fixed inset-x-0 top-[72px] z-[9999] max-h-[calc(100dvh-72px)] overflow-y-auto overscroll-contain border-t border-[#E5E5EA] bg-white shadow-2xl lg:hidden"
           >
             <div className="sp-container grid gap-0.5 py-4">
-              <NavLink
-                to="/split-system-installation-sydney"
-                data-testid="mobile-deals-link"
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  `mb-2 flex items-center justify-between rounded-xl border border-[#C8A46A]/40 bg-[#FBF7EF] px-4 py-3.5 font-serif text-lg ${isActive ? "text-[#9A7540]" : "text-[#1D1D1F]"}`
-                }
-              >
-                <span>Current Deals</span>
-                <span className="font-sans text-xs font-bold uppercase tracking-[0.12em] text-[#9A7540]">Rinnai + Daikin</span>
-              </NavLink>
               {NAV.map((item) => (
                 <NavLink
                   key={item.to}
