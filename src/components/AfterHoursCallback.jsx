@@ -33,7 +33,8 @@ export default function AfterHoursCallback() {
       if (!a.dataset.spOriginalLabel) a.dataset.spOriginalLabel = a.textContent;
       if (closed) {
         a.setAttribute("aria-label", "We are currently closed. Request a callback");
-        if (/call now|call to book|call us/i.test(a.textContent)) a.textContent = "We are currently closed · Request a callback";
+        if (a.dataset.testid === "deals-floating-call") a.textContent = "Request Callback";
+        else if (/call now|call to book|call us/i.test(a.textContent)) a.textContent = "We are currently closed · Request a callback";
       } else if (a.dataset.spOriginalLabel && a.textContent.includes("We are currently closed")) {
         a.textContent = a.dataset.spOriginalLabel;
         a.removeAttribute("aria-label");
