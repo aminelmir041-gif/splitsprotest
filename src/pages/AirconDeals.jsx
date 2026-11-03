@@ -72,6 +72,16 @@ const AirconDeals = () => {
 
   const [activePhoto, setActivePhoto] = useState(null);
   const [reviews, setReviews] = useState(FALLBACK_REVIEWS);
+  const [showFloatingPrices, setShowFloatingPrices] = useState(false);
+  useEffect(() => {
+    const updateFloatingPrices = () => {
+      const prices = document.getElementById("aircon-deals-prices");
+      setShowFloatingPrices(window.scrollY > 280 && (!prices || prices.getBoundingClientRect().top > 120));
+    };
+    updateFloatingPrices();
+    window.addEventListener("scroll", updateFloatingPrices, { passive: true });
+    return () => window.removeEventListener("scroll", updateFloatingPrices);
+  }, []);
   useEffect(() => { let active = true; getReviews().then(items => { if (active && Array.isArray(items) && items.length) setReviews(items); }).catch(() => {}); return () => { active = false; }; }, []);
   const requestedBrand = new URLSearchParams(search).get("brand")?.toLowerCase();
   const initialBrand = requestedBrand === "daikin" ? "daikin-lite-local"
@@ -112,6 +122,16 @@ const AirconDeals = () => {
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
 
+      {showFloatingPrices && (
+        <a
+          href="#aircon-deals-prices"
+          className="fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[70] inline-flex min-h-12 -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-[#D8B77C] px-7 py-3 text-sm font-extrabold text-[#17130E] shadow-[0_8px_32px_rgba(0,0,0,.28)] hover:bg-[#F0D6A7]"
+          aria-label="Jump to installed prices"
+        >
+          See Prices <ArrowDown className="h-4 w-4" />
+        </a>
+      )}
+
       <section data-testid="google-ads-hero" className="bg-[#0B0B0B] text-white">
         <div className="sp-container grid gap-10 pb-16 pt-24 sm:pb-20 sm:pt-28 lg:grid-cols-[1.15fr_.85fr] lg:items-center lg:gap-16">
           <div>
@@ -122,7 +142,6 @@ const AirconDeals = () => {
             <p className="mt-7 max-w-xl text-lg leading-[1.6] text-white/80 sm:text-xl">
               A split system is only part of the job. See how we look after your home, document the work and make the full standard-install price clear before you decide.
             </p>
-            <a href="#before-prices" className="mt-8 inline-flex min-h-12 items-center gap-3 rounded-lg bg-[#D8B77C] px-7 py-3 text-sm font-extrabold tracking-wide text-[#17130E] hover:bg-[#F0D6A7]">See what your install includes <ArrowDown className="h-4 w-4" /></a>
             <div className="mt-7 flex flex-col gap-3 text-sm font-medium text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
               <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Installation within 2 business days for eligible jobs, subject to availability</span>
@@ -130,6 +149,13 @@ const AirconDeals = () => {
             </div>
           </div>
           <div className="space-y-4">
+            <img
+              src="/landing/overheated-bulldog-hero.webp"
+              alt="The original SplitsPro bulldog artwork"
+              loading="eager"
+              fetchPriority="high"
+              className="w-full rounded-[24px] object-cover shadow-[0_20px_65px_rgba(0,0,0,.3)]"
+            />
             <div className="rounded-[28px] border border-[#C7A46C]/35 bg-[#191715] p-7 shadow-[0_28px_90px_rgba(0,0,0,.35)] sm:p-9">
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">The SplitsPro workmanship promise</p>
             <h2 className="mt-5 font-serif text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.045em] text-white">A proper install is in the details.</h2>
@@ -156,22 +182,21 @@ const AirconDeals = () => {
         <div className="sp-container max-w-5xl">
           <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Before you choose an installer</p>
           <h2 className="mt-4 max-w-4xl font-serif text-[clamp(42px,5.2vw,72px)] leading-[1.04] tracking-[-0.05em] text-[#111]">You know the unit you want. <span className="text-[#956C35]">But what are you really getting?</span></h2>
-          <p className="mt-6 max-w-3xl text-lg leading-[1.7] text-[#4F4F52]">Two installation quotes can look similar until you ask what happens inside your walls, how the outdoor unit is secured, whether the electrical work is included and who helps if something isn't right afterwards.</p>
-          <p className="mt-4 max-w-3xl text-lg leading-[1.7] text-[#4F4F52]">Our answer is the <strong className="font-semibold text-[#1C1C1C]">SplitsPro Workmanship Promise</strong>: a clear plan, care for your property, tested and documented work, and honest pricing before you approve any extras.</p>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {[
-              ["01", "Know before we start", "We confirm unit positions, what the standard package includes and any extra work in advance."],
-              ["02", "Care in every detail", "Licensed and insured installers take care with mounting, pipework, drainage, electrical work and your home's finish."],
-              ["03", "Proof after the job", "We commission the system, explain the controls and keep installation records to help with future questions."]
-            ].map(([number, heading, detail]) => <div key={number} className="rounded-2xl border border-[#E5DED2] bg-white p-6 shadow-[0_10px_30px_rgba(50,37,18,.04)]">
-              <p className="font-serif text-3xl text-[#A3793B]">{number}</p>
-              <h3 className="mt-4 font-serif text-2xl leading-tight text-[#171717]">{heading}</h3>
-              <p className="mt-3 text-sm leading-[1.7] text-[#5B5B60]">{detail}</p>
-            </div>)}
-          </div>
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <a href="#aircon-deals-prices" className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#111] px-6 py-3 font-bold text-white hover:bg-[#333]">Now compare installed prices <ArrowDown className="h-4 w-4" /></a>
-            <a href="#local-offer-trust" className="text-sm font-bold text-[#8F6A34] underline underline-offset-4">See real jobs and customer reviews</a>
+          <p className="mt-6 max-w-3xl text-lg leading-[1.7] text-[#4F4F52]">Two quotes can look the same. But what if extra costs pop up, your home gets damaged, or there is a fault after the job?</p>
+          <p className="mt-4 max-w-3xl text-lg leading-[1.7] text-[#4F4F52]">Here is how our workmanship promise helps.</p>
+          <div className="mt-10 max-w-4xl divide-y divide-[#DDD4C6]">
+            <div className="pb-8">
+              <h3 className="font-serif text-3xl text-[#171717] sm:text-4xl">Know before we start</h3>
+              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">No one likes a price that grows after work starts. We show you what is in your quote, where the units will go and what may cost extra. You get to agree to any extra work before it starts.</p>
+            </div>
+            <div className="py-8">
+              <h3 className="font-serif text-3xl text-[#171717] sm:text-4xl">Care in every detail</h3>
+              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">Poor work can lead to water leaks, loose parts or damage to your home. Our licensed and insured team takes care with the mounts, pipes, drain and power. We look after your home and clean up when we finish.</p>
+            </div>
+            <div className="pt-8">
+              <h3 className="font-serif text-3xl text-[#171717] sm:text-4xl">Proof after the job</h3>
+              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">If there is a problem later, you should not be left guessing. We test your aircon, take job photos and keep the right records. We show you how to use your system and help work out the next step if something goes wrong.</p>
+            </div>
           </div>
         </div>
       </section>
