@@ -48,13 +48,13 @@ const FAQs = [
   },
 ];
 const included = [
-  "Air conditioner supplied",
-  "Standard installation labour",
-  "Up to 3 metres of pipework",
-  "Standard wall bracket or floor mount",
-  "Isolation switch",
-  "Electrical circuit up to 20 metres where required",
-  "Commissioning and installation guarantee",
+  "Your new air conditioner",
+  "Professional installation",
+  "Indoor and outdoor units back-to-back on the same wall",
+  "Up to 20 metres of electrical cabling where required",
+  "Wall bracket, mounting feet or a suitable pad",
+  "All standard fittings and connections",
+  "Testing, handover and workmanship support",
 ];
 const GOOGLE_REVIEWS_URL = "https://g.page/r/CYTvO1ipeYUtEBM/";
 const FALLBACK_REVIEWS = [
@@ -192,13 +192,13 @@ const AirconDeals = () => {
       <section className="bg-[#F7F5F1] py-12 sm:py-16" data-testid="google-ads-inclusions">
         <div className="sp-container grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">What you pay for</p>
-            <h2 className="mt-3 font-serif text-4xl text-[#111]">Electrical circuit, bracket, isolator. Already included.</h2>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">One clear installed price</p>
+            <h2 className="mt-3 font-serif text-4xl text-[#111]">If it fits our standard install, there's no more to pay.</h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-[#5B5B60]">
-              When your home qualifies for the standard installation, the card price includes the air conditioner, labour, electrical circuit up to 20 metres where required, wall bracket, isolator and up to 3 metres of pipe. No separate electrician to organise and no missing essential installation items.
+              Our advertised deal covers the air conditioner and a complete standard installation — with the indoor and outdoor units on opposite sides of the same wall. You also get up to 20 metres of electrical cabling where required, plus the suitable wall bracket, mounting feet or pad. It's one upfront package price, with no surprise charges for what's included.
             </p>
             <p className="mt-4 text-sm leading-relaxed text-[#6C6A6E]">
-              Extra pipework, difficult access, switchboard upgrades and unusual roof or cavity routing may need a separate quote.
+              If your job needs pipes run through the roof, longer runs through walls or cavities, extra pipe length, difficult access or electrical upgrades, that's additional work. We'll explain it and give you the extra price before you agree to anything. Fair and straightforward.
             </p>
           </div>
           <ul className="grid content-start gap-3 sm:grid-cols-2">
