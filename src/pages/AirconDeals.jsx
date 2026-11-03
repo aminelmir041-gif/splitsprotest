@@ -36,7 +36,7 @@ const FAQs = [
   },
   {
     question: "How quickly can you install?",
-    answer: "Same-day installations may be available for eligible jobs. We aim to offer an installation appointment within 2 business days, subject to stock, access and our schedule. Call us to confirm the next available time.",
+    answer: "We aim to complete eligible standard installations within 2 business days, subject to stock, access and available appointments. Call us to confirm the earliest available installation date.",
   },
   {
     question: "Can I book without paying the whole amount?",
@@ -125,7 +125,7 @@ const AirconDeals = () => {
             <a href="#aircon-deals-prices" className="mt-8 inline-flex min-h-12 items-center gap-3 rounded-lg bg-[#D8B77C] px-7 py-3 text-sm font-extrabold tracking-wide text-[#17130E] hover:bg-[#F0D6A7]">Explore installed deals <ArrowDown className="h-4 w-4" /></a>
             <div className="mt-7 flex flex-col gap-3 text-sm font-medium text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
-              <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Same-day installation may be available · appointments within 2 business days, subject to availability</span>
+              <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Installation within 2 business days for eligible jobs, subject to availability</span>
               <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Installation guarantee</span>
             </div>
           </div>
@@ -177,11 +177,7 @@ const AirconDeals = () => {
               <span className="mt-1 block text-xs text-[#666]">Standard fully installed price</span>
             </div>))}
           </div>}
-          <div className="mt-6 rounded-xl border border-[#D5B77B] bg-[#FFF8E8] p-4 sm:p-5">
-            <p className="flex items-center gap-2 font-bold text-[#2B251B]"><Clock3 className="h-5 w-5 text-[#9A7540]" /> Need it installed quickly?</p>
-            <p className="mt-2 text-sm leading-relaxed text-[#544A3A]">Same-day installations may be available. We aim to offer installation appointments within 2 business days for eligible jobs, subject to stock and scheduling. Call to confirm your earliest option.</p>
-            <a href={PHONE_TEL} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#6D4F21] underline"><Phone className="h-4 w-4" /> Check availability · {PHONE}</a>
-          </div>
+
 
         </div>
       </section>
