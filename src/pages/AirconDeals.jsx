@@ -75,10 +75,14 @@ const AirconDeals = () => {
   const [activePhoto, setActivePhoto] = useState(null);
   const [reviews, setReviews] = useState(FALLBACK_REVIEWS);
   const [showFloatingPrices, setShowFloatingPrices] = useState(false);
+  const [showFloatingCall, setShowFloatingCall] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState(null);
   useEffect(() => {
     const updateFloatingPrices = () => {
       const prices = document.getElementById("aircon-deals-prices");
-      setShowFloatingPrices(window.scrollY > 280 && (!prices || prices.getBoundingClientRect().top > 120));
+      const showActions = window.scrollY > 280;
+      setShowFloatingCall(showActions);
+      setShowFloatingPrices(showActions && (!prices || prices.getBoundingClientRect().top > 120));
     };
     updateFloatingPrices();
     window.addEventListener("scroll", updateFloatingPrices, { passive: true });
@@ -89,6 +93,13 @@ const AirconDeals = () => {
   const initialBrand = requestedBrand === "daikin" ? "daikin-lite-local"
     : requestedBrand === "rinnai" ? "rinnai-local" : "";
   const [selectedBrand, setSelectedBrand] = useState(initialBrand);
+  const quoteMessage = selectedOffer
+    ? `I am interested in the ${selectedOffer.brand} ${selectedOffer.size} split system at ${selectedOffer.price} (advertised standard installed price). Please contact me to confirm my installation and quote.`
+    : "Please contact me about a free split system installation quote.";
+  const quoteThisUnit = (range, unit) => {
+    setSelectedOffer({ brand: range.displayName, size: unit.kw, price: unit.localOfferPrice || unit.price });
+    document.getElementById("google-quote")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const schema = {
     "@context": "https://schema.org",
@@ -124,14 +135,17 @@ const AirconDeals = () => {
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
 
-      {showFloatingPrices && (
-        <a
-          href="#aircon-deals-prices"
-          className="fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[70] inline-flex min-h-12 -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-[#D8B77C] px-7 py-3 text-sm font-extrabold text-[#17130E] shadow-[0_8px_32px_rgba(0,0,0,.28)] hover:bg-[#F0D6A7]"
-          aria-label="Jump to installed prices"
-        >
-          See Prices <ArrowDown className="h-4 w-4" />
-        </a>
+      {showFloatingCall && (
+        <div className="fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[70] flex -translate-x-1/2 items-center gap-2 whitespace-nowrap" aria-label="Quick contact options">
+          {showFloatingPrices && (
+            <a href="#aircon-deals-prices" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#D8B77C] px-4 py-3 text-sm font-extrabold text-[#17130E] shadow-[0_8px_32px_rgba(0,0,0,.28)] hover:bg-[#F0D6A7] sm:px-7" aria-label="Jump to installed prices">
+              See Prices <ArrowDown className="h-4 w-4" />
+            </a>
+          )}
+          <a href={PHONE_TEL} data-testid="deals-floating-call" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#D8B77C] bg-[#17130E] px-4 py-3 text-sm font-extrabold text-white shadow-[0_8px_32px_rgba(0,0,0,.28)] hover:bg-[#29231C] sm:px-7" aria-label="Call SplitsPro to book">
+            <Phone className="h-4 w-4" /> Call Now
+          </a>
+        </div>
       )}
 
       <section data-testid="google-ads-hero" className="bg-[#0B0B0B] text-white">
@@ -144,6 +158,11 @@ const AirconDeals = () => {
             <p className="mt-7 max-w-xl text-lg leading-[1.6] text-white/80 sm:text-xl">
               A split system is only part of the job. See how we look after your home, document the work and make the full standard-install price clear before you decide.
             </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href={PHONE_TEL} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#D8B77C] px-6 py-3 text-sm font-extrabold text-[#17130E] hover:bg-[#E8CC99]"><Phone className="h-4 w-4" /> Book Now · Call Us</a>
+              <a href="#google-quote" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-white/45 px-6 py-3 text-sm font-bold text-white hover:bg-white/10">Get a Free Quote <ArrowDown className="h-4 w-4" /></a>
+            </div>
+            <p className="mt-3 text-xs text-white/60">Book by phone, or request a callback. No online calendar or payment.</p>
             <div className="mt-7 flex flex-col gap-3 text-sm font-medium text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No final payment until you’re happy with the completed job</span>
               <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Installation within 2 business days for eligible jobs, subject to availability</span>
@@ -215,7 +234,7 @@ const AirconDeals = () => {
           <p className="mt-3 text-[#555]">No online bookings, dates or payments. Select a system to compare the standard installed price, then call us to arrange your installation.</p>
           <h3 className="mt-8 font-serif text-2xl">Choose a brand to see installed prices</h3>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {RINNAI_LOCAL_OFFER_RANGES.map(range => <button key={range.slug} type="button" onClick={() => setSelectedBrand(range.slug)} className={`rounded-xl border p-6 text-left transition-colors ${selectedBrand === range.slug ? "border-[#B88A48] bg-[#FBF5E9]" : "border-[#E5E1D9] bg-white hover:border-[#B88A48]"}`}>
+            {RINNAI_LOCAL_OFFER_RANGES.map(range => <button key={range.slug} type="button" onClick={() => { setSelectedBrand(range.slug); setSelectedOffer(null); }} className={`rounded-xl border p-6 text-left transition-colors ${selectedBrand === range.slug ? "border-[#B88A48] bg-[#FBF5E9]" : "border-[#E5E1D9] bg-white hover:border-[#B88A48]"}`}>
               <span className="block font-serif text-2xl text-[#111]">{range.displayName}</span>
               <span className="mt-2 block text-sm text-[#666]">View all sizes and prices</span>
             </button>)}
@@ -225,10 +244,42 @@ const AirconDeals = () => {
               <span className="block text-xl font-bold text-[#111]">{unit.kw}</span>
               <span className="mt-2 block text-2xl font-bold text-[#8F6A34]">{unit.localOfferPrice || unit.price}</span>
               <span className="mt-1 block text-xs text-[#666]">Standard fully installed price</span>
+              <button type="button" onClick={() => quoteThisUnit(range, unit)} className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-lg bg-[#17130E] px-2 py-2 text-xs font-bold text-white hover:bg-[#35302A] sm:text-sm">Quote this unit <ArrowRight className="h-3.5 w-3.5" /></button>
             </div>))}
           </div>}
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm">
+            <a href="#google-quote" className="font-bold text-[#8F6A34] underline underline-offset-4">Get a free quote in 3 quick fields</a>
+            <a href={PHONE_TEL} className="inline-flex items-center gap-2 font-bold text-[#17130E] underline underline-offset-4"><Phone className="h-4 w-4" /> Book by phone</a>
+          </div>
+        </div>
+      </section>
 
-
+      <section id="google-quote" className="scroll-mt-24 bg-white py-12 sm:py-16" data-testid="google-ads-quote">
+        <div className="sp-container grid max-w-5xl gap-10 lg:grid-cols-2 lg:items-center">
+          <div>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Free installation quote · Only 3 details</p>
+            <h2 className="mt-3 max-w-3xl font-serif text-[clamp(40px,4.5vw,64px)] leading-[1.04] tracking-[-0.045em] text-[#111]">Want a clear quote? <span className="text-[#956C35]">We’ll call you.</span></h2>
+            <p className="mt-4 max-w-lg leading-relaxed text-[#606064]">Just leave your name, mobile number and suburb. We’ll call to discuss the unit, where it will go and any extras. No online calendar, payment or obligation.</p>
+            <p className="mt-3 text-sm text-[#777]">If you selected a system above, its details are included automatically.</p>
+            <a href={PHONE_TEL} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#8F6A34] underline"><Phone className="h-4 w-4" /> Prefer to book by phone? {PHONE}</a>
+          </div>
+          <div className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:p-8">
+            <QuoteForm
+              defaultService="Split System Installation"
+              defaultMessage={quoteMessage}
+              submitLabel="Request My Free Quote"
+              compact
+              hideEmail
+              hideAddress
+              hidePhoto
+              hideMessage
+              hidePreferredDate
+              includeAttribution
+              successTitle="Quote request received"
+              successMessage="We'll be in touch to discuss your system and installation."
+              tight
+            />
+          </div>
         </div>
       </section>
 
@@ -357,29 +408,7 @@ const AirconDeals = () => {
         </div>
       </section>
 
-      <section id="google-quote" className="scroll-mt-24 bg-white py-12 sm:py-16" data-testid="google-ads-quote">
-        <div className="sp-container grid max-w-5xl gap-10 lg:grid-cols-2 lg:items-center">
-          <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Not a standard install?</p>
-            <h2 className="mt-3 max-w-3xl font-serif text-[clamp(40px,4.5vw,64px)] leading-[1.04] tracking-[-0.045em] text-[#111]">Not standard? <span className="text-[#956C35]">Let’s work it out.</span></h2>
-            <p className="mt-4 max-w-lg leading-relaxed text-[#606064]">If you're unsure about pipe lengths, outside-unit position or access, tell us your suburb and what needs installing. We'll review the job and get back to you.</p>
-            <a href={PHONE_TEL} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#8F6A34] underline"><Phone className="h-4 w-4" /> Prefer to call {PHONE}?</a>
-          </div>
-          <div className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:p-8">
-            <QuoteForm
-              defaultService="Split System Installation"
-              defaultMessage="Google Search installed-deals enquiry. Please confirm standard-install eligibility and quote any extras."
-              submitLabel="Request My Free Quote"
-              compact
-              hidePreferredDate
-              includeAttribution
-              successTitle="Quote request received"
-              successMessage="We'll be in touch to discuss your system and installation."
-              tight
-            />
-          </div>
-        </div>
-      </section>
+
 
     </>
   );
