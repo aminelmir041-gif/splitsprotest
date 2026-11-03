@@ -78,7 +78,7 @@ const AnimatedRoutes = () => {
           <Route path="/split-systems/rinnai-local-offer" element={<Navigate to="/aircon-deals?brand=rinnai" replace />} />
           <Route path="/book-installation" element={<Navigate to="/split-system-installation-sydney" replace />} />
           <Route path="/secure-installation" element={<Navigate to="/split-system-installation-sydney" replace />} />
-          <Route path="/split-system-installation-sydney" element={<GoogleAdsLanding />} />
+          <Route path="/split-system-installation-sydney" element={<Navigate to="/aircon-deals" replace />} />
           <Route path="/aircon-deals" element={<AirconDeals />} />
           <Route path="/daikin-zena-special" element={<ZenaSpecial />} />
           <Route path="/split-systems/:slug" element={<BrandPage />} />
