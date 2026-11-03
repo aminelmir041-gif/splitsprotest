@@ -125,14 +125,6 @@ const AirconDeals = () => {
             </div>
           </div>
           <div className="space-y-4">
-            <img
-              src="/workmanship/photo-gallery/02-100213.jpg"
-              alt="Real SplitsPro split system installation in a Sydney living room"
-              loading="eager"
-              fetchPriority="high"
-              className="aspect-[4/3] w-full rounded-2xl object-cover"
-            />
-            <p className="text-xs font-semibold text-white/65">Real SplitsPro installation — see more completed work and customer reviews below.</p>
             <div className="rounded-2xl border border-white/15 bg-white/[0.055] p-5 sm:p-7">
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">Fully installed deals · including electrical circuit</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
