@@ -51,6 +51,8 @@ const included = [
   "Your new air conditioner",
   "Professional installation",
   "Indoor and outdoor units back-to-back on the same wall",
+  "Up to 3 metres of refrigeration pipe",
+  "Isolator (power shut-off switch)",
   "Up to 20 metres of electrical cabling where required",
   "Wall bracket, mounting feet or a suitable pad",
   "All standard fittings and connections",
@@ -156,16 +158,6 @@ const AirconDeals = () => {
               fetchPriority="high"
               className="w-full rounded-[24px] object-cover shadow-[0_20px_65px_rgba(0,0,0,.3)]"
             />
-            <div className="rounded-[28px] border border-[#C7A46C]/35 bg-[#191715] p-7 shadow-[0_28px_90px_rgba(0,0,0,.35)] sm:p-9">
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">The SplitsPro workmanship promise</p>
-            <h2 className="mt-5 font-serif text-[clamp(38px,4vw,56px)] leading-[1.02] tracking-[-0.055em] text-white">A proper install is in the details.</h2>
-            <div className="mt-7 space-y-5">
-              <p className="flex items-start gap-3 text-base leading-relaxed text-white/85"><CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-[#D8B77C]" /> We confirm the plan and any non-standard extras before work starts.</p>
-              <p className="flex items-start gap-3 text-base leading-relaxed text-white/85"><CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-[#D8B77C]" /> We protect your home, complete the installation and test the system.</p>
-              <p className="flex items-start gap-3 text-base leading-relaxed text-white/85"><CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-[#D8B77C]" /> We document the job and explain your controls and warranty.</p>
-            </div>
-            <p className="mt-7 border-t border-white/15 pt-5 text-sm text-white/70">Real installations, genuine reviews and transparent package prices below.</p>
-          </div>
           </div>
         </div>
       </section>
@@ -180,36 +172,38 @@ const AirconDeals = () => {
 
       <section id="before-prices" className="scroll-mt-20 bg-[#F6F2EA] py-20 sm:py-28" data-testid="google-ads-before-prices">
         <div className="sp-container max-w-5xl">
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Before you choose an installer</p>
-          <h2 className="mt-5 max-w-4xl font-serif text-[clamp(50px,5.7vw,82px)] leading-[0.98] tracking-[-0.062em] text-[#0D0D0D] [text-wrap:balance]">You know the unit you want. <span className="text-[#956C35]">But what are you really getting?</span></h2>
-          <p className="mt-6 max-w-3xl text-lg leading-[1.7] text-[#4F4F52]">Two quotes can look the same. But what if extra costs pop up, your home gets damaged, or there is a fault after the job?</p>
-          <p className="mt-4 max-w-3xl text-lg leading-[1.7] text-[#4F4F52]">Here is how our workmanship promise helps.</p>
-          <div className="mt-12 max-w-4xl divide-y divide-[#C9BFB1]">
-            <div className="pb-8">
-              <h3 className="font-serif text-[clamp(34px,3.5vw,50px)] leading-tight tracking-[-0.05em] text-[#111]">Know before we start</h3>
-              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">No one likes a price that grows after work starts. We show you what is in your quote, where the units will go and what may cost extra. You get to agree to any extra work before it starts.</p>
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">The SplitsPro workmanship promise</p>
+          <h2 className="mt-5 max-w-4xl font-serif text-[clamp(48px,5.5vw,78px)] leading-[0.98] tracking-[-0.062em] text-[#0D0D0D] [text-wrap:balance]">
+            You booked a pro. <span className="text-[#956C35]">You shouldn't get another job.</span>
+          </h2>
+          <p className="mt-6 max-w-3xl text-lg leading-[1.7] text-[#4F4F52]">
+            Your day is already full. Staff need answers. Clients call. Meetings run late. You make big choices at work, then come home to bills, family and a house that needs your time.
+          </p>
+          <p className="mt-4 max-w-3xl text-lg leading-[1.7] text-[#4F4F52]">
+            You've worked hard for your free time. You should not have to spend it chasing an installer.
+          </p>
+          <div className="mt-14 max-w-4xl divide-y divide-[#C9BFB1]">
+            <div className="pb-12">
+              <h3 className="font-serif text-[clamp(34px,3.5vw,52px)] leading-tight tracking-[-0.05em] text-[#111]">Your time isn't the flexible part.</h3>
+              <p className="mt-4 text-base leading-[1.8] text-[#4F4F52]">We plan the job around your day. Before we start, we check how to get in, what parts we need and what work must be done. We give the installer a clear job plan. Then we check the day and time with you both.</p>
+              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">If it helps, we can drop off the unit one or two days early. We can also send more workers on the day. About two days before the job, we check that everything is ready. If plans change, we tell you.</p>
+              <div className="mt-6 rounded-xl border-l-4 border-[#B58A4E] bg-white px-5 py-5">
+                <p className="font-serif text-2xl text-[#111]">Late without a timely update? We take 10% off.</p>
+                <p className="mt-2 text-sm leading-relaxed text-[#595959]">If we're more than two hours late through our fault and did not tell you ahead of time, we take 10% off your install quote. One discount per job.</p>
+              </div>
             </div>
-            <div className="py-8">
-              <h3 className="font-serif text-[clamp(34px,3.5vw,50px)] leading-tight tracking-[-0.05em] text-[#111]">Care in every detail</h3>
-              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">Poor work can lead to water leaks, loose parts or damage to your home. Our licensed and insured team takes care with the mounts, pipes, drain and power. We look after your home and clean up when we finish.</p>
+            <div className="py-12">
+              <h3 className="font-serif text-[clamp(34px,3.5vw,52px)] leading-tight tracking-[-0.05em] text-[#111]">Neat work and care.</h3>
+              <p className="mt-4 text-base leading-[1.8] text-[#4F4F52]">Before the job, we visit your home. We take photos, measure the walls and mark where the unit will go. We show you where pipes and covers will run, where the water will drain and where we may need to drill. You see the plan before we make a hole.</p>
+              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]"><strong className="text-[#262626]">Measure twice. Cut once.</strong> We put down drop sheets, check the marks and make neat cuts. Our licensed and insured installers follow the plan. Key photos go to our office so we can check the work as it happens.</p>
+              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">We send before-and-after photos of the areas we worked on. If our work does not match the agreed plan and our standards, we'll fix it at no extra cost.</p>
             </div>
-            <div className="pt-8">
-              <h3 className="font-serif text-[clamp(34px,3.5vw,50px)] leading-tight tracking-[-0.05em] text-[#111]">Proof after the job</h3>
-              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">If there is a problem later, you should not be left guessing. We test your aircon, take job photos and keep the right records. We show you how to use your system and help work out the next step if something goes wrong.</p>
+            <div className="pt-12">
+              <h3 className="font-serif text-[clamp(34px,3.5vw,52px)] leading-tight tracking-[-0.05em] text-[#111]">The quote shouldn't grow legs.</h3>
+              <p className="mt-4 text-base leading-[1.8] text-[#4F4F52]">Your time matters. So does ours. On the call and visit, we check the room, where the unit can go, where pipes will run and what power it needs. Then we give you one clear quote for the work your home needs.</p>
+              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">A standard quote includes the unit, installation, a normal wall bracket or safe ground spot, a power shut-off switch and the stated amount of pipes and wires. You'll see what is included below with the prices.</p>
+              <p className="mt-3 text-base leading-[1.8] text-[#4F4F52]">If the pipes need to run farther, access is hard or your home needs extra work, we explain the cost first. We don't do extra paid work without your okay.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#0B0B0B] py-16 text-white sm:py-24" data-testid="google-ads-payment-promise">
-        <div className="sp-container max-w-5xl">
-          <div className="border-l-4 border-[#D6AF72] pl-6 sm:pl-10">
-            <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#D6AF72]">Our pay-when-you're-happy promise</p>
-            <h2 className="mt-5 max-w-4xl font-serif text-[clamp(48px,6vw,88px)] leading-[0.98] tracking-[-0.06em] [text-wrap:balance]">
-              You don't pay until <span className="text-[#E5C794]">the job is done right.</span>
-            </h2>
-            <p className="mt-7 max-w-2xl text-lg leading-[1.7] text-white/80">We finish the installation, test your system, check the workmanship with you and make sure you're happy with the completed job before asking for payment.</p>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/65">You'll know exactly what's included in your quote before work starts. Any non-standard extras are explained and agreed upfront.</p>
           </div>
         </div>
       </section>
@@ -260,27 +254,23 @@ const AirconDeals = () => {
         </div>
       </section>
 
+      <section className="bg-[#0B0B0B] py-16 text-white sm:py-24" data-testid="google-ads-payment-promise">
+        <div className="sp-container max-w-5xl">
+          <div className="border-l-4 border-[#D6AF72] pl-6 sm:pl-10">
+            <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#D6AF72]">Our pay-when-you're-happy promise</p>
+            <h2 className="mt-5 max-w-4xl font-serif text-[clamp(48px,6vw,88px)] leading-[0.98] tracking-[-0.06em] [text-wrap:balance]">
+              You don't pay until <span className="text-[#E5C794]">the job is done right.</span>
+            </h2>
+            <p className="mt-7 max-w-2xl text-lg leading-[1.7] text-white/80">We finish the installation, test your system, check the workmanship with you and make sure you're happy with the completed job before asking for payment.</p>
+          </div>
+        </div>
+      </section>
+
       <section id="local-offer-trust" className="scroll-mt-20 bg-[#F7F4ED] py-16 sm:py-24" data-testid="google-ads-proof">
         <div className="sp-container max-w-5xl">
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Our workmanship promise</p>
-          <h2 className="mt-4 max-w-3xl font-serif text-[clamp(48px,5vw,74px)] leading-[0.99] tracking-[-0.058em] text-[#111]">The details matter. <span className="text-[#956C35]">So does your home.</span></h2>
-          <p className="mt-4 max-w-3xl leading-relaxed text-[#555]">We plan the installation before starting, take care with pipework, drainage, electrical connections and the finish, protect your home and clean up. We test and commission the system, walk you through its controls and Wi-Fi where supported, and stand behind our workmanship.</p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {[
-              ["Before work", "Confirm unit position, access and a clear written price, including any non-standard extras."],
-              ["During installation", "Careful mounting, pipework, drainage and electrical work by licensed and insured installers."],
-              ["At handover", "Commissioning checks, a tidy finish, and a walkthrough of controls and Wi-Fi where available."],
-              ["If there's a concern", "We review job photos and applicable paperwork, explain our findings and work through the next steps and warranty obligations."]
-            ].map(([title, description]) => <div key={title} className="rounded-xl border border-[#E5E1D9] bg-[#FCFBF8] p-4">
-              <p className="font-bold text-[#252525]">{title}</p><p className="mt-2 text-sm leading-relaxed text-[#5B5B60]">{description}</p>
-            </div>)}
-          </div>
-          <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold text-[#333]">
-            <span className="rounded-xl border p-4">Licensed &amp; insured</span>
-            <span className="rounded-xl border p-4">Written quote upfront</span>
-            <span className="rounded-xl border p-4">Workmanship support</span>
-            <span className="rounded-xl border p-4">Manufacturer warranty</span>
-          </div>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Proof of the work</p>
+          <h2 className="mt-4 max-w-3xl font-serif text-[clamp(48px,5vw,74px)] leading-[0.99] tracking-[-0.058em] text-[#111]">Small steps. <span className="text-[#956C35]">A smoother job.</span></h2>
+          <p className="mt-4 max-w-3xl leading-relaxed text-[#555]">Here is what you can check for yourself: our installation record, photos of real jobs and reviews from customers.</p>
           <div className="mt-8 flex flex-col gap-5 rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-5 sm:flex-row sm:items-center">
             <button type="button" className="shrink-0" onClick={() => setActivePhoto({src:"/workmanship/splitspro-installation-certificate.png",alt:"SplitsPro installation completion certificate template"})} aria-label="View installation completion certificate">
               <img src="/workmanship/splitspro-installation-certificate.png" alt="SplitsPro installation completion certificate" className="max-h-72 w-full object-contain sm:w-56" loading="lazy"/>
@@ -322,7 +312,7 @@ const AirconDeals = () => {
             </div>
           </div>}
           <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
-          <p className="mt-2 text-sm text-[#666]">Read customer feedback from our Google listing. Swipe through the reviews here or open Google to explore the full collection.</p>
+          <p className="mt-2 text-sm text-[#666]">Real feedback from customers. Swipe to read what they said.</p>
           <div className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5" aria-label="Customer review carousel">
             {reviews.map((r, i) => <figure key={r.id || i} className="min-w-[82%] snap-start rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:min-w-[45%]">
               <div className="text-[#A3793B]" aria-label={`${r.rating || 5} out of 5 stars`}>{"★".repeat(Math.max(1, Math.min(5, Number(r.rating) || 5)))}</div>
