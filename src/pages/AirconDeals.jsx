@@ -332,6 +332,7 @@ const AirconDeals = () => {
               defaultMessage="Google Search installed-deals enquiry. Please confirm standard-install eligibility and quote any extras."
               submitLabel="Request My Free Quote"
               compact
+              hidePreferredDate
               includeAttribution
               successTitle="Quote request received"
               successMessage="We'll be in touch to discuss your system and installation."
