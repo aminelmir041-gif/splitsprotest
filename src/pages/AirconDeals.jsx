@@ -108,15 +108,15 @@ const AirconDeals = () => {
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
 
-      <section data-testid="google-ads-hero" className="bg-[#0B0B0B] text-white">
-        <div className="sp-container grid gap-6 py-10 sm:py-14 lg:grid-cols-[1.2fr_.8fr] lg:items-center lg:gap-12">
+      <section data-testid="google-ads-hero" className="relative overflow-hidden bg-[#101113] text-white">
+        <div className="sp-container relative grid gap-8 py-14 sm:py-20 lg:grid-cols-[1.08fr_.92fr] lg:items-center lg:gap-14">
           <div>
             <p className="text-[11px] font-extrabold uppercase tracking-[0.19em] text-[#D9BC8B]">Sydney · Central Coast · Wollongong</p>
             <h1 className="mt-4 max-w-3xl font-serif text-[clamp(36px,5.3vw,68px)] leading-[1.04] tracking-[-0.035em]">
-              Air conditioning <span className="text-[#E4CFA6]">fully installed — electrical circuit included.</span>
+              Your new split system. <span className="text-[#E4CFA6]">One clear installed price.</span>
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">
-              Rinnai and Daikin Cora. One clear standard-install price covers the unit, labour, wall bracket, isolator, up to 3m of pipework and an electrical circuit up to 20m where required. No chasing extra trades or surprise essential add-ons.
+              Compare Rinnai and Daikin Cora systems with the essential installation work included. Choose your size, see the price and speak directly with an installer before deciding.
             </p>
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
@@ -125,19 +125,12 @@ const AirconDeals = () => {
             </div>
           </div>
           <div className="space-y-4">
-            <img
-              src={`${process.env.PUBLIC_URL || ""}/landing/overheated-bulldog-hero.webp`}
-              alt="Overheated bulldog — SplitsPro split-system installation deals"
-              loading="eager"
-              fetchPriority="high"
-              className="w-full rounded-2xl object-contain"
-            />
-            <div className="rounded-2xl border border-white/15 bg-white/[0.055] p-5 sm:p-7">
+            <div className="rounded-[28px] border border-[#D6B677]/40 bg-gradient-to-br from-[#25221C] via-[#171717] to-[#0D0D0D] p-6 shadow-[0_24px_80px_rgba(0,0,0,.35)] sm:p-9">
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">Fully installed deals · including electrical circuit</p>
-            <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="mt-6 grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm font-semibold text-white/70">Rinnai 2.5kW</p>
-                <p className="mt-1 font-serif text-3xl text-[#E4CFA6]">$1,700</p>
+                <p className="mt-2 font-serif text-4xl font-bold tracking-tight text-[#E4CFA6]">$1,700</p>
                 <p className="mt-2 text-xs text-white/65">7-year manufacturer warranty</p>
               </div>
               <div>
@@ -146,7 +139,7 @@ const AirconDeals = () => {
                 <p className="mt-2 text-xs text-white/65">5-year manufacturer warranty</p>
               </div>
             </div>
-            <p className="mt-5 border-t border-white/15 pt-4 text-xs text-white/65">These are complete prices for qualifying standard installations. Any non-standard extras are quoted upfront, never hidden.</p>
+            <p className="mt-6 border-t border-white/15 pt-5 text-sm text-white/70">Prices include GST for qualifying standard installations. Any non-standard work is quoted before proceeding.</p><a href="#aircon-deals-prices" className="mt-6 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#E4CFA6] px-5 py-3 font-bold text-[#171717] hover:bg-white">Compare all installed prices <ArrowDown className="h-4 w-4" /></a><a href={PHONE_TEL} className="mt-3 flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/25 px-5 py-3 font-bold text-white hover:bg-white/10"><Phone className="h-4 w-4" /> Call {PHONE}</a>
           </div>
           </div>
         </div>
@@ -166,17 +159,17 @@ const AirconDeals = () => {
           <h2 className="mt-3 font-serif text-4xl text-[#111]">Choose your system. See your price.</h2>
           <p className="mt-3 text-[#555]">No online bookings, dates or payments. Select a system to compare the standard installed price, then call us to arrange your installation.</p>
           <h3 className="mt-8 font-serif text-2xl">Choose a brand to see installed prices</h3>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {RINNAI_LOCAL_OFFER_RANGES.map(range => <button key={range.slug} type="button" onClick={() => setSelectedBrand(range.slug)} className={`rounded-xl border p-6 text-left transition-colors ${selectedBrand === range.slug ? "border-[#B88A48] bg-[#FBF5E9]" : "border-[#E5E1D9] bg-white hover:border-[#B88A48]"}`}>
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-2">
+            {RINNAI_LOCAL_OFFER_RANGES.map(range => <button key={range.slug} type="button" onClick={() => setSelectedBrand(range.slug)} className={`rounded-2xl border-2 p-4 text-left shadow-sm transition-all sm:p-6 ${selectedBrand === range.slug ? "border-[#B88A48] bg-[#FBF5E9] shadow-md" : "border-[#E5E1D9] bg-white hover:border-[#B88A48] hover:shadow-md"}`}>
               <span className="block font-serif text-2xl text-[#111]">{range.displayName}</span>
-              <span className="mt-2 block text-sm text-[#666]">View all sizes and prices</span>
+              <span className="mt-2 block text-xs text-[#666] sm:text-sm">View installed prices →</span>
             </button>)}
           </div>
           {selectedBrand && <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {RINNAI_LOCAL_OFFER_RANGES.filter(range => range.slug === selectedBrand).flatMap(range => range.prices.map(unit => <div key={range.slug + unit.kw} className="rounded-xl border border-[#E5E1D9] bg-[#FCFBF8] p-5">
+            {RINNAI_LOCAL_OFFER_RANGES.filter(range => range.slug === selectedBrand).flatMap(range => range.prices.map(unit => <div key={range.slug + unit.kw} className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-4 shadow-sm sm:p-6">
               <span className="block text-xl font-bold text-[#111]">{unit.kw}</span>
               <span className="mt-2 block text-2xl font-bold text-[#8F6A34]">{unit.localOfferPrice || unit.price}</span>
-              <span className="mt-1 block text-xs text-[#666]">Standard fully installed price</span>
+              <span className="mt-1 block text-xs text-[#666]">Fully installed · inc. GST</span><a href={PHONE_TEL} className="mt-4 flex min-h-10 items-center justify-center rounded-lg bg-[#171717] px-2 py-2 text-xs font-bold text-white hover:bg-[#8F6A34] sm:text-sm">Call for this system</a>
             </div>))}
           </div>}
           <p className="mt-6 text-sm font-semibold text-[#555]">Installation within 2 business days for eligible standard jobs, subject to availability.</p>
