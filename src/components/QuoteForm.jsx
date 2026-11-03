@@ -63,6 +63,7 @@ export const QuoteForm = ({
   successTitle = "Request received",
   successMessage = "",
   hideEmail = false,
+  hideAddress = false,
   requireAddress = false,
   hideCallButton = false,
   tight = false,
@@ -204,13 +205,13 @@ export const QuoteForm = ({
   const labelClass = `mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] ${onDark ? "text-white/70" : "text-[#6E6E73]"}`;
   const spacing = tight ? "gap-3.5" : "gap-5";
 
-  const extraDetails = (
+  const extraDetails = hideAddress && hidePreferredDate ? null : (
     <div className={`grid ${spacing} ${hidePreferredDate ? "" : "sm:grid-cols-2"}`}>
-      <div>
+      {!hideAddress && <div>
         <label htmlFor="q-address" className={labelClass}>Street address{requireAddress ? "" : " (optional)"}</label>
         <Input id="q-address" data-testid="quote-address-input" value={form.address}
           onChange={(e) => update("address", e.target.value)} placeholder="Unit / street address" className={fieldClass} />
-      </div>
+      </div>}
       {!hidePreferredDate && (
         <div>
           <label htmlFor="q-date" className={labelClass}>Preferred date (optional)</label>
