@@ -109,28 +109,29 @@ const AirconDeals = () => {
       </Helmet>
 
       <section data-testid="google-ads-hero" className="bg-[#0B0B0B] text-white">
-        <div className="sp-container grid gap-6 py-10 sm:py-14 lg:grid-cols-[1.2fr_.8fr] lg:items-center lg:gap-12">
+        <div className="sp-container grid gap-10 pb-16 pt-24 sm:pb-20 sm:pt-28 lg:grid-cols-[1.15fr_.85fr] lg:items-center lg:gap-16">
           <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.19em] text-[#D9BC8B]">Sydney · Central Coast · Wollongong</p>
-            <h1 className="mt-4 max-w-3xl font-serif text-[clamp(36px,5.3vw,68px)] leading-[1.04] tracking-[-0.035em]">
-              Air conditioning <span className="text-[#E4CFA6]">fully installed — electrical circuit included.</span>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.19em] text-[#D9BC8B]">SplitsPro · Sydney installation deals</p>
+            <h1 className="mt-6 max-w-3xl font-serif text-[clamp(48px,6.5vw,92px)] font-medium leading-[0.98] tracking-[-0.055em]">
+              A better aircon deal. <span className="block text-[#E4CFA6]">All installed.</span>
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">
-              Rinnai and Daikin Cora. One clear standard-install price covers the unit, labour, wall bracket, isolator, up to 3m of pipework and an electrical circuit up to 20m where required. No chasing extra trades or surprise essential add-ons.
+            <p className="mt-7 max-w-xl text-lg leading-[1.6] text-white/80 sm:text-xl">
+              Explore our Rinnai and Daikin Cora packages, including premium Wi-Fi options. See the installed price upfront. No more to pay when your job meets our standard-install criteria.
             </p>
-            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/80">
+            <a href="#aircon-deals-prices" className="mt-8 inline-flex min-h-12 items-center gap-3 rounded-lg bg-[#D8B77C] px-7 py-3 text-sm font-extrabold tracking-wide text-[#17130E] hover:bg-[#F0D6A7]">Explore installed deals <ArrowDown className="h-4 w-4" /></a>
+            <div className="mt-7 flex flex-col gap-3 text-sm font-medium text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
               <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Same-day installation may be available · appointments within 2 business days, subject to availability</span>
               <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Installation guarantee</span>
             </div>
           </div>
           <div className="space-y-4">
-            <div className="rounded-2xl border border-white/15 bg-white/[0.055] p-5 sm:p-7">
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">Fully installed deals · including electrical circuit</p>
+            <div className="rounded-[28px] border border-[#C7A46C]/35 bg-[#191715] p-7 shadow-[0_28px_90px_rgba(0,0,0,.35)] sm:p-9">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">Real installed package prices</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div>
                 <p className="text-sm font-semibold text-white/70">Rinnai 2.5kW</p>
-                <p className="mt-1 font-serif text-3xl text-[#E4CFA6]">$1,700</p>
+                <p className="mt-3 font-serif text-[clamp(36px,4vw,58px)] leading-none tracking-[-0.05em] text-[#E4CFA6]">$1,700</p>
                 <p className="mt-2 text-xs text-white/65">7-year manufacturer warranty</p>
               </div>
               <div>
@@ -156,7 +157,7 @@ const AirconDeals = () => {
       <section id="aircon-deals-prices" className="scroll-mt-20 bg-white py-12 sm:py-16" data-testid="google-ads-prices">
         <div className="sp-container max-w-5xl">
           <p className="text-xs font-bold uppercase tracking-widest text-[#8F6A34]">Fully installed split systems</p>
-          <h2 className="mt-3 font-serif text-4xl text-[#111]">Choose your system. See your price.</h2>
+          <h2 className="mt-3 max-w-3xl font-serif text-[clamp(40px,4.5vw,64px)] leading-[1.04] tracking-[-0.045em] text-[#111]">The right unit. <span className="text-[#956C35]">The price upfront.</span></h2>
           <p className="mt-3 text-[#555]">No online bookings, dates or payments. Select a system to compare the standard installed price, then call us to arrange your installation.</p>
           <h3 className="mt-8 font-serif text-2xl">Choose a brand to see installed prices</h3>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -185,7 +186,7 @@ const AirconDeals = () => {
         <div className="sp-container grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">One clear installed price</p>
-            <h2 className="mt-3 font-serif text-4xl text-[#111]">If it fits our standard install, there's no more to pay.</h2>
+            <h2 className="mt-3 max-w-3xl font-serif text-[clamp(40px,4.5vw,64px)] leading-[1.04] tracking-[-0.045em] text-[#111]">Standard install? <span className="text-[#956C35]">No more to pay.</span></h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-[#5B5B60]">
               Our advertised deal covers the air conditioner and a complete standard installation — with the indoor and outdoor units on opposite sides of the same wall. You also get up to 20 metres of electrical cabling where required, plus the suitable wall bracket, mounting feet or pad. It's one upfront package price, with no surprise charges for what's included.
             </p>
@@ -206,7 +207,7 @@ const AirconDeals = () => {
       <section id="local-offer-trust" className="scroll-mt-20 bg-white py-12 sm:py-16" data-testid="google-ads-proof">
         <div className="sp-container max-w-5xl">
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Our workmanship promise</p>
-          <h2 className="mt-3 font-serif text-4xl text-[#111]">Your home, treated with care.</h2>
+          <h2 className="mt-3 max-w-3xl font-serif text-[clamp(40px,4.5vw,64px)] leading-[1.04] tracking-[-0.045em] text-[#111]">The details matter. <span className="text-[#956C35]">So does your home.</span></h2>
           <p className="mt-4 max-w-3xl leading-relaxed text-[#555]">We plan the installation before starting, take care with pipework, drainage, electrical connections and the finish, protect your home and clean up. We test and commission the system, walk you through its controls and Wi-Fi where supported, and stand behind our workmanship.</p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {[
@@ -289,7 +290,7 @@ const AirconDeals = () => {
       <section id="google-consultation" className="scroll-mt-20 bg-[#F7F5F1] py-12 sm:py-16">
         <div className="sp-container max-w-4xl">
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Free phone consultation · No obligation</p>
-          <h2 className="mt-3 font-serif text-4xl text-[#111]">Here's what happens when you call.</h2>
+          <h2 className="mt-3 max-w-3xl font-serif text-[clamp(40px,4.5vw,64px)] leading-[1.04] tracking-[-0.045em] text-[#111]">A quick conversation. <span className="text-[#956C35]">A clearer decision.</span></h2>
           <p className="mt-5 leading-relaxed text-[#555]">We'll ask about the layout of your home, the room dimensions, ceiling height, insulation and sun exposure. We'll discuss where the indoor and outdoor units could go, electrical access and any installation challenges. Then we'll recommend a suitable system size and explain the Rinnai and Daikin options, fully installed prices, what is included and whether anything needs a separate quote. You can ask questions and decide in your own time — no payment or online booking is required.</p>
           <p className="mt-4 text-sm text-[#666]">Have your suburb and rough measurements ready if possible. Photos can help, but you can call without them.</p>
           <a href={PHONE_TEL} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>
@@ -314,7 +315,7 @@ const AirconDeals = () => {
         <div className="sp-container grid max-w-5xl gap-10 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Not a standard install?</p>
-            <h2 className="mt-3 font-serif text-4xl text-[#111]">Send us the details for a free quote.</h2>
+            <h2 className="mt-3 max-w-3xl font-serif text-[clamp(40px,4.5vw,64px)] leading-[1.04] tracking-[-0.045em] text-[#111]">Not standard? <span className="text-[#956C35]">Let’s work it out.</span></h2>
             <p className="mt-4 max-w-lg leading-relaxed text-[#606064]">If you're unsure about pipe lengths, outside-unit position or access, tell us your suburb and what needs installing. We'll review the job and get back to you.</p>
             <a href={PHONE_TEL} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#8F6A34] underline"><Phone className="h-4 w-4" /> Prefer to call {PHONE}?</a>
           </div>
