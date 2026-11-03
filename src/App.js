@@ -66,7 +66,7 @@ const AnimatedRoutes = () => {
           <Route path="/workmanship-and-trust" element={<Navigate to="/workmanship" replace />} />
           <Route path="/payment-options" element={<PaymentOptions />} />
           <Route path="/deal-payment" element={<DealPayment />} />
-          <Route path="/deals" element={<Navigate to="/split-system-installation-sydney" replace />} />
+          <Route path="/deals" element={<Navigate to="/aircon-deals" replace />} />
           <Route path="/split-systems" element={<SplitSystems />} />
           <Route path="/split-systems/oran-park" element={<SplitSystems />} />
           <Route path="/split-systems/willoughby-north-sydney" element={<SplitSystems />} />
@@ -75,7 +75,7 @@ const AnimatedRoutes = () => {
           <Route path="/split-systems/quakers-hill-austral-richmond" element={<SplitSystems />} />
           <Route path="/split-systems/mitsubishi-electric" element={<Navigate to="/split-systems/mitsubishi" replace />} />
           <Route path="/split-systems/mitsubishi-heavy-industries" element={<Navigate to="/split-systems/mitsubishi" replace />} />
-          <Route path="/split-systems/rinnai-local-offer" element={<BrandPage offerMode="rinnai-local" />} />
+          <Route path="/split-systems/rinnai-local-offer" element={<Navigate to="/aircon-deals?brand=rinnai" replace />} />
           <Route path="/book-installation" element={<Navigate to="/split-system-installation-sydney" replace />} />
           <Route path="/secure-installation" element={<Navigate to="/split-system-installation-sydney" replace />} />
           <Route path="/split-system-installation-sydney" element={<GoogleAdsLanding />} />
