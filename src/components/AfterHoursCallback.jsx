@@ -58,7 +58,7 @@ export default function AfterHoursCallback() {
       <p className="mt-3 text-sm text-gray-600">Leave your details and we'll call you back during business hours. No pressure or obligation.</p>
       {status === "sent" ? <p className="mt-6 font-semibold">Thank you. Your callback request has been received.</p> :
       <form onSubmit={send} className="mt-5 grid gap-3">
-        {["name","phone","email","suburb"].map(field => <label key={field} className="grid gap-1 text-sm font-semibold capitalize">{field}<input className="rounded-lg border border-gray-300 p-3" required type={field === "email" ? "email" : field === "phone" ? "tel" : "text"} value={form[field]} onChange={e => setForm(v => ({ ...v, [field]: e.target.value }))} /></label>)}
+        {["name","phone","suburb"].map(field => <label key={field} className="grid gap-1 text-sm font-semibold capitalize">{field}<input className="rounded-lg border border-gray-300 p-3" required type={field === "phone" ? "tel" : "text"} value={form[field]} onChange={e => setForm(v => ({ ...v, [field]: e.target.value }))} /></label>)}
         {status === "error" && <p role="alert" className="text-sm text-red-700">Couldn't send your request. Please try again.</p>}
         <button disabled={status === "sending"} className="mt-2 rounded-lg bg-[#C8A46A] p-3 font-bold text-black">{status === "sending" ? "Sending..." : "Request My Callback"}</button>
       </form>}
