@@ -36,7 +36,7 @@ const FAQs = [
   },
   {
     question: "How quickly can you install?",
-    answer: "We aim to install eligible standard systems within 2 business days where appointments are available. Call us to discuss availability.",
+    answer: "Same-day installations may be available for eligible jobs. We aim to offer an installation appointment within 2 business days, subject to stock, access and our schedule. Call us to confirm the next available time.",
   },
   {
     question: "Can I book without paying the whole amount?",
@@ -120,18 +120,19 @@ const AirconDeals = () => {
             </p>
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No more to pay on qualifying standard installs</span>
-              <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Installation within 2 business days, subject to availability</span>
+              <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Same-day installation may be available · appointments within 2 business days, subject to availability</span>
               <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#C8A46A]" /> Installation guarantee</span>
             </div>
           </div>
           <div className="space-y-4">
             <img
-              src={`${process.env.PUBLIC_URL || ""}/landing/overheated-bulldog-hero.webp`}
-              alt="Overheated bulldog — SplitsPro split-system installation deals"
+              src="/workmanship/photo-gallery/02-100213.jpg"
+              alt="Real SplitsPro split system installation in a Sydney living room"
               loading="eager"
               fetchPriority="high"
-              className="w-full rounded-2xl object-contain"
+              className="aspect-[4/3] w-full rounded-2xl object-cover"
             />
+            <p className="text-xs font-semibold text-white/65">Real SplitsPro installation — see more completed work and customer reviews below.</p>
             <div className="rounded-2xl border border-white/15 bg-white/[0.055] p-5 sm:p-7">
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#D9BC8B]">Fully installed deals · including electrical circuit</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
@@ -179,7 +180,11 @@ const AirconDeals = () => {
               <span className="mt-1 block text-xs text-[#666]">Standard fully installed price</span>
             </div>))}
           </div>}
-          <p className="mt-6 text-sm font-semibold text-[#555]">Installation within 2 business days for eligible standard jobs, subject to availability.</p>
+          <div className="mt-6 rounded-xl border border-[#D5B77B] bg-[#FFF8E8] p-4 sm:p-5">
+            <p className="flex items-center gap-2 font-bold text-[#2B251B]"><Clock3 className="h-5 w-5 text-[#9A7540]" /> Need it installed quickly?</p>
+            <p className="mt-2 text-sm leading-relaxed text-[#544A3A]">Same-day installations may be available. We aim to offer installation appointments within 2 business days for eligible jobs, subject to stock and scheduling. Call to confirm your earliest option.</p>
+            <a href={PHONE_TEL} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#6D4F21] underline"><Phone className="h-4 w-4" /> Check availability · {PHONE}</a>
+          </div>
 
         </div>
       </section>
@@ -210,7 +215,17 @@ const AirconDeals = () => {
         <div className="sp-container max-w-5xl">
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Our workmanship promise</p>
           <h2 className="mt-3 font-serif text-4xl text-[#111]">Your home, treated with care.</h2>
-          <p className="mt-4 max-w-3xl leading-relaxed text-[#555]">Licensed and insured installation, a clear written quote before work begins, protection of your home while we work, tidy workmanship and a clean-up when the job is done. We commission and check the system, explain how to use it and stand behind our installation workmanship. Any non-standard extras are discussed before proceeding.</p>
+          <p className="mt-4 max-w-3xl leading-relaxed text-[#555]">We plan the installation before starting, take care with pipework, drainage, electrical connections and the finish, protect your home and clean up. We test and commission the system, walk you through its controls and Wi-Fi where supported, and stand behind our workmanship.</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {[
+              ["Before work", "Confirm unit position, access and a clear written price, including any non-standard extras."],
+              ["During installation", "Careful mounting, pipework, drainage and electrical work by licensed and insured installers."],
+              ["At handover", "Commissioning checks, a tidy finish, and a walkthrough of controls and Wi-Fi where available."],
+              ["If there's a concern", "We review job photos and applicable paperwork, explain our findings and work through the next steps and warranty obligations."]
+            ].map(([title, description]) => <div key={title} className="rounded-xl border border-[#E5E1D9] bg-[#FCFBF8] p-4">
+              <p className="font-bold text-[#252525]">{title}</p><p className="mt-2 text-sm leading-relaxed text-[#5B5B60]">{description}</p>
+            </div>)}
+          </div>
           <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold text-[#333]">
             <span className="rounded-xl border p-4">Licensed &amp; insured</span>
             <span className="rounded-xl border p-4">Written quote upfront</span>
@@ -226,7 +241,7 @@ const AirconDeals = () => {
               <p className="mt-2 text-xs text-[#777]">Blank certificate shown. Completed for your installation.</p>
             </div>
           </div>
-          <h3 className="mt-12 font-serif text-3xl">Real SplitsPro installations</h3>
+          <h3 className="mt-12 font-serif text-3xl">See the workmanship for yourself</h3>
           <p className="mt-2 text-sm text-[#666]">More real work from our workmanship gallery. Swipe to explore, or tap a photo to enlarge.</p>
           <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-5" aria-label="Installation photo gallery">
             {[
@@ -258,7 +273,7 @@ const AirconDeals = () => {
             </div>
           </div>}
           <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
-          <p className="mt-2 text-sm text-[#666]">Swipe through genuine customer feedback, then see the full collection on Google.</p>
+          <p className="mt-2 text-sm text-[#666]">Every review returned by our customer-review feed appears below. Swipe through the feedback or read the full Google listing.</p>
           <div className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5" aria-label="Customer review carousel">
             {reviews.map((r, i) => <figure key={r.id || i} className="min-w-[82%] snap-start rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:min-w-[45%]">
               <div className="text-[#A3793B]" aria-label={`${r.rating || 5} out of 5 stars`}>{"★".repeat(Math.max(1, Math.min(5, Number(r.rating) || 5)))}</div>
