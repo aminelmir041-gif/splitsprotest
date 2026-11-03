@@ -139,7 +139,7 @@ const AirconDeals = () => {
                 <p className="mt-2 text-xs text-white/65">5-year manufacturer warranty</p>
               </div>
             </div>
-            <p className="mt-6 border-t border-white/15 pt-5 text-sm text-white/70">Prices include GST for qualifying standard installations. Any non-standard work is quoted before proceeding.</p><div className="mt-5 rounded-xl border border-[#C8A46A] px-5 py-3 text-center font-bold">Call {PHONE}</div>
+            <p className="mt-6 border-t border-white/15 pt-5 text-sm text-white/70">Prices include GST for qualifying standard installations. Any non-standard work is quoted before proceeding.</p><a href="#aircon-deals-prices" className="mt-6 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#E4CFA6] px-5 py-3 font-bold text-[#171717] hover:bg-white">Compare all installed prices <ArrowDown className="h-4 w-4" /></a><a href={PHONE_TEL} className="mt-3 flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/25 px-5 py-3 font-bold text-white hover:bg-white/10"><Phone className="h-4 w-4" /> Call {PHONE}</a>
           </div>
           </div>
         </div>
@@ -169,7 +169,7 @@ const AirconDeals = () => {
             {RINNAI_LOCAL_OFFER_RANGES.filter(range => range.slug === selectedBrand).flatMap(range => range.prices.map(unit => <div key={range.slug + unit.kw} className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-4 shadow-sm sm:p-6">
               <span className="block text-xl font-bold text-[#111]">{unit.kw}</span>
               <span className="mt-2 block text-2xl font-bold text-[#8F6A34]">{unit.localOfferPrice || unit.price}</span>
-              <span className="mt-1 block text-xs text-[#666]">Fully installed · inc. GST</span><span className="mt-4 block rounded-lg bg-[#171717] px-2 py-3 text-center text-xs font-bold text-white sm:text-sm">Call {PHONE} for this system</span>
+              <span className="mt-1 block text-xs text-[#666]">Fully installed · inc. GST</span><a href={PHONE_TEL} className="mt-4 flex min-h-10 items-center justify-center rounded-lg bg-[#171717] px-2 py-2 text-xs font-bold text-white hover:bg-[#8F6A34] sm:text-sm">Call for this system</a>
             </div>))}
           </div>}
           <p className="mt-6 text-sm font-semibold text-[#555]">Installation within 2 business days for eligible standard jobs, subject to availability.</p>
@@ -261,9 +261,11 @@ const AirconDeals = () => {
           </div>
           <div className="mt-5 flex flex-col gap-3 rounded-xl border border-[#E5E1D9] bg-[#FCFBF8] p-5 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-relaxed text-[#555]">
-              Showing {reviews.length} customer reviews here. Customer feedback is shown above.
+              Showing {reviews.length} customer reviews here. Read all {GOOGLE_RATING.count} Google reviews on our public listing.
             </p>
-            
+            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-[#111] px-5 py-3 text-sm font-bold text-white hover:bg-[#333]">
+              See all reviews on Google <ArrowRight className="ml-2 h-4 w-4" />
+            </a>
           </div>
           <h3 className="mt-10 font-serif text-3xl">Find the right system size</h3>
           <p className="mt-3 max-w-3xl leading-relaxed text-[#555]">Our sizing calculator is being prepared. Until then, we can help estimate capacity from your room dimensions, ceiling height, insulation, windows and sun exposure during your free call. A final recommendation depends on the property and installation conditions.</p>
@@ -276,7 +278,7 @@ const AirconDeals = () => {
           <h2 className="mt-3 font-serif text-4xl text-[#111]">Here's what happens when you call.</h2>
           <p className="mt-5 leading-relaxed text-[#555]">We'll ask about the layout of your home, the room dimensions, ceiling height, insulation and sun exposure. We'll discuss where the indoor and outdoor units could go, electrical access and any installation challenges. Then we'll recommend a suitable system size and explain the Rinnai and Daikin options, fully installed prices, what is included and whether anything needs a separate quote. You can ask questions and decide in your own time — no payment or online booking is required.</p>
           <p className="mt-4 text-sm text-[#666]">Have your suburb and rough measurements ready if possible. Photos can help, but you can call without them.</p>
-          <div className="mt-5 rounded-xl border border-[#C8A46A] px-5 py-3 text-center font-bold">Call {PHONE}</div>
+          <a href={PHONE_TEL} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-md bg-[#0B0B0B] px-7 py-3 font-bold text-white"><Phone className="h-4 w-4" /> Call to Book · {PHONE}</a>
         </div>
       </section>
 
@@ -300,7 +302,7 @@ const AirconDeals = () => {
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8F6A34]">Not a standard install?</p>
             <h2 className="mt-3 font-serif text-4xl text-[#111]">Send us the details for a free quote.</h2>
             <p className="mt-4 max-w-lg leading-relaxed text-[#606064]">If you're unsure about pipe lengths, outside-unit position or access, tell us your suburb and what needs installing. We'll review the job and get back to you.</p>
-            <p className="mt-6 text-sm font-bold text-[#8F6A34]">Prefer to call? {PHONE}</p>
+            <a href={PHONE_TEL} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#8F6A34] underline"><Phone className="h-4 w-4" /> Prefer to call {PHONE}?</a>
           </div>
           <div className="rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:p-8">
             <QuoteForm
