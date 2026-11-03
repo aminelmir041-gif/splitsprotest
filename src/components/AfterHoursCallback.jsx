@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { submitQuote } from "../lib/api";
 import { PHONE_TEL } from "../lib/data";
 
-const isAfterHours = () => {
+export const isAfterHours = () => {
   const parts = new Intl.DateTimeFormat("en-AU", { timeZone: "Australia/Sydney", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
-  return Number(parts.find(p => p.type === "hour")?.value || 0) >= 18;
+  const hour = Number(parts.find(p => p.type === "hour")?.value || 0);
+  return hour >= 18 || hour < 7;
 };
 export default function AfterHoursCallback() {
   const [closed, setClosed] = useState(isAfterHours);
@@ -30,11 +31,12 @@ export default function AfterHoursCallback() {
   useEffect(() => {
     const links = document.querySelectorAll('a[href^="tel:"]');
     links.forEach(a => {
+      // The deals floating button manages its own label in React.
+      if (a.dataset.testid === "deals-floating-call") return;
       if (!a.dataset.spOriginalLabel) a.dataset.spOriginalLabel = a.textContent;
       if (closed) {
         a.setAttribute("aria-label", "We are currently closed. Request a callback");
-        if (a.dataset.testid === "deals-floating-call") a.textContent = "Request Callback";
-        else if (/call now|call to book|call us/i.test(a.textContent)) a.textContent = "We are currently closed · Request a callback";
+        if (/call now|call to book|call us/i.test(a.textContent)) a.textContent = "We are currently closed · Request a callback";
       } else if (a.dataset.spOriginalLabel && a.textContent.includes("We are currently closed")) {
         a.textContent = a.dataset.spOriginalLabel;
         a.removeAttribute("aria-label");
