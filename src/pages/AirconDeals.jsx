@@ -58,8 +58,12 @@ const included = [
 ];
 const GOOGLE_REVIEWS_URL = "https://g.page/r/CYTvO1ipeYUtEBM/";
 const FALLBACK_REVIEWS = [
+  { id: "erfaan-khan", name: "Erfaan Khan", rating: 5, text: "Very happy with the service. They were polite, helpful, and took the time to explain everything instead of trying to rush the job." },
+  { id: "baitmee-marine", name: "BAITMEE MARINE", rating: 5, text: "Thanks to the boys from splitspro for an amazing job quick and neat and a great price!!" },
+  { id: "billy-s", name: "BILLY S", rating: 5, text: "Had a new air conditioner installed in our granny flat and couldn’t be happier. The installation was neat and tidy, everything was explained clearly." },
+  { id: "moeyy-khaled", name: "Moeyy Khaled", rating: 5, text: "Very happy with the electrical work and 5kW Mitsubishi installation. Clean, professional job — highly recommend." },
+  { id: "gill-mcphee", name: "Gill McPhee", rating: 5, text: "Amin and Ibrahim were excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling!" },
   { id: "sia", ...FEATURED_REVIEW },
-  { id: "gill-mcphee", name: "Gill McPhee", rating: 5, text: "Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy." },
   { id: "mat-134", name: "Mat 134", rating: 5, text: "Best in the business, amazing work." },
 ];
 
@@ -266,7 +270,7 @@ const AirconDeals = () => {
             </div>
           </div>}
           <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
-          <p className="mt-2 text-sm text-[#666]">Every review returned by our customer-review feed appears below. Swipe through the feedback or read the full Google listing.</p>
+          <p className="mt-2 text-sm text-[#666]">Read customer feedback from our Google listing. Swipe through the reviews here or open Google to explore the full collection.</p>
           <div className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5" aria-label="Customer review carousel">
             {reviews.map((r, i) => <figure key={r.id || i} className="min-w-[82%] snap-start rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:min-w-[45%]">
               <div className="text-[#A3793B]" aria-label={`${r.rating || 5} out of 5 stars`}>{"★".repeat(Math.max(1, Math.min(5, Number(r.rating) || 5)))}</div>
