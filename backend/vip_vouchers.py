@@ -1,4 +1,4 @@
-"""Shareable SplitsPro partner vouchers: five server-enforced claims per invite.
+"""Shareable SplitsPro partner vouchers: one server-enforced complimentary claim per invite.
 
 Important: Free Render Key Value storage is volatile. This module deliberately
 fails closed if a Redis restart loses a partner record; it never automatically
@@ -6,6 +6,7 @@ recreates partner records or silently resets a campaign's claim allowance.
 For uninterrupted campaigns, use a persistent store.
 """
 from datetime import datetime, timedelta
+import json
 from zoneinfo import ZoneInfo
 import hashlib
 import hmac
@@ -16,26 +17,27 @@ import secrets
 import uuid
 
 import redis
-from fastapi import APIRouter, BackgroundTasks, Header, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Header, HTTPException, Query
 from pydantic import BaseModel, Field, field_validator
+from fastapi.responses import HTMLResponse
 
 from .lead_integrations import notify_quote, sync_quote_to_hubspot, valid_admin_key
 
 router = APIRouter(prefix="/api/vip", tags=["VIP vouchers"])
 SYDNEY = ZoneInfo("Australia/Sydney")
-LIMIT = 5
-API_ORIGIN = "https://splitspro.com.au/vip-deep-clean/"
+LIMIT = 1
+API_ORIGIN = "https://splitspro-leads.onrender.com/api/vip/redeem"
 ALLOWED_SUBURBS = frozenset({
     "bass hill", "chester hill", "bankstown", "birrong",
     "sefton", "yagoona", "condell park", "greenacre",
 })
-CLAIMS_TTL = 60 * 60 * 24 * 35
-PARTNER_TTL = 60 * 60 * 24 * 15
+CLAIMS_TTL = 60 * 60 * 24 * 100
+PARTNER_TTL = 60 * 60 * 24 * 91
 CODE_PATTERN = re.compile(r"^[a-zA-Z0-9_-]{24,80}$")
 
 # One atomic Redis operation for checking expiry, duplicate mobile, capacity
 # and recording an accepted claim; multiple simultaneous customers cannot
-# push the same partner above five.
+# push the same voucher above one.
 CLAIM_LUA = """
 local expiry = redis.call('HGET', KEYS[1], 'expires_epoch')
 if not expiry then return -1 end
@@ -155,7 +157,7 @@ def create_partner(payload: PartnerIssue, x_admin_key: str | None = Header(defau
     _require_enabled()
     conn = _redis()
     now = datetime.now(SYDNEY)
-    deadline = now + timedelta(days=14)
+    deadline = now + timedelta(days=90)
     # High-entropy opaque invitation link, not a guessable business name.
     code = secrets.token_urlsafe(24)
     key = _partner_key(code)
@@ -197,8 +199,6 @@ def voucher_claim(payload: VipClaim, background_tasks: BackgroundTasks):
     _require_enabled()
     code = _valid_code(payload.code)
     suburb = payload.suburb.strip()
-    if suburb.casefold() not in ALLOWED_SUBURBS:
-        raise HTTPException(status_code=422, detail="This offer is only available in our listed local suburbs")
     mobile = _normalise_phone(payload.phone)
     digest = _phone_digest(mobile)
     conn = _redis()
@@ -213,7 +213,7 @@ def voucher_claim(payload: VipClaim, background_tasks: BackgroundTasks):
         if result == -2:
             raise HTTPException(status_code=410, detail="This VIP invitation has expired")
         if result == 0:
-            raise HTTPException(status_code=409, detail="All five VIP places have already been claimed")
+            raise HTTPException(status_code=409, detail="This one-time voucher has already been claimed")
         if result == 2:
             raise HTTPException(status_code=409, detail="A VIP claim has already been registered for this mobile number")
         if result != 1:
@@ -225,7 +225,7 @@ def voucher_claim(payload: VipClaim, background_tasks: BackgroundTasks):
             "phone": mobile,
             "email": "",
             "suburb": suburb,
-            "service": "VIP Bare-Bones Deep Clean — $100",
+            "service": "One-off complimentary VIP deep clean — $0 (valued at $300)",
             "message": "VIP voucher accepted; partner code: " + code,
             "lead_source": "vip-partner-" + code[:8],
             "page_url": API_ORIGIN + "?pass=" + code,
@@ -234,9 +234,31 @@ def voucher_claim(payload: VipClaim, background_tasks: BackgroundTasks):
         background_tasks.add_task(notify_quote, lead)
         background_tasks.add_task(sync_quote_to_hubspot, lead)
         state = _status(conn, code)
-        return {"accepted": True, "message": "Your VIP claim is received. SplitsPro will contact you to confirm a local appointment.", **state}
+        return {"accepted": True, "message": "Your one-time free deep-clean voucher has been claimed. SplitsPro will call you to arrange the service.", **state}
     except HTTPException:
         raise
     except (redis.RedisError, OSError) as exc:
         logging.exception("VIP claim store unavailable")
         raise HTTPException(status_code=503, detail="Voucher claims temporarily unavailable") from exc
+
+# Standalone voucher pages run on the lead API, separate from the main website.
+@router.get("/redeem", response_class=HTMLResponse)
+def redeem_page(pass_code: str = Query(default="", alias="pass")):
+    import html
+    # Render user supplied code as a JSON string to avoid HTML/script injection.
+    safe_code = json.dumps(pass_code)
+    return HTMLResponse("""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SplitsPro VIP Gift</title>
+<style>body{margin:0;font-family:system-ui,Arial;background:#f7f7f5;color:#17201e}main{max-width:540px;margin:35px auto;padding:25px;background:white;border-radius:18px;box-shadow:0 12px 40px #0001}.logo{font-weight:900;letter-spacing:2px}.gold{color:#a77a29}h1{font-size:36px;line-height:1.1;margin:22px 0 8px}.price{font-size:27px;font-weight:800}p{line-height:1.6;color:#3e4643}label{display:block;font-size:13px;font-weight:700;margin:16px 0 5px}input{box-sizing:border-box;width:100%;padding:13px;border:1px solid #b9c0bd;border-radius:8px;font:inherit}button{margin-top:20px;padding:15px;background:#16221d;color:#fff;font-weight:800;border:0;border-radius:8px;width:100%;cursor:pointer}button:disabled{opacity:.6}small{color:#68716c}#notice{margin:15px 0;font-weight:650}footer{text-align:center;font-size:12px;color:#727b74;margin-top:30px}</style></head><body><main><div class="logo">SPLITS<span class="gold">PRO</span></div><h1>Your Deep Clean Is On Us.</h1><div class="price"><s style="color:#89908c">$300</s> &nbsp; <span class="gold">FREE</span></div><p>A one-time thank-you from SplitsPro. No payment and no obligation to book any other service.</p><p>This voucher covers <b>one professional split-system deep clean</b>. Submit your details and we'll call you to arrange a suitable appointment.</p><div id="notice">Checking your voucher…</div><form id="claim" hidden><label for="name">Full name</label><input id="name" required minlength="2" maxlength="80" autocomplete="name"><label for="phone">Mobile number</label><input id="phone" required type="tel" autocomplete="tel" placeholder="04…"><label for="suburb">Suburb</label><input id="suburb" required minlength="3" maxlength="80"><button id="send">Claim My Free Deep Clean</button></form><small>One claim per link. SplitsPro will contact you to confirm service availability.</small><footer>SplitsPro · Sydney air conditioning specialists</footer></main>
+<script>
+const code=__CODE__;
+const notice=document.getElementById("notice");
+const form=document.getElementById("claim");
+(async()=>{try{if(!code)throw new Error("This invitation link is incomplete.");let r=await fetch("/api/vip/status?code="+encodeURIComponent(code),{cache:"no-store"});let d=await r.json();if(!r.ok)throw new Error(d.detail||"Voucher unavailable.");if(d.status!=="active"){notice.textContent=d.status==="full"?"This one-time voucher has already been claimed.":"This voucher has expired.";return;}notice.textContent="Available · One-time use · Claim by "+d.use_by;form.hidden=false;}catch(e){notice.textContent=e.message;}})();
+form.addEventListener("submit",async e=>{e.preventDefault();let btn=document.getElementById("send");btn.disabled=true;notice.textContent="Submitting your claim…";try{let r=await fetch("/api/vip/claim",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code,name:document.getElementById("name").value,phone:document.getElementById("phone").value,suburb:document.getElementById("suburb").value})});let d=await r.json();if(!r.ok)throw new Error(typeof d.detail==="string"?d.detail:"Could not claim voucher.");form.hidden=true;notice.textContent="Claim received! SplitsPro will call you to arrange your free deep clean.";}catch(e){notice.textContent=e.message;btn.disabled=false;}});
+</script></body></html>""".replace("__CODE__", safe_code))
+
+
+@router.get("/manage", response_class=HTMLResponse)
+def manager_page():
+    return HTMLResponse("""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SplitsPro Voucher Issuer</title><style>body{font:16px system-ui;background:#f6f5f0;color:#16231f;padding:25px}main{max-width:550px;margin:auto;background:#fff;padding:30px;border-radius:14px}input,button{width:100%;box-sizing:border-box;padding:13px;margin:7px 0 16px;font:inherit;border-radius:7px}input{border:1px solid #aaa}button{background:#15251d;color:white;border:0;font-weight:800;cursor:pointer}a{overflow-wrap:anywhere;color:#94701d}#result{white-space:pre-wrap}</style></head><body><main><h1>SplitsPro VIP Vouchers</h1><p>Create one unique link for each property manager. Each link can be claimed exactly once for a free $300 deep clean.</p><label>Property manager / agency name</label><input id="label" autocomplete="off" placeholder="e.g. Shannon — Agency"><label>Private SplitsPro admin key</label><input id="key" type="password" autocomplete="off"><button id="issue">Generate one-time link</button><div id="result"></div></main><script>
+document.getElementById("issue").onclick=async()=>{let el=document.getElementById("result");el.textContent="Creating…";try{let r=await fetch("/api/vip/partners",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Key":document.getElementById("key").value},body:JSON.stringify({label:document.getElementById("label").value})});let d=await r.json();if(!r.ok)throw new Error(d.detail||"Unable to generate link");el.replaceChildren();let p=document.createElement("p");p.textContent="Created. One claim only. Expires "+d.use_by+".";let a=document.createElement("a");a.href=d.url;a.textContent=d.url;a.target="_blank";a.rel="noopener noreferrer";el.append(p,a);}catch(e){el.textContent=e.message;}};</script></body></html>""")
