@@ -15,6 +15,7 @@ import { LOGO } from "@/lib/data";
 
 import Home from "@/pages/Home";
 import About from "@/pages/About";
+import Workmanship from "@/pages/Workmanship";
 import SplitSystems from "@/pages/SplitSystems";
 import Ducted from "@/pages/Ducted";
 import Cleaning from "@/pages/Cleaning";
@@ -61,6 +62,8 @@ const AnimatedRoutes = () => {
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/workmanship" element={<Workmanship />} />
+          <Route path="/workmanship-and-trust" element={<Navigate to="/workmanship" replace />} />
           <Route path="/payment-options" element={<PaymentOptions />} />
           <Route path="/deal-payment" element={<DealPayment />} />
           <Route path="/deals" element={<Navigate to="/split-system-installation-sydney" replace />} />
