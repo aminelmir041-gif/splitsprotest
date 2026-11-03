@@ -10,7 +10,7 @@ import {
 
 import QuoteForm from "../components/QuoteForm";
 import { GoogleRating } from "../components/sections";
-import { PHONE, PHONE_TEL, FEATURED_REVIEW, IMAGES } from "../lib/data";
+import { PHONE, PHONE_TEL, FEATURED_REVIEW, GOOGLE_RATING, IMAGES } from "../lib/data";
 import { getReviews } from "../lib/api";
 import { RINNAI_LOCAL_OFFER_RANGES } from "./BrandPage";
 
@@ -56,11 +56,18 @@ const included = [
   "Electrical circuit up to 20 metres where required",
   "Commissioning and installation guarantee",
 ];
+const GOOGLE_REVIEWS_URL = "https://g.page/r/CYTvO1ipeYUtEBM/";
+const FALLBACK_REVIEWS = [
+  { id: "sia", ...FEATURED_REVIEW },
+  { id: "gill-mcphee", name: "Gill McPhee", rating: 5, text: "Excellent installers. They work very well as a team. Heatwave arrives tomorrow, 34 degrees, and we have cooling! So happy." },
+  { id: "mat-134", name: "Mat 134", rating: 5, text: "Best in the business, amazing work." },
+];
+
 const GoogleAdsLanding = () => {
   const { search } = useLocation();
 
   const [activePhoto, setActivePhoto] = useState(null);
-  const [reviews, setReviews] = useState([{ id: "featured", ...FEATURED_REVIEW }]);
+  const [reviews, setReviews] = useState(FALLBACK_REVIEWS);
   useEffect(() => { let active = true; getReviews().then(items => { if (active && Array.isArray(items) && items.length) setReviews(items); }).catch(() => {}); return () => { active = false; }; }, []);
   const requestedBrand = new URLSearchParams(search).get("brand")?.toLowerCase();
   const initialBrand = requestedBrand === "daikin" ? "daikin-lite-local"
@@ -233,27 +240,39 @@ const GoogleAdsLanding = () => {
               {src:"/workmanship/photo-gallery/08-90009.jpg",alt:"Daikin above-window installation"},
               {src:"/workmanship/photo-gallery/09-86696.jpg",alt:"Daikin outdoor installation"},
               {src:"/workmanship/photo-gallery/10-100215.jpg",alt:"Large Daikin outdoor installation"},
-              {src:IMAGES.installDaikinBathroom,alt:"Daikin indoor installation",rotation:180},
-              {src:IMAGES.installRinnaiWall,alt:"Rinnai living room installation"},
-              {src:IMAGES.installDaikinOutdoor2,alt:"Outdoor bracket installation"},
-              {src:IMAGES.installDaikinGarage,alt:"Daikin utility room installation"},
+              {src:IMAGES.installDaikinBathroom,alt:"Daikin indoor installation",rotation:90},
+              {src:IMAGES.installRinnaiWall,alt:"Rinnai outdoor installation on a wall bracket",rotation:90},
+              {src:IMAGES.installDaikinOutdoor2,alt:"Rinnai indoor unit showing the temperature display",rotation:90},
+              {src:IMAGES.installDaikinGarage,alt:"Daikin utility room installation",rotation:90},
               {src:IMAGES.splitIndoor,alt:"Rinnai indoor installation"}
             ].map((photo,i) => <button key={i} type="button" onClick={() => setActivePhoto(photo)} className="w-[72%] shrink-0 snap-start overflow-hidden rounded-xl border border-[#E5E1D9] bg-[#F7F5F1] sm:w-[35%]" aria-label={`Enlarge installation photo ${i+1}`}>
-              <img src={photo.src} alt={photo.alt} loading="lazy" className="h-64 w-full object-contain" style={{transform:`rotate(${photo.rotation || 0}deg)`}} />
+              <img src={photo.src} alt={photo.alt} loading="lazy" className="aspect-square w-full object-contain" style={{transform:`rotate(${photo.rotation || 0}deg)`}} />
             </button>)}
           </div>
           {activePhoto && <div role="dialog" aria-modal="true" aria-label="Enlarged installation photo" className="fixed inset-0 z-[10060] flex items-center justify-center bg-black/90 p-4" onClick={() => setActivePhoto(null)}>
             <button type="button" onClick={() => setActivePhoto(null)} className="absolute right-5 top-5 rounded-full bg-white px-4 py-2 font-bold text-black">Close ×</button>
-            <img src={activePhoto.src} alt={activePhoto.alt} className="max-h-[85vh] max-w-full object-contain" style={{transform:`rotate(${activePhoto.rotation || 0}deg)`}} onClick={e => e.stopPropagation()} />
+            <div className="flex max-h-[85vh] max-w-[90vw] items-center justify-center" onClick={e => e.stopPropagation()}>
+              {activePhoto.rotation
+                ? <img src={activePhoto.src} alt={activePhoto.alt} className="aspect-square w-[min(90vw,85vh)] object-contain" style={{transform:`rotate(${activePhoto.rotation}deg)`}} />
+                : <img src={activePhoto.src} alt={activePhoto.alt} className="max-h-[85vh] max-w-full object-contain" />}
+            </div>
           </div>}
           <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
-          <p className="mt-2 text-sm text-[#666]">Swipe to read our available customer reviews.</p>
+          <p className="mt-2 text-sm text-[#666]">Swipe through genuine customer feedback, then see the full collection on Google.</p>
           <div className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5" aria-label="Customer review carousel">
             {reviews.map((r, i) => <figure key={r.id || i} className="min-w-[82%] snap-start rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:min-w-[45%]">
               <div className="text-[#A3793B]" aria-label={`${r.rating || 5} out of 5 stars`}>{"★".repeat(Math.max(1, Math.min(5, Number(r.rating) || 5)))}</div>
               <blockquote className="mt-3 leading-relaxed text-[#333]">“{r.text}”</blockquote>
               <figcaption className="mt-4 text-sm font-bold">{r.name || "SplitsPro customer"}</figcaption>
             </figure>)}
+          </div>
+          <div className="mt-5 flex flex-col gap-3 rounded-xl border border-[#E5E1D9] bg-[#FCFBF8] p-5 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm leading-relaxed text-[#555]">
+              Showing {reviews.length} customer reviews here. Read all {GOOGLE_RATING.count} Google reviews on our public listing.
+            </p>
+            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-[#111] px-5 py-3 text-sm font-bold text-white hover:bg-[#333]">
+              See all reviews on Google <ArrowRight className="ml-2 h-4 w-4" />
+            </a>
           </div>
           <h3 className="mt-10 font-serif text-3xl">Find the right system size</h3>
           <p className="mt-3 max-w-3xl leading-relaxed text-[#555]">Our sizing calculator is being prepared. Until then, we can help estimate capacity from your room dimensions, ceiling height, insulation, windows and sun exposure during your free call. A final recommendation depends on the property and installation conditions.</p>
