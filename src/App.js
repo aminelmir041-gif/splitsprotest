@@ -103,6 +103,20 @@ const AnimatedRoutes = () => {
   );
 };
 
+function SiteLayout() {
+  const { pathname } = useLocation();
+  const isDeals = pathname.replace(/\/$/, "") === "/aircon-deals";
+  return <>
+    <ScrollToTop />
+    <AnalyticsTracking />
+    {!isDeals && <Navbar />}
+    <main className={isDeals ? "" : "pt-[36px]"}><AnimatedRoutes /></main>
+    {!isDeals && <Footer />}
+    {!isDeals && <AfterHoursCallback />}
+    <Toaster position="top-center" richColors />
+  </>;
+}
+
 function App() {
   const basename = window.location.hostname.endsWith("github.io") ? "/splitsprotest" : "/";
 
@@ -130,15 +144,7 @@ function App() {
         <CustomCursor />
         <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
           <BrowserRouter basename={basename}>
-            <ScrollToTop />
-            <AnalyticsTracking />
-            <Navbar />
-            <main className="pt-[36px]">
-              <AnimatedRoutes />
-            </main>
-            <Footer />
-            <AfterHoursCallback />
-            <Toaster position="top-center" richColors />
+            <SiteLayout />
           </BrowserRouter>
         </ReactLenis>
       </div>
