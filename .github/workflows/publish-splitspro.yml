@@ -39,6 +39,12 @@ jobs:
           cp -R workmanship/photo-gallery build/workmanship/photo-gallery
           test -s build/workmanship/splitspro-installation-certificate.png
           test -s build/workmanship/photo-gallery/01-100144.jpg
+      - name: Publish standalone quote and sizing guides
+        run: |
+          cp -R aircon-quote-guide build/aircon-quote-guide
+          cp -R aircon-installation-guide build/aircon-installation-guide
+          test -s build/aircon-quote-guide/index.html
+          test -s build/aircon-installation-guide/index.html
       - name: Preserve client-side routes
         run: |
           cp build/index.html build/404.html
