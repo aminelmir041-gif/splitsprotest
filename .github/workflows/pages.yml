@@ -29,6 +29,12 @@ jobs:
           cp -R workmanship/photo-gallery build/workmanship/photo-gallery
           test -s build/workmanship/index.html
           test -s build/workmanship/photo-gallery/01-100144.jpg
+      - name: Publish standalone quote and sizing guides
+        run: |
+          cp -R aircon-quote-guide build/aircon-quote-guide
+          cp -R aircon-installation-guide build/aircon-installation-guide
+          test -s build/aircon-quote-guide/index.html
+          test -s build/aircon-installation-guide/index.html
       - run: echo 'splitspro.com.au' > build/CNAME
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
