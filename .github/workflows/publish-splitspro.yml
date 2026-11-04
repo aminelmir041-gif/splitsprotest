@@ -50,6 +50,9 @@ jobs:
           cp build/index.html build/404.html
           mkdir -p build/aircon-deals
           cp build/index.html build/aircon-deals/index.html
+          mkdir -p build/ducted
+          cp build/index.html build/ducted/index.html
+          test -s build/ducted/index.html
           mkdir -p build/split-systems/rinnai-local-offer build/deals
           cp build/index.html build/split-systems/rinnai-local-offer/index.html
           cp build/index.html build/deals/index.html
