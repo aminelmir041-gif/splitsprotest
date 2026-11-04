@@ -209,6 +209,46 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 }
 @media(prefers-reduced-motion:reduce){.sticky,.sticky.is-visible{transition:none}}
 </style>
+<style>
+/* Compact Google-search landing hero and first-screen social proof. */
+.hero{padding:48px 0 42px;max-width:1180px}
+.hero h1{font-size:clamp(38px,4.5vw,62px);max-width:920px;margin:14px 0 18px;line-height:1.12}
+.hero p{max-width:720px;margin:0 0 20px}
+.hero .button,.hero-meta{display:none!important}
+.first-trust{background:#111;border-top:1px solid #a68753;color:#fff;padding:20px 0 22px}
+.first-trust-inner{display:grid;grid-template-columns:240px minmax(0,1fr) auto;gap:26px;align-items:center}
+.trust-score{border-right:1px solid #574b39;padding-right:22px}
+.trust-score strong{display:block;font:600 32px Georgia,serif;line-height:1.2}
+.trust-score .stars,.trust-review .stars{color:#d5af72;letter-spacing:2px}
+.trust-score small{display:block;color:#c7c0b5;font-size:12px;margin-top:4px}
+.trust-review{min-height:95px;display:flex;flex-direction:column;justify-content:center}
+.trust-review q{display:block;font:17px/1.45 Georgia,serif;max-width:670px}
+.trust-review cite{font-size:12px;color:#d9bc8f;font-style:normal;margin-top:5px}
+.trust-actions{display:flex;flex-direction:column;gap:9px;white-space:nowrap}
+.trust-actions a{border:1px solid #c4a06b;color:#fff;text-decoration:none;text-align:center;padding:11px 16px;border-radius:4px;font-size:13px;font-weight:700}
+.trust-actions a:first-child{background:#c4a06b;color:#17130d}
+.trust-brands{border-top:1px solid #3a332a;margin-top:18px;padding-top:13px;display:flex;align-items:center;justify-content:center;gap:27px;flex-wrap:wrap;color:#c8c1b5;font-size:13px}
+.trust-brands span:first-child{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#c49e65}
+@media(max-width:800px){.hero{padding:40px 0 37px}.hero h1{font-size:clamp(37px,8vw,51px)}.first-trust-inner{grid-template-columns:1fr;gap:15px}.trust-score{border-right:0;border-bottom:1px solid #574b39;padding:0 0 12px}.trust-score strong{font-size:26px}.trust-review{min-height:110px}.trust-actions{flex-direction:row;white-space:normal}.trust-actions a{flex:1}.trust-brands{gap:10px 18px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.trust-review{transition:none}}
+</style>
+(function(){
+  const hero=document.querySelector('.hero');
+  if(hero){
+    const banner=document.createElement('section');
+    banner.className='first-trust';
+    banner.setAttribute('aria-label','SplitsPro customer trust and reviews');
+    banner.innerHTML=`<div class="wrap"><div class="first-trust-inner"><div class="trust-score"><div class="stars">★★★★★</div><strong>5.0 / 5</strong><small><span id="hero-review-count">33 Google reviews</span> · Fully licensed & insured</small></div><div class="trust-review" aria-live="off"><div class="stars">★★★★★</div><q id="hero-review-quote">Amazing service from start to finish. Professional, punctual and the installation was done perfectly.</q><cite id="hero-review-name">Nina Pavone · Google review</cite></div><div class="trust-actions"><a href="https://splitspro.com.au/contact/">Request a quote</a><a href="#story">See the difference ↓</a></div></div><div class="trust-brands"><span>Brands we install</span><span>Daikin</span><span>Mitsubishi Electric</span><span>Rinnai</span><span>Haier</span><span>Carrier</span></div></div>`;
+    hero.closest('.top').insertAdjacentElement('afterend',banner);
+    const reviews=[...document.querySelectorAll('#review-slider article')].map(el=>({quote:el.querySelector('p')?.textContent?.trim().replace(/^[“”]|[“”]$/g,''),name:el.querySelector('strong')?.textContent?.trim()})).filter(r=>r.quote&&r.name);
+    let current=0;
+    const quote=document.getElementById('hero-review-quote'),name=document.getElementById('hero-review-name');
+    if(reviews.length){quote.textContent=reviews[0].quote;name.textContent=reviews[0].name+' · Google review';}
+    if(reviews.length>1&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      setInterval(()=>{if(document.hidden)return;current=(current+1)%reviews.length;quote.textContent=reviews[current].quote;name.textContent=reviews[current].name+' · Google review';},6500);
+    }
+  }
+})();
 <script>
 (function(){
   const floatingCall=document.querySelector('.sticky');
