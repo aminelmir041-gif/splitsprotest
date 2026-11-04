@@ -38,7 +38,6 @@ export const NAV = [
   { label: "Split Systems", to: "/split-systems" },
   { label: "Ducted", to: "/ducted" },
   { label: "Cleaning", to: "/cleaning" },
-  { label: "Deals", to: "/aircon-deals" },
   { label: "Gallery", to: "/gallery" },
   { label: "Service Areas", to: "/service-areas" },
   { label: "About", to: "/about" },
