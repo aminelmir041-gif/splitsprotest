@@ -12,6 +12,7 @@ export const Navbar = () => {
   const isFinancePage = location.pathname.startsWith("/payment-options");
   // Trailing-slash URLs are common on the public site; keep the header legible on both forms.
   const normalizedPath = location.pathname.replace(/\/+$/, "") || "/";
+  const visibleNav = NAV.filter((item) => item.label !== "Deals" || !["/aircon-deals", "/deals"].includes(normalizedPath));
   const isCleaningLanding = normalizedPath === "/split-system-cleaning";
   const isCleaningPage = ["/split-system-cleaning", "/secure-cleaning", "/colony-forming-units", "/aircon-colony-forming-units"].includes(normalizedPath);
   const solid = scrolled || open || isFinancePage || isCleaningPage;
@@ -87,7 +88,7 @@ export const Navbar = () => {
         <Logo onDark={!solid} scrolled={scrolled} />
 
         {!isCleaningLanding && <div className="hidden items-center gap-6 lg:flex lg:gap-10">
-          {NAV.map((item) => (
+          {visibleNav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -146,7 +147,7 @@ export const Navbar = () => {
             className="fixed inset-x-0 top-[72px] z-[9999] max-h-[calc(100dvh-72px)] overflow-y-auto overscroll-contain border-t border-[#E5E5EA] bg-white shadow-2xl lg:hidden"
           >
             <div className="sp-container grid gap-0.5 py-4">
-              {NAV.map((item) => (
+              {visibleNav.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
