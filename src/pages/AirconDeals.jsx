@@ -77,6 +77,7 @@ const AirconDeals = () => {
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [reviewIndex, setReviewIndex] = useState(0);
   const galleryTouchX = useRef(0);
+  const galleryDidSwipe = useRef(false);
   const reviewTouchX = useRef(0);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [afterHours, setAfterHours] = useState(isAfterHours);
@@ -316,7 +317,9 @@ const AirconDeals = () => {
           </div>
           <h3 className="mt-12 font-serif text-3xl">See the workmanship for yourself</h3>
           <p className="mt-2 text-sm text-[#666]">More real work from our workmanship gallery. One photo at a time. Swipe to explore or use the arrows below.</p>
-          <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-5" aria-label="Installation photo gallery">
+          <div className="mt-5 overflow-hidden rounded-2xl border border-[#B98C4F] bg-white p-3 shadow-md" aria-label="Installation photo gallery" data-testid="deals-photo-carousel"
+            onTouchStart={(event) => { galleryTouchX.current = event.changedTouches[0].clientX; galleryDidSwipe.current = false; }}
+            onTouchEnd={(event) => { const distance = event.changedTouches[0].clientX - galleryTouchX.current; if (Math.abs(distance) > 45) { galleryDidSwipe.current = true; setGalleryIndex((index) => (index + (distance < 0 ? 1 : -1) + 15) % 15); } }}>
             {[
               {src:"/workmanship/photo-gallery/01-100144.jpg",alt:"Daikin indoor unit by a window"},
               {src:"/workmanship/photo-gallery/02-100213.jpg",alt:"Daikin living room installation"},
@@ -333,9 +336,16 @@ const AirconDeals = () => {
               {src:IMAGES.installDaikinOutdoor2,alt:"Rinnai indoor unit showing the temperature display",rotation:90},
               {src:IMAGES.installDaikinGarage,alt:"Daikin utility room installation",rotation:90},
               {src:IMAGES.splitIndoor,alt:"Rinnai indoor installation"}
-            ].map((photo,i) => <button key={i} type="button" onClick={() => setActivePhoto(photo)} className="w-[72%] shrink-0 snap-start overflow-hidden rounded-xl border border-[#E5E1D9] bg-[#F7F5F1] sm:w-[35%]" aria-label={`Enlarge installation photo ${i+1}`}>
-              <img src={photo.src} alt={photo.alt} loading="lazy" className="aspect-square w-full object-contain" style={{transform:`rotate(${photo.rotation || 0}deg)`}} />
+            ].filter((_, i) => i === galleryIndex).map((photo) => <button key={photo.src} type="button" onClick={() => { if (!galleryDidSwipe.current) setActivePhoto(photo); }} className="block w-full overflow-hidden rounded-xl bg-[#F7F5F1]" aria-label={`Enlarge installation photo ${galleryIndex + 1}`}>
+              <img src={photo.src} alt={photo.alt} loading="lazy" className="mx-auto aspect-[4/3] max-h-[460px] w-full object-contain" style={{transform:`rotate(${photo.rotation || 0}deg)`}} />
             </button>)}
+          </div>
+          <div className="mt-3 flex items-center justify-between gap-3" data-testid="deals-photo-controls">
+            <p className="text-sm font-semibold text-[#6F542F]">{galleryIndex + 1} / 15 <span className="ml-1 font-normal">Swipe or tap an arrow</span></p>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => setGalleryIndex((index) => (index + 14) % 15)} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#956C35] bg-white text-[#956C35]" aria-label="Previous installation photo"><ArrowLeft className="h-5 w-5" /></button>
+              <button type="button" onClick={() => setGalleryIndex((index) => (index + 1) % 15)} className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#956C35] text-white" aria-label="Next installation photo"><ArrowRight className="h-5 w-5" /></button>
+            </div>
           </div>
           {activePhoto && <div role="dialog" aria-modal="true" aria-label="Enlarged installation photo" className="fixed inset-0 z-[10060] flex items-center justify-center bg-black/90 p-4" onClick={() => setActivePhoto(null)}>
             <button type="button" onClick={() => setActivePhoto(null)} className="absolute right-5 top-5 rounded-full bg-white px-4 py-2 font-bold text-black">Close ×</button>
@@ -347,12 +357,21 @@ const AirconDeals = () => {
           </div>}
           <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
           <p className="mt-2 text-sm text-[#666]">One review at a time. Swipe or use the arrows below.</p>
-          <div className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5" aria-label="Customer review carousel">
-            {reviews.map((r, i) => <figure key={r.id || i} className="min-w-[82%] snap-start rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:min-w-[45%]">
+          <div className="mt-5 overflow-hidden rounded-2xl border border-[#B98C4F] bg-white p-3 shadow-md" aria-label="Customer review carousel" data-testid="deals-review-carousel"
+            onTouchStart={(event) => { reviewTouchX.current = event.changedTouches[0].clientX; }}
+            onTouchEnd={(event) => { const distance = event.changedTouches[0].clientX - reviewTouchX.current; if (reviews.length > 1 && Math.abs(distance) > 45) setReviewIndex((index) => (index + (distance < 0 ? 1 : -1) + reviews.length) % reviews.length); }}>
+            {reviews.filter((_, i) => i === (reviewIndex % reviews.length)).map((r, i) => <figure key={r.id || i} className="w-full min-w-0 rounded-xl bg-[#FCFBF8] p-5 sm:p-8">
               <div className="text-[#A3793B]" aria-label={`${r.rating || 5} out of 5 stars`}>{"★".repeat(Math.max(1, Math.min(5, Number(r.rating) || 5)))}</div>
-              <blockquote className="mt-3 leading-relaxed text-[#333]">“{r.text}”</blockquote>
+              <blockquote className="mt-3 break-words leading-relaxed text-[#333]">“{r.text}”</blockquote>
               <figcaption className="mt-4 text-sm font-bold">{r.name || "SplitsPro customer"}</figcaption>
             </figure>)}
+          </div>
+          <div className="mt-3 flex items-center justify-between gap-3" data-testid="deals-review-controls">
+            <p className="text-sm font-semibold text-[#6F542F]">{reviews.length ? reviewIndex % reviews.length + 1 : 0} / {reviews.length} <span className="ml-1 font-normal">Swipe for more</span></p>
+            <div className="flex gap-2">
+              <button type="button" disabled={reviews.length < 2} onClick={() => setReviewIndex((index) => (index - 1 + reviews.length) % reviews.length)} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#956C35] bg-white text-[#956C35] disabled:opacity-40" aria-label="Previous customer review"><ArrowLeft className="h-5 w-5" /></button>
+              <button type="button" disabled={reviews.length < 2} onClick={() => setReviewIndex((index) => (index + 1) % reviews.length)} className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#956C35] text-white disabled:opacity-40" aria-label="Next customer review"><ArrowRight className="h-5 w-5" /></button>
+            </div>
           </div>
           <div className="mt-5 rounded-xl border border-[#B98C4F] bg-[#FFFCF7] p-5">
             <p className="text-sm font-semibold leading-relaxed text-[#555]">
