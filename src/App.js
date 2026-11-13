@@ -105,7 +105,7 @@ const AnimatedRoutes = () => {
 
 const SiteShell = () => {
   const { pathname } = useLocation();
-  const isDealsPage = (pathname.replace(/\\/+$/, "") || "/") === "/aircon-deals";
+  const isDealsPage = pathname === "/aircon-deals" || pathname === "/aircon-deals/";
   return (
     <>
       {isDealsPage ? (
