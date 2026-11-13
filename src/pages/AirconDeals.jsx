@@ -295,12 +295,17 @@ const AirconDeals = () => {
         </div>
       </section>
 
-      <section id="local-offer-trust" className="scroll-mt-20 bg-[#F7F4ED] py-16 sm:py-24" data-testid="google-ads-proof">
+      <section id="local-offer-trust" className="scroll-mt-20 border-t-8 border-[#C7A16B] bg-[#F2E5D1] py-16 sm:py-24" data-testid="google-ads-proof">
         <div className="sp-container max-w-5xl">
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">Proof of the work</p>
-          <h2 className="mt-4 max-w-3xl font-serif text-[clamp(48px,5vw,74px)] leading-[0.99] tracking-[-0.058em] text-[#111]">Small steps. <span className="text-[#956C35]">A smoother job.</span></h2>
-          <p className="mt-4 max-w-3xl leading-relaxed text-[#555]">Here is what you can check for yourself: our installation record, photos of real jobs and reviews from customers.</p>
-          <div className="mt-8 flex flex-col gap-5 rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-5 sm:flex-row sm:items-center">
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#8F6A34]">The SplitsPro trust standard</p>
+          <h2 className="mt-4 max-w-3xl font-serif text-[clamp(48px,5vw,74px)] leading-[0.99] tracking-[-0.058em] text-[#111]">Real work. <span className="text-[#956C35]">Real peace of mind.</span></h2>
+          <p className="mt-4 max-w-3xl leading-relaxed text-[#555]">See our installation record, real workmanship photos and customer reviews. No deposit or advance payment: pay only once installation and testing are complete.</p>
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-[#B98C4F] bg-[#FFF9EF] p-5 shadow-sm"><div className="flex items-center gap-2 text-[#9A713A]"><Star className="h-5 w-5 fill-current" /><strong className="text-xl">{GOOGLE_RATING.score}/5</strong></div><p className="mt-2 font-bold text-[#25211B]">{GOOGLE_RATING.count} Google reviews</p></div>
+            <div className="rounded-2xl border border-[#B98C4F] bg-[#FFF9EF] p-5 shadow-sm"><BadgeCheck className="h-6 w-6 text-[#9A713A]" /><p className="mt-2 font-bold text-[#25211B]">Licensed &amp; insured installers</p></div>
+            <div className="rounded-2xl border border-[#B98C4F] bg-[#FFF9EF] p-5 shadow-sm"><ShieldCheck className="h-6 w-6 text-[#9A713A]" /><p className="mt-2 font-bold text-[#25211B]">Pay after installation</p><p className="mt-1 text-xs text-[#65543B]">No upfront payment</p></div>
+          </div>
+          <div className="mt-8 flex flex-col gap-5 rounded-2xl border border-[#B98C4F] bg-[#FFFCF7] p-5 shadow-md sm:flex-row sm:items-center">
             <button type="button" className="shrink-0" onClick={() => setActivePhoto({src:"/workmanship/splitspro-installation-certificate.png",alt:"SplitsPro installation completion certificate template"})} aria-label="View installation completion certificate">
               <img src="/workmanship/splitspro-installation-certificate.png" alt="SplitsPro installation completion certificate" className="max-h-72 w-full object-contain sm:w-56" loading="lazy"/>
             </button>
@@ -310,7 +315,7 @@ const AirconDeals = () => {
             </div>
           </div>
           <h3 className="mt-12 font-serif text-3xl">See the workmanship for yourself</h3>
-          <p className="mt-2 text-sm text-[#666]">More real work from our workmanship gallery. Swipe to explore, or tap a photo to enlarge.</p>
+          <p className="mt-2 text-sm text-[#666]">More real work from our workmanship gallery. One photo at a time. Swipe to explore or use the arrows below.</p>
           <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-5" aria-label="Installation photo gallery">
             {[
               {src:"/workmanship/photo-gallery/01-100144.jpg",alt:"Daikin indoor unit by a window"},
@@ -341,7 +346,7 @@ const AirconDeals = () => {
             </div>
           </div>}
           <h3 className="mt-12 font-serif text-3xl">What customers say</h3>
-          <p className="mt-2 text-sm text-[#666]">Real feedback from customers. Swipe to read what they said.</p>
+          <p className="mt-2 text-sm text-[#666]">One review at a time. Swipe or use the arrows below.</p>
           <div className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5" aria-label="Customer review carousel">
             {reviews.map((r, i) => <figure key={r.id || i} className="min-w-[82%] snap-start rounded-2xl border border-[#E5E1D9] bg-[#FCFBF8] p-6 sm:min-w-[45%]">
               <div className="text-[#A3793B]" aria-label={`${r.rating || 5} out of 5 stars`}>{"★".repeat(Math.max(1, Math.min(5, Number(r.rating) || 5)))}</div>
@@ -349,13 +354,10 @@ const AirconDeals = () => {
               <figcaption className="mt-4 text-sm font-bold">{r.name || "SplitsPro customer"}</figcaption>
             </figure>)}
           </div>
-          <div className="mt-5 flex flex-col gap-3 rounded-xl border border-[#E5E1D9] bg-[#FCFBF8] p-5 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm leading-relaxed text-[#555]">
-              Showing {reviews.length} customer reviews here. Read all {GOOGLE_RATING.count} Google reviews on our public listing.
+          <div className="mt-5 rounded-xl border border-[#B98C4F] bg-[#FFFCF7] p-5">
+            <p className="text-sm font-semibold leading-relaxed text-[#555]">
+              {GOOGLE_RATING.score}/5 from {GOOGLE_RATING.count} Google reviews. Browse selected feedback here, without leaving this page.
             </p>
-            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-[#111] px-5 py-3 text-sm font-bold text-white hover:bg-[#333]">
-              See all reviews on Google <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
           </div>
           <h3 className="mt-10 font-serif text-3xl">Find the right system size</h3>
           <p className="mt-3 max-w-3xl leading-relaxed text-[#555]">Our sizing calculator is being prepared. Until then, we can help estimate capacity from your room dimensions, ceiling height, insulation, windows and sun exposure during your free call. A final recommendation depends on the property and installation conditions.</p>
