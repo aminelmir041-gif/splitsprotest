@@ -103,6 +103,29 @@ const AnimatedRoutes = () => {
   );
 };
 
+const SiteShell = () => {
+  const { pathname } = useLocation();
+  const isDealsPage = (pathname.replace(/\\/+$/, "") || "/") === "/aircon-deals";
+  return (
+    <>
+      {isDealsPage ? (
+        <header className="sticky top-0 z-[60] border-b border-[#E6E1D9] bg-[#FFFCF7]">
+          <div className="sp-container flex min-h-16 items-center justify-between gap-4 py-2">
+            <img src={LOGO} alt="SplitsPro Air Conditioning" className="h-11 w-auto object-contain" />
+            <span className="max-w-[180px] text-right text-[11px] font-semibold text-[#70552F] sm:max-w-none sm:text-sm">No payment until after installation</span>
+          </div>
+        </header>
+      ) : <Navbar />}
+      <main className={isDealsPage ? "" : "pt-[36px]"}>
+        <AnimatedRoutes />
+      </main>
+      {!isDealsPage && <Footer />}
+      <AfterHoursCallback />
+      <Toaster position="top-center" richColors />
+    </>
+  );
+};
+
 function App() {
   const basename = window.location.hostname.endsWith("github.io") ? "/splitsprotest" : "/";
 
@@ -132,13 +155,7 @@ function App() {
           <BrowserRouter basename={basename}>
             <ScrollToTop />
             <AnalyticsTracking />
-            <Navbar />
-            <main className="pt-[36px]">
-              <AnimatedRoutes />
-            </main>
-            <Footer />
-            <AfterHoursCallback />
-            <Toaster position="top-center" richColors />
+            <SiteShell />
           </BrowserRouter>
         </ReactLenis>
       </div>
