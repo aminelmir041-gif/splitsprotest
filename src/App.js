@@ -62,6 +62,7 @@ const AnimatedRoutes = () => {
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/our-approach" element={<iframe title="SplitsPro — Our Approach" src="/our-approach/index.html" style={{display:"block",width:"100%",height:"100vh",border:0}} />} />
           <Route path="/workmanship" element={<Workmanship />} />
           <Route path="/workmanship-and-trust" element={<Navigate to="/workmanship" replace />} />
           <Route path="/payment-options" element={<PaymentOptions />} />
