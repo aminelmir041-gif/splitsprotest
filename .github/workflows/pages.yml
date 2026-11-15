@@ -1,6 +1,11 @@
 name: Deploy SplitsPro website to GitHub Pages
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'our-approach/**'
+      - '.github/workflows/pages.yml'
 permissions:
   contents: read
   pages: write
@@ -35,6 +40,12 @@ jobs:
           cp -R aircon-installation-guide build/aircon-installation-guide
           test -s build/aircon-quote-guide/index.html
           test -s build/aircon-installation-guide/index.html
+      - name: Publish standalone Our Approach page
+        run: |
+          mkdir -p build/our-approach
+          cp our-approach/index.html build/our-approach/index.html
+          cp -R workmanship/photo-gallery build/workmanship/photo-gallery
+          test -s build/our-approach/index.html
       - name: Publish Ducted page at its direct URL
         run: |
           mkdir -p build/ducted
