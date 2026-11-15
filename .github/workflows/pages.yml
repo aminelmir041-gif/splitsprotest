@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'our-approach/**'
+      - 'public/our-approach/**'
+      - 'src/App.js'
       - '.github/workflows/pages.yml'
 permissions:
   contents: read
