@@ -18,6 +18,7 @@ import About from "@/pages/About";
 import Workmanship from "@/pages/Workmanship";
 import SplitSystems from "@/pages/SplitSystems";
 import Ducted from "@/pages/Ducted";
+import DuctedDaikinRinnai from "@/pages/DuctedDaikinRinnai";
 import Cleaning from "@/pages/Cleaning";
 import SplitSystemCleaning from "@/pages/SplitSystemCleaning";
 import CleaningCheckout from "@/pages/CleaningCheckout";
@@ -84,6 +85,7 @@ const AnimatedRoutes = () => {
           <Route path="/daikin-zena-special" element={<ZenaSpecial />} />
           <Route path="/split-systems/:slug" element={<BrandPage />} />
           <Route path="/ducted" element={<Ducted />} />
+          <Route path="/ducted/daikin-rinnai" element={<DuctedDaikinRinnai />} />
           <Route path="/cleaning" element={<Cleaning />} />
           <Route path="/split-system-cleaning" element={<SplitSystemCleaning />} />
           <Route path="/colony-forming-units" element={<ColonyFormingUnits />} />
