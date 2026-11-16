@@ -120,7 +120,7 @@ jobs:
       - name: Update homepage and restored pages
         run: |
           python3 - <<'PY'
-          import os, re
+          import os, re, json
           from pathlib import Path
 
           count = os.environ['COUNT']
@@ -155,6 +155,13 @@ jobs:
           if updated != data:
               data_path.write_text(updated, encoding='utf-8')
 
+          # Public JSON feed used by the standalone Our Approach review counter.
+          # The hourly Places API job refreshes it only when the rating/count changes.
+          rating_feed_path = Path('public/google-rating.json')
+          rating_feed = json.dumps({"rating": float(rating_one_decimal), "count": int(count)}, indent=2) + "\n"
+          if not rating_feed_path.exists() or rating_feed_path.read_text(encoding='utf-8') != rating_feed:
+              rating_feed_path.write_text(rating_feed, encoding='utf-8')
+
           # Structured Google rating in the React build template.
           public_path = Path('public/index.html')
           if public_path.exists():
@@ -167,14 +174,14 @@ jobs:
       - name: Commit only when Google numbers changed
         id: review_update
         run: |
-          if git diff --quiet -- index.html src/lib/data.js public/index.html .google-place-id 2>/dev/null; then
+          if git diff --quiet -- index.html src/lib/data.js public/index.html public/google-rating.json .google-place-id 2>/dev/null; then
             echo "No Google review changes to publish"
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "SplitsPro Reviews Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add index.html src/lib/data.js public/index.html .google-place-id
+          git add index.html src/lib/data.js public/index.html public/google-rating.json .google-place-id
           git commit -m "Update Google rating to ${RATING} and reviews to ${COUNT} everywhere"
 
           for attempt in 1 2 3; do
@@ -198,4 +205,4 @@ jobs:
         if: steps.review_update.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run publish-original-pages.yml --ref main
+        run: gh workflow run publish-splitspro.yml --ref main
