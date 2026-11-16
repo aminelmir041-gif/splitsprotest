@@ -102,6 +102,18 @@ const Ducted = () => (
     afterHero={(
       <>
         <DuctedTopTrust />
+        <section className="border-b border-[#DECBAA] bg-[#F6F0E4] py-9 sm:py-12" data-testid="ducted-daikin-rinnai-entry">
+          <div className="sp-container flex max-w-6xl flex-col gap-5 rounded-2xl border border-[#D7B883] bg-white p-6 shadow-sm sm:p-8 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#97703B]">New Daikin &amp; Rinnai packages</p>
+              <h2 className="mt-2 font-serif text-2xl leading-tight text-[#171717] sm:text-3xl">Looking for Daikin or Rinnai ducted?</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#5A5752]">Compare our dedicated 2-, 4- and 6-zone package options and indicative installed prices. You can still browse every brand below.</p>
+            </div>
+            <a href="/ducted/daikin-rinnai" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-lg bg-[#171717] px-6 py-3 text-center text-sm font-bold text-white hover:bg-[#343434]" aria-label="View Daikin and Rinnai ducted packages and prices">
+              See Daikin &amp; Rinnai Prices →
+            </a>
+          </div>
+        </section>
         <DuctedPricingSelector />
       </>
     )}
