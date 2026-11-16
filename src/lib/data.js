@@ -36,7 +36,7 @@ export const HOURS = [
 export const NAV = [
   { label: "Home", to: "/" },
   { label: "Split Systems", to: "/split-systems" },
-  { label: "Ducted", to: "/ducted" },
+  { label: "Ducted", to: "/ducted/daikin-rinnai" },
   { label: "Cleaning", to: "/cleaning" },
   { label: "Gallery", to: "/gallery" },
   { label: "Service Areas", to: "/service-areas" },
