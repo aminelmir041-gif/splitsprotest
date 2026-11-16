@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { ArrowRight, BadgeCheck, Check, Phone, ShieldCheck, Star, Wind } from "lucide-react";
+import { ArrowRight, BadgeCheck, Check, Phone, ShieldCheck, Star, Wind, Wrench } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
 import { GOOGLE_RATING, IMAGES, PHONE, PHONE_TEL } from "../lib/data";
 
@@ -79,6 +79,27 @@ const DuctedDaikinRinnai = () => {
   const [brand, setBrand] = useState("daikin");
   const [packageId, setPackageId] = useState("comfort");
   const [selected, setSelected] = useState(null);
+  const [googleRating, setGoogleRating] = useState({ score: GOOGLE_RATING.score, count: GOOGLE_RATING.count });
+  useEffect(() => {
+    let active = true;
+    const refresh = async () => {
+      try {
+        const response = await fetch("/google-rating.json?updated=" + Date.now(), { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
+        const rating = Number(data.rating);
+        const count = Number(data.count);
+        if (active && Number.isFinite(rating) && rating >= 1 && rating <= 5 && Number.isInteger(count) && count >= 0) {
+          setGoogleRating({ score: rating.toFixed(1), count });
+        }
+      } catch (_) {
+        // Show the last published review count if the feed is temporarily unavailable.
+      }
+    };
+    refresh();
+    const interval = window.setInterval(refresh, 15 * 60 * 1000);
+    return () => { active = false; window.clearInterval(interval); };
+  }, []);
   const currentPackage = PACKAGES.find((item) => item.id === packageId) || PACKAGES[1];
   const options = PRICE_LIST[brand][packageId];
   const brandName = brand === "daikin" ? "Daikin" : "Rinnai";
@@ -130,11 +151,30 @@ const DuctedDaikinRinnai = () => {
         </div>
       </section>
 
-      <section className="border-b border-[#E3DDD3] bg-[#F9F5ED] py-5">
-        <div className="sp-container flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-sm font-semibold text-[#312B22]">
-          <span className="inline-flex items-center gap-2"><Star className="h-4 w-4 fill-[#B98B46] text-[#B98B46]" /> {GOOGLE_RATING.score} / 5 · {GOOGLE_RATING.count} Google reviews</span>
-          <span className="inline-flex items-center gap-2"><BadgeCheck className="h-4 w-4 text-[#A47736]" /> Licensed &amp; insured</span>
-          <span className="inline-flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#A47736]" /> Workmanship guarantee</span>
+      <section className="bg-white py-7 sm:py-9" data-testid="ducted-two-brand-trust">
+        <div className="sp-container">
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-y border-[#ECEAE6] py-4">
+            <span className="inline-flex items-center gap-2.5">
+              <Star className="h-5 w-5 shrink-0 text-[#B89C61]" />
+              <strong className="text-sm text-[#1D1D1F]">{googleRating.score}★</strong>
+              <span className="text-xs text-[#6E6E73]">{googleRating.count} Google Reviews</span>
+            </span>
+            <span className="inline-flex items-center gap-2.5">
+              <ShieldCheck className="h-5 w-5 shrink-0 text-[#B89C61]" />
+              <strong className="text-sm text-[#1D1D1F]">Licensed</strong>
+              <span className="text-xs text-[#6E6E73]">&amp; Insured</span>
+            </span>
+            <span className="inline-flex items-center gap-2.5">
+              <BadgeCheck className="h-5 w-5 shrink-0 text-[#B89C61]" />
+              <strong className="text-sm text-[#1D1D1F]">5+ Years</strong>
+              <span className="text-xs text-[#6E6E73]">Manufacturer Warranty</span>
+            </span>
+            <span className="inline-flex items-center gap-2.5">
+              <Wrench className="h-5 w-5 shrink-0 text-[#B89C61]" />
+              <strong className="text-sm text-[#1D1D1F]">Backed</strong>
+              <span className="text-xs text-[#6E6E73]">Workmanship Guarantee</span>
+            </span>
+          </div>
         </div>
       </section>
 
