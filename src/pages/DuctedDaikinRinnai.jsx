@@ -123,6 +123,7 @@ const DuctedDaikinRinnai = () => {
               <a href={PHONE_TEL} className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-white/40 px-6 py-3 font-bold">Call {PHONE} <Phone className="h-4 w-4" /></a>
             </div>
             <p className="mt-5 text-sm text-white/70">No deposit: payment after your agreed installation is completed and tested.</p>
+            <a href="/ducted" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#E5C794] underline underline-offset-4 hover:text-white">Compare all brands on our original ducted page <ArrowRight className="h-4 w-4" /></a>
           </div>
           <div className="overflow-hidden rounded-[22px] border border-white/20 bg-[#252525]">
             <img src={IMAGES.ductedHall} alt="Completed home ducted air conditioning installation" className="aspect-[4/3] h-full w-full object-cover" loading="eager" />
