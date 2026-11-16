@@ -52,9 +52,11 @@ jobs:
           cp build/index.html build/aircon-deals/index.html
           mkdir -p build/ducted
           cp build/index.html build/ducted/index.html
-          mkdir -p build/ducted/daikin-rinnai
-          cp build/index.html build/ducted/daikin-rinnai/index.html
+          # Retain the standalone, pre-rendered Daikin/Rinnai pricing page from public/.
+          # It renders prices even when React routing or JavaScript bundles fail.
           test -s build/ducted/daikin-rinnai/index.html
+          grep -q 'id="price-cards"' build/ducted/daikin-rinnai/index.html
+          grep -q '\$9,590' build/ducted/daikin-rinnai/index.html
           test -s build/ducted/index.html
           mkdir -p build/split-systems/rinnai-local-offer build/deals
           cp build/index.html build/split-systems/rinnai-local-offer/index.html
