@@ -48,9 +48,9 @@ const PRICING = {
     daikin: [
       { kw: "7.1kW", price: daikinPriceLabel("7.1", "essential") },
       { kw: "8.5kW", price: daikinPriceLabel("8.5", "essential") },
-      { kw: "10kW", price: daikinPriceLabel("10", "essential") },
+      { kw: "10.0kW", price: daikinPriceLabel("10", "essential") },
       { kw: "12.5kW", price: daikinPriceLabel("12.5", "essential") },
-      { kw: "14kW", price: daikinPriceLabel("14", "essential") },
+      { kw: "14.0kW", price: daikinPriceLabel("14", "essential") },
     ],
     mhi: [
       { kw: "7.1kW", price: "$7,490" },
@@ -82,10 +82,10 @@ const PRICING = {
       { kw: "15.5kW", price: "$10,190" },
     ],
     daikin: [
-      { kw: "10kW", price: daikinPriceLabel("10", "comfort") },
+      { kw: "10.0kW", price: daikinPriceLabel("10", "comfort") },
       { kw: "12.5kW", price: daikinPriceLabel("12.5", "comfort") },
-      { kw: "14kW", price: daikinPriceLabel("14", "comfort") },
-      { kw: "16kW", price: daikinPriceLabel("16", "comfort") },
+      { kw: "14.0kW", price: daikinPriceLabel("14", "comfort") },
+      { kw: "16.0kW", price: daikinPriceLabel("16", "comfort") },
     ],
     mhi: [
       { kw: "10.0kW", price: "$9,590" },
@@ -115,8 +115,8 @@ const PRICING = {
     ],
     daikin: [
       { kw: "12.5kW", price: daikinPriceLabel("12.5", "premium") },
-      { kw: "14kW", price: daikinPriceLabel("14", "premium") },
-      { kw: "16kW", price: daikinPriceLabel("16", "premium") },
+      { kw: "14.0kW", price: daikinPriceLabel("14", "premium") },
+      { kw: "16.0kW", price: daikinPriceLabel("16", "premium") },
     ],
     mhi: [
       { kw: "12.5kW", price: "$11,890" },
