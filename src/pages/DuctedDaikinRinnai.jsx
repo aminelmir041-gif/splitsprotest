@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, BadgeCheck, Check, Phone, ShieldCheck, Star, Wind, Wrench } from "lucide-react";
 import QuoteForm from "../components/QuoteForm";
+import { daikinInstalledPrice } from "../lib/ductedDaikinPricing";
 import { GOOGLE_RATING, IMAGES, PHONE, PHONE_TEL } from "../lib/data";
 
 // Separate Daikin / Rinnai retail page. The original /ducted pricing selector stays unchanged.
-// Daikin Comfort prices were approved in the November 2026 costing discussion.
-// Daikin Premium = provisional +$1,000 relative to Comfort (full six-zone BOM to be confirmed).
+// Daikin advertised prices are derived from recorded unit, labour and materials costs
+// for 30% target gross margin. Six-zone pricing remains on request until fully costed.
 // Rinnai prices are preserved from the previous publicly listed ducted packages and require re-costing.
 const PACKAGES = [
   { id: "essential", name: "Essential", zones: 2, outlets: 6, description: "Straightforward zoning for smaller homes." },
@@ -17,26 +18,26 @@ const PACKAGES = [
 const PRICE_LIST = {
   daikin: {
     essential: [
-      { size: "7.1 kW", amount: null, note: "2-zone design only; price to be confirmed" },
+      { size: "7.1 kW", amount: daikinInstalledPrice("7.1", "essential") },
     ],
     comfort: [
-      { size: "8.5 kW", amount: null, note: "Supplier and installation cost to be confirmed" },
-      { size: "10 kW", amount: 9590 },
-      { size: "12.5 kW", amount: 10490 },
-      { size: "14 kW", amount: 11290 },
-      { size: "16 kW", amount: 11990 },
-      { size: "18 kW", amount: null, note: "Waiting for supplier price" },
-      { size: "20 kW", amount: 12590, note: "Subject to detailed airflow, power and installation assessment" },
-      { size: "25 kW", amount: 14490, note: "Subject to detailed airflow, power and installation assessment" },
+      { size: "8.5 kW", amount: daikinInstalledPrice("8.5", "comfort") },
+      { size: "10 kW", amount: daikinInstalledPrice("10", "comfort") },
+      { size: "12.5 kW", amount: daikinInstalledPrice("12.5", "comfort") },
+      { size: "14 kW", amount: daikinInstalledPrice("14", "comfort") },
+      { size: "16 kW", amount: daikinInstalledPrice("16", "comfort") },
+      { size: "18 kW", amount: null, note: "Awaiting supplier equipment price" },
+      { size: "20 kW", amount: daikinInstalledPrice("20", "comfort"), note: "Requires individual design, airflow, power-supply and labour confirmation" },
+      { size: "25 kW", amount: daikinInstalledPrice("25", "comfort"), note: "Requires individual design, airflow, power-supply and labour confirmation" },
     ],
     premium: [
-      { size: "10 kW", amount: 10590, provisional: true },
-      { size: "12.5 kW", amount: 11490, provisional: true },
-      { size: "14 kW", amount: 12290, provisional: true },
-      { size: "16 kW", amount: 12990, provisional: true },
-      { size: "18 kW", amount: null, note: "Waiting for supplier price" },
-      { size: "20 kW", amount: 13590, provisional: true, note: "Subject to detailed airflow and power assessment" },
-      { size: "25 kW", amount: 15490, provisional: true, note: "Subject to detailed airflow and power assessment" },
+      { size: "10 kW", amount: null, note: "Six-zone controller, additional outlets, materials and labour require a tailored quote" },
+      { size: "12.5 kW", amount: null, note: "Six-zone controller, additional outlets, materials and labour require a tailored quote" },
+      { size: "14 kW", amount: null, note: "Six-zone controller, additional outlets, materials and labour require a tailored quote" },
+      { size: "16 kW", amount: null, note: "Six-zone controller, additional outlets, materials and labour require a tailored quote" },
+      { size: "18 kW", amount: null, note: "Awaiting supplier equipment price" },
+      { size: "20 kW", amount: null, note: "Six-zone controller, additional outlets, materials and labour require a tailored quote" },
+      { size: "25 kW", amount: null, note: "Six-zone controller, additional outlets, materials and labour require a tailored quote" },
     ],
   },
   rinnai: {
@@ -226,7 +227,7 @@ const DuctedDaikinRinnai = () => {
             ))}
           </div>
           <p className="mt-6 max-w-4xl text-xs leading-relaxed text-[#69655E]">
-            The 7.1 kW Daikin is offered as a 2-zone system only. Daikin 8.5 kW and 18 kW prices are pending supplier confirmation. Daikin 6-zone figures are proposed upgrades pending a complete materials check; Rinnai prices come from the previous ducted package list pending re-costing. Larger 20–25 kW systems require individual design, airflow, power-supply and labor checks before a firm quote.
+            The 7.1 kW Daikin is shown for the 2-zone package only. Daikin 4-zone prices allow for up to eight outlets; 18 kW is awaiting supplier pricing. Six-zone Daikin packages require a tailored quote until the full controller, dampers, outlets, ducting and labour costs are verified. Rinnai prices remain from the previous package list pending re-costing. Larger 20–25 kW systems need individual design, airflow, power and installation checks before a firm quote.
           </p>
         </div>
       </section>
