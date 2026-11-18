@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Check, ChevronDown } from "lucide-react";
 import QuoteForm from "./QuoteForm";
+import { daikinPriceLabel } from "../lib/ductedDaikinPricing";
 
 const PACKAGES = [
   {
@@ -45,11 +46,11 @@ const PRICING = {
       { kw: "14.0kW", price: "$8,790" },
     ],
     daikin: [
-      { kw: "7.1kW", price: "$6,090" },
-      { kw: "8.5kW", price: "$7,690" },
-      { kw: "10.0kW", price: "$8,090" },
-      { kw: "12.5kW", price: "$9,090" },
-      { kw: "14.0kW", price: "$9,790" },
+      { kw: "7.1kW", price: daikinPriceLabel("7.1", "essential") },
+      { kw: "8.5kW", price: daikinPriceLabel("8.5", "essential") },
+      { kw: "10kW", price: daikinPriceLabel("10", "essential") },
+      { kw: "12.5kW", price: daikinPriceLabel("12.5", "essential") },
+      { kw: "14kW", price: daikinPriceLabel("14", "essential") },
     ],
     mhi: [
       { kw: "7.1kW", price: "$7,490" },
@@ -81,10 +82,10 @@ const PRICING = {
       { kw: "15.5kW", price: "$10,190" },
     ],
     daikin: [
-      { kw: "10.0kW", price: "$9,490" },
-      { kw: "12.5kW", price: "$10,390" },
-      { kw: "14.0kW", price: "$11,290" },
-      { kw: "16.0kW", price: "$12,090" },
+      { kw: "10kW", price: daikinPriceLabel("10", "comfort") },
+      { kw: "12.5kW", price: daikinPriceLabel("12.5", "comfort") },
+      { kw: "14kW", price: daikinPriceLabel("14", "comfort") },
+      { kw: "16kW", price: daikinPriceLabel("16", "comfort") },
     ],
     mhi: [
       { kw: "10.0kW", price: "$9,590" },
@@ -113,9 +114,9 @@ const PRICING = {
       { kw: "15.5kW", price: "$12,290" },
     ],
     daikin: [
-      { kw: "12.5kW", price: "$11,390" },
-      { kw: "14.0kW", price: "$12,290" },
-      { kw: "16.0kW", price: "$12,990" },
+      { kw: "12.5kW", price: daikinPriceLabel("12.5", "premium") },
+      { kw: "14kW", price: daikinPriceLabel("14", "premium") },
+      { kw: "16kW", price: daikinPriceLabel("16", "premium") },
     ],
     mhi: [
       { kw: "12.5kW", price: "$11,890" },
@@ -315,8 +316,8 @@ const DuctedPricingSelector = () => {
                     {selectedPackage.zones} zones · Up to {selectedPackage.outlets} outlets
                   </p>
                   <div className="mt-5 border-t border-[#ECE9E2] pt-5">
-                    <div className="text-3xl font-semibold tracking-tight text-[#1D1D1F]">{option.price}</div>
-                    <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">Fully Installed</div>
+                    <div className={`${option.price === "Price on request" ? "text-xl" : "text-3xl"} font-semibold tracking-tight text-[#1D1D1F]`}>{option.price}</div>
+                    <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#C8A46A]">{option.price === "Price on request" ? "Custom designed package" : "Fully Installed"}</div>
                   </div>
                   <button
                     type="button"
@@ -355,7 +356,7 @@ const DuctedPricingSelector = () => {
           </details>
 
           <p className="mt-4 text-[11px] leading-relaxed text-[#7A7A7E]">
-            Pricing applies to a standard installation with suitable access. Final system sizing and installation requirements are confirmed before installation.
+            Prices are indicative for standard installations with suitable access. Daikin 6-zone packages require an individual quote until all additional controller, outlet, material and labour costs are confirmed. Final system sizing and installation requirements are confirmed before installation.
           </p>
 
           <div id="ducted-book-installation" className="scroll-mt-24 pt-10 sm:pt-14" data-testid="ducted-book-installation">
