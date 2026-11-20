@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 
 import {
-  ArrowDown, ArrowLeft, ArrowRight, BadgeCheck, Check, CheckCircle2,
+  ArrowLeft, ArrowRight, BadgeCheck, Check, CheckCircle2,
   Clock3, CreditCard, Phone, ShieldCheck, Star,
 } from "lucide-react";
 
@@ -166,11 +166,7 @@ const AirconDeals = () => {
             <p className="mt-7 max-w-xl text-lg leading-[1.6] text-white/80 sm:text-xl">
               A split system is only part of the job. See how we look after your home, document the work and make the full standard-install price clear before you decide.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href={PHONE_TEL} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#D8B77C] px-6 py-3 text-sm font-extrabold text-[#17130E] hover:bg-[#E8CC99]"><Phone className="h-4 w-4" /> Book Now · Call Us</a>
-              <a href="#google-quote" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-white/45 px-6 py-3 text-sm font-bold text-white hover:bg-white/10">Get a Free Quote <ArrowDown className="h-4 w-4" /></a>
-            </div>
-            <p className="mt-3 text-xs text-white/60">Book by phone or request a callback. No deposit or payment before installation.</p>
+            <p className="mt-6 text-xs text-white/60">Book by phone or request a callback. No deposit or payment before installation.</p>
             <div className="mt-7 flex flex-col gap-3 text-sm font-medium text-white/80">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#C8A46A]" /> No payment until after installation is completed and tested</span>
               <span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[#C8A46A]" /> Installation within 2 business days for eligible jobs, subject to availability</span>
