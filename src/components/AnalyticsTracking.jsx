@@ -66,8 +66,10 @@ export default function AnalyticsTracking() {
         window.clarity("event", "phone_click");
       }
     };
-    document.addEventListener("click", onPhoneClick, true);
-    return () => document.removeEventListener("click", onPhoneClick, true);
+    // Bubble after the after-hours callback handler has had a chance to
+    // block telephone navigation; a callback popup is not an actual call.
+    document.addEventListener("click", onPhoneClick);
+    return () => document.removeEventListener("click", onPhoneClick);
   }, []);
 
   useEffect(() => {
