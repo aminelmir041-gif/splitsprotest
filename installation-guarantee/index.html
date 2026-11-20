@@ -18,6 +18,22 @@
 @media(max-width:960px){.navlinks{gap:12px}.navlinks a{font-size:11px}.split,.cert-area{gap:30px}.hero-grid{gap:32px}.steps{grid-template-columns:1fr 1fr}.photo-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){.wrap{width:calc(100% - 36px)}.nav{min-height:67px}.logo{width:90px;height:56px}.navlinks{display:none}.menu{display:block;margin-left:auto}.navcall{display:none}.hero{padding:45px 0 54px}.hero-grid,.split,.cert-area{grid-template-columns:1fr;gap:33px}.hero h1{font-size:clamp(39px,10vw,55px)}.hero p{font-size:16px}.hero-photo img{height:245px}.hero-photo:after{transform:translate(8px,8px)}.trust-grid{grid-template-columns:repeat(2,1fr)}.trust-cell{padding:15px 8px;border-bottom:1px solid #e5dccf}.trust-cell:nth-child(2){border-right:0}.trust-cell:nth-child(n+3){border-bottom:0}.trust-cell strong{font-size:14px}.trust-cell small{font-size:10px}.section{padding:56px 0}.section-head h2,.split-copy h2,.cta h2{font-size:clamp(32px,8vw,43px)}.split-copy .lead{font-size:18px}.feature-list{gap:10px 16px}.photo-grid img{height:155px}.image-pair img{height:192px}.step{min-height:0;padding:22px}.step h3{font-size:23px}.reviews{grid-template-columns:1fr}.cta{padding:65px 0 96px}.sticky{display:block;position:fixed;bottom:12px;left:16px;right:16px;z-index:30;text-decoration:none;text-align:center;background:#c5a16a;color:#111;padding:15px 12px;border-radius:40px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;box-shadow:0 7px 30px #0005}}
 @media(max-width:440px){.steps{grid-template-columns:1fr}.feature-list{grid-template-columns:1fr 1fr}.image-pair img{height:155px}.review{padding:23px}}
+/* Live Google review display; same JSON feed used on Our Approach. */
+.trust-grid{grid-template-columns:repeat(3,1fr)}
+.live-rating .rating-main{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.live-rating .rating-main .stars{font-size:25px;line-height:1;white-space:nowrap}
+.live-rating .rating-main strong{font-size:25px}
+.live-rating small{font-size:13px;color:#624d30;font-weight:700}
+.review-summary{display:inline-flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:7px;padding:11px 17px;background:#f7f3ea;border:1px solid #e7d9c3;border-radius:3px;font-size:15px;font-weight:700}
+.review-summary .stars{font-size:20px}
+@media(max-width:720px){
+ .trust-grid{grid-template-columns:repeat(2,1fr)}
+ .live-rating{grid-column:1/-1;border-right:0!important;border-bottom:1px solid #e5dccf!important;padding:20px 10px}
+ .trust-cell:nth-child(2){border-right:1px solid #e5dccf;border-bottom:0}
+ .trust-cell:nth-child(3){border-right:0;border-bottom:0}
+ .live-rating .rating-main strong{font-size:24px}
+ .live-rating .rating-main .stars{font-size:23px}
+}
 </style>
 <!-- Existing SplitsPro analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4QG9BF6FT0"></script>
@@ -36,13 +52,15 @@
 <div class="eyebrow">The SplitsPro workmanship promise</div>
 <h1>How Do We Guarantee Our Installation Guarantee?</h1>
 <p>At SplitsPro, we invest time, money and effort into getting your installation right from the beginning, with clear processes in place if something goes wrong.</p>
-<div class="hero-buttons"><a class="btn" href="tel:0414698435">Book Your Free Consultation</a><a class="btn btn-outline" href="#how-it-works">See how we do it</a></div>
+
 </div><div class="hero-photo"><img src="/workmanship/photo-gallery/01-100144.jpg" alt="Actual SplitsPro Daikin indoor air conditioner installation" fetchpriority="high"><span class="photo-label">Real SplitsPro installation</span></div>
 </div></section>
 <div class="trust-strip"><div class="wrap trust-grid">
+<div class="trust-cell live-rating" aria-label="SplitsPro Google star rating and live review count">
+<div class="rating-main"><span class="stars" aria-hidden="true">★★★★★</span><strong id="google-rating-score">5.0 / 5</strong></div>
+<small id="google-rating-count" aria-live="polite">Google customer reviews</small>
+</div>
 <div class="trust-cell"><strong>Licensed &amp; insured</strong><small>Professional installation</small></div>
-<div class="trust-cell"><strong><span class="stars">★★★★★</span> 5.0 / 5</strong><small>Google rating shown on our site</small></div>
-<div class="trust-cell"><strong>33 Google reviews</strong><small>Count shown on our workmanship page</small></div>
 <div class="trust-cell"><strong>Written guarantee</strong><small>With your installation paperwork</small></div>
 </div></div>
 <section class="section" id="how-it-works"><div class="wrap split">
@@ -99,7 +117,7 @@
 <div class="response"><strong>You shouldn't have to become the project manager of a problem you paid us to solve.</strong><p>If an issue isn't covered by our installation guarantee, we'll explain our findings and any proposed costs before additional work. Attendance and repair timing can depend on the fault, access and parts.</p></div>
 </div></section>
 <section class="philosophy"><div class="wrap"><div class="eyebrow" style="margin-bottom:17px">Why we do it this way</div><p>Because good business brings more business. We'd rather invest in looking after our customers than cut costs today and risk letting them down tomorrow.</p></div></section>
-<section class="section"><div class="wrap"><div class="section-head"><div class="eyebrow">The people we work for</div><h2>Words from local homes.</h2><p>Real feedback from customers, alongside the photos and records behind our workmanship.</p></div><div class="reviews">
+<section class="section"><div class="wrap"><div class="section-head"><div class="eyebrow">The people we work for</div><h2>Words from local homes.</h2><p>Real feedback from customers, alongside the photos and records behind our workmanship.</p><div class="review-summary"><span class="stars" aria-hidden="true">★★★★★</span> <span id="google-review-summary" aria-live="polite">5.0 / 5 on Google</span></div></div><div class="reviews">
 <article class="review"><span class="stars">★★★★★</span><p>“We had the most fantastic experience with Splits Pro. They were professional from the initial quote through to installation, explained every option clearly, and completed the job to an exceptionally high standard.”</p><small>— Sia</small></article>
 <article class="review"><span class="stars">★★★★★</span><p>“Very happy with the service. They were polite, helpful, and took the time to explain everything instead of trying to rush the job. They gave honest advice on what would suit our home and made sure everything was working properly before they left.”</p><small>— Erfaan Khan</small></article>
 </div><p class="note" style="margin-top:16px">Customer review excerpts reproduced from the SplitsPro workmanship page.</p></div></section>
@@ -110,5 +128,30 @@
 <dialog id="lightbox" aria-label="View installation image"><button type="button" class="close" aria-label="Close image">×</button><img class="lightbox-img" alt="Larger view of SplitsPro installation evidence"></dialog>
 <script>
 (function(){var menu=document.getElementById('menu'),links=document.getElementById('mobile-links');menu.addEventListener('click',function(){var open=links.style.display==='block';links.style.display=open?'none':'block';menu.setAttribute('aria-expanded',String(!open))});var dlg=document.getElementById('lightbox'),img=dlg.querySelector('img');document.querySelectorAll('[data-lightbox]').forEach(function(el){el.addEventListener('click',function(){img.src=el.src;img.alt=el.alt;dlg.showModal()})});document.querySelectorAll('[data-lightbox-button]').forEach(function(el){el.addEventListener('click',function(){img.src=el.getAttribute('data-lightbox-button');img.alt='Full size SplitsPro installation certificate template';dlg.showModal()})});dlg.querySelector('.close').addEventListener('click',function(){dlg.close()});dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()})})()
+</script>
+<script>
+/* The existing SplitsPro hourly Google Places update publishes /google-rating.json.
+   Use that same verified feed for this page. No fake incrementing numbers. */
+(function(){
+  var score=document.getElementById('google-rating-score');
+  var count=document.getElementById('google-rating-count');
+  var summary=document.getElementById('google-review-summary');
+  async function updateGoogleReviews(){
+    try{
+      var response=await fetch('/google-rating.json?fresh='+Date.now(),{cache:'no-store'});
+      if(!response.ok)return;
+      var data=await response.json();
+      var rating=Number(data.rating), total=Number(data.count);
+      if(!Number.isFinite(rating)||rating<1||rating>5||!Number.isInteger(total)||total<0)return;
+      var label=rating.toFixed(1)+' / 5';
+      score.textContent=label;
+      count.textContent=total+' Google '+(total===1?'review':'reviews')+' · updated automatically';
+      summary.textContent=label+' · '+total+' Google '+(total===1?'review':'reviews');
+    }catch(e){/* Keep last displayed rating without inventing an updated count. */}
+  }
+  updateGoogleReviews();
+  setInterval(updateGoogleReviews,15*60*1000);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)updateGoogleReviews()});
+})();
 </script>
 </body></html>
