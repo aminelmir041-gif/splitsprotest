@@ -34,6 +34,41 @@
  .live-rating .rating-main strong{font-size:24px}
  .live-rating .rating-main .stars{font-size:23px}
 }
+/* Matched to the original SplitsPro site header and mobile menu */
+.sp-header{position:fixed;inset:0 0 auto;z-index:100;padding:9px 0;transition:background .35s,box-shadow .35s;background:linear-gradient(to bottom,rgba(0,0,0,.78),rgba(0,0,0,.18))}
+.sp-header.solid{background:rgba(248,247,245,.98);border-bottom:1px solid #e5e5ea;backdrop-filter:blur(14px);box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.sp-nav{height:86px;display:flex;align-items:center;justify-content:space-between;gap:28px;width:min(1180px,calc(100% - 40px));margin:auto;position:relative}
+.sp-logo img{height:84px;width:auto;display:block;filter:brightness(0) invert(1);transition:height .35s,filter .35s}
+.sp-header.solid .sp-logo img{height:64px;filter:none}
+.sp-links{display:flex;gap:26px;align-items:center}
+.sp-links a{font-size:13px;font-weight:650;letter-spacing:.025em;color:rgba(255,255,255,.9);position:relative;padding:10px 0;text-decoration:none;white-space:nowrap}
+.sp-links a:after{content:"";position:absolute;left:0;right:100%;bottom:4px;height:1px;background:currentColor;transition:right .25s}
+.sp-links a:hover:after{right:0}
+.sp-header.solid .sp-links a{color:#1d1d1f}
+.sp-navphone{display:flex;align-items:center;color:white;font-size:13px;font-weight:750;text-decoration:none;white-space:nowrap}
+.sp-header.solid .sp-navphone{color:#c8a46a}
+.sp-hamb{display:none;width:42px;height:42px;border:1px solid rgba(255,255,255,.45);border-radius:50%;background:transparent;color:white;align-items:center;justify-content:center;font-size:23px;cursor:pointer;touch-action:manipulation}
+.sp-header.solid .sp-hamb{border-color:#e5e5ea;color:#1d1d1f}
+.sp-mobilemenu{display:none;background:white;border-top:1px solid #e5e5ea;max-height:0;overflow:hidden;transition:max-height .35s}
+.sp-mobilemenu.open{max-height:calc(100dvh - 72px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sp-mobile-inner{width:min(1180px,calc(100% - 40px));margin:auto}
+.sp-mobilemenu a{display:block;padding:15px 0;border-bottom:1px solid #f2f2f2;font-family:Georgia,serif;font-size:19px;color:#1d1d1f;text-decoration:none}
+.sp-mobilemenu .sp-mobile-call{margin:16px 0 20px;text-align:center;border:1px solid #c8a46a;color:#ab854a;border-radius:999px;font:750 13px Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em}
+.hero{padding-top:160px}
+@media(max-width:1050px){.sp-links{display:none}.sp-hamb{display:flex}.sp-mobilemenu{display:block}.sp-nav{height:72px}.sp-logo img{height:67px}.sp-header.solid .sp-logo img{height:54px}}
+@media(max-width:760px){.sp-navphone{display:none}.sp-nav{width:calc(100% - 32px)}.hero{padding-top:142px}}
+/* Make the written guarantee and payment commitment easy to see */
+.cert-area{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:38px;align-items:start}
+.certificate{padding:16px;background:#f8f3e9}
+.certificate>a:first-child{display:block;max-width:none;width:100%;cursor:zoom-in}
+.certificate img{width:100%;max-width:none;height:auto;box-shadow:0 12px 26px #0002}
+.certificate-zoom{display:block;margin:18px auto 6px;padding:13px 16px;max-width:430px;text-align:center;text-decoration:none!important;background:#161616;color:white!important;border-radius:40px;font-size:13px;font-weight:700}
+.certificate-zoom:hover{background:#333}
+.payment-promise{margin:25px 0 20px;padding:23px 21px;border-left:5px solid #c5a16a;background:#171717;color:white;display:grid;gap:8px}
+.payment-promise .payment-overline{color:#e4c895;font-size:11px;text-transform:uppercase;letter-spacing:2px;font-weight:800}
+.payment-promise strong{font-family:Georgia,'Times New Roman',serif;font-weight:400;line-height:1.24;font-size:clamp(29px,3vw,39px)}
+.payment-promise span:last-child{font-size:13px;color:#ddd}
+@media(max-width:760px){.cert-area{grid-template-columns:1fr;gap:25px}.certificate{margin-left:-8px;margin-right:-8px;padding:8px}.certificate-zoom{margin:15px 8px 10px}.payment-promise{margin:23px 0;padding:24px 20px}.payment-promise strong{font-size:34px}}
 </style>
 <!-- Existing SplitsPro analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4QG9BF6FT0"></script>
@@ -41,12 +76,14 @@
 <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','959174835702817');fbq('track','PageView')</script>
 </head>
 <body>
-<header class="top"><div class="wrap"><nav class="nav" aria-label="Main navigation">
-<a class="logo" href="/" aria-label="SplitsPro home"></a>
-<div class="navlinks"><a href="/">Home</a><a href="/split-systems/">Split Systems</a><a href="/ducted/">Ducted</a><a href="/workmanship/">Workmanship</a><a href="/gallery/">Our Work</a><a href="/contact/">Contact</a></div>
-<button type="button" class="menu" id="menu" aria-label="Open navigation" aria-controls="mobile-links" aria-expanded="false">☰</button>
-<a class="navcall" href="tel:0414698435">Call 0414 698 435</a>
-</nav></div><div class="mobile-links" id="mobile-links"><a href="/">Home</a><a href="/split-systems/">Split Systems</a><a href="/ducted/">Ducted</a><a href="/workmanship/">Workmanship</a><a href="/gallery/">Our Work</a><a href="/contact/">Contact</a></div></header>
+<header class="sp-header" id="sp-header">
+<div class="sp-nav">
+<a class="sp-logo" href="/" aria-label="SplitsPro home"><img src="/logo.png" alt="SplitsPro air conditioning"></a>
+<nav class="sp-links" aria-label="Main navigation"><a href="/">Home</a><a href="/split-systems/">Split Systems</a><a href="/ducted/">Ducted</a><a href="/cleaning/">Cleaning</a><a href="/gallery/">Gallery</a><a href="/service-areas/">Service Areas</a><a href="/about/">About</a><a href="/contact/">Contact</a></nav>
+<a class="sp-navphone" href="tel:0414698435">☎&nbsp; 0414 698 435</a>
+<button class="sp-hamb" id="sp-hamb" type="button" aria-label="Open menu" aria-controls="sp-mobilemenu" aria-expanded="false">☰</button>
+</div><nav class="sp-mobilemenu" id="sp-mobilemenu" aria-label="Mobile navigation"><div class="sp-mobile-inner"><a href="/">Home</a><a href="/split-systems/">Split Systems</a><a href="/ducted/">Ducted</a><a href="/cleaning/">Cleaning</a><a href="/gallery/">Gallery</a><a href="/service-areas/">Service Areas</a><a href="/about/">About</a><a href="/contact/">Contact</a><a class="sp-mobile-call" href="tel:0414698435">Call 0414 698 435</a></div></nav>
+</header>
 <main>
 <section class="hero"><div class="wrap hero-grid"><div>
 <div class="eyebrow">The SplitsPro workmanship promise</div>
@@ -99,10 +136,10 @@
 <p class="lead"><strong>Your guarantee is with SplitsPro, not just the installer.</strong></p>
 <p>Even if the original installer no longer works with us, SplitsPro remains responsible for honouring our covered workmanship guarantee.</p>
 <p>Before work begins, we explain the written guarantee and what it covers. After installation, you receive your <strong>SplitsPro Installation Certificate</strong>, recording the work completed and checks carried out.</p>
-<p><strong>And you don't pay until the installation is finished.</strong></p>
+<div class="payment-promise" role="note"><span class="payment-overline">Our payment promise</span><strong>You don't pay until the installation is finished.</strong><span>Know what you're getting before you pay.</span></div>
 <p class="note">The installation workmanship guarantee and the air conditioner's manufacturer warranty are separate. The written guarantee terms explain the applicable coverage and claim process.</p>
 </div>
-<div class="certificate"><button type="button" data-lightbox-button="/workmanship/splitspro-installation-certificate.png" aria-label="View full size SplitsPro installation certificate"><img loading="lazy" src="/workmanship/splitspro-installation-certificate.png" alt="Actual SplitsPro installation completion certificate template"></button><small>SplitsPro installation certificate template · Tap to enlarge</small></div>
+<div class="certificate" id="certificate"><a href="/workmanship/splitspro-installation-certificate.png" target="_blank" rel="noopener" aria-label="Open full-size SplitsPro installation certificate in a new tab to zoom"><img loading="lazy" src="/workmanship/splitspro-installation-certificate.png" alt="Actual SplitsPro installation completion certificate template, tap to read full size"></a><a class="certificate-zoom" href="/workmanship/splitspro-installation-certificate.png" target="_blank" rel="noopener">Open full-size certificate · Zoom to read ↗</a><small>Actual SplitsPro certificate template · Completed for your installation</small></div>
 </div></section>
 <section class="section soft"><div class="wrap">
 <div class="section-head"><div class="eyebrow">04 / If something goes wrong</div>
@@ -127,7 +164,7 @@
 <a class="sticky" href="tel:0414698435">Book Your Free Consultation · Call Now</a>
 <dialog id="lightbox" aria-label="View installation image"><button type="button" class="close" aria-label="Close image">×</button><img class="lightbox-img" alt="Larger view of SplitsPro installation evidence"></dialog>
 <script>
-(function(){var menu=document.getElementById('menu'),links=document.getElementById('mobile-links');menu.addEventListener('click',function(){var open=links.style.display==='block';links.style.display=open?'none':'block';menu.setAttribute('aria-expanded',String(!open))});var dlg=document.getElementById('lightbox'),img=dlg.querySelector('img');document.querySelectorAll('[data-lightbox]').forEach(function(el){el.addEventListener('click',function(){img.src=el.src;img.alt=el.alt;dlg.showModal()})});document.querySelectorAll('[data-lightbox-button]').forEach(function(el){el.addEventListener('click',function(){img.src=el.getAttribute('data-lightbox-button');img.alt='Full size SplitsPro installation certificate template';dlg.showModal()})});dlg.querySelector('.close').addEventListener('click',function(){dlg.close()});dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()})})()
+(function(){var dlg=document.getElementById('lightbox'),img=dlg.querySelector('img');document.querySelectorAll('[data-lightbox]').forEach(function(el){el.addEventListener('click',function(){img.src=el.src;img.alt=el.alt;dlg.showModal()})});document.querySelectorAll('[data-lightbox-button]').forEach(function(el){el.addEventListener('click',function(){img.src=el.getAttribute('data-lightbox-button');img.alt='Full size SplitsPro installation certificate template';dlg.showModal()})});dlg.querySelector('.close').addEventListener('click',function(){dlg.close()});dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()})})()
 </script>
 <script>
 /* The existing SplitsPro hourly Google Places update publishes /google-rating.json.
@@ -152,6 +189,19 @@
   updateGoogleReviews();
   setInterval(updateGoogleReviews,15*60*1000);
   document.addEventListener('visibilitychange',function(){if(!document.hidden)updateGoogleReviews()});
+})();
+</script>
+<script>
+(function(){
+ var header=document.getElementById('sp-header'),hamb=document.getElementById('sp-hamb'),mobile=document.getElementById('sp-mobilemenu');
+ function updateHeader(){header.classList.toggle('solid',window.scrollY>40||mobile.classList.contains('open'))}
+ function setMenu(open){mobile.classList.toggle('open',open);hamb.textContent=open?'×':'☰';hamb.setAttribute('aria-expanded',String(open));hamb.setAttribute('aria-label',open?'Close menu':'Open menu');updateHeader()}
+ window.addEventListener('scroll',updateHeader,{passive:true});
+ window.addEventListener('resize',function(){if(window.innerWidth>1050)setMenu(false)},{passive:true});
+ hamb.addEventListener('click',function(){setMenu(!mobile.classList.contains('open'))});
+ mobile.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setMenu(false)})});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')setMenu(false)});
+ updateHeader();
 })();
 </script>
 </body></html>
