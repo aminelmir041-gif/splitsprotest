@@ -47,6 +47,31 @@
     }
   }
 
+  // Older prerendered React bundles may predate the React GA4 component.
+  // Only provide a fallback if they did not initialise GA4 by window load.
+  if (isReactShell && gaEnabled) {
+    window.addEventListener("load", function () {
+      if (typeof window.gtag === "function" || document.getElementById("splitspro-ga4-script")) return;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", gaId, { send_page_view: false });
+      var fallbackScript = document.createElement("script");
+      fallbackScript.id = "splitspro-ga4-script";
+      fallbackScript.async = true;
+      fallbackScript.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(gaId);
+      document.head.appendChild(fallbackScript);
+      window.gtag("event", "page_view", {
+        page_location: safeUrl(window.location.href),
+        page_title: document.title
+      });
+      document.addEventListener("click", function (event) {
+        var phone = event.target?.closest?.('a[href^="tel:"]');
+        if (phone) window.gtag("event", "click_to_call", { page_path: window.location.pathname });
+      });
+    }, { once: true });
+  }
+
   if (clarityEnabled && window.self === window.top && !document.getElementById("splitspro-clarity-script")) {
     window.clarity = window.clarity || function () {
       (window.clarity.q = window.clarity.q || []).push(arguments);
