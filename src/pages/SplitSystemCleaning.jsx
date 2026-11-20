@@ -52,6 +52,8 @@ export default function SplitSystemCleaning() {
     setGuideStatus("saving"); setGuideError("");
     try {
       await api.post("/cleaning-guide-leads", { email: guideEmail, marketing_consent: guideConsent });
+      if (typeof window.gtag === "function") window.gtag("event", "sign_up", { lead_type: "cleaning_guide" });
+      if (typeof window.clarity === "function") window.clarity("event", "cleaning_guide_signup");
       setGuideStatus("success");
     } catch {
       setGuideStatus("idle");
@@ -111,6 +113,7 @@ export default function SplitSystemCleaning() {
       try {
         if (typeof window.fbq === "function") window.fbq("track", "Lead", { content_name: "Split System Cleaning Free Consultation" });
         if (typeof window.gtag === "function") window.gtag("event", "generate_lead", { lead_type: "cleaning_consultation" });
+        if (typeof window.clarity === "function") window.clarity("event", "cleaning_consultation_submitted");
       } catch {}
       setConsultationStatus("success");
       setConsultationForm({ name: "", suburb: "", phone: "" });
