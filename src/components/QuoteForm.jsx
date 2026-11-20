@@ -169,6 +169,9 @@ export const QuoteForm = ({
         return;
       } else {
         await submitQuote({ ...form, ...attribution, photo_url });
+        // Count a qualified enquiry only after the backend accepts it.
+        if (typeof window.gtag === "function") window.gtag("event", "generate_lead", { lead_type: "quote_request" });
+        if (typeof window.clarity === "function") window.clarity("event", "quote_request_submitted");
       }
       setDone(true);
       setForm(buildInitial(defaultService, defaultMessage, defaultPreferredDate));
@@ -223,7 +226,7 @@ export const QuoteForm = ({
   );
 
   return (
-    <form onSubmit={handleSubmit} data-testid="quote-form" className={`grid ${spacing}`}>
+    <form onSubmit={handleSubmit} data-clarity-mask="true" data-testid="quote-form" className={`grid ${spacing}`}>
       <div className={`grid ${spacing} sm:grid-cols-2`}>
         <div>
           <label htmlFor="q-name" className={labelClass}>Name</label>
