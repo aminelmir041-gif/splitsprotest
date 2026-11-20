@@ -202,7 +202,6 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 <main>
 <section class="guarantee-trust-strip" aria-label="SplitsPro service reassurance">
 <div class="wrap guarantee-trust-inner">
-<a class="trust-call" href="tel:+61414698435"><span class="trust-label">SPEAK WITH US</span><strong>Call SplitsPro ↗</strong></a>
 <div class="trust-tile"><span class="trust-check" aria-hidden="true">✓</span><strong>Licensed &amp; insured</strong></div>
 <div class="trust-tile"><span class="trust-stars" aria-hidden="true">★★★★★</span><strong>5-star Google rated</strong></div>
 <div class="trust-tile"><span class="trust-check" aria-hidden="true">✓</span><strong>Payment after installation</strong></div>
@@ -457,15 +456,12 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 </style><style>
 /* Guarantee preview: compact proof, short contact form, restrained sticky actions. */
 .guarantee-trust-strip{background:#f9f7f3;border-top:1px solid #decfba;border-bottom:1px solid #decfba}
-.guarantee-trust-inner{display:grid;grid-template-columns:1fr 1fr 1fr 1.25fr;gap:0;align-items:stretch}
-.guarantee-trust-inner>*{min-height:76px;padding:15px 18px;display:flex;align-items:center;gap:8px;border-right:1px solid #e4dcd0;color:#17262b;text-decoration:none}
+.guarantee-trust-inner{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;align-items:stretch}
+.guarantee-trust-inner>*{min-height:67px;padding:14px 18px;display:flex;align-items:center;justify-content:center;gap:11px;border-right:1px solid #e4dcd0;color:#17262b}
 .guarantee-trust-inner>*:last-child{border-right:0}
-.guarantee-trust-inner strong{font:800 13px/1.4 Manrope,Arial,sans-serif}
-.guarantee-trust-inner .trust-call{background:#171717;color:#fff;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px}
-.trust-call strong{color:#f2ddb6}
-.trust-label{font:800 9px/1.5 Manrope,Arial,sans-serif;letter-spacing:.15em;color:#d0ad74}
-.trust-check,.trust-stars{color:#997039;font-weight:900;flex-shrink:0}
-.trust-stars{font-size:12px;letter-spacing:-1px}
+.guarantee-trust-inner strong{font:700 13px/1.4 Manrope,Arial,sans-serif}
+.trust-check{display:grid;place-items:center;min-width:26px;width:26px;height:26px;border-radius:50%;background:#eee4d5;color:#997039;font-size:17px;font-weight:800}
+.trust-stars{color:#a98045;font-size:15px;letter-spacing:0;white-space:nowrap;flex-shrink:0}
 .guarantee-value{background:#e9eeed;border-left:4px solid #167d91;padding:30px;margin-top:30px}
 .guarantee-value p{font:800 clamp(19px,2.1vw,27px)/1.5 Manrope,Arial,sans-serif;color:#102d35;margin:0}
 .guarantee-value a{display:inline-block;margin-top:18px;font:800 13px/1.4 Manrope,Arial,sans-serif;text-decoration:none;color:#071721;border-bottom:2px solid #a67b42;padding:4px 0}
@@ -499,9 +495,9 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 .sticky .sticky-book{background:#252729;color:#fff;border:1px solid #655a4e}
 .sticky a:focus-visible{outline:3px solid #dba557;outline-offset:2px}
 @media(min-width:781px){.sticky{bottom:22px;right:24px;left:auto;width:min(460px,calc(100% - 48px))}}
-@media(max-width:900px){.guarantee-trust-inner{grid-template-columns:repeat(2,minmax(0,1fr))}.guarantee-trust-inner>*{border-bottom:1px solid #e4dcd0;padding:12px}.guarantee-trust-inner>*:nth-child(even){border-right:0}.guarantee-trust-inner>*:nth-child(n+3){border-bottom:0}.consult-callout{grid-template-columns:1fr}}
+@media(max-width:900px){.guarantee-trust-inner{grid-template-columns:1fr}.guarantee-trust-inner>*{min-height:52px;justify-content:flex-start;border-right:0;border-bottom:1px solid #e4dcd0;padding:11px 19px}.guarantee-trust-inner>*:last-child{border-bottom:0}.consult-callout{grid-template-columns:1fr}#method{padding-top:42px}}
 @media(max-width:780px){.sticky{bottom:12px;left:12px;right:12px;width:auto;border-radius:10px;transform:none}.sticky.is-visible{display:flex;opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}.sticky:not(.is-visible){opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px)}.sticky a{padding:10px 7px;font-size:11px}.footer{padding-bottom:110px}}
-@media(max-width:460px){.guarantee-trust-inner strong{font-size:11px}.trust-stars{font-size:10px;letter-spacing:-1px}.trust-check{font-size:14px}.consult-fields{grid-template-columns:1fr}.guarantee-value{padding:21px}.consult-lead-panel{padding:20px}}
+@media(max-width:460px){.guarantee-trust-inner strong{font-size:12px}.trust-stars{font-size:14px;letter-spacing:0}.trust-check{font-size:16px}.consult-fields{grid-template-columns:1fr}.guarantee-value{padding:21px}.consult-lead-panel{padding:20px}}
 @media(prefers-reduced-motion:reduce){.sticky{transition:none}}
 </style>
 <script>
