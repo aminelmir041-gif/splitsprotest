@@ -74,6 +74,41 @@
 .photo-grid figure.lg-install:first-of-type img{object-position:center 15%}
 .photo-grid figure.lg-install:last-of-type img{object-position:center 65%}
 @media(min-width:961px){.photo-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* Readable certificate breakdown from the actual SplitsPro installer handover form */
+.certificate-readout{padding-top:46px}
+.certificate-readout-head{max-width:690px;margin-bottom:25px}
+.certificate-readout-head h3{font:400 clamp(29px,3.6vw,43px)/1.18 Georgia,"Times New Roman",serif;letter-spacing:-.035em;margin:10px 0 12px}
+.certificate-readout-head p{color:#54514c;font-size:16px;line-height:1.7;margin:0}
+.certificate-readout-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+.cert-readable{background:#fff;border:1px solid #d7c3a3;border-top:5px solid #c5a16a;padding:23px 21px 26px;box-shadow:0 7px 22px rgba(40,33,22,.045)}
+.cert-readable-number{font-size:11px;letter-spacing:1.8px;font-weight:800;color:#8d6d3f}
+.cert-readable h4{font:400 25px/1.2 Georgia,"Times New Roman",serif;margin:10px 0 23px;letter-spacing:-.03em;color:#1b1b1b}
+.cert-field-group{border-top:1px solid #ece7dd;padding:15px 0 0;margin-top:15px}
+.cert-field-group strong{display:block;font-size:13px;color:#2e2b26;margin-bottom:12px}
+.cert-field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cert-field-grid span,.cert-field-stack span{display:block;font-size:13px;line-height:1.45;color:#45403a;background:#faf8f4;border:1px solid #eee9dd;padding:10px 9px}
+.cert-field-stack{display:grid;gap:10px}
+.cert-checks{display:grid;gap:12px}
+.cert-checks div{display:flex;gap:10px;align-items:start;font-size:15px;line-height:1.4}
+.cert-checks span{font-size:19px;color:#a78353;line-height:1}
+.cert-readable-note{font-size:12px;color:#726653;margin:-13px 0 21px}
+.cert-fineprint{font-size:13px;line-height:1.55;color:#6c6256;margin:20px 0 0}
+.certificate-readout-foot{font-size:13px;color:#726c63;line-height:1.6;margin:17px 0 0}
+.certificate>a:first-child{overflow:hidden}
+.certificate img{width:100%;height:auto;object-fit:contain}
+@media(max-width:980px){.certificate-readout-grid{grid-template-columns:1fr 1fr}.cert-readable:last-child{grid-column:1/-1}}
+@media(max-width:720px){
+ .certificate-readout{padding-top:38px}
+ .certificate-readout-head p{font-size:16px}
+ .certificate-readout-grid{grid-template-columns:1fr;gap:14px}
+ .cert-readable:last-child{grid-column:auto}
+ .cert-readable{padding:25px 20px}
+ .cert-readable h4{font-size:28px}
+ .cert-field-grid span,.cert-field-stack span{font-size:14px;padding:12px 10px}
+ .cert-checks div{font-size:16px}
+ .certificate-zoom{font-size:15px;padding:16px 12px}
+}
 </style>
 <!-- Existing SplitsPro analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4QG9BF6FT0"></script>
@@ -136,18 +171,94 @@
 <figure class="lg-install"><img loading="lazy" data-lightbox src="/installation-guarantee/images/lg-outdoor.webp" alt="Upright photo of the LG outdoor condenser and pipework on a brick wall"><figcaption>LG outdoor installation</figcaption></figure>
 </div><p class="note" style="margin:12px 0 0">Real completed installations. Each job's condition and progress photos form part of its own installation records.</p></div>
 </div></section>
-<section class="section"><div class="wrap cert-area">
-<div class="split-copy">
-<div class="eyebrow">03 / Your written protection</div>
-<h2>Our Lifetime Installation Guarantee — In Writing.</h2>
-<p class="lead"><strong>Your guarantee is with SplitsPro, not just the installer.</strong></p>
-<p>Even if the original installer no longer works with us, SplitsPro remains responsible for honouring our covered workmanship guarantee.</p>
-<p>Before work begins, we explain the written guarantee and what it covers. After installation, you receive your <strong>SplitsPro Installation Certificate</strong>, recording the work completed and checks carried out.</p>
-<div class="payment-promise" role="note"><span class="payment-overline">Our payment promise</span><strong>You don't pay until the installation is finished.</strong><span>Know what you're getting before you pay.</span></div>
-<p class="note">The installation workmanship guarantee and the air conditioner's manufacturer warranty are separate. The written guarantee terms explain the applicable coverage and claim process.</p>
+<section class="section" id="written-guarantee">
+<div class="wrap cert-area">
+  <div class="split-copy">
+    <div class="eyebrow">03 / Your written protection</div>
+    <h2>Our Lifetime Installation Guarantee — In Writing.</h2>
+    <p class="lead"><strong>Your guarantee is with SplitsPro, not just the installer.</strong></p>
+    <p>Even if the original installer no longer works with us, SplitsPro remains responsible for honouring our covered workmanship guarantee.</p>
+    <p>Before work begins, we explain the written guarantee and what it covers. After installation, you receive your <strong>SplitsPro Installation Certificate</strong>, recording the work completed and checks carried out.</p>
+    <div class="payment-promise" role="note">
+      <span class="payment-overline">Our payment promise</span>
+      <strong>You don't pay until the installation is finished.</strong>
+      <span>Know what you're getting before you pay.</span>
+    </div>
+    <p class="note">The installation workmanship guarantee and the air conditioner's manufacturer warranty are separate. The written guarantee terms explain the applicable coverage and claim process.</p>
+  </div>
+  <div class="certificate" id="certificate">
+    <a href="/workmanship/splitspro-installation-certificate.png" target="_blank" rel="noopener" aria-label="Open the actual SplitsPro installation certificate at full resolution">
+      <img loading="lazy" src="/workmanship/splitspro-installation-certificate.png" alt="Full SplitsPro installation certificate template showing customer and job details, checks, and handover" />
+    </a>
+    <a class="certificate-zoom" href="/workmanship/splitspro-installation-certificate.png" target="_blank" rel="noopener">Open original certificate full size ↗</a>
+    <small>Actual blank SplitsPro certificate · Open the original to zoom in</small>
+  </div>
 </div>
-<div class="certificate" id="certificate"><a href="/workmanship/splitspro-installation-certificate.png" target="_blank" rel="noopener" aria-label="Open full-size SplitsPro installation certificate in a new tab to zoom"><img loading="lazy" src="/workmanship/splitspro-installation-certificate.png" alt="Actual SplitsPro installation completion certificate template, tap to read full size"></a><a class="certificate-zoom" href="/workmanship/splitspro-installation-certificate.png" target="_blank" rel="noopener">Open full-size certificate · Zoom to read ↗</a><small>Actual SplitsPro certificate template · Completed for your installation</small></div>
-</div></section>
+<div class="wrap certificate-readout" id="certificate-details">
+  <div class="certificate-readout-head">
+    <span class="eyebrow">Read the certificate</span>
+    <h3>What we record on every job.</h3>
+    <p>The original document is above. Here are its three sections in larger text so you can read the details on your phone.</p>
+  </div>
+  <div class="certificate-readout-grid">
+    <section class="cert-readable" aria-labelledby="cert-info-title">
+      <span class="cert-readable-number">01 / THE JOB</span>
+      <h4 id="cert-info-title">Customer, Job &amp; System Installed</h4>
+      <div class="cert-field-group">
+        <strong>Customer and job</strong>
+        <div class="cert-field-grid">
+          <span>Customer name</span><span>Job / quote number</span>
+          <span>Installation address</span><span>Installation date</span>
+          <span>Installer / contractor</span>
+        </div>
+      </div>
+      <div class="cert-field-group">
+        <strong>System installed</strong>
+        <div class="cert-field-grid">
+          <span>Brand and model</span><span>Capacity (kW)</span>
+          <span>Indoor serial number</span><span>Outdoor serial number</span>
+          <span>Room / unit position</span>
+        </div>
+      </div>
+    </section>
+    <section class="cert-readable" aria-labelledby="cert-checks-title">
+      <span class="cert-readable-number">02 / THE CHECKS</span>
+      <h4 id="cert-checks-title">Installation Checks</h4>
+      <p class="cert-readable-note">Tick when completed</p>
+      <div class="cert-checks">
+        <div><span aria-hidden="true">□</span> Unit level and securely fixed</div>
+        <div><span aria-hidden="true">□</span> Pipes and covers neat</div>
+        <div><span aria-hidden="true">□</span> Drain tested</div>
+        <div><span aria-hidden="true">□</span> Penetrations sealed</div>
+        <div><span aria-hidden="true">□</span> Airflow demonstrated</div>
+        <div><span aria-hidden="true">□</span> Area cleaned</div>
+        <div><span aria-hidden="true">□</span> Before/after photos taken</div>
+        <div><span aria-hidden="true">□</span> Customer shown controls</div>
+      </div>
+    </section>
+    <section class="cert-readable" aria-labelledby="cert-handover-title">
+      <span class="cert-readable-number">03 / THE HANDOVER</span>
+      <h4 id="cert-handover-title">Works &amp; Handover</h4>
+      <div class="cert-field-group">
+        <strong>What we record</strong>
+        <div class="cert-field-stack">
+          <span>Pipe / cover route and notable details</span>
+          <span>Outstanding items / agreed variations (write none if none)</span>
+        </div>
+      </div>
+      <div class="cert-field-group">
+        <strong>Sign-off</strong>
+        <div class="cert-field-stack">
+          <span>Installer signature / name</span>
+          <span>Customer acknowledgement / date</span>
+        </div>
+      </div>
+      <p class="cert-fineprint">The customer's acknowledgement confirms receipt and handover. It does not waive consumer rights.</p>
+    </section>
+  </div>
+  <p class="certificate-readout-foot">This is a readable guide to the fields on the actual installation certificate, not a replacement for your completed signed document.</p>
+</div>
+</section>
 <section class="section soft"><div class="wrap">
 <div class="section-head"><div class="eyebrow">04 / If something goes wrong</div>
 <h2>What Happens Six Months or Six Years Later?</h2>
