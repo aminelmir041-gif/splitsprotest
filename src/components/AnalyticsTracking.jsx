@@ -3,8 +3,9 @@ import { useLocation } from "react-router-dom";
 
 // Google Analytics measurement ID belongs to SplitsPro and is public.
 // A GitHub Actions variable may override this project default; no customer details are used.
-const gaId = (process.env.REACT_APP_GA4_MEASUREMENT_ID || "G-4QG9BF6FT0").trim();
-const clarityId = (process.env.REACT_APP_CLARITY_PROJECT_ID || "").trim();
+const publicConfig = window.SPLITSPRO_ANALYTICS_CONFIG || {};
+const gaId = (process.env.REACT_APP_GA4_MEASUREMENT_ID || publicConfig.ga4MeasurementId || "G-4QG9BF6FT0").trim();
+const clarityId = (process.env.REACT_APP_CLARITY_PROJECT_ID || publicConfig.clarityProjectId || "").trim();
 const validGa = /^G-[A-Z0-9]+$/i.test(gaId);
 const validClarity = /^[a-z0-9]{5,32}$/i.test(clarityId);
 
@@ -15,7 +16,7 @@ const analyticsUrl = (input) => {
     const url = new URL(input, window.location.origin);
     const safe = new URLSearchParams();
     for (const [name, value] of url.searchParams.entries()) {
-      if (/^utm_(source|medium|campaign|term|content|id)$/i.test(name)) safe.append(name, value);
+      if (/^utm_(source|medium|campaign|term|content|id)$/i.test(name) || /^(gclid|gbraid|wbraid|gad_source)$/i.test(name)) safe.append(name, value.slice(0, 256));
     }
     return url.origin + url.pathname + (safe.toString() ? "?" + safe : "");
   } catch {
@@ -52,11 +53,37 @@ export default function AnalyticsTracking() {
     }
   }, []);
 
+  // A phone tap is a useful intent signal, not a confirmed sale or lead.
+  // Delegation covers links inside every React route and landing page.
+  useEffect(() => {
+    const onPhoneClick = (event) => {
+      const anchor = event.target?.closest?.('a[href^="tel:"]');
+      if (!anchor) return;
+      if (validGa && typeof window.gtag === "function") {
+        window.gtag("event", "click_to_call", { page_path: window.location.pathname });
+      }
+      if (validClarity && typeof window.clarity === "function") {
+        window.clarity("event", "phone_click");
+      }
+    };
+    document.addEventListener("click", onPhoneClick, true);
+    return () => document.removeEventListener("click", onPhoneClick, true);
+  }, []);
+
+  useEffect(() => {
+    if (validClarity && typeof window.clarity === "function") {
+      window.clarity("set", "page_path", location.pathname);
+    }
+  }, [location.pathname]);
+
   useEffect(() => {
     if (!validGa || typeof window.gtag !== "function") return;
     const current = analyticsUrl(window.location.href);
     if (current === lastPage.current) return;
     const previous = lastPage.current || (document.referrer ? analyticsUrl(document.referrer) : undefined);
+    // The /workmanship React component immediately navigates to a standalone page.
+    // Count its real destination only, not the redirect shell.
+    if (location.pathname === "/workmanship") return;
     window.gtag("event", "page_view", {
       page_location: current,
       ...(previous ? { page_referrer: previous } : {}),
