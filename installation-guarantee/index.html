@@ -69,6 +69,11 @@
 .payment-promise strong{font-family:Georgia,'Times New Roman',serif;font-weight:400;line-height:1.24;font-size:clamp(29px,3vw,39px)}
 .payment-promise span:last-child{font-size:13px;color:#ddd}
 @media(max-width:760px){.cert-area{grid-template-columns:1fr;gap:25px}.certificate{margin-left:-8px;margin-right:-8px;padding:8px}.certificate-zoom{margin:15px 8px 10px}.payment-promise{margin:23px 0;padding:24px 20px}.payment-promise strong{font-size:34px}}
+/* Added original LG indoor/outdoor photos without rotation or horizontal flip */
+.photo-grid figure.lg-install img{object-fit:cover;transform:none!important}
+.photo-grid figure.lg-install:first-of-type img{object-position:center 15%}
+.photo-grid figure.lg-install:last-of-type img{object-position:center 65%}
+@media(min-width:961px){.photo-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 <!-- Existing SplitsPro analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4QG9BF6FT0"></script>
@@ -127,6 +132,8 @@
 <figure><img loading="lazy" data-lightbox src="/workmanship/photo-gallery/05-96068.jpg" alt="Daikin air conditioner above a fridge"><figcaption>Indoor finish</figcaption></figure>
 <figure><img loading="lazy" data-lightbox src="/workmanship/photo-gallery/09-86696.jpg" alt="Daikin outdoor unit beside brick wall"><figcaption>Outdoor unit</figcaption></figure>
 <figure><img loading="lazy" data-lightbox src="/workmanship/photo-gallery/10-100215.jpg" alt="Large Daikin outdoor unit on brick paving"><figcaption>Finished work</figcaption></figure>
+<figure class="lg-install"><img loading="lazy" data-lightbox src="/installation-guarantee/images/lg-indoor.webp" alt="Upright photo of the SplitsPro LG indoor wall-mounted split system with temperature display"><figcaption>LG indoor installation</figcaption></figure>
+<figure class="lg-install"><img loading="lazy" data-lightbox src="/installation-guarantee/images/lg-outdoor.webp" alt="Upright photo of the LG outdoor condenser and pipework on a brick wall"><figcaption>LG outdoor installation</figcaption></figure>
 </div><p class="note" style="margin:12px 0 0">Real completed installations. Each job's condition and progress photos form part of its own installation records.</p></div>
 </div></section>
 <section class="section"><div class="wrap cert-area">
