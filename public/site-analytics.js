@@ -5,6 +5,10 @@
   var clarityId = String(config.clarityProjectId || "").trim();
   var gaEnabled = /^G-[A-Z0-9]+$/i.test(gaId);
   var clarityEnabled = /^[a-z0-9]{5,32}$/i.test(clarityId);
+  // Root-level prerendered React pages include the app bundle. Let React's
+  // AnalyticsTracking own page views and phone taps on those pages.
+  var isReactShell = !!document.getElementById("root") &&
+    !!document.querySelector('script[src*="/static/js/main."]');
 
   // Prevent payment tokens, email addresses and form answers in URL queries from
   // being passed to Google Analytics. Preserve campaign/ad-click attribution.
@@ -24,7 +28,7 @@
     }
   }
 
-  if (gaEnabled) {
+  if (gaEnabled && !isReactShell) {
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
     window.gtag("js", new Date());
@@ -43,17 +47,18 @@
     }
   }
 
-  if (clarityEnabled && window.self === window.top) {
+  if (clarityEnabled && window.self === window.top && !document.getElementById("splitspro-clarity-script")) {
     window.clarity = window.clarity || function () {
       (window.clarity.q = window.clarity.q || []).push(arguments);
     };
     var clarityScript = document.createElement("script");
+    clarityScript.id = "splitspro-clarity-script";
     clarityScript.async = true;
     clarityScript.src = "https://www.clarity.ms/tag/" + encodeURIComponent(clarityId);
     document.head.appendChild(clarityScript);
   }
 
-  document.addEventListener("click", function (event) {
+  if (!isReactShell) document.addEventListener("click", function (event) {
     var anchor = event.target && event.target.closest && event.target.closest('a[href^="tel:"]');
     if (!anchor) return;
     if (gaEnabled && typeof window.gtag === "function") {
