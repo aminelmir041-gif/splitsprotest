@@ -217,34 +217,37 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
   .sizing,.gallerygrid,.includegrid{grid-template-columns:1fr}.whybox{padding:23px;transform:none}.photo figcaption{font-size:12px}
   .trustitem{font-size:10px;padding:16px 7px}.float-ctas{left:12px;right:12px;bottom:10px;grid-template-columns:1fr}.float-ctas a{padding:0 10px;font-size:10px}
 }
-.calculator{padding:132px 0 54px;background:linear-gradient(150deg,#e9eff4,#f8f7f5 75%)}
-.calculator-intro{max-width:820px;margin-bottom:25px}
-.calculator h1{font-size:clamp(40px,5vw,68px);margin:10px 0 14px;text-shadow:none;text-wrap:initial}
-.calculator-intro p,.calculator-result p{line-height:1.55}
-.calculator-card{display:grid;grid-template-columns:1.25fr 1fr;overflow:hidden;background:#fff;border:1px solid #dbe2e8;border-radius:22px;box-shadow:0 15px 35px rgba(29,61,90,.10)}
-.calculator-card form,.calculator-result{padding:clamp(20px,3vw,38px);min-width:0}
-.system-options{margin:0 0 22px;padding:0;border:0;display:flex;flex-wrap:wrap;gap:10px}
-.system-options legend,.calculator-field label{font-size:1rem;font-weight:800;margin-bottom:8px}
-.system-options label{display:flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid #b8c5cf;border-radius:8px;cursor:pointer}
-.system-options label:has(:checked){background:#edf4fa;border-color:var(--sp-blue);color:var(--sp-blue)}
-.system-options input{margin:0;accent-color:var(--sp-blue)}
-.calculator-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:20px}
-.calculator-field label,.calculator-field small{display:block}
-.calculator-field small{font-size:.875rem;line-height:1.45;margin-top:6px;color:#4c5a64}
-.calculator-field input,.calculator-field select{width:100%;min-height:46px;padding:8px 12px;border:1px solid #a7b6c2;border-radius:8px;font:inherit;background:#fff;color:var(--sp-text)}
-.calculator button{font-family:inherit;cursor:pointer}
-.calculator :focus-visible{outline:3px solid #a87122;outline-offset:3px}
+.calculator{padding:116px 0 34px;background:linear-gradient(150deg,#e9eff4,#f8f7f5 75%);scroll-margin-top:82px}
+.calculator .wrap{max-width:660px}
+.calculator h1{font-size:clamp(26px,5vw,38px);margin:0 0 10px;line-height:1.08;text-shadow:none}
+.calculator-card{padding:clamp(14px,3vw,26px);background:#fff;border:1px solid #dbe2e8;border-radius:18px;box-shadow:0 10px 28px rgba(29,61,90,.10)}
+.calculator-card h2{font-size:clamp(22px,4vw,29px);line-height:1.14;margin:5px 0 12px}
+.calculator-hint{margin:-4px 0 10px;font-size:.875rem;line-height:1.35;color:#394e60}
+.calculator-progress{margin:0;color:#4c5a64;font-size:.875rem;font-weight:800}
+.calculator-options{display:grid;gap:7px}
+.calculator [hidden]{display:none}
+.calculator-options button{display:block;width:100%;min-height:45px;padding:8px 12px;border:1px solid #a7b6c2;border-radius:9px;background:#edf4fa;color:#173750;text-align:left;font:inherit;font-size:1rem;font-weight:800;line-height:1.2;cursor:pointer}
+.calculator-options button:hover{border-color:#1d3d5a;background:#e0edf7}
+.calculator-options small{display:block;margin-top:2px;font-size:.875rem;font-weight:500;color:#394e60}
+.calculator button,.calculator input{font-family:inherit}
+.calculator :focus-visible{outline:3px solid #a87122;outline-offset:2px}
+.calculator-link{display:inline-flex;align-items:center;min-height:44px;border:0;padding:0;background:none;color:var(--sp-blue);font-size:.9rem;font-weight:800;text-decoration:underline;cursor:pointer}
+.calculator-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:5px}
+.calculator-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.calculator-fields label{display:block;font-weight:700}
+.calculator-fields input[type=number]{display:block;width:100%;min-height:44px;margin-top:4px;padding:6px 8px;border:1px solid #a7b6c2;border-radius:7px;font:inherit}
+.calculator-tall{display:flex;gap:8px;align-items:center;min-height:44px;font-size:.9rem}
+.calculator-tall input{width:18px;height:18px;accent-color:var(--sp-blue)}
 .calculator-result{background:#edf4fa;color:var(--sp-blue)}
-.calculator-result h2{font-size:clamp(25px,3vw,35px);margin:0 0 12px}
-.calculator-result p{margin:0 0 12px}
-.calculator-result strong{display:block;font-size:clamp(29px,4vw,45px);line-height:1.15}
-.calculator-result .calculator-note{margin-top:18px;font-size:.9rem}
-.calculator-actions{display:flex;flex-wrap:wrap;gap:10px}
-.calculator-actions .btn{min-height:44px;padding:0 14px;border-color:#a7b6c2}
-.calculator-guide-link{display:inline-block;margin-top:20px;font-weight:800;color:var(--sp-blue)}
-#sizing-first{padding-top:64px;scroll-margin-top:84px}
-@media(max-width:760px){.calculator{padding-top:108px}.calculator-card{grid-template-columns:1fr}}
-@media(max-width:480px){.calculator-fields{grid-template-columns:1fr}.calculator-actions .btn{width:100%}}
+.calculator-result p{line-height:1.4;margin:0 0 8px}
+.calculator-result strong{display:block;font-size:clamp(30px,7vw,45px);line-height:1.1}
+.calculator-result .calculator-note{margin:10px 0;font-size:.875rem}
+.calculator-actions{display:flex;flex-wrap:wrap;gap:8px}
+.calculator-actions .btn{min-height:44px;padding:0 12px;border-color:#a7b6c2}
+.calculator-guide-link{display:inline-block;margin-top:12px;font-size:.9rem;font-weight:800;color:var(--sp-blue)}
+#sizing-first{padding-top:38px;scroll-margin-top:84px}
+.float-ctas.calculator-in-view{visibility:hidden}
+@media(max-width:600px){.calculator{padding-top:82px;padding-bottom:12px}.calculator-actions{gap:6px}}
 </style>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
@@ -283,69 +286,108 @@ fbq('track', 'PageView');
 
 <section class="calculator" id="size-calculator">
   <div class="wrap">
-    <div class="calculator-intro">
-      <div class="kicker">SplitsPro sizing guide</div>
-      <h1>What size air conditioner do I need?</h1>
-      <p>Get a ballpark cooling capacity for one room, an open-plan space or a ducted system in your Sydney home.</p>
-    </div>
-    <div class="calculator-card">
-      <form id="sizing-form">
-        <fieldset class="system-options">
-          <legend>System type</legend>
-          <label><input type="radio" name="system" value="split" checked> Split system</label>
-          <label><input type="radio" name="system" value="ducted"> Ducted</label>
-        </fieldset>
-        <div class="calculator-fields">
-          <div class="calculator-field">
-            <label for="floor-area" id="floor-area-label">Room or open-plan area (m²)</label>
-            <input id="floor-area" type="number" min="1" step="any" inputmode="decimal" required aria-describedby="floor-area-hint">
-            <small id="floor-area-hint">Multiply the length by the width in metres. Include connected open areas.</small>
-          </div>
-          <div class="calculator-field" id="active-area-field" hidden>
-            <label for="active-area">Largest group of zones run together (m²)</label>
-            <input id="active-area" type="number" min="1" step="any" inputmode="decimal" disabled aria-describedby="active-area-hint">
-            <small id="active-area-hint">Optional. Leave blank if you plan to cool all zones together.</small>
-          </div>
-          <div class="calculator-field" id="room-type-field">
-            <label for="room-type">Room type</label>
-            <select id="room-type">
-              <option value="bedroom">Bedroom or study</option>
-              <option value="living">Living room or open plan</option>
-            </select>
-          </div>
-          <div class="calculator-field">
-            <label for="heat-gain">Sun, glass and insulation</label>
-            <select id="heat-gain" aria-describedby="heat-gain-hint">
-              <option value="0">Low heat gain</option>
-              <option value="1" selected>Typical heat gain</option>
-              <option value="2">High heat gain</option>
-            </select>
-            <small id="heat-gain-hint">Choose high for strong afternoon sun, large unshaded windows or poor insulation. Choose low for shaded, well-insulated spaces.</small>
-          </div>
-          <div class="calculator-field">
-            <label for="ceiling-height">Ceiling height</label>
-            <select id="ceiling-height">
-              <option value="1">Up to 2.7 m</option>
-              <option value="1.10">Over 2.7 m to 3 m</option>
-              <option value="1.20">Over 3 m</option>
-            </select>
-          </div>
+    <h1>Find your aircon size</h1>
+    <div class="calculator-card" id="sizing-card" hidden>
+      <p class="calculator-progress" id="sizing-progress">Step 1 of 5</p>
+      <div id="sizing-system" data-step>
+        <h2 tabindex="-1">What are you cooling?</h2>
+        <div class="calculator-options">
+          <button type="button" data-system="split">One room or open area <small>Split system</small></button>
+          <button type="button" data-system="ducted">Several rooms or the whole home <small>Ducted aircon</small></button>
         </div>
-        <button type="submit" class="btn btn-dark">Calculate cooling size</button>
-        <noscript><p>Enable JavaScript to use the calculator. You can still read the sizing guide below.</p></noscript>
-      </form>
-      <div class="calculator-result" aria-labelledby="estimate-heading">
-        <h2 id="estimate-heading">Estimated cooling capacity</h2>
-        <div id="sizing-result" role="status" aria-atomic="true">
-          <p>Enter your area to see your estimated range in kW.</p>
+      </div>
+      <div id="sizing-space" data-step hidden>
+        <h2 tabindex="-1" id="sizing-space-heading">Pick the closest match</h2>
+        <div class="calculator-options" id="split-spaces">
+          <button type="button" data-space="bedroom,10,16">Small bedroom <small>Single bed or home office</small></button>
+          <button type="button" data-space="bedroom,16,25">Main bedroom <small>Queen bed with room around it</small></button>
+          <button type="button" data-space="living,20,35">Living room <small>A lounge and TV area</small></button>
+          <button type="button" data-space="living,36,60">Big open-plan area <small>Lounge, dining and kitchen together</small></button>
         </div>
-        <p class="calculator-note" id="estimate-note">This is a planning estimate. Confirm the room’s heat load and the unit’s heating and cooling capacity before buying.</p>
+        <div class="calculator-options" id="ducted-spaces" hidden>
+          <button type="button" data-space="ducted,55,90">Compact home <small>2–3 bedrooms and one small living area</small></button>
+          <button type="button" data-space="ducted,90,140">Family home <small>3–4 bedrooms and one main living area</small></button>
+          <button type="button" data-space="ducted,140,200">Large home <small>Several bedrooms and two living areas</small></button>
+        </div>
+        <div class="calculator-nav">
+          <button class="calculator-link" type="button" data-step-target="system">Back</button>
+          <button class="calculator-link" type="button" data-step-target="measure">I have measurements</button>
+        </div>
+      </div>
+      <div id="sizing-measure" data-step hidden>
+        <h2 tabindex="-1">Enter your measurements</h2>
+        <form id="sizing-room-measure">
+          <div class="calculator-fields">
+            <label>Length (m)<input name="roomLength" type="number" min="0.5" max="100" step="any" inputmode="decimal" required></label>
+            <label>Width (m)<input name="roomWidth" type="number" min="0.5" max="100" step="any" inputmode="decimal" required></label>
+          </div>
+          <div class="calculator-options">
+            <button name="roomType" value="bedroom" type="submit">It’s a bedroom or study</button>
+            <button name="roomType" value="living" type="submit">It’s a living or open-plan area</button>
+          </div>
+        </form>
+        <form id="sizing-ducted-measure" hidden>
+          <div class="calculator-fields">
+            <label>Total area to cool (m²)<input name="floorArea" type="number" min="1" max="2000" step="any" inputmode="decimal" required></label>
+            <label>Area on at once (m², optional)<input name="activeArea" type="number" min="1" max="2000" step="any" inputmode="decimal"></label>
+          </div>
+          <div class="calculator-options"><button type="submit">Continue</button></div>
+        </form>
+        <button class="calculator-link" type="button" data-step-target="space">Back</button>
+      </div>
+      <div id="sizing-windows" data-step hidden>
+        <h2 tabindex="-1">How many windows are there?</h2>
+        <p class="calculator-hint">Count the windows in the area you want to cool. A big glass door counts as two.</p>
+        <div class="calculator-options" id="split-windows">
+          <button type="button" data-glass="0">0 or 1 window <small>Little glass in the room</small></button>
+          <button type="button" data-glass="1">2 or 3 windows <small>A few windows or a sliding glass door</small></button>
+          <button type="button" data-glass="2">4 or more <small>Lots of windows or a wall of glass</small></button>
+        </div>
+        <div class="calculator-options" id="ducted-windows" hidden>
+          <button type="button" data-glass="0">0 to 4 windows <small>Only a few across the rooms</small></button>
+          <button type="button" data-glass="1">5 to 8 windows <small>About one or two per room</small></button>
+          <button type="button" data-glass="2">9 or more <small>Lots of windows across the rooms</small></button>
+        </div>
+        <button class="calculator-link" type="button" id="sizing-windows-back">Back</button>
+      </div>
+      <div id="sizing-sun" data-step hidden>
+        <h2 tabindex="-1">When does the sun come in?</h2>
+        <p class="calculator-hint">Think about direct sun through the glass on a summer day.</p>
+        <div class="calculator-options">
+          <button type="button" data-sun="shade">Hardly ever <small>Mostly shaded or no windows</small></button>
+          <button type="button" data-sun="morning">Mostly in the morning <small>The sun comes in before lunch</small></button>
+          <button type="button" data-sun="afternoon">From lunchtime onwards <small>Also choose this if it comes in most of the day</small></button>
+          <button type="button" data-sun="unknown">I’m not sure <small>Use a typical mix of sun and shade</small></button>
+        </div>
+        <button class="calculator-link" type="button" data-step-target="windows">Back</button>
+      </div>
+      <div id="sizing-kitchen" data-step hidden>
+        <h2 tabindex="-1">Is there a kitchen in this area?</h2>
+        <p class="calculator-hint">Cooking adds heat. Count the kitchen if the aircon will cool it.</p>
+        <div class="calculator-options">
+          <button type="button" data-kitchen="yes">Yes, the aircon will cool the kitchen <small>For example, an open kitchen and lounge</small></button>
+          <button type="button" data-kitchen="no">No kitchen in the area <small>For example, a bedroom or a lounge with a door to the kitchen</small></button>
+        </div>
+        <div class="calculator-nav">
+          <button class="calculator-link" type="button" data-step-target="sun">Back</button>
+          <label class="calculator-tall"><input id="sizing-tall" type="checkbox"> Ceilings over 3 m</label>
+        </div>
+      </div>
+      <div id="sizing-estimate" data-step hidden>
+        <h2 tabindex="-1">Your estimated aircon size</h2>
+        <div id="sizing-result" class="calculator-result" role="status"></div>
+        <p class="calculator-note">This is a rough guide for cooling. We can check the right size for your home before you buy.</p>
         <div class="calculator-actions">
-          <a class="btn btn-ghost" id="sizing-prices" data-preserve-query href="/deals/">See split system prices</a>
-          <a class="btn btn-ghost" href="tel:+61414698435">Call to check your size</a>
+          <a class="btn btn-dark" id="sizing-prices" href="/deals/">See split prices</a>
+          <a class="btn btn-ghost" href="tel:+61414698435">Call SplitsPro</a>
+        </div>
+        <div class="calculator-nav">
+          <button class="calculator-link" type="button" data-step-target="kitchen">Back</button>
+          <button class="calculator-link" type="button" id="sizing-restart">Start again</button>
         </div>
       </div>
     </div>
+    <noscript><p>Turn on JavaScript to use the calculator.</p></noscript>
     <a class="calculator-guide-link" href="#sizing-first">Read the sizing guide</a>
   </div>
 </section>
@@ -611,85 +653,145 @@ fbq('track', 'PageView');
 </script>
 <script>
 (function () {
-  const form = document.getElementById('sizing-form');
-  const area = document.getElementById('floor-area');
-  const activeArea = document.getElementById('active-area');
-  const roomType = document.getElementById('room-type');
+  const calculator = document.getElementById('size-calculator');
+  const card = document.getElementById('sizing-card');
+  const progress = document.getElementById('sizing-progress');
+  const roomForm = document.getElementById('sizing-room-measure');
+  const ductedForm = document.getElementById('sizing-ducted-measure');
+  const activeArea = ductedForm.elements.activeArea;
+  const totalArea = ductedForm.elements.floorArea;
+  const tall = document.getElementById('sizing-tall');
   const result = document.getElementById('sizing-result');
   const prices = document.getElementById('sizing-prices');
-  const query = window.location.search;
-  const clearResult = 'Enter your area to see your estimated range in kW.';
+  let system;
+  let space;
+  let previousStep;
+  let glass;
+  let sun;
 
-  // Preliminary cooling load bands in W/m² for low, typical and high heat gain.
-  // Split bands centre on the ACDA's rule-of-thumb figures of 80 and 125 W/m².
-  // Ducted bands span the domestic check loads discussed in AIRAH's VEU feedback.
-  const loadBands = {
-    bedroom: [[65, 80], [75, 90], [90, 110]],
-    living: [[95, 115], [110, 140], [135, 160]],
-    ducted: [[100, 120], [115, 140], [135, 155]]
-  };
+  // Planning bands in W/m² before adjustments for glazing and ceiling height.
+  // These approximate the earlier calculator's bedroom, living and ducted baselines.
+  const loadBands = {bedroom: [75, 90], living: [110, 140], ducted: [115, 140]};
+  const glazingFactor = [0.95, 1, 1.10];
+  const sunlightFactor = {shade: 0.94, morning: 1, afternoon: 1.12, unknown: 1.02};
+  const stepNumbers = {system: 1, space: 2, measure: 2, windows: 3, sun: 4, kitchen: 5};
 
-  function isDucted() {
-    return form.elements.system.value === 'ducted';
-  }
-
-  function validateAreas() {
-    const exceedsTotal = isDucted() && activeArea.value !== '' &&
-      area.value !== '' && activeArea.valueAsNumber > area.valueAsNumber;
-    activeArea.setCustomValidity(exceedsTotal ? 'Enter an area no larger than the total ducted area.' : '');
-  }
-
-  function syncSystem() {
-    const ducted = isDucted();
-    document.getElementById('active-area-field').hidden = !ducted;
-    document.getElementById('room-type-field').hidden = ducted;
-    activeArea.disabled = !ducted;
-    roomType.disabled = ducted;
-    document.getElementById('floor-area-label').textContent =
-      ducted ? 'Total ducted floor area (m²)' : 'Room or open-plan area (m²)';
-    document.getElementById('floor-area-hint').textContent = ducted
-      ? 'Add up the areas served by the ducted system. Skip spaces it won’t cool.'
-      : 'Multiply the length by the width in metres. Include connected open areas.';
-    document.getElementById('estimate-note').textContent = ducted
-      ? 'This is a planning estimate. Final equipment selection needs a room-by-room heat load and checks for duct losses, airflow and minimum zone size.'
-      : 'This is a planning estimate. Confirm the room’s heat load and the unit’s heating and cooling capacity before buying.';
-    prices.href = (ducted ? '/ducted/daikin-rinnai/' : '/deals/') + query;
-    prices.textContent = ducted ? 'See ducted prices' : 'See split system prices';
-    validateAreas();
-  }
-
-  function showRange(label, squareMetres, rates, heightFactor) {
-    const output = document.createElement('p');
-    const capacity = document.createElement('strong');
-    const [low, high] = rates.map(rate => squareMetres * rate * heightFactor / 1000);
-    capacity.textContent = (Math.floor(low * 10) / 10).toFixed(1) + '–' +
-      (Math.ceil(high * 10) / 10).toFixed(1) + ' kW';
-    output.append(label, capacity);
-    result.append(output);
-  }
-
-  form.addEventListener('input', function () {
-    validateAreas();
-    if (result.querySelector('strong')) result.textContent = clearResult;
-  });
-  form.addEventListener('change', function (event) {
-    if (event.target.name === 'system') syncSystem();
-  });
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    validateAreas();
-    if (!form.reportValidity()) return;
-
-    const ducted = isDucted();
-    const rates = loadBands[ducted ? 'ducted' : roomType.value][document.getElementById('heat-gain').value];
-    const heightFactor = Number(document.getElementById('ceiling-height').value);
-    result.replaceChildren();
-    showRange(ducted ? 'All ducted zones' : 'For this space', area.valueAsNumber, rates, heightFactor);
-    if (ducted && activeArea.valueAsNumber < area.valueAsNumber) {
-      showRange('For the selected zones running together', activeArea.valueAsNumber, rates, heightFactor);
+  function showStep(step) {
+    const next = document.getElementById('sizing-' + step);
+    card.querySelectorAll('[data-step]').forEach(panel => { panel.hidden = panel !== next; });
+    card.classList.toggle('calculator-result', step === 'estimate');
+    progress.hidden = step === 'estimate';
+    if (!progress.hidden) progress.textContent = 'Step ' + stepNumbers[step] + ' of 5';
+    next.querySelector('h2').focus({preventScroll: true});
+    const cardBounds = card.getBoundingClientRect();
+    const headerBottom = document.getElementById('siteTop').getBoundingClientRect().bottom;
+    if (cardBounds.top < headerBottom || cardBounds.bottom > window.innerHeight) {
+      window.scrollBy({top: cardBounds.top - headerBottom - 8, behavior: 'instant'});
     }
+  }
+
+  function selectSystem(value) {
+    system = value;
+    const ducted = system === 'ducted';
+    document.getElementById('split-spaces').hidden = ducted;
+    document.getElementById('ducted-spaces').hidden = !ducted;
+    document.getElementById('split-windows').hidden = ducted;
+    document.getElementById('ducted-windows').hidden = !ducted;
+    roomForm.hidden = ducted;
+    ductedForm.hidden = !ducted;
+    prices.href = (ducted ? '/ducted/daikin-rinnai/' : '/deals/') + window.location.search;
+    prices.textContent = ducted ? 'See ducted prices' : 'See split prices';
+    showStep('space');
+  }
+
+  function selectSpace(type, low, high, active, source) {
+    space = {type, low, high, active};
+    previousStep = source;
+    showStep('windows');
+  }
+
+  function appendRange(label, lowArea, highArea, rates, factor, kitchenLoad) {
+    const row = document.createElement('p');
+    const number = document.createElement('strong');
+    const low = lowArea * rates[0] * factor / 1000 + kitchenLoad[0];
+    const high = highArea * rates[1] * factor / 1000 + kitchenLoad[1];
+    number.textContent = low.toFixed(1) + '–' + high.toFixed(1) + ' kW';
+    row.append(number, label);
+    result.append(row);
+  }
+
+  function showEstimate(hasKitchen) {
+    const rates = loadBands[space.type];
+    const factor = glazingFactor[glass] * sunlightFactor[sun] * (tall.checked ? 1.2 : 1);
+    const kitchenLoad = hasKitchen ? [0.3, 0.8] : [0, 0];
+    result.replaceChildren();
+    appendRange(system === 'ducted' ? 'Cooling for all selected rooms' : 'Cooling for this space',
+      space.low, space.high, rates, factor, kitchenLoad);
+    if (space.active < space.high) {
+      // The measured group may or may not contain the kitchen.
+      const zoneKitchenLoad = [0, kitchenLoad[1]];
+      appendRange('Cooling for rooms on together', space.active, space.active, rates, factor, zoneKitchenLoad);
+    }
+    showStep('estimate');
+  }
+
+  card.querySelectorAll('[data-system]').forEach(button => {
+    button.addEventListener('click', () => selectSystem(button.dataset.system));
   });
-  syncSystem();
+  card.querySelectorAll('[data-space]').forEach(button => {
+    button.addEventListener('click', () => {
+      const [type, low, high] = button.dataset.space.split(',');
+      selectSpace(type, Number(low), Number(high), NaN, 'space');
+    });
+  });
+  card.querySelectorAll('[data-step-target]').forEach(button => {
+    button.addEventListener('click', () => showStep(button.dataset.stepTarget));
+  });
+  card.querySelectorAll('[data-glass]').forEach(button => {
+    button.addEventListener('click', () => {
+      glass = Number(button.dataset.glass);
+      showStep('sun');
+    });
+  });
+  card.querySelectorAll('[data-sun]').forEach(button => {
+    button.addEventListener('click', () => {
+      sun = button.dataset.sun;
+      showStep('kitchen');
+    });
+  });
+  card.querySelectorAll('[data-kitchen]').forEach(button => {
+    button.addEventListener('click', () => showEstimate(button.dataset.kitchen === 'yes'));
+  });
+  document.getElementById('sizing-windows-back').addEventListener('click', () => showStep(previousStep));
+  document.getElementById('sizing-restart').addEventListener('click', () => {
+    roomForm.reset();
+    ductedForm.reset();
+    activeArea.setCustomValidity('');
+    tall.checked = false;
+    showStep('system');
+  });
+
+  roomForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const area = roomForm.elements.roomLength.valueAsNumber * roomForm.elements.roomWidth.valueAsNumber;
+    selectSpace(event.submitter?.value || 'bedroom', area, area, NaN, 'measure');
+  });
+  ductedForm.addEventListener('input', () => {
+    activeArea.setCustomValidity(activeArea.valueAsNumber > totalArea.valueAsNumber
+      ? 'Enter an area no bigger than the total area.' : '');
+  });
+  ductedForm.addEventListener('submit', event => {
+    event.preventDefault();
+    selectSpace('ducted', totalArea.valueAsNumber, totalArea.valueAsNumber, activeArea.valueAsNumber, 'measure');
+  });
+
+  card.hidden = false;
+  const floatingCall = document.querySelector('.float-ctas');
+  if ('IntersectionObserver' in window && floatingCall) {
+    new IntersectionObserver(([entry]) => {
+      floatingCall.classList.toggle('calculator-in-view', entry.isIntersecting);
+    }).observe(calculator);
+  }
 })();
 </script>
 </body>
