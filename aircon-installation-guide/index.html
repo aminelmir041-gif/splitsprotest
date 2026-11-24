@@ -32,10 +32,10 @@ h1,h2,h3,h4,.font-serif{font-family:'Playfair Display',Georgia,serif;letter-spac
 .top.scrolled{padding:5px 0;background:rgba(248,247,245,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--sp-border);box-shadow:0 8px 28px rgba(11,11,11,.05)}
 .topin{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:28px}
 .brand{display:flex;align-items:center;text-decoration:none;flex:0 0 auto}
-.brand span{color:var(--sp-blue);font-size:1.35rem;font-weight:800}
+.brand span{color:var(--sp-ink);font-size:1.35rem;font-weight:800}
 .brand img{height:72px;width:auto;object-fit:contain;filter:brightness(0) invert(1);transition:.45s ease}
 .top.scrolled .brand img{height:58px;filter:none}
-.navlinks{display:flex;align-items:center;gap:30px;margin-left:auto}
+.navlinks{display:flex;align-items:center;gap:clamp(12px,1.5vw,25px);white-space:nowrap;margin-left:auto}
 .navlinks a{font-size:13px;font-weight:600;letter-spacing:.03em;text-decoration:none;color:rgba(255,255,255,.9);transition:.25s ease}
 .navlinks a:hover{color:var(--sp-gold-soft)}
 .top.scrolled .navlinks a{color:var(--sp-text)}
@@ -47,7 +47,10 @@ h1,h2,h3,h4,.font-serif{font-family:'Playfair Display',Georgia,serif;letter-spac
 .menu{display:none;border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.18);color:#fff;border-radius:50%;width:44px;height:44px;font-size:22px;align-items:center;justify-content:center}
 .top.scrolled .menu{border-color:var(--sp-border);background:#fff;color:var(--sp-text)}
 .mobile-nav{display:none;position:absolute;left:0;right:0;top:100%;background:#fff;border-top:1px solid var(--sp-border);box-shadow:0 18px 40px rgba(11,11,11,.12);padding:10px 24px 20px}
-.mobile-nav.open{display:grid}
+.top-actions{display:flex;align-items:center;gap:12px}
+.nav-deals{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;border:1px solid var(--sp-gold);border-radius:999px;background:#fff;color:#765521;text-decoration:none;font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.mobile-nav.open{display:grid;max-height:calc(100dvh - 75px);overflow-y:auto;overscroll-behavior:contain}
+@media(min-width:1101px){.topin{gap:20px}.mobile-nav.open{display:none}}
 .mobile-nav a{padding:14px 0;border-bottom:1px solid var(--sp-grey);text-decoration:none;font-family:'Playfair Display',Georgia,serif;font-size:18px;color:var(--sp-text)}
 
 /* Hero mirrors SplitsPro full-bleed visual treatment */
@@ -168,37 +171,37 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
   .sizing,.gallerygrid,.includegrid{grid-template-columns:1fr}.whybox{padding:23px;transform:none}.photo figcaption{font-size:12px}
   .trustitem{font-size:10px;padding:16px 7px}.float-ctas{left:12px;right:12px;bottom:10px;grid-template-columns:1fr}.float-ctas a{padding:0 10px;font-size:10px}
 }
-.calculator{padding:116px 0 34px;background:linear-gradient(150deg,#e9eff4,#f8f7f5 75%);scroll-margin-top:82px}
+.calculator{padding:116px 0 34px;background:linear-gradient(150deg,#f5efe4,var(--sp-warm) 75%);scroll-margin-top:82px}
 .calculator .wrap{max-width:660px}
 .calculator h1{font-size:clamp(26px,5vw,38px);margin:0 0 10px;line-height:1.08;text-shadow:none}
-.calculator-card{padding:clamp(14px,3vw,26px);background:#fff;border:1px solid #dbe2e8;border-radius:18px;box-shadow:0 10px 28px rgba(29,61,90,.10)}
+.calculator-card{padding:clamp(14px,3vw,26px);background:#fff;border:1px solid var(--sp-border);border-radius:18px;box-shadow:0 10px 28px rgba(11,11,11,.08)}
 .calculator-card h2{font-size:clamp(22px,4vw,29px);line-height:1.14;margin:5px 0 12px}
-.calculator-hint{margin:-4px 0 10px;font-size:.875rem;line-height:1.35;color:#394e60}
-.calculator-progress{margin:0;color:#4c5a64;font-size:.875rem;font-weight:800}
+.calculator-hint{margin:-4px 0 10px;font-size:.875rem;line-height:1.35;color:var(--sp-muted)}
+.calculator-progress{margin:0;color:var(--sp-muted);font-size:.875rem;font-weight:800}
 .calculator-options{display:grid;gap:7px}
 .calculator [hidden]{display:none}
-.calculator-options button{display:block;width:100%;min-height:45px;padding:8px 12px;border:1px solid #a7b6c2;border-radius:9px;background:#edf4fa;color:#173750;text-align:left;font:inherit;font-size:1rem;font-weight:800;line-height:1.2;cursor:pointer}
-.calculator-options button:hover{border-color:#1d3d5a;background:#e0edf7}
-.calculator-options small{display:block;margin-top:2px;font-size:.875rem;font-weight:500;color:#394e60}
+.calculator-options button{display:block;width:100%;min-height:45px;padding:8px 12px;border:1px solid #d9c7a9;border-radius:9px;background:#fbf7ef;color:var(--sp-text);text-align:left;font:inherit;font-size:1rem;font-weight:800;line-height:1.2;cursor:pointer}
+.calculator-options button:hover{border-color:var(--sp-gold);background:#f5ead8}
+.calculator-options small{display:block;margin-top:2px;font-size:.875rem;font-weight:500;color:var(--sp-muted)}
 .calculator button,.calculator input{font-family:inherit}
 .calculator :focus-visible{outline:3px solid #a87122;outline-offset:2px}
-.calculator-link{display:inline-flex;align-items:center;min-height:44px;border:0;padding:0;background:none;color:var(--sp-blue);font-size:.9rem;font-weight:800;text-decoration:underline;cursor:pointer}
+.calculator-link{display:inline-flex;align-items:center;min-height:44px;border:0;padding:0;background:none;color:var(--sp-ink);font-size:.9rem;font-weight:800;text-decoration:underline;cursor:pointer}
 .calculator-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:5px}
 .calculator-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .calculator-fields label{display:block;font-weight:700}
-.calculator-fields input[type=number]{display:block;width:100%;min-height:44px;margin-top:4px;padding:6px 8px;border:1px solid #a7b6c2;border-radius:7px;font:inherit}
+.calculator-fields input[type=number]{display:block;width:100%;min-height:44px;margin-top:4px;padding:6px 8px;border:1px solid #d9c7a9;border-radius:7px;font:inherit}
 .calculator-tall{display:flex;gap:8px;align-items:center;min-height:44px;font-size:.9rem}
-.calculator-tall input{width:18px;height:18px;accent-color:var(--sp-blue)}
-.calculator-output{background:#edf4fa;color:var(--sp-blue)}
+.calculator-tall input{width:18px;height:18px;accent-color:var(--sp-gold)}
+.calculator-output{background:#fbf7ef;color:var(--sp-ink)}
 .calculator-output p{line-height:1.4;margin:0 0 8px}
 .calculator-output strong{display:block;font-size:clamp(30px,7vw,45px);line-height:1.1}
 .calculator-note{margin:10px 0;font-size:.875rem}
-.calculator-guide-link{display:inline-block;margin-top:12px;font-size:.9rem;font-weight:800;color:var(--sp-blue)}
+.calculator-guide-link{display:inline-block;margin-top:12px;font-size:.9rem;font-weight:800;color:var(--sp-ink)}
 .calculator-system-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.calculator-system-picker button{padding:10px 12px;min-height:62px;border:1px solid #a7b6c2;border-radius:9px;background:#fff;color:var(--sp-blue);text-align:center;font:inherit;font-size:1.25rem;font-weight:800;cursor:pointer;transition:background-color .18s,border-color .18s}
-.calculator-system-picker button[aria-pressed=true]{background:#edf4fa;border-color:var(--sp-blue);box-shadow:inset 0 -3px var(--sp-blue)}
+.calculator-system-picker button{padding:10px 12px;min-height:62px;border:1px solid #d9c7a9;border-radius:9px;background:#fff;color:var(--sp-ink);text-align:center;font:inherit;font-size:1.25rem;font-weight:800;cursor:pointer;transition:background-color .18s,border-color .18s}
+.calculator-system-picker button[aria-pressed=true]{background:var(--sp-ink);color:var(--sp-gold-soft);border-color:var(--sp-gold);box-shadow:inset 0 -3px var(--sp-gold)}
 .calculator-progress{display:flex;align-items:center;gap:10px}
-.calculator-progress progress{flex:1;min-width:0;height:6px;accent-color:var(--sp-blue)}
+.calculator-progress progress{flex:1;min-width:0;height:6px;accent-color:var(--sp-gold)}
 @media(prefers-reduced-motion:no-preference){
   .calculator [data-step]:not([hidden]){animation:calculator-step-in .28s cubic-bezier(.2,.7,.25,1)}
   .calculator-options button{transition:background-color .15s,border-color .15s,transform .15s}
@@ -208,6 +211,7 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 }
 #sizing-first{padding-top:38px;scroll-margin-top:84px}
 .float-ctas.calculator-in-view{visibility:hidden}
+@media(max-width:1100px){.navlinks,.topcall{display:none}.menu{display:flex}}
 @media(max-width:600px){.calculator{padding-top:82px;padding-bottom:12px}}
 .calculator-output{padding:10px 12px;border-radius:8px}
 .calculator-output p:last-child{margin-bottom:0}
@@ -233,15 +237,29 @@ fbq('track', 'PageView');
     <nav class="navlinks" aria-label="Main navigation">
       <a href="/">Home</a>
       <a href="/split-systems/">Split Systems</a>
+      <a href="/ducted/daikin-rinnai/">Ducted</a>
+      <a href="/cleaning/">Cleaning</a>
       <a href="/gallery/">Gallery</a>
       <a href="/service-areas/">Service Areas</a>
+      <a href="/about/">About</a>
       <a href="/contact/">Contact</a>
     </nav>
-    <a class="topcall" href="tel:0414698435">Call 0414 698 435</a>
-    <button class="menu" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+    <div class="top-actions">
+      <a class="nav-deals" href="/aircon-deals/">Deals</a>
+      <a class="topcall" href="tel:+61414698435">0414 698 435</a>
+      <button class="menu" id="menuBtn" type="button" aria-label="Open menu" aria-controls="mobileNav" aria-expanded="false">☰</button>
+    </div>
   </div>
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
-    <a href="/">Home</a><a href="/split-systems/">Split Systems</a><a href="/gallery/">Gallery</a><a href="/service-areas/">Service Areas</a><a href="/contact/">Contact</a><a href="tel:0414698435">Call 0414 698 435</a>
+      <a href="/">Home</a>
+      <a href="/split-systems/">Split Systems</a>
+      <a href="/ducted/daikin-rinnai/">Ducted</a>
+      <a href="/cleaning/">Cleaning</a>
+      <a href="/gallery/">Gallery</a>
+      <a href="/service-areas/">Service Areas</a>
+      <a href="/about/">About</a>
+      <a href="/contact/">Contact</a>
+    <a href="tel:+61414698435">Call 0414 698 435</a>
   </nav>
 </header>
 
@@ -603,7 +621,7 @@ fbq('track', 'PageView');
 </main>
 
 <footer>
-  <div class="wrap foot"><span>© SplitsPro</span><span>Clear pricing · Right sizing · Proper installation</span></div>
+  <div class="wrap foot"><span>© SplitsPro</span><a href="/service-areas/">Western Sydney, NSW</a><a href="tel:+61414698435">0414 698 435</a></div>
 </footer>
 <div class="float-ctas">
   <a class="float-call" href="tel:0414698435">Call SplitsPro</a>
