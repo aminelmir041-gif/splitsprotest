@@ -249,10 +249,6 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 .calculator-output strong{display:block;color:var(--calc-accent);font-size:clamp(31px,7vw,43px);line-height:1.05;font-variant-numeric:tabular-nums;font-weight:800}
 .calculator-output b{color:var(--calc-text)}
 .calculator-note{margin:9px 0;font-size:.875rem;line-height:1.4;color:var(--calc-muted)}
-.calculator-actions{display:flex;flex-wrap:wrap;gap:6px}
-.calculator-actions .btn{min-height:44px;padding:0 12px;border-color:var(--calc-line);font-size:.875rem;letter-spacing:0;text-transform:none}
-.calculator-actions .btn-dark{background:var(--calc-accent);color:#071422;border-color:var(--calc-accent)}
-.calculator-actions .btn-ghost{background:transparent;color:var(--calc-text)}
 .calculator-guide-link{display:inline-block;margin-top:10px;font-size:.875rem;color:var(--calc-muted)}
 #sizing-first{padding-top:38px;scroll-margin-top:84px}
 .float-ctas.calculator-in-view{visibility:hidden}
@@ -298,7 +294,7 @@ fbq('track', 'PageView');
   <div class="wrap">
     <h1>Find your aircon size</h1>
     <div class="calculator-card" id="sizing-card" hidden>
-      <div class="calculator-progress" id="sizing-progress"><span id="sizing-step-label">Step 1 of 5</span><progress id="sizing-step-bar" value="1" max="5" aria-label="Calculator progress"></progress></div>
+      <div class="calculator-progress" id="sizing-progress"><span id="sizing-step-label">Step 1 of 6</span><progress id="sizing-step-bar" value="1" max="6" aria-label="Calculator progress"></progress></div>
       <div id="sizing-system" data-step>
         <h2 tabindex="-1">What are you cooling?</h2>
         <div class="calculator-options">
@@ -371,6 +367,16 @@ fbq('track', 'PageView');
         </div>
         <button class="calculator-link" type="button" data-step-target="windows">Back</button>
       </div>
+      <div id="sizing-insulation" data-step hidden>
+        <h2 tabindex="-1">Is the ceiling insulated?</h2>
+        <p class="calculator-hint">Think about the ceiling above the area you want to cool.</p>
+        <div class="calculator-options">
+          <button type="button" data-insulation="yes">Yes <small>There’s insulation above the ceiling</small></button>
+          <button type="button" data-insulation="no">No <small>There’s little or no insulation</small></button>
+          <button type="button" data-insulation="unknown">I’m not sure <small>Use a typical allowance</small></button>
+        </div>
+        <button class="calculator-link" type="button" data-step-target="sun">Back</button>
+      </div>
       <div id="sizing-kitchen" data-step hidden>
         <h2 tabindex="-1">Is there a kitchen in this area?</h2>
         <p class="calculator-hint">Cooking adds heat. Count the kitchen if the aircon will cool it.</p>
@@ -379,18 +385,14 @@ fbq('track', 'PageView');
           <button type="button" data-kitchen="no">No kitchen in the area <small>For example, a bedroom or a lounge with a door to the kitchen</small></button>
         </div>
         <div class="calculator-nav">
-          <button class="calculator-link" type="button" data-step-target="sun">Back</button>
+          <button class="calculator-link" type="button" data-step-target="insulation">Back</button>
           <label class="calculator-tall"><input id="sizing-tall" type="checkbox"> Ceilings over 3 m</label>
         </div>
       </div>
       <div id="sizing-estimate" data-step hidden>
         <h2 tabindex="-1">Your cooling estimate</h2>
         <div id="sizing-result" class="calculator-output" role="status"></div>
-        <p class="calculator-note">Use this as a starting point. SplitsPro can check heating, cooling and airflow before you choose a unit.</p>
-        <div class="calculator-actions">
-          <a class="btn btn-dark" id="sizing-prices" href="/deals/">See split prices</a>
-          <a class="btn btn-ghost" href="tel:+61414698435">Call SplitsPro</a>
-        </div>
+        <p class="calculator-note">Sizes shown are rated cooling output. Confirm the heat load before choosing a unit. Ducted systems also need airflow and zoning checks.</p>
         <div class="calculator-nav">
           <button class="calculator-link" type="button" data-step-target="kitchen">Back</button>
           <button class="calculator-link" type="button" id="sizing-restart">Start again</button>
@@ -674,12 +676,12 @@ fbq('track', 'PageView');
   const totalArea = ductedForm.elements.floorArea;
   const tall = document.getElementById('sizing-tall');
   const result = document.getElementById('sizing-result');
-  const prices = document.getElementById('sizing-prices');
   let system;
   let space;
   let previousStep;
   let glass;
   let sun;
+  let insulation;
 
   // Screening rates (W/m²) are based on the ACDA room rules of thumb
   // and the average domestic ducted check load discussed by AIRAH.
@@ -687,19 +689,20 @@ fbq('track', 'PageView');
   const glazingAdjustment = [-5, 0, 7];
   const solarAdjustment = {shade: -4, morning: 3, afternoon: 12, unknown: 0};
   const windowExposure = [0.5, 1, 1.4];
-  // Example nominal cooling capacities. Compare against the selected model's spec sheet.
+  const insulationAdjustment = {yes: -5, no: 12, unknown: 0};
+  // Rated cooling capacities from SplitsPro's listed split and ducted ranges.
   const unitSizes = {
-    split: [2, 2.5, 3.5, 4.6, 5, 6, 7.1, 8, 9],
-    ducted: [5, 6, 7.1, 8.5, 10, 12.5, 14, 16, 18, 20, 24]
+    split: [2.5, 3.5, 5, 7, 7.1, 8.5, 9.5],
+    ducted: [7.3, 9, 10, 10.5, 12.5, 14, 16, 17, 20]
   };
-  const stepNumbers = {system: 1, space: 2, measure: 2, windows: 3, sun: 4, kitchen: 5};
+  const stepNumbers = {system: 1, space: 2, measure: 2, windows: 3, sun: 4, insulation: 5, kitchen: 6};
 
   function showStep(step) {
     const next = document.getElementById('sizing-' + step);
     card.querySelectorAll('[data-step]').forEach(panel => { panel.hidden = panel !== next; });
     progress.hidden = step === 'estimate';
     if (!progress.hidden) {
-      stepLabel.textContent = 'Step ' + stepNumbers[step] + ' of 5';
+      stepLabel.textContent = 'Step ' + stepNumbers[step] + ' of 6';
       stepBar.value = stepNumbers[step];
     }
     next.querySelector('h2').focus({preventScroll: true});
@@ -719,8 +722,6 @@ fbq('track', 'PageView');
     document.getElementById('ducted-windows').hidden = !ducted;
     roomForm.hidden = ducted;
     ductedForm.hidden = !ducted;
-    prices.href = (ducted ? '/ducted/daikin-rinnai/' : '/deals/') + window.location.search;
-    prices.textContent = ducted ? 'See ducted prices' : 'See split prices';
     showStep('space');
   }
 
@@ -740,7 +741,7 @@ fbq('track', 'PageView');
 
   function showEstimate(hasKitchen) {
     const rate = baseRate[space.type] + glazingAdjustment[glass] +
-      solarAdjustment[sun] * windowExposure[glass];
+      solarAdjustment[sun] * windowExposure[glass] + insulationAdjustment[insulation];
     const ceilingMultiplier = tall.checked ? 1.15 : 1;
     const roomLoad = rate * space.area * ceilingMultiplier / 1000;
     const kitchenLoad = hasKitchen ? 0.6 : 0;
@@ -749,17 +750,23 @@ fbq('track', 'PageView');
     const roundedLoad = Number(load.toFixed(1));
     const example = sizes.find(size => size >= roundedLoad);
 
+    const smallSplit = system === 'split' && roundedLoad < sizes[0];
     result.replaceChildren();
-    addResult(system === 'ducted' ? 'All selected rooms' : 'Estimated cooling needed',
-      roundedLoad.toFixed(1) + ' kW', 'strong');
+    if (smallSplit) {
+      const lowerLabel = roundedLoad < 1 ? '<1' : roundedLoad.toFixed(1);
+      addResult('Estimated load up to the smallest listed split', lowerLabel + '–' + sizes[0] + ' kW', 'strong');
+    } else {
+      addResult(system === 'ducted' ? 'All selected rooms' : 'Estimated cooling needed',
+        roundedLoad.toFixed(1) + ' kW', 'strong');
+    }
     const areaLabel = previousStep === 'space' ? 'Estimated area: ' : 'Area entered: ';
     addResult('', areaLabel + Number(space.area.toFixed(1)) + ' m²', 'span');
     if (roundedLoad < sizes[0]) {
-      addResult(' is the smallest size shown here. Ask us about minimum output.', sizes[0] + ' kW', 'b');
+      addResult(' smallest listed unit. Check its minimum output for this space.', sizes[0] + ' kW', 'b');
     } else if (example) {
-      addResult(' nominal unit size to compare', example + ' kW', 'b');
+      addResult(' listed unit size to check', example + ' kW', 'b');
     } else {
-      addResult('', 'Ask us to check capacity and whether the space needs more than one unit.', 'span');
+      addResult('', 'This load is above the sizes shown here. A site assessment can check whether more than one unit is needed.', 'span');
     }
     if (space.active < space.area) {
       const zoneLoad = roomLoad * space.active / space.area;
@@ -792,6 +799,12 @@ fbq('track', 'PageView');
   card.querySelectorAll('[data-sun]').forEach(button => {
     button.addEventListener('click', () => {
       sun = button.dataset.sun;
+      showStep('insulation');
+    });
+  });
+  card.querySelectorAll('[data-insulation]').forEach(button => {
+    button.addEventListener('click', () => {
+      insulation = button.dataset.insulation;
       showStep('kitchen');
     });
   });
