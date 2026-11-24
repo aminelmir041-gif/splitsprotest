@@ -7,6 +7,9 @@ import { FEATURED_REVIEW, GOOGLE_RATING } from "../lib/data";
 
 const GOOGLE_MAPS_URL = "https://g.page/r/CYTvO1ipeYUtEBM/";
 
+// The same SplitsPro Place ID used by the site's Google review feed.
+const WRITE_REVIEW_URL = "https://search.google.com/local/writereview?placeid=ChIJbQu7ZtjMnUgRhO87WKl5hS0";
+
 const FALLBACK_REVIEWS = [
   { id: "sia", ...FEATURED_REVIEW },
   {
@@ -112,6 +115,9 @@ const Reviews = () => {
           <div className="mb-12 max-w-2xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#C8A46A]">Customer Feedback</p>
             <h2 className="mt-3 font-serif text-3xl font-medium text-[#1D1D1F] sm:text-4xl">What homeowners say about SplitsPro</h2>
+            <a href={WRITE_REVIEW_URL} target="_blank" rel="noreferrer" className="mt-4 inline-block font-semibold underline">
+              Leave a Google review about your experience
+            </a>
             {loading && <p className="mt-3 text-sm text-[#6E6E73]">Checking for the latest review feed…</p>}
           </div>
 

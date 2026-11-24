@@ -6,37 +6,37 @@ import { SectionHeading, Overline } from "../components/sections";
 import Reveal from "../components/Reveal";
 import { IMAGES, SPLIT_BRANDS, SPLIT_FAQS } from "../lib/data";
 
-const CANONICAL = "https://splitspro.com.au/split-systems";
+const CANONICAL = "https://splitspro.com.au/split-systems/";
 
 const REGIONAL_PAGES = {
   "oran-park": {
     name: "Oran Park & South-West Growth Area",
     shortName: "Oran Park & South-West Sydney",
-    canonical: "https://splitspro.com.au/split-systems/oran-park",
+    canonical: "https://splitspro.com.au/split-systems/oran-park/",
     areas: "Oran Park, Edmondson Park, Leppington, Austral, Catherine Field, Gregory Hills, Gledswood Hills, Denham Court, Bardia, Prestons, Middleton Grange, Harrington Park, Narellan, Spring Farm, Cobbitty and surrounding South-West Growth Area suburbs",
   },
   "willoughby-north-sydney": {
     name: "Willoughby & North Sydney",
     shortName: "Willoughby & North Sydney",
-    canonical: "https://splitspro.com.au/split-systems/willoughby-north-sydney",
+    canonical: "https://splitspro.com.au/split-systems/willoughby-north-sydney/",
     areas: "Willoughby, Chatswood, Artarmon, Lane Cove, North Sydney, Crows Nest, Neutral Bay and surrounding Lower North Shore suburbs",
   },
   "central-coast-newcastle": {
     name: "Central Coast & Newcastle",
     shortName: "Central Coast & Newcastle",
-    canonical: "https://splitspro.com.au/split-systems/central-coast-newcastle",
+    canonical: "https://splitspro.com.au/split-systems/central-coast-newcastle/",
     areas: "Gosford, Erina, Terrigal, Wyong, Tuggerah, Morisset, Lake Macquarie, Newcastle and surrounding suburbs",
   },
   wollongong: {
     name: "Wollongong & Illawarra",
     shortName: "Wollongong",
-    canonical: "https://splitspro.com.au/split-systems/wollongong",
+    canonical: "https://splitspro.com.au/split-systems/wollongong/",
     areas: "Wollongong, Corrimal, Figtree, Dapto, Shellharbour, Albion Park, Kiama and surrounding Illawarra suburbs",
   },
   "quakers-hill-austral-richmond": {
     name: "Quakers Hill, Austral & Richmond",
     shortName: "Quakers Hill, Austral & Richmond",
-    canonical: "https://splitspro.com.au/split-systems/quakers-hill-austral-richmond",
+    canonical: "https://splitspro.com.au/split-systems/quakers-hill-austral-richmond/",
     areas: "Quakers Hill, Schofields, Marsden Park, Riverstone, Richmond, Windsor, Austral, Leppington and surrounding suburbs",
   },
 };

@@ -61,6 +61,8 @@ jobs:
           mkdir -p build/split-systems/rinnai-local-offer build/deals
           cp build/index.html build/split-systems/rinnai-local-offer/index.html
           cp build/index.html build/deals/index.html
+      - name: Publish crawlable service and suburb URLs
+        run: node scripts/publish-search-routes.cjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

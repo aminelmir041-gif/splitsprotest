@@ -54,6 +54,8 @@ jobs:
           cp build/index.html build/ducted/index.html
           test -s build/ducted/index.html
       - run: echo 'splitspro.com.au' > build/CNAME
+      - name: Publish crawlable service and suburb URLs
+        run: node scripts/publish-search-routes.cjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

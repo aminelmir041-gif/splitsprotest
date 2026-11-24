@@ -131,7 +131,7 @@ const DuctedDaikinRinnai = () => {
       <Helmet>
         <title>Daikin &amp; Rinnai Ducted Air Conditioning Packages | SplitsPro Sydney</title>
         <meta name="description" content="Compare Daikin and Rinnai ducted air conditioning packages with 2, 4 or 6 zones and request a tailored installation quote from SplitsPro." />
-        <link rel="canonical" href="https://splitspro.com.au/ducted/daikin-rinnai" />
+        <link rel="canonical" href="https://splitspro.com.au/ducted/daikin-rinnai/" />
       </Helmet>
 
       <section className="bg-[#111111] text-white" data-testid="ducted-two-brand-hero">

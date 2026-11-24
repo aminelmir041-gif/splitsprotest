@@ -3,7 +3,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ReactLenis, useLenis } from "lenis/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { HelmetProvider } from "react-helmet-async";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 
 import Navbar from "@/components/Navbar";
@@ -13,6 +13,7 @@ import AfterHoursCallback from "@/components/AfterHoursCallback";
 import CustomCursor from "@/components/CustomCursor";
 import { LOGO } from "@/lib/data";
 
+import searchPages from "@/lib/search-pages.json";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Workmanship from "@/pages/Workmanship";
@@ -108,9 +109,20 @@ const AnimatedRoutes = () => {
 
 const SiteShell = () => {
   const { pathname } = useLocation();
+  const searchPath = pathname.replace(/\/$/, "") + "/";
+  const searchPage = searchPages[searchPath];
   const isDealsPage = pathname === "/aircon-deals" || pathname === "/aircon-deals/";
   return (
     <>
+      {searchPage && (
+        <Helmet>
+          <title>{searchPage.title}</title>
+          <meta name="description" content={searchPage.description} />
+          <meta property="og:title" content={searchPage.title} />
+          <meta property="og:description" content={searchPage.description} />
+          <link rel="canonical" href={`https://splitspro.com.au${searchPath}`} />
+        </Helmet>
+      )}
       {isDealsPage ? (
         <header className="sticky top-0 z-[60] border-b border-[#E6E1D9] bg-[#FFFCF7]">
           <div className="sp-container flex min-h-16 items-center justify-between gap-4 py-2">

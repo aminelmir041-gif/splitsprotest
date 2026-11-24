@@ -15,6 +15,7 @@ const ServiceAreas = () => (
     <section className="bg-white py-28 pb-40 sm:py-36" data-testid="areas-grid">
       <div className="sp-container">
         <SectionHeading overline="Where We Work" title="Your suburb, expertly covered" />
+        <a className="mt-5 inline-block font-semibold underline" href="/split-systems/bass-hill-bankstown/">Split system installation in Bass Hill and Bankstown</a>
         <div className="mt-12"><ServiceAreasMap /></div>
 
         <div className="mt-16 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">

@@ -326,8 +326,8 @@ const BrandPage = ({ offerMode = null }) => {
     ? "Rinnai and Daikin Cora split-system specials available Sydney-wide, plus the Central Coast and Wollongong, with supplied-and-installed pricing, a 2-day installation guarantee and clear standard-install conditions."
     : brand.metaDesc;
   const canonicalUrl = isRinnaiLocalOffer
-    ? "https://splitspro.com.au/split-systems/rinnai-local-offer"
-    : `https://splitspro.com.au/split-systems/${brand.slug}`;
+    ? "https://splitspro.com.au/split-systems/rinnai-local-offer/"
+    : `https://splitspro.com.au/split-systems/${brand.slug}/`;
 
   return (
     <>
