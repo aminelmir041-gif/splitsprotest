@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0b0b0b">
-  <title>Get Your Aircon Size Right Before You Buy | SplitsPro</title>
+  <title>Air Conditioner Size Calculator for Split & Ducted | SplitsPro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <meta name="description" content="A simple SplitsPro guide to choosing the right aircon size for your home, avoiding oversizing and undersizing, then checking what a genuine installed quote includes.">
+  <meta name="description" content="Estimate your cooling capacity in kW with SplitsPro’s split system and ducted air conditioner calculator. Compare room size, heat gain, ceiling height and ducted zones.">
   <link rel="canonical" href="https://splitspro.com.au/aircon-installation-guide/">
   <meta property="og:title" content="Before you buy an aircon, get the size right">
   <meta property="og:description" content="See what oversizing, undersizing, windows, sun, insulation and layout can change before you spend thousands on an air conditioner.">
@@ -217,6 +217,34 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
   .sizing,.gallerygrid,.includegrid{grid-template-columns:1fr}.whybox{padding:23px;transform:none}.photo figcaption{font-size:12px}
   .trustitem{font-size:10px;padding:16px 7px}.float-ctas{left:12px;right:12px;bottom:10px;grid-template-columns:1fr}.float-ctas a{padding:0 10px;font-size:10px}
 }
+.calculator{padding:132px 0 54px;background:linear-gradient(150deg,#e9eff4,#f8f7f5 75%)}
+.calculator-intro{max-width:820px;margin-bottom:25px}
+.calculator h1{font-size:clamp(40px,5vw,68px);margin:10px 0 14px;text-shadow:none;text-wrap:initial}
+.calculator-intro p,.calculator-result p{line-height:1.55}
+.calculator-card{display:grid;grid-template-columns:1.25fr 1fr;overflow:hidden;background:#fff;border:1px solid #dbe2e8;border-radius:22px;box-shadow:0 15px 35px rgba(29,61,90,.10)}
+.calculator-card form,.calculator-result{padding:clamp(20px,3vw,38px);min-width:0}
+.system-options{margin:0 0 22px;padding:0;border:0;display:flex;flex-wrap:wrap;gap:10px}
+.system-options legend,.calculator-field label{font-size:1rem;font-weight:800;margin-bottom:8px}
+.system-options label{display:flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid #b8c5cf;border-radius:8px;cursor:pointer}
+.system-options label:has(:checked){background:#edf4fa;border-color:var(--sp-blue);color:var(--sp-blue)}
+.system-options input{margin:0;accent-color:var(--sp-blue)}
+.calculator-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.calculator-field label,.calculator-field small{display:block}
+.calculator-field small{font-size:.875rem;line-height:1.45;margin-top:6px;color:#4c5a64}
+.calculator-field input,.calculator-field select{width:100%;min-height:46px;padding:8px 12px;border:1px solid #a7b6c2;border-radius:8px;font:inherit;background:#fff;color:var(--sp-text)}
+.calculator button{font-family:inherit;cursor:pointer}
+.calculator :focus-visible{outline:3px solid #a87122;outline-offset:3px}
+.calculator-result{background:#edf4fa;color:var(--sp-blue)}
+.calculator-result h2{font-size:clamp(25px,3vw,35px);margin:0 0 12px}
+.calculator-result p{margin:0 0 12px}
+.calculator-result strong{display:block;font-size:clamp(29px,4vw,45px);line-height:1.15}
+.calculator-result .calculator-note{margin-top:18px;font-size:.9rem}
+.calculator-actions{display:flex;flex-wrap:wrap;gap:10px}
+.calculator-actions .btn{min-height:44px;padding:0 14px;border-color:#a7b6c2}
+.calculator-guide-link{display:inline-block;margin-top:20px;font-weight:800;color:var(--sp-blue)}
+#sizing-first{padding-top:64px;scroll-margin-top:84px}
+@media(max-width:760px){.calculator{padding-top:108px}.calculator-card{grid-template-columns:1fr}}
+@media(max-width:480px){.calculator-fields{grid-template-columns:1fr}.calculator-actions .btn{width:100%}}
 </style>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
@@ -252,6 +280,75 @@ fbq('track', 'PageView');
 </header>
 
 <main>
+
+<section class="calculator" id="size-calculator">
+  <div class="wrap">
+    <div class="calculator-intro">
+      <div class="kicker">SplitsPro sizing guide</div>
+      <h1>What size air conditioner do I need?</h1>
+      <p>Get a ballpark cooling capacity for one room, an open-plan space or a ducted system in your Sydney home.</p>
+    </div>
+    <div class="calculator-card">
+      <form id="sizing-form">
+        <fieldset class="system-options">
+          <legend>System type</legend>
+          <label><input type="radio" name="system" value="split" checked> Split system</label>
+          <label><input type="radio" name="system" value="ducted"> Ducted</label>
+        </fieldset>
+        <div class="calculator-fields">
+          <div class="calculator-field">
+            <label for="floor-area" id="floor-area-label">Room or open-plan area (m²)</label>
+            <input id="floor-area" type="number" min="1" step="any" inputmode="decimal" required aria-describedby="floor-area-hint">
+            <small id="floor-area-hint">Multiply the length by the width in metres. Include connected open areas.</small>
+          </div>
+          <div class="calculator-field" id="active-area-field" hidden>
+            <label for="active-area">Largest group of zones run together (m²)</label>
+            <input id="active-area" type="number" min="1" step="any" inputmode="decimal" disabled aria-describedby="active-area-hint">
+            <small id="active-area-hint">Optional. Leave blank if you plan to cool all zones together.</small>
+          </div>
+          <div class="calculator-field" id="room-type-field">
+            <label for="room-type">Room type</label>
+            <select id="room-type">
+              <option value="bedroom">Bedroom or study</option>
+              <option value="living">Living room or open plan</option>
+            </select>
+          </div>
+          <div class="calculator-field">
+            <label for="heat-gain">Sun, glass and insulation</label>
+            <select id="heat-gain" aria-describedby="heat-gain-hint">
+              <option value="0">Low heat gain</option>
+              <option value="1" selected>Typical heat gain</option>
+              <option value="2">High heat gain</option>
+            </select>
+            <small id="heat-gain-hint">Choose high for strong afternoon sun, large unshaded windows or poor insulation. Choose low for shaded, well-insulated spaces.</small>
+          </div>
+          <div class="calculator-field">
+            <label for="ceiling-height">Ceiling height</label>
+            <select id="ceiling-height">
+              <option value="1">Up to 2.7 m</option>
+              <option value="1.10">Over 2.7 m to 3 m</option>
+              <option value="1.20">Over 3 m</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-dark">Calculate cooling size</button>
+        <noscript><p>Enable JavaScript to use the calculator. You can still read the sizing guide below.</p></noscript>
+      </form>
+      <div class="calculator-result" aria-labelledby="estimate-heading">
+        <h2 id="estimate-heading">Estimated cooling capacity</h2>
+        <div id="sizing-result" role="status" aria-atomic="true">
+          <p>Enter your area to see your estimated range in kW.</p>
+        </div>
+        <p class="calculator-note" id="estimate-note">This is a planning estimate. Confirm the room’s heat load and the unit’s heating and cooling capacity before buying.</p>
+        <div class="calculator-actions">
+          <a class="btn btn-ghost" id="sizing-prices" data-preserve-query href="/deals/">See split system prices</a>
+          <a class="btn btn-ghost" href="tel:+61414698435">Call to check your size</a>
+        </div>
+      </div>
+    </div>
+    <a class="calculator-guide-link" href="#sizing-first">Read the sizing guide</a>
+  </div>
+</section>
 
 <section id="sizing-first">
   <div class="wrap">
@@ -510,6 +607,89 @@ fbq('track', 'PageView');
   var top=document.getElementById('siteTop'),btn=document.getElementById('menuBtn'),nav=document.getElementById('mobileNav');
   if(top)top.classList.add('scrolled');
   if(btn&&nav){btn.addEventListener('click',function(){var open=nav.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.textContent=open?'×':'☰'});nav.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){nav.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.textContent='☰'})})}
+})();
+</script>
+<script>
+(function () {
+  const form = document.getElementById('sizing-form');
+  const area = document.getElementById('floor-area');
+  const activeArea = document.getElementById('active-area');
+  const roomType = document.getElementById('room-type');
+  const result = document.getElementById('sizing-result');
+  const prices = document.getElementById('sizing-prices');
+  const query = window.location.search;
+  const clearResult = 'Enter your area to see your estimated range in kW.';
+
+  // Preliminary cooling load bands in W/m² for low, typical and high heat gain.
+  // Split bands centre on the ACDA's rule-of-thumb figures of 80 and 125 W/m².
+  // Ducted bands span the domestic check loads discussed in AIRAH's VEU feedback.
+  const loadBands = {
+    bedroom: [[65, 80], [75, 90], [90, 110]],
+    living: [[95, 115], [110, 140], [135, 160]],
+    ducted: [[100, 120], [115, 140], [135, 155]]
+  };
+
+  function isDucted() {
+    return form.elements.system.value === 'ducted';
+  }
+
+  function validateAreas() {
+    const exceedsTotal = isDucted() && activeArea.value !== '' &&
+      area.value !== '' && activeArea.valueAsNumber > area.valueAsNumber;
+    activeArea.setCustomValidity(exceedsTotal ? 'Enter an area no larger than the total ducted area.' : '');
+  }
+
+  function syncSystem() {
+    const ducted = isDucted();
+    document.getElementById('active-area-field').hidden = !ducted;
+    document.getElementById('room-type-field').hidden = ducted;
+    activeArea.disabled = !ducted;
+    roomType.disabled = ducted;
+    document.getElementById('floor-area-label').textContent =
+      ducted ? 'Total ducted floor area (m²)' : 'Room or open-plan area (m²)';
+    document.getElementById('floor-area-hint').textContent = ducted
+      ? 'Add up the areas served by the ducted system. Skip spaces it won’t cool.'
+      : 'Multiply the length by the width in metres. Include connected open areas.';
+    document.getElementById('estimate-note').textContent = ducted
+      ? 'This is a planning estimate. Final equipment selection needs a room-by-room heat load and checks for duct losses, airflow and minimum zone size.'
+      : 'This is a planning estimate. Confirm the room’s heat load and the unit’s heating and cooling capacity before buying.';
+    prices.href = (ducted ? '/ducted/daikin-rinnai/' : '/deals/') + query;
+    prices.textContent = ducted ? 'See ducted prices' : 'See split system prices';
+    validateAreas();
+  }
+
+  function showRange(label, squareMetres, rates, heightFactor) {
+    const output = document.createElement('p');
+    const capacity = document.createElement('strong');
+    const [low, high] = rates.map(rate => squareMetres * rate * heightFactor / 1000);
+    capacity.textContent = (Math.floor(low * 10) / 10).toFixed(1) + '–' +
+      (Math.ceil(high * 10) / 10).toFixed(1) + ' kW';
+    output.append(label, capacity);
+    result.append(output);
+  }
+
+  form.addEventListener('input', function () {
+    validateAreas();
+    if (result.querySelector('strong')) result.textContent = clearResult;
+  });
+  form.addEventListener('change', function (event) {
+    if (event.target.name === 'system') syncSystem();
+  });
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    validateAreas();
+    if (!form.reportValidity()) return;
+
+    const ducted = isDucted();
+    const rates = loadBands[ducted ? 'ducted' : roomType.value][document.getElementById('heat-gain').value];
+    const heightFactor = Number(document.getElementById('ceiling-height').value);
+    result.replaceChildren();
+    showRange(ducted ? 'All ducted zones' : 'For this space', area.valueAsNumber, rates, heightFactor);
+    if (ducted && activeArea.valueAsNumber < area.valueAsNumber) {
+      showRange('For the selected zones running together', activeArea.valueAsNumber, rates, heightFactor);
+    }
+  });
+  syncSystem();
 })();
 </script>
 </body>
