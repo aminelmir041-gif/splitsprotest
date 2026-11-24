@@ -1,13 +1,7 @@
 name: Deploy SplitsPro website to GitHub Pages
+# Automatic publishes are handled by publish-splitspro.yml on every main push.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'our-approach/**'
-      - 'public/our-approach/**'
-      - 'src/App.js'
-      - '.github/workflows/pages.yml'
 permissions:
   contents: read
   pages: write
