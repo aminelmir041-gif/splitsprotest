@@ -959,6 +959,14 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
       if(typeof window.gtag==='function'){
         window.gtag('event','generate_lead',{lead_type:'warranty_preview_consultation'});
         window.gtag('event','sp_guarantee_consultation',{service:fields.service,page_path:window.location.pathname});
+        // Count a Google Ads conversion ONLY after the lead API accepts the enquiry.
+        // This uses the exact Google Ads ID/label provided by the account owner.
+        window.gtag('config','AW-16977549881',{send_page_view:false});
+        window.gtag('event','conversion',{
+          send_to:'AW-16977549881/RK_fCO_RrL4dELm0w58_',
+          value:1.0,
+          currency:'AUD'
+        });
       }
       window.dataLayer=window.dataLayer||[];
       window.dataLayer.push({event:'splitspro_consultation_submitted',service:fields.service,page_path:window.location.pathname});
