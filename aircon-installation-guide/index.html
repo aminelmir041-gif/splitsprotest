@@ -244,9 +244,8 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 .calculator-note{margin:10px 0;font-size:.875rem}
 .calculator-guide-link{display:inline-block;margin-top:12px;font-size:.9rem;font-weight:800;color:var(--sp-blue)}
 .calculator-system-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.calculator-system-picker button{padding:8px 9px;min-height:54px;border:1px solid #a7b6c2;border-radius:9px;background:#fff;color:var(--sp-blue);text-align:left;font:inherit;font-weight:800;cursor:pointer;transition:background-color .18s,border-color .18s}
+.calculator-system-picker button{padding:10px 12px;min-height:62px;border:1px solid #a7b6c2;border-radius:9px;background:#fff;color:var(--sp-blue);text-align:center;font:inherit;font-size:1.25rem;font-weight:800;cursor:pointer;transition:background-color .18s,border-color .18s}
 .calculator-system-picker button[aria-pressed=true]{background:#edf4fa;border-color:var(--sp-blue);box-shadow:inset 0 -3px var(--sp-blue)}
-.calculator-system-picker small{display:block;font-size:.875rem;font-weight:500;line-height:1.25}
 .calculator-progress{display:flex;align-items:center;gap:10px}
 .calculator-progress progress{flex:1;min-width:0;height:6px;accent-color:var(--sp-blue)}
 @media(prefers-reduced-motion:no-preference){
@@ -299,8 +298,8 @@ fbq('track', 'PageView');
     <h1>Find your aircon size</h1>
     <div id="sizing-controls" hidden>
       <div class="calculator-system-picker" role="group" aria-label="Air conditioning system">
-        <button type="button" data-system="split" aria-pressed="true">Split system <small>One room or open area</small></button>
-        <button type="button" data-system="ducted" aria-pressed="false">Ducted <small>Several rooms or the whole home</small></button>
+        <button type="button" data-system="split" aria-pressed="true">Split</button>
+        <button type="button" data-system="ducted" aria-pressed="false">Ducted</button>
       </div>
       <div class="calculator-card" id="sizing-card">
         <div class="calculator-progress" id="sizing-progress">
@@ -744,10 +743,9 @@ fbq('track', 'PageView');
     next.querySelector('h2').focus({preventScroll: true});
     const cardBounds = card.getBoundingClientRect();
     const headerBottom = document.getElementById('siteTop').getBoundingClientRect().bottom;
-    if (cardBounds.top < headerBottom || cardBounds.bottom > window.innerHeight) {
-      const pickerTop = systemButtons[0].getBoundingClientRect().top;
-      const top = cardBounds.bottom - pickerTop <= window.innerHeight - headerBottom - 8 ? pickerTop : cardBounds.top;
-      window.scrollBy({top: top - headerBottom - 8, behavior: 'instant'});
+    const pickerTop = systemButtons[0].getBoundingClientRect().top;
+    if (pickerTop < headerBottom || cardBounds.bottom > window.innerHeight) {
+      window.scrollBy({top: pickerTop - headerBottom - 8, behavior: 'instant'});
     }
   }
 
