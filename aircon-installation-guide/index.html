@@ -243,6 +243,16 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 .calculator-output strong{display:block;font-size:clamp(30px,7vw,45px);line-height:1.1}
 .calculator-note{margin:10px 0;font-size:.875rem}
 .calculator-guide-link{display:inline-block;margin-top:12px;font-size:.9rem;font-weight:800;color:var(--sp-blue)}
+.calculator-system-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.calculator-system-picker button{padding:8px 9px;min-height:54px;border:1px solid #a7b6c2;border-radius:9px;background:#fff;color:var(--sp-blue);text-align:left;font:inherit;font-weight:800;cursor:pointer;transition:background-color .18s,border-color .18s}
+.calculator-system-picker button[aria-pressed=true]{background:#edf4fa;border-color:var(--sp-blue);box-shadow:inset 0 -3px var(--sp-blue)}
+.calculator-system-picker small{display:block;font-size:.875rem;font-weight:500;line-height:1.25}
+.calculator-progress{display:flex;align-items:center;gap:10px}
+.calculator-progress progress{flex:1;min-width:0;height:6px;accent-color:var(--sp-blue)}
+@media(prefers-reduced-motion:no-preference){
+  .calculator [data-step]:not([hidden]){animation:calculator-step-in .2s ease-out}
+  @keyframes calculator-step-in{from{opacity:.6;transform:translateY(5px)}to{opacity:1;transform:none}}
+}
 #sizing-first{padding-top:38px;scroll-margin-top:84px}
 .float-ctas.calculator-in-view{visibility:hidden}
 @media(max-width:600px){.calculator{padding-top:82px;padding-bottom:12px}}
@@ -287,109 +297,128 @@ fbq('track', 'PageView');
 <section class="calculator" id="size-calculator">
   <div class="wrap">
     <h1>Find your aircon size</h1>
-    <div class="calculator-card" id="sizing-card" hidden>
-      <div class="calculator-progress" id="sizing-progress"><span id="sizing-step-label">Step 1 of 6</span></div>
-      <div id="sizing-system" data-step>
-        <h2 tabindex="-1">What are you cooling?</h2>
-        <div class="calculator-options">
-          <button type="button" data-system="split">One room or open area <small>Split system</small></button>
-          <button type="button" data-system="ducted">Several rooms or the whole home <small>Ducted aircon</small></button>
-        </div>
+    <div id="sizing-controls" hidden>
+      <div class="calculator-system-picker" role="group" aria-label="Air conditioning system">
+        <button type="button" data-system="split" aria-pressed="true">Split system <small>One room or open area</small></button>
+        <button type="button" data-system="ducted" aria-pressed="false">Ducted <small>Several rooms or the whole home</small></button>
       </div>
-      <div id="sizing-space" data-step hidden>
-        <h2 tabindex="-1" id="sizing-space-heading">Pick the closest match</h2>
-        <div class="calculator-options" id="split-spaces">
-          <button type="button" data-space="bedroom,12">Small bedroom <small>Around 3 m × 4 m, like a home office</small></button>
-          <button type="button" data-space="bedroom,20">Main bedroom <small>Around 4 m × 5 m, with space around a queen bed</small></button>
-          <button type="button" data-space="living,25">Living room <small>Around 5 m × 5 m, with a sofa and TV area</small></button>
-          <button type="button" data-space="living,45">Big open-plan area <small>Around 6 m × 7.5 m, with lounge and dining together</small></button>
+      <div class="calculator-card" id="sizing-card">
+        <div class="calculator-progress" id="sizing-progress">
+          <span id="sizing-step-label">Step 1 of 7</span>
+          <progress id="sizing-step-bar" value="1" max="7" aria-label="Calculator progress"></progress>
         </div>
-        <div class="calculator-options" id="ducted-spaces" hidden>
-          <button type="button" data-space="ducted,70">Compact home <small>Around 70 m² served, like a small 2-bedroom home</small></button>
-          <button type="button" data-space="ducted,110">Family home <small>Around 110 m² served, like 3 bedrooms and a living area</small></button>
-          <button type="button" data-space="ducted,170">Large home <small>Around 170 m² served, like 4 bedrooms and two living areas</small></button>
-        </div>
-        <div class="calculator-nav">
-          <button class="calculator-link" type="button" data-step-target="system">Back</button>
-          <button class="calculator-link" type="button" data-step-target="measure">Use my measurements</button>
-        </div>
-      </div>
-      <div id="sizing-measure" data-step hidden>
-        <h2 tabindex="-1">Enter your measurements</h2>
-        <form id="sizing-room-measure">
-          <div class="calculator-fields">
-            <label>Length (m)<input name="roomLength" type="number" min="1" max="100" step="any" inputmode="decimal" required></label>
-            <label>Width (m)<input name="roomWidth" type="number" min="1" max="100" step="any" inputmode="decimal" required></label>
+        <div id="sizing-space" data-step hidden>
+          <h2 tabindex="-1" id="sizing-space-heading">Pick the closest match</h2>
+          <div class="calculator-options" id="split-spaces">
+            <button type="button" data-space="bedroom,12">Small bedroom <small>Around 3 m × 4 m, like a home office</small></button>
+            <button type="button" data-space="bedroom,20">Main bedroom <small>Around 4 m × 5 m, with space around a queen bed</small></button>
+            <button type="button" data-space="living,25">Living room <small>Around 5 m × 5 m, with a sofa and TV area</small></button>
+            <button type="button" data-space="living,45">Big open-plan area <small>Around 6 m × 7.5 m, with lounge and dining together</small></button>
           </div>
+          <div class="calculator-options" id="ducted-spaces" hidden>
+            <button type="button" data-space="ducted,70">Compact home <small>Around 70 m² served, like a small 2-bedroom home</small></button>
+            <button type="button" data-space="ducted,110">Family home <small>Around 110 m² served, like 3 bedrooms and a living area</small></button>
+            <button type="button" data-space="ducted,170">Large home <small>Around 170 m² served, like 4 bedrooms and two living areas</small></button>
+          </div>
+          <div class="calculator-nav">
+            <button class="calculator-link" type="button" data-step-target="measure">Use my measurements</button>
+          </div>
+        </div>
+        <div id="sizing-measure" data-step hidden>
+          <h2 tabindex="-1">Enter your measurements</h2>
+          <form id="sizing-room-measure">
+            <div class="calculator-fields">
+              <label>Length (m)<input name="roomLength" type="number" min="1" max="100" step="any" inputmode="decimal" required></label>
+              <label>Width (m)<input name="roomWidth" type="number" min="1" max="100" step="any" inputmode="decimal" required></label>
+            </div>
+            <div class="calculator-options">
+              <button name="roomType" value="bedroom" type="submit">It’s a bedroom or study</button>
+              <button name="roomType" value="living" type="submit">It’s a living or open-plan area</button>
+            </div>
+          </form>
+          <form id="sizing-ducted-measure" hidden>
+            <div class="calculator-fields">
+              <label>Total area to cool (m²)<input name="floorArea" type="number" min="1" max="2000" step="any" inputmode="decimal" required></label>
+              <label>Area on at once (m², optional)<input name="activeArea" type="number" min="1" max="2000" step="any" inputmode="decimal"></label>
+            </div>
+            <div class="calculator-options"><button type="submit">Continue</button></div>
+          </form>
+          <button class="calculator-link" type="button" data-step-target="space">Back</button>
+        </div>
+        <div id="sizing-windows" data-step hidden>
+          <h2 tabindex="-1">How many windows are there?</h2>
+          <p class="calculator-hint">Count the windows in the area you want to cool. A big glass door counts as two.</p>
+          <div class="calculator-options" id="split-windows">
+            <button type="button" data-glass="0">0 or 1 window <small>Little glass in the room</small></button>
+            <button type="button" data-glass="1">2 or 3 windows <small>A few windows or a sliding glass door</small></button>
+            <button type="button" data-glass="2">4 or more <small>Lots of windows or a wall of glass</small></button>
+          </div>
+          <div class="calculator-options" id="ducted-windows" hidden>
+            <button type="button" data-glass="0">0 to 4 windows <small>Only a few across the rooms</small></button>
+            <button type="button" data-glass="1">5 to 8 windows <small>About one or two per room</small></button>
+            <button type="button" data-glass="2">9 or more <small>Lots of windows across the rooms</small></button>
+          </div>
+          <button class="calculator-link" type="button" id="sizing-windows-back">Back</button>
+        </div>
+        <div id="sizing-sun" data-step hidden>
+          <h2 tabindex="-1">When does the sun come in?</h2>
+          <p class="calculator-hint">Think about direct sun through the glass on a summer day.</p>
           <div class="calculator-options">
-            <button name="roomType" value="bedroom" type="submit">It’s a bedroom or study</button>
-            <button name="roomType" value="living" type="submit">It’s a living or open-plan area</button>
+            <button type="button" data-sun="shade">Hardly ever <small>Mostly shaded or no windows</small></button>
+            <button type="button" data-sun="morning">Mostly in the morning <small>The sun comes in before lunch</small></button>
+            <button type="button" data-sun="afternoon">From lunchtime onwards <small>Also choose this if it comes in most of the day</small></button>
+            <button type="button" data-sun="unknown">I’m not sure <small>Use a typical mix of sun and shade</small></button>
           </div>
-        </form>
-        <form id="sizing-ducted-measure" hidden>
-          <div class="calculator-fields">
-            <label>Total area to cool (m²)<input name="floorArea" type="number" min="1" max="2000" step="any" inputmode="decimal" required></label>
-            <label>Area on at once (m², optional)<input name="activeArea" type="number" min="1" max="2000" step="any" inputmode="decimal"></label>
+          <button class="calculator-link" type="button" data-step-target="windows">Back</button>
+        </div>
+        <div id="sizing-building" data-step hidden>
+          <h2 tabindex="-1">What type of home is it?</h2>
+          <div class="calculator-options">
+            <button type="button" data-building="house">House or townhouse <small>Includes villas and duplexes</small></button>
+            <button type="button" data-building="top">Top-floor unit <small>There’s a roof directly above</small></button>
+            <button type="button" data-building="below">Unit with another unit above <small>For example, a ground-floor or middle-floor unit</small></button>
           </div>
-          <div class="calculator-options"><button type="submit">Continue</button></div>
-        </form>
-        <button class="calculator-link" type="button" data-step-target="space">Back</button>
-      </div>
-      <div id="sizing-windows" data-step hidden>
-        <h2 tabindex="-1">How many windows are there?</h2>
-        <p class="calculator-hint">Count the windows in the area you want to cool. A big glass door counts as two.</p>
-        <div class="calculator-options" id="split-windows">
-          <button type="button" data-glass="0">0 or 1 window <small>Little glass in the room</small></button>
-          <button type="button" data-glass="1">2 or 3 windows <small>A few windows or a sliding glass door</small></button>
-          <button type="button" data-glass="2">4 or more <small>Lots of windows or a wall of glass</small></button>
+          <button class="calculator-link" type="button" data-step-target="sun">Back</button>
         </div>
-        <div class="calculator-options" id="ducted-windows" hidden>
-          <button type="button" data-glass="0">0 to 4 windows <small>Only a few across the rooms</small></button>
-          <button type="button" data-glass="1">5 to 8 windows <small>About one or two per room</small></button>
-          <button type="button" data-glass="2">9 or more <small>Lots of windows across the rooms</small></button>
+        <div id="sizing-walls" data-step hidden>
+          <h2 tabindex="-1">What are the outside walls made of?</h2>
+          <div class="calculator-options">
+            <button type="button" data-walls="masonry">Brick or concrete <small>Including brick veneer</small></button>
+            <button type="button" data-walls="cladding">Cladding <small>Weatherboard, timber or sheet cladding</small></button>
+            <button type="button" data-walls="unknown">Mixed / I’m not sure <small>Use a typical wall allowance</small></button>
+          </div>
+          <button class="calculator-link" type="button" data-step-target="building">Back</button>
         </div>
-        <button class="calculator-link" type="button" id="sizing-windows-back">Back</button>
-      </div>
-      <div id="sizing-sun" data-step hidden>
-        <h2 tabindex="-1">When does the sun come in?</h2>
-        <p class="calculator-hint">Think about direct sun through the glass on a summer day.</p>
-        <div class="calculator-options">
-          <button type="button" data-sun="shade">Hardly ever <small>Mostly shaded or no windows</small></button>
-          <button type="button" data-sun="morning">Mostly in the morning <small>The sun comes in before lunch</small></button>
-          <button type="button" data-sun="afternoon">From lunchtime onwards <small>Also choose this if it comes in most of the day</small></button>
-          <button type="button" data-sun="unknown">I’m not sure <small>Use a typical mix of sun and shade</small></button>
+        <div id="sizing-insulation" data-step hidden>
+          <h2 tabindex="-1">Is the ceiling insulated?</h2>
+          <p class="calculator-hint">Think about the ceiling above the area you want to cool.</p>
+          <div class="calculator-options">
+            <button type="button" data-insulation="yes">Yes <small>There’s insulation above the ceiling</small></button>
+            <button type="button" data-insulation="no">No <small>There’s little or no insulation</small></button>
+            <button type="button" data-insulation="unknown">I’m not sure <small>Use a typical allowance</small></button>
+          </div>
+          <button class="calculator-link" type="button" data-step-target="walls">Back</button>
         </div>
-        <button class="calculator-link" type="button" data-step-target="windows">Back</button>
-      </div>
-      <div id="sizing-insulation" data-step hidden>
-        <h2 tabindex="-1">Is the ceiling insulated?</h2>
-        <p class="calculator-hint">Think about the ceiling above the area you want to cool.</p>
-        <div class="calculator-options">
-          <button type="button" data-insulation="yes">Yes <small>There’s insulation above the ceiling</small></button>
-          <button type="button" data-insulation="no">No <small>There’s little or no insulation</small></button>
-          <button type="button" data-insulation="unknown">I’m not sure <small>Use a typical allowance</small></button>
+        <div id="sizing-kitchen" data-step hidden>
+          <h2 tabindex="-1">Is there a kitchen in this area?</h2>
+          <p class="calculator-hint">Cooking adds heat. Count the kitchen if the aircon will cool it.</p>
+          <div class="calculator-options">
+            <button type="button" data-kitchen="yes">Yes, the aircon will cool the kitchen <small>For example, an open kitchen and lounge</small></button>
+            <button type="button" data-kitchen="no">No kitchen in the area <small>For example, a bedroom or a lounge with a door to the kitchen</small></button>
+          </div>
+          <div class="calculator-nav">
+            <button class="calculator-link" type="button" id="sizing-kitchen-back">Back</button>
+            <label class="calculator-tall"><input id="sizing-tall" type="checkbox"> Ceilings over 3 m</label>
+          </div>
         </div>
-        <button class="calculator-link" type="button" data-step-target="sun">Back</button>
-      </div>
-      <div id="sizing-kitchen" data-step hidden>
-        <h2 tabindex="-1">Is there a kitchen in this area?</h2>
-        <p class="calculator-hint">Cooking adds heat. Count the kitchen if the aircon will cool it.</p>
-        <div class="calculator-options">
-          <button type="button" data-kitchen="yes">Yes, the aircon will cool the kitchen <small>For example, an open kitchen and lounge</small></button>
-          <button type="button" data-kitchen="no">No kitchen in the area <small>For example, a bedroom or a lounge with a door to the kitchen</small></button>
-        </div>
-        <div class="calculator-nav">
-          <button class="calculator-link" type="button" data-step-target="insulation">Back</button>
-          <label class="calculator-tall"><input id="sizing-tall" type="checkbox"> Ceilings over 3 m</label>
-        </div>
-      </div>
-      <div id="sizing-estimate" data-step hidden>
-        <h2 tabindex="-1">Your cooling estimate</h2>
-        <div id="sizing-result" class="calculator-output" role="status"></div>
-        <p class="calculator-note">Sizes shown are rated cooling output. Confirm the heat load before choosing a unit. Ducted systems also need airflow and zoning checks.</p>
-        <div class="calculator-nav">
-          <button class="calculator-link" type="button" data-step-target="kitchen">Back</button>
-          <button class="calculator-link" type="button" id="sizing-restart">Start again</button>
+        <div id="sizing-estimate" data-step hidden>
+          <h2 tabindex="-1">Your cooling estimate</h2>
+          <div id="sizing-result" class="calculator-output" role="status"></div>
+          <p class="calculator-note">Sizes shown are rated cooling output. Confirm the heat load before choosing a unit. Ducted systems also need airflow and zoning checks.</p>
+          <div class="calculator-nav">
+            <button class="calculator-link" type="button" data-step-target="kitchen">Back</button>
+            <button class="calculator-link" type="button" id="sizing-restart">Start again</button>
+          </div>
         </div>
       </div>
     </div>
@@ -660,6 +689,9 @@ fbq('track', 'PageView');
 <script>
 (function () {
   const calculator = document.getElementById('size-calculator');
+  const controls = document.getElementById('sizing-controls');
+  const systemButtons = controls.querySelectorAll('[data-system]');
+  const stepBar = document.getElementById('sizing-step-bar');
   const card = document.getElementById('sizing-card');
   const progress = document.getElementById('sizing-progress');
   const stepLabel = document.getElementById('sizing-step-label');
@@ -675,6 +707,8 @@ fbq('track', 'PageView');
   let glass;
   let sun;
   let insulation;
+  let building;
+  let walls;
 
   // Screening rates (W/m²) are based on the ACDA room rules of thumb
   // and the average domestic ducted check load discussed by AIRAH.
@@ -682,31 +716,47 @@ fbq('track', 'PageView');
   const glazingAdjustment = [-5, 0, 7];
   const solarAdjustment = {shade: -4, morning: 3, afternoon: 12, unknown: 0};
   const windowExposure = [0.5, 1, 1.4];
+  // Lightweight cladding and a roof exposed to the sun are treated as rough
+  // load adjustments. Wall finish alone does not determine the insulation.
+  const buildingAdjustment = {house: 0, top: 5, below: -12};
+  const wallAdjustment = {masonry: 0, cladding: 4, unknown: 0};
   const insulationAdjustment = {yes: -5, no: 12, unknown: 0};
   // Rated cooling capacities from SplitsPro's listed split and ducted ranges.
   const unitSizes = {
     split: [2.5, 3.5, 5, 7.1, 8.5, 9.5],
     ducted: [7.3, 9, 10, 10.5, 12.5, 14, 16, 17, 20]
   };
-  const stepNumbers = {system: 1, space: 2, measure: 2, windows: 3, sun: 4, insulation: 5, kitchen: 6};
+  const stepNumbers = {space: 1, measure: 1, windows: 2, sun: 3, building: 4, walls: 5, insulation: 6, kitchen: 7};
 
-  function showStep(step) {
+  function showStep(step, moveFocus = true) {
     const next = document.getElementById('sizing-' + step);
     card.querySelectorAll('[data-step]').forEach(panel => { panel.hidden = panel !== next; });
     progress.hidden = step === 'estimate';
     if (!progress.hidden) {
-      stepLabel.textContent = 'Step ' + stepNumbers[step] + ' of 6';
+      const skipsCeiling = building === 'below';
+      const totalSteps = skipsCeiling ? 6 : 7;
+      const number = stepNumbers[step] - (skipsCeiling && step === 'kitchen' ? 1 : 0);
+      stepLabel.textContent = 'Step ' + number + ' of ' + totalSteps;
+      stepBar.max = totalSteps;
+      stepBar.value = number;
     }
+    if (!moveFocus) return;
     next.querySelector('h2').focus({preventScroll: true});
     const cardBounds = card.getBoundingClientRect();
     const headerBottom = document.getElementById('siteTop').getBoundingClientRect().bottom;
     if (cardBounds.top < headerBottom || cardBounds.bottom > window.innerHeight) {
-      window.scrollBy({top: cardBounds.top - headerBottom - 8, behavior: 'instant'});
+      const pickerTop = systemButtons[0].getBoundingClientRect().top;
+      const top = cardBounds.bottom - pickerTop <= window.innerHeight - headerBottom - 8 ? pickerTop : cardBounds.top;
+      window.scrollBy({top: top - headerBottom - 8, behavior: 'instant'});
     }
   }
 
-  function selectSystem(value) {
+  function selectSystem(value, moveFocus = true) {
     system = value;
+    building = undefined;
+    systemButtons.forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.system === system));
+    });
     const ducted = system === 'ducted';
     document.getElementById('split-spaces').hidden = ducted;
     document.getElementById('ducted-spaces').hidden = !ducted;
@@ -714,7 +764,7 @@ fbq('track', 'PageView');
     document.getElementById('ducted-windows').hidden = !ducted;
     roomForm.hidden = ducted;
     ductedForm.hidden = !ducted;
-    showStep('space');
+    showStep('space', moveFocus);
   }
 
   function selectSpace(type, area, active, source) {
@@ -733,7 +783,8 @@ fbq('track', 'PageView');
 
   function showEstimate(hasKitchen) {
     const rate = baseRate[space.type] + glazingAdjustment[glass] +
-      solarAdjustment[sun] * windowExposure[glass] + insulationAdjustment[insulation];
+      solarAdjustment[sun] * windowExposure[glass] + buildingAdjustment[building] +
+      wallAdjustment[walls] + (building === 'below' ? 0 : insulationAdjustment[insulation]);
     const ceilingMultiplier = tall.checked ? 1.15 : 1;
     const roomLoad = rate * space.area * ceilingMultiplier / 1000;
     const kitchenLoad = hasKitchen ? 0.6 : 0;
@@ -769,7 +820,7 @@ fbq('track', 'PageView');
     showStep('estimate');
   }
 
-  card.querySelectorAll('[data-system]').forEach(button => {
+  systemButtons.forEach(button => {
     button.addEventListener('click', () => selectSystem(button.dataset.system));
   });
   card.querySelectorAll('[data-space]').forEach(button => {
@@ -790,8 +841,23 @@ fbq('track', 'PageView');
   card.querySelectorAll('[data-sun]').forEach(button => {
     button.addEventListener('click', () => {
       sun = button.dataset.sun;
-      showStep('insulation');
+      showStep('building');
     });
+  });
+  card.querySelectorAll('[data-building]').forEach(button => {
+    button.addEventListener('click', () => {
+      building = button.dataset.building;
+      showStep('walls');
+    });
+  });
+  card.querySelectorAll('[data-walls]').forEach(button => {
+    button.addEventListener('click', () => {
+      walls = button.dataset.walls;
+      showStep(building === 'below' ? 'kitchen' : 'insulation');
+    });
+  });
+  document.getElementById('sizing-kitchen-back').addEventListener('click', () => {
+    showStep(building === 'below' ? 'walls' : 'insulation');
   });
   card.querySelectorAll('[data-insulation]').forEach(button => {
     button.addEventListener('click', () => {
@@ -808,7 +874,7 @@ fbq('track', 'PageView');
     ductedForm.reset();
     activeArea.setCustomValidity('');
     tall.checked = false;
-    showStep('system');
+    selectSystem(system);
   });
 
   roomForm.addEventListener('submit', event => {
@@ -825,7 +891,8 @@ fbq('track', 'PageView');
     selectSpace('ducted', totalArea.valueAsNumber, activeArea.valueAsNumber, 'measure');
   });
 
-  card.hidden = false;
+  selectSystem('split', false);
+  controls.hidden = false;
   const floatingCall = document.querySelector('.float-ctas');
   if ('IntersectionObserver' in window && floatingCall) {
     new IntersectionObserver(([entry]) => {
