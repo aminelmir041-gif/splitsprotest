@@ -32,6 +32,7 @@ h1,h2,h3,h4,.font-serif{font-family:'Playfair Display',Georgia,serif;letter-spac
 .top.scrolled{padding:5px 0;background:rgba(248,247,245,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--sp-border);box-shadow:0 8px 28px rgba(11,11,11,.05)}
 .topin{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:28px}
 .brand{display:flex;align-items:center;text-decoration:none;flex:0 0 auto}
+.brand span{color:var(--sp-blue);font-size:1.35rem;font-weight:800}
 .brand img{height:72px;width:auto;object-fit:contain;filter:brightness(0) invert(1);transition:.45s ease}
 .top.scrolled .brand img{height:58px;filter:none}
 .navlinks{display:flex;align-items:center;gap:30px;margin-left:auto}
@@ -51,7 +52,6 @@ h1,h2,h3,h4,.font-serif{font-family:'Playfair Display',Georgia,serif;letter-spac
 
 /* Hero mirrors SplitsPro full-bleed visual treatment */
 .hero{position:relative;min-height:680px;display:flex;align-items:center;overflow:hidden;background:#111;padding:170px 0 96px;color:#fff}
-.hero:before{content:"";position:absolute;inset:-3%;background:url('https://customer-assets-lxgj4vgw.emergentagent.net/job_splitspro-preview/artifacts/q03928px_hero1.png') center/cover no-repeat;transform:scale(1.06);z-index:0}
 .hero:after{content:"";position:absolute;inset:0;background:
   linear-gradient(90deg,rgba(11,11,11,.96) 0%,rgba(11,11,11,.90) 38%,rgba(11,11,11,.72) 66%,rgba(11,11,11,.48) 100%),
   linear-gradient(180deg,rgba(11,11,11,.1) 0%,rgba(11,11,11,0) 55%,rgba(11,11,11,.45) 100%);z-index:1}
@@ -106,55 +106,6 @@ section{padding:100px 0}
 .whylist{display:grid;gap:11px;margin-top:18px}
 .whylist div{padding:14px 15px;background:#F8F7F5;border:1px solid #EEECE8;border-radius:12px;font-weight:700;box-shadow:0 8px 22px rgba(11,11,11,.035)}
 .whylist span{display:block;margin-top:3px}
-
-/* disruptive story visuals — blended into the page, not card-like */
-.story-visual{
-  position:relative;
-  margin:8px auto 18px;
-  width:min(1480px,100vw);
-  left:50%;
-  transform:translateX(-50%);
-  overflow:hidden;
-  background:transparent;
-}
-.story-visual img{
-  display:block;
-  width:100%;
-  height:auto;
-  border:0;
-  border-radius:0;
-  box-shadow:none;
-  transform:none!important;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 7%,#000 93%,transparent 100%);
-  mask-image:linear-gradient(to bottom,transparent 0%,#000 7%,#000 93%,transparent 100%);
-}
-.story-visual:before,
-.story-visual:after{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  height:12%;
-  z-index:2;
-  pointer-events:none;
-}
-.story-visual:before{top:0;background:linear-gradient(to bottom,var(--story-bg,#fff),transparent)}
-.story-visual:after{bottom:0;background:linear-gradient(to top,var(--story-bg,#fff),transparent)}
-#sizing-first .story-visual{--story-bg:#fff}
-section[style*="background:#f6f5f2"] .story-visual{--story-bg:#f6f5f2}
-.story-visual.factors{margin:-8px auto 4px}
-@media(max-width:600px){
-  .story-visual{
-    width:100vw;
-    margin:0 0 8px;
-  }
-  .story-visual img{
-    -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 4%,#000 96%,transparent 100%);
-    mask-image:linear-gradient(to bottom,transparent 0%,#000 4%,#000 96%,transparent 100%);
-  }
-  .story-visual:before,.story-visual:after{height:8%}
-  .story-visual.factors{margin:-4px 0 0}
-}
 
 /* home factors */
 .why{display:grid;grid-template-columns:1fr 1fr;gap:38px;align-items:center}
@@ -278,7 +229,7 @@ fbq('track', 'PageView');
 <body>
 <header class="top scrolled" id="siteTop">
   <div class="wrap topin">
-    <a class="brand" href="/" aria-label="SplitsPro home"><img src="/logo.png" alt="SplitsPro Airconditioning"></a>
+    <a class="brand" href="/" aria-label="SplitsPro home"><span>SplitsPro</span></a>
     <nav class="navlinks" aria-label="Main navigation">
       <a href="/">Home</a>
       <a href="/split-systems/">Split Systems</a>
@@ -441,9 +392,6 @@ fbq('track', 'PageView');
       <p style="font-weight:800;color:#0b0b0b">Because apparently your bedroom now needs enough cooling for a Woolies.</p>
 </div>
 
-    <figure class="story-visual big">
-      <img loading="eager" src="/aircon-installation-guide/assets/sizing-too-big.png" alt="Two SplitsPro installers carrying an absurdly oversized air conditioner into a small bedroom">
-    </figure>
 
     <div class="checks" style="margin-top:4px">
       <article class="check">
@@ -478,9 +426,6 @@ fbq('track', 'PageView');
         </div>
       </article>
 
-      <figure class="story-visual small">
-        <img loading="lazy" src="/aircon-installation-guide/assets/sizing-too-small.png" alt="An overheated homeowner in a hot bedroom with an air conditioner that is too small">
-      </figure>
     </div>
 
     <div class="candid" style="margin-top:12px">
@@ -491,11 +436,6 @@ fbq('track', 'PageView');
 </section>
 
 <section style="background:#f6f5f2">
-  <div class="wrap">
-    <figure class="story-visual factors">
-      <img loading="lazy" src="/aircon-installation-guide/assets/sizing-factors.png" alt="SplitsPro installer checking sun, windows, insulation, ceiling height, people and room layout before sizing an air conditioner">
-    </figure>
-  </div>
   <div class="wrap why">
     <div>
       <div class="section-head">
