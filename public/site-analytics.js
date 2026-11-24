@@ -47,6 +47,47 @@
     }
   }
 
+  // Real Google Ads website-call conversions: intentionally disabled until
+  // Google Ads issues the verified AW- conversion ID and conversion label.
+  // Unlike click_to_call, this uses a forwarding number to measure real calls.
+  var websiteCalls = config.googleAdsWebsiteCalls || {};
+  var adsId = String(websiteCalls.conversionId || "").trim();
+  var adsLabel = String(websiteCalls.conversionLabel || "").trim();
+  var businessNumber = String(websiteCalls.phoneNumber || "").trim();
+  var adsCallsValid = /^AW-\d+$/.test(adsId) &&
+    /^[a-zA-Z0-9_-]+$/.test(adsLabel) && businessNumber === "0414 698 435";
+  var adsCallsStarted = false;
+  function startGoogleWebsiteCallTracking() {
+    if (!adsCallsValid || adsCallsStarted || typeof window.gtag !== "function") return;
+    adsCallsStarted = true;
+    window.gtag("config", adsId, { send_page_view: false });
+    window.gtag("config", adsId + "/" + adsLabel, {
+      phone_conversion_number: businessNumber,
+      phone_conversion_callback: function (displayNumber, dialNumber) {
+        // Google's callback must replace BOTH the visible number and tel: URI.
+        // Keep the original business number if no valid forwarding number arrives.
+        var dial = String(dialNumber || "").trim();
+        var formatted = String(displayNumber || "").trim();
+        if (!/^\+?[0-9\s()-]{8,24}$/.test(dial) || !formatted) return;
+        var links = document.querySelectorAll('a[href^="tel:"]');
+        for (var i = 0; i < links.length; i++) {
+          var anchor = links[i];
+          var digits = String(anchor.getAttribute("href") || "").replace(/\D/g, "");
+          if (digits !== "0414698435" && digits !== "61414698435") continue;
+          anchor.setAttribute("href", "tel:" + dial);
+          for (var j = 0; j < anchor.childNodes.length; j++) {
+            var node = anchor.childNodes[j];
+            if (node.nodeType === 3) {
+              node.nodeValue = node.nodeValue.replace(/0414\s*698\s*435/g, formatted);
+            }
+          }
+        }
+      }
+    });
+  }
+  if (!isReactShell) startGoogleWebsiteCallTracking();
+  else window.addEventListener("load", startGoogleWebsiteCallTracking, { once: true });
+
   // Older prerendered React bundles may predate the React GA4 component.
   // Only provide a fallback if they did not initialise GA4 by window load.
   if (isReactShell && gaEnabled) {
