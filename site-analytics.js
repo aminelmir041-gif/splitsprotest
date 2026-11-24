@@ -126,12 +126,16 @@
 
   if (!isReactShell) document.addEventListener("click", function (event) {
     var anchor = event.target && event.target.closest && event.target.closest('a[href^="tel:"]');
-    if (!anchor) return;
+    if (!anchor || event.defaultPrevented) return;
+    // Google Tag Manager listens for this event to fire ONE website-phone-click conversion.
+    // This is a click signal only; the visible business phone number stays unchanged.
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: "splitspro_phone_click", page_path: window.location.pathname });
     if (gaEnabled && typeof window.gtag === "function") {
       window.gtag("event", "click_to_call", { page_path: window.location.pathname });
     }
     if (clarityEnabled && typeof window.clarity === "function") {
       window.clarity("event", "phone_click");
     }
-  }, true);
+  }, false);
 })();
