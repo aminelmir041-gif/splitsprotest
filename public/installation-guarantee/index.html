@@ -958,7 +958,7 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
       status.dataset.state='success';
       if(typeof window.gtag==='function'){
         window.gtag('event','generate_lead',{lead_type:'warranty_preview_consultation'});
-        window.gtag('event','installation_guarantee_consultation_submitted',{service:fields.service,page_path:window.location.pathname});
+        window.gtag('event','sp_guarantee_consultation',{service:fields.service,page_path:window.location.pathname});
       }
       window.dataLayer=window.dataLayer||[];
       window.dataLayer.push({event:'splitspro_consultation_submitted',service:fields.service,page_path:window.location.pathname});
