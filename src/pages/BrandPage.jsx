@@ -78,18 +78,8 @@ const NON_DAIKIN_FEATURES = {
     { title: "Blue Fin Anti-Corrosive Coating", desc: "Added outdoor heat-exchanger protection suited to coastal environments.", fallback: ShieldCheck },
     { title: "No More To Pay*", desc: "The advertised price is the installed price for qualifying standard installations.", fallback: Check },
   ],
-  "pb-series": [
-    {
-      title: "Wi-Fi Control",
-      desc: "Control the system remotely with Rinnai's supported NetHome Plus app.",
-      icon: "https://www.rinnai.com.au/wp-content/uploads/ICO-logo-wifi-IMA.png",
-      fallback: Wifi,
-    },
-    { title: "Quiet Operation", desc: "Low-noise operation designed to suit bedrooms and living spaces.", fallback: Fan },
-    { title: "3D Airflow", desc: "Horizontal and vertical swing helps distribute air more evenly around the room.", fallback: Wind },
-    { title: "Dehumidifying", desc: "Dry mode helps manage room humidity during hot, humid weather.", fallback: Droplets },
-  ],
   "px-series": [
+    { title: "HEPA Filtration", desc: "HEPA filter on the Rinnai PX range helps capture airborne particles; follow the manufacturer's filter maintenance instructions.", fallback: Filter, highlight: true },
     {
       title: "Wi-Fi + Voice",
       desc: "App control plus Google Home and Amazon Alexa compatibility.",
@@ -194,8 +184,7 @@ export const RINNAI_LOCAL_OFFER_RANGES = [
       { kw: "2.5kW", price: "$1,700", localOfferPrice: "$1,700" },
       { kw: "3.5kW", price: "$1,850", localOfferPrice: "$1,850" },
       { kw: "5.0kW", price: "$2,300", localOfferPrice: "$2,300" },
-      { kw: "7.0kW", price: "$2,600", localOfferPrice: "$2,600" },
-      { kw: "8.0kW", price: "$3,000", localOfferPrice: "$3,000" },
+      { kw: "7.1kW", price: "$2,600", localOfferPrice: "$2,600" },
     ],
   },
   {
