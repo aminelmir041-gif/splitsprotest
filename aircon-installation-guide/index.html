@@ -217,37 +217,47 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
   .sizing,.gallerygrid,.includegrid{grid-template-columns:1fr}.whybox{padding:23px;transform:none}.photo figcaption{font-size:12px}
   .trustitem{font-size:10px;padding:16px 7px}.float-ctas{left:12px;right:12px;bottom:10px;grid-template-columns:1fr}.float-ctas a{padding:0 10px;font-size:10px}
 }
-.calculator{padding:116px 0 34px;background:linear-gradient(150deg,#e9eff4,#f8f7f5 75%);scroll-margin-top:82px}
-.calculator .wrap{max-width:660px}
-.calculator h1{font-size:clamp(26px,5vw,38px);margin:0 0 10px;line-height:1.08;text-shadow:none}
-.calculator-card{padding:clamp(14px,3vw,26px);background:#fff;border:1px solid #dbe2e8;border-radius:18px;box-shadow:0 10px 28px rgba(29,61,90,.10)}
-.calculator-card h2{font-size:clamp(22px,4vw,29px);line-height:1.14;margin:5px 0 12px}
-.calculator-hint{margin:-4px 0 10px;font-size:.875rem;line-height:1.35;color:#394e60}
-.calculator-progress{margin:0;color:#4c5a64;font-size:.875rem;font-weight:800}
+.calculator{--calc-bg:#081422;--calc-panel:#101f32;--calc-line:#31445c;--calc-text:#f3f7ff;--calc-muted:#acbdd1;--calc-accent:#65dcff;padding:110px 0 28px;color:var(--calc-text);background:radial-gradient(ellipse at 65% 0%,#153556 0%,transparent 65%),var(--calc-bg);scroll-margin-top:80px}
+.calculator .wrap{max-width:680px}
+.calculator h1,.calculator h2{font-family:'Manrope',system-ui,sans-serif;font-weight:800;letter-spacing:-.035em}
+.calculator h1{font-size:clamp(25px,5.6vw,39px);margin:0 0 10px;line-height:1.08;text-shadow:none}
+.calculator-card{padding:clamp(14px,3vw,24px);background:var(--calc-panel);border:1px solid var(--calc-line);border-radius:16px;box-shadow:0 14px 35px #04101e80}
+.calculator-card h2{font-size:clamp(20px,4.7vw,26px);line-height:1.16;margin:7px 0 10px}
+.calculator-progress{display:flex;align-items:center;gap:12px;margin:0 0 8px;color:var(--calc-muted);font-size:.875rem;font-weight:700}
+.calculator-progress progress{flex:1;min-width:0;height:5px;border:0;border-radius:999px;overflow:hidden;appearance:none;background:var(--calc-line);accent-color:var(--calc-accent)}
+.calculator-progress progress::-webkit-progress-bar{background:var(--calc-line)}
+.calculator-progress progress::-webkit-progress-value{background:var(--calc-accent)}
+.calculator-progress progress::-moz-progress-bar{background:var(--calc-accent)}
+.calculator-hint{margin:-2px 0 9px;font-size:.875rem;line-height:1.35;color:var(--calc-muted)}
 .calculator-options{display:grid;gap:7px}
 .calculator [hidden]{display:none}
-.calculator-options button{display:block;width:100%;min-height:45px;padding:8px 12px;border:1px solid #a7b6c2;border-radius:9px;background:#edf4fa;color:#173750;text-align:left;font:inherit;font-size:1rem;font-weight:800;line-height:1.2;cursor:pointer}
-.calculator-options button:hover{border-color:#1d3d5a;background:#e0edf7}
-.calculator-options small{display:block;margin-top:2px;font-size:.875rem;font-weight:500;color:#394e60}
+.calculator-options button{display:block;width:100%;min-height:45px;padding:8px 11px 8px 15px;border:1px solid var(--calc-line);border-left:3px solid #5388ab;border-radius:8px;background:#162941;color:var(--calc-text);text-align:left;font:inherit;font-size:1rem;font-weight:800;line-height:1.18;cursor:pointer}
+.calculator-options button:hover{border-color:var(--calc-accent);background:#1e3754}
+.calculator-options small{display:block;margin-top:3px;font-size:.875rem;font-weight:500;color:var(--calc-muted)}
 .calculator button,.calculator input{font-family:inherit}
-.calculator :focus-visible{outline:3px solid #a87122;outline-offset:2px}
-.calculator-link{display:inline-flex;align-items:center;min-height:44px;border:0;padding:0;background:none;color:var(--sp-blue);font-size:.9rem;font-weight:800;text-decoration:underline;cursor:pointer}
-.calculator-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:5px}
+.calculator :focus-visible{outline:2px solid var(--calc-accent);outline-offset:2px}
+.calculator-link{display:inline-flex;align-items:center;min-height:44px;border:0;padding:0;background:none;color:var(--calc-accent);font-size:.9rem;font-weight:800;cursor:pointer}
+.calculator-link:hover{text-decoration:underline}
+.calculator-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:3px}
 .calculator-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.calculator-fields label{display:block;font-weight:700}
-.calculator-fields input[type=number]{display:block;width:100%;min-height:44px;margin-top:4px;padding:6px 8px;border:1px solid #a7b6c2;border-radius:7px;font:inherit}
+.calculator-fields label{display:block;font-weight:700;font-size:.9rem}
+.calculator-fields input[type=number]{display:block;width:100%;min-height:44px;margin-top:4px;padding:6px 8px;border:1px solid var(--calc-line);border-radius:7px;font:inherit;background:var(--calc-bg);color:var(--calc-text);color-scheme:dark}
 .calculator-tall{display:flex;gap:8px;align-items:center;min-height:44px;font-size:.9rem}
-.calculator-tall input{width:18px;height:18px;accent-color:var(--sp-blue)}
-.calculator-result{background:#edf4fa;color:var(--sp-blue)}
-.calculator-result p{line-height:1.4;margin:0 0 8px}
-.calculator-result strong{display:block;font-size:clamp(30px,7vw,45px);line-height:1.1}
-.calculator-result .calculator-note{margin:10px 0;font-size:.875rem}
-.calculator-actions{display:flex;flex-wrap:wrap;gap:8px}
-.calculator-actions .btn{min-height:44px;padding:0 12px;border-color:#a7b6c2}
-.calculator-guide-link{display:inline-block;margin-top:12px;font-size:.9rem;font-weight:800;color:var(--sp-blue)}
+.calculator-tall input{width:18px;height:18px;accent-color:var(--calc-accent)}
+.calculator-output{display:grid;gap:6px;padding:10px 12px;border-radius:10px;background:var(--calc-bg);border:1px solid var(--calc-line)}
+.calculator-output p{margin:0;line-height:1.35;color:var(--calc-muted);font-size:.875rem}
+.calculator-output strong{display:block;color:var(--calc-accent);font-size:clamp(31px,7vw,43px);line-height:1.05;font-variant-numeric:tabular-nums;font-weight:800}
+.calculator-output b{color:var(--calc-text)}
+.calculator-note{margin:9px 0;font-size:.875rem;line-height:1.4;color:var(--calc-muted)}
+.calculator-actions{display:flex;flex-wrap:wrap;gap:6px}
+.calculator-actions .btn{min-height:44px;padding:0 12px;border-color:var(--calc-line);font-size:.875rem;letter-spacing:0;text-transform:none}
+.calculator-actions .btn-dark{background:var(--calc-accent);color:#071422;border-color:var(--calc-accent)}
+.calculator-actions .btn-ghost{background:transparent;color:var(--calc-text)}
+.calculator-guide-link{display:inline-block;margin-top:10px;font-size:.875rem;color:var(--calc-muted)}
 #sizing-first{padding-top:38px;scroll-margin-top:84px}
 .float-ctas.calculator-in-view{visibility:hidden}
-@media(max-width:600px){.calculator{padding-top:82px;padding-bottom:12px}.calculator-actions{gap:6px}}
+@media(max-width:600px){.calculator{padding-top:80px;padding-bottom:12px}}
+@media(min-width:700px){.calculator-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
@@ -288,7 +298,7 @@ fbq('track', 'PageView');
   <div class="wrap">
     <h1>Find your aircon size</h1>
     <div class="calculator-card" id="sizing-card" hidden>
-      <p class="calculator-progress" id="sizing-progress">Step 1 of 5</p>
+      <div class="calculator-progress" id="sizing-progress"><span id="sizing-step-label">Step 1 of 5</span><progress id="sizing-step-bar" value="1" max="5" aria-label="Calculator progress"></progress></div>
       <div id="sizing-system" data-step>
         <h2 tabindex="-1">What are you cooling?</h2>
         <div class="calculator-options">
@@ -299,27 +309,27 @@ fbq('track', 'PageView');
       <div id="sizing-space" data-step hidden>
         <h2 tabindex="-1" id="sizing-space-heading">Pick the closest match</h2>
         <div class="calculator-options" id="split-spaces">
-          <button type="button" data-space="bedroom,10,16">Small bedroom <small>Single bed or home office</small></button>
-          <button type="button" data-space="bedroom,16,25">Main bedroom <small>Queen bed with room around it</small></button>
-          <button type="button" data-space="living,20,35">Living room <small>A lounge and TV area</small></button>
-          <button type="button" data-space="living,36,60">Big open-plan area <small>Lounge, dining and kitchen together</small></button>
+          <button type="button" data-space="bedroom,12">Small bedroom <small>Around 3 m × 4 m, like a home office</small></button>
+          <button type="button" data-space="bedroom,20">Main bedroom <small>Around 4 m × 5 m, with space around a queen bed</small></button>
+          <button type="button" data-space="living,25">Living room <small>Around 5 m × 5 m, with a sofa and TV area</small></button>
+          <button type="button" data-space="living,45">Big open-plan area <small>Around 6 m × 7.5 m, with lounge and dining together</small></button>
         </div>
         <div class="calculator-options" id="ducted-spaces" hidden>
-          <button type="button" data-space="ducted,55,90">Compact home <small>2–3 bedrooms and one small living area</small></button>
-          <button type="button" data-space="ducted,90,140">Family home <small>3–4 bedrooms and one main living area</small></button>
-          <button type="button" data-space="ducted,140,200">Large home <small>Several bedrooms and two living areas</small></button>
+          <button type="button" data-space="ducted,70">Compact home <small>Around 70 m² served, like a small 2-bedroom home</small></button>
+          <button type="button" data-space="ducted,110">Family home <small>Around 110 m² served, like 3 bedrooms and a living area</small></button>
+          <button type="button" data-space="ducted,170">Large home <small>Around 170 m² served, like 4 bedrooms and two living areas</small></button>
         </div>
         <div class="calculator-nav">
           <button class="calculator-link" type="button" data-step-target="system">Back</button>
-          <button class="calculator-link" type="button" data-step-target="measure">I have measurements</button>
+          <button class="calculator-link" type="button" data-step-target="measure">Use my measurements</button>
         </div>
       </div>
       <div id="sizing-measure" data-step hidden>
         <h2 tabindex="-1">Enter your measurements</h2>
         <form id="sizing-room-measure">
           <div class="calculator-fields">
-            <label>Length (m)<input name="roomLength" type="number" min="0.5" max="100" step="any" inputmode="decimal" required></label>
-            <label>Width (m)<input name="roomWidth" type="number" min="0.5" max="100" step="any" inputmode="decimal" required></label>
+            <label>Length (m)<input name="roomLength" type="number" min="1" max="100" step="any" inputmode="decimal" required></label>
+            <label>Width (m)<input name="roomWidth" type="number" min="1" max="100" step="any" inputmode="decimal" required></label>
           </div>
           <div class="calculator-options">
             <button name="roomType" value="bedroom" type="submit">It’s a bedroom or study</button>
@@ -374,9 +384,9 @@ fbq('track', 'PageView');
         </div>
       </div>
       <div id="sizing-estimate" data-step hidden>
-        <h2 tabindex="-1">Your estimated aircon size</h2>
-        <div id="sizing-result" class="calculator-result" role="status"></div>
-        <p class="calculator-note">This is a rough guide for cooling. We can check the right size for your home before you buy.</p>
+        <h2 tabindex="-1">Your cooling estimate</h2>
+        <div id="sizing-result" class="calculator-output" role="status"></div>
+        <p class="calculator-note">Use this as a starting point. SplitsPro can check heating, cooling and airflow before you choose a unit.</p>
         <div class="calculator-actions">
           <a class="btn btn-dark" id="sizing-prices" href="/deals/">See split prices</a>
           <a class="btn btn-ghost" href="tel:+61414698435">Call SplitsPro</a>
@@ -656,6 +666,8 @@ fbq('track', 'PageView');
   const calculator = document.getElementById('size-calculator');
   const card = document.getElementById('sizing-card');
   const progress = document.getElementById('sizing-progress');
+  const stepLabel = document.getElementById('sizing-step-label');
+  const stepBar = document.getElementById('sizing-step-bar');
   const roomForm = document.getElementById('sizing-room-measure');
   const ductedForm = document.getElementById('sizing-ducted-measure');
   const activeArea = ductedForm.elements.activeArea;
@@ -669,19 +681,27 @@ fbq('track', 'PageView');
   let glass;
   let sun;
 
-  // Planning bands in W/m² before adjustments for glazing and ceiling height.
-  // These approximate the earlier calculator's bedroom, living and ducted baselines.
-  const loadBands = {bedroom: [75, 90], living: [110, 140], ducted: [115, 140]};
-  const glazingFactor = [0.95, 1, 1.10];
-  const sunlightFactor = {shade: 0.94, morning: 1, afternoon: 1.12, unknown: 1.02};
+  // Screening rates (W/m²) are based on the ACDA room rules of thumb
+  // and the average domestic ducted check load discussed by AIRAH.
+  const baseRate = {bedroom: 80, living: 125, ducted: 126};
+  const glazingAdjustment = [-5, 0, 7];
+  const solarAdjustment = {shade: -4, morning: 3, afternoon: 12, unknown: 0};
+  const windowExposure = [0.5, 1, 1.4];
+  // Example nominal cooling capacities. Compare against the selected model's spec sheet.
+  const unitSizes = {
+    split: [2, 2.5, 3.5, 4.6, 5, 6, 7.1, 8, 9],
+    ducted: [5, 6, 7.1, 8.5, 10, 12.5, 14, 16, 18, 20, 24]
+  };
   const stepNumbers = {system: 1, space: 2, measure: 2, windows: 3, sun: 4, kitchen: 5};
 
   function showStep(step) {
     const next = document.getElementById('sizing-' + step);
     card.querySelectorAll('[data-step]').forEach(panel => { panel.hidden = panel !== next; });
-    card.classList.toggle('calculator-result', step === 'estimate');
     progress.hidden = step === 'estimate';
-    if (!progress.hidden) progress.textContent = 'Step ' + stepNumbers[step] + ' of 5';
+    if (!progress.hidden) {
+      stepLabel.textContent = 'Step ' + stepNumbers[step] + ' of 5';
+      stepBar.value = stepNumbers[step];
+    }
     next.querySelector('h2').focus({preventScroll: true});
     const cardBounds = card.getBoundingClientRect();
     const headerBottom = document.getElementById('siteTop').getBoundingClientRect().bottom;
@@ -704,33 +724,49 @@ fbq('track', 'PageView');
     showStep('space');
   }
 
-  function selectSpace(type, low, high, active, source) {
-    space = {type, low, high, active};
+  function selectSpace(type, area, active, source) {
+    space = {type, area, active};
     previousStep = source;
     showStep('windows');
   }
 
-  function appendRange(label, lowArea, highArea, rates, factor, kitchenLoad) {
+  function addResult(label, value, tag) {
     const row = document.createElement('p');
-    const number = document.createElement('strong');
-    const low = lowArea * rates[0] * factor / 1000 + kitchenLoad[0];
-    const high = highArea * rates[1] * factor / 1000 + kitchenLoad[1];
-    number.textContent = low.toFixed(1) + '–' + high.toFixed(1) + ' kW';
+    const number = document.createElement(tag);
+    number.textContent = value;
     row.append(number, label);
     result.append(row);
   }
 
   function showEstimate(hasKitchen) {
-    const rates = loadBands[space.type];
-    const factor = glazingFactor[glass] * sunlightFactor[sun] * (tall.checked ? 1.2 : 1);
-    const kitchenLoad = hasKitchen ? [0.3, 0.8] : [0, 0];
+    const rate = baseRate[space.type] + glazingAdjustment[glass] +
+      solarAdjustment[sun] * windowExposure[glass];
+    const ceilingMultiplier = tall.checked ? 1.15 : 1;
+    const roomLoad = rate * space.area * ceilingMultiplier / 1000;
+    const kitchenLoad = hasKitchen ? 0.6 : 0;
+    const load = roomLoad + kitchenLoad;
+    const sizes = unitSizes[system];
+    const roundedLoad = Number(load.toFixed(1));
+    const example = sizes.find(size => size >= roundedLoad);
+
     result.replaceChildren();
-    appendRange(system === 'ducted' ? 'Cooling for all selected rooms' : 'Cooling for this space',
-      space.low, space.high, rates, factor, kitchenLoad);
-    if (space.active < space.high) {
-      // The measured group may or may not contain the kitchen.
-      const zoneKitchenLoad = [0, kitchenLoad[1]];
-      appendRange('Cooling for rooms on together', space.active, space.active, rates, factor, zoneKitchenLoad);
+    addResult(system === 'ducted' ? 'All selected rooms' : 'Estimated cooling needed',
+      roundedLoad.toFixed(1) + ' kW', 'strong');
+    const areaLabel = previousStep === 'space' ? 'Estimated area: ' : 'Area entered: ';
+    addResult('', areaLabel + Number(space.area.toFixed(1)) + ' m²', 'span');
+    if (roundedLoad < sizes[0]) {
+      addResult(' is the smallest size shown here. Ask us about minimum output.', sizes[0] + ' kW', 'b');
+    } else if (example) {
+      addResult(' nominal unit size to compare', example + ' kW', 'b');
+    } else {
+      addResult('', 'Ask us to check capacity and whether the space needs more than one unit.', 'span');
+    }
+    if (space.active < space.area) {
+      const zoneLoad = roomLoad * space.active / space.area;
+      const zoneValue = kitchenLoad
+        ? zoneLoad.toFixed(1) + '–' + (zoneLoad + kitchenLoad).toFixed(1)
+        : zoneLoad.toFixed(1);
+      addResult(' for rooms on together', zoneValue + ' kW', 'b');
     }
     showStep('estimate');
   }
@@ -740,8 +776,8 @@ fbq('track', 'PageView');
   });
   card.querySelectorAll('[data-space]').forEach(button => {
     button.addEventListener('click', () => {
-      const [type, low, high] = button.dataset.space.split(',');
-      selectSpace(type, Number(low), Number(high), NaN, 'space');
+      const [type, area] = button.dataset.space.split(',');
+      selectSpace(type, Number(area), NaN, 'space');
     });
   });
   card.querySelectorAll('[data-step-target]').forEach(button => {
@@ -774,7 +810,7 @@ fbq('track', 'PageView');
   roomForm.addEventListener('submit', event => {
     event.preventDefault();
     const area = roomForm.elements.roomLength.valueAsNumber * roomForm.elements.roomWidth.valueAsNumber;
-    selectSpace(event.submitter?.value || 'bedroom', area, area, NaN, 'measure');
+    selectSpace(event.submitter?.value || 'bedroom', area, NaN, 'measure');
   });
   ductedForm.addEventListener('input', () => {
     activeArea.setCustomValidity(activeArea.valueAsNumber > totalArea.valueAsNumber
@@ -782,7 +818,7 @@ fbq('track', 'PageView');
   });
   ductedForm.addEventListener('submit', event => {
     event.preventDefault();
-    selectSpace('ducted', totalArea.valueAsNumber, totalArea.valueAsNumber, activeArea.valueAsNumber, 'measure');
+    selectSpace('ducted', totalArea.valueAsNumber, activeArea.valueAsNumber, 'measure');
   });
 
   card.hidden = false;
