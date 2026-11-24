@@ -312,15 +312,16 @@ fbq('track', 'PageView');
         <div id="sizing-space" data-step hidden>
           <h2 tabindex="-1" id="sizing-space-heading">Pick the closest match</h2>
           <div class="calculator-options" id="split-spaces">
-            <button type="button" data-space="bedroom,12">Small bedroom <small>Around 3 m × 4 m, like a home office</small></button>
-            <button type="button" data-space="bedroom,20">Main bedroom <small>Around 4 m × 5 m, with space around a queen bed</small></button>
-            <button type="button" data-space="living,25">Living room <small>Around 5 m × 5 m, with a sofa and TV area</small></button>
-            <button type="button" data-space="living,45">Big open-plan area <small>Around 6 m × 7.5 m, with lounge and dining together</small></button>
+            <button type="button" data-space="15">Bedroom or study <small>One bed or a desk</small></button>
+            <button type="button" data-space="25">Large bedroom or small lounge <small>Room for a bed and sitting area</small></button>
+            <button type="button" data-space="37.5">Living room <small>A separate lounge or TV room</small></button>
+            <button type="button" data-space="55">Open-plan living and dining <small>Two connected areas</small></button>
+            <button type="button" data-space="77.5">Large open plan <small>Several connected living areas</small></button>
           </div>
           <div class="calculator-options" id="ducted-spaces" hidden>
-            <button type="button" data-space="ducted,70">Compact home <small>Around 70 m² served, like a small 2-bedroom home</small></button>
-            <button type="button" data-space="ducted,110">Family home <small>Around 110 m² served, like 3 bedrooms and a living area</small></button>
-            <button type="button" data-space="ducted,170">Large home <small>Around 170 m² served, like 4 bedrooms and two living areas</small></button>
+            <button type="button" data-space="70">Compact home <small>Around 70 m² served, like a small 2-bedroom home</small></button>
+            <button type="button" data-space="140">Family home <small>Around 140 m² served, like 3 bedrooms and a living area</small></button>
+            <button type="button" data-space="220">Large home <small>Around 220 m² served, like 4 bedrooms and two living areas</small></button>
           </div>
           <div class="calculator-nav">
             <button class="calculator-link" type="button" data-step-target="measure">Use my measurements</button>
@@ -334,8 +335,7 @@ fbq('track', 'PageView');
               <label>Width (m)<input name="roomWidth" type="number" min="1" max="100" step="any" inputmode="decimal" required></label>
             </div>
             <div class="calculator-options">
-              <button name="roomType" value="bedroom" type="submit">It’s a bedroom or study</button>
-              <button name="roomType" value="living" type="submit">It’s a living or open-plan area</button>
+              <button type="submit">Continue</button>
             </div>
           </form>
           <form id="sizing-ducted-measure" hidden>
@@ -711,9 +711,24 @@ fbq('track', 'PageView');
   let building;
   let walls;
 
-  // Screening rates (W/m²) are based on the ACDA room rules of thumb
-  // and the average domestic ducted check load discussed by AIRAH.
-  const baseRate = {bedroom: 80, living: 125, ducted: 126};
+  // Midpoints of the supplied room-size and cooling bands (m², kW).
+  // Interpolate between them so measured areas do not jump at band boundaries.
+  const guidePoints = {
+    split: [[0, 0], [15, 2.25], [25, 3], [37.5, 4.6], [55, 7], [77.5, 8.95], [90, 9.4]],
+    ducted: [[0, 0], [120, 10], [140, 12], [220, 18], [280, 20]]
+  };
+
+  function guideLoad(area) {
+    const points = guidePoints[system];
+    const upper = points.findIndex(([squareMetres]) => squareMetres >= area);
+    if (upper === -1) {
+      const [lastArea, lastLoad] = points.at(-1);
+      return area * lastLoad / lastArea;
+    }
+    const [startArea, startLoad] = points[upper - 1];
+    const [endArea, endLoad] = points[upper];
+    return startLoad + (endLoad - startLoad) * (area - startArea) / (endArea - startArea);
+  }
   const glazingAdjustment = [-5, 0, 7];
   const solarAdjustment = {shade: -4, morning: 3, afternoon: 12, unknown: 0};
   const windowExposure = [0.5, 1, 1.4];
@@ -765,8 +780,8 @@ fbq('track', 'PageView');
     showStep('space', moveFocus);
   }
 
-  function selectSpace(type, area, active, source) {
-    space = {type, area, active};
+  function selectSpace(area, active, source) {
+    space = {area, active};
     previousStep = source;
     showStep('windows');
   }
@@ -780,23 +795,23 @@ fbq('track', 'PageView');
   }
 
   function showEstimate(hasKitchen) {
-    const rate = baseRate[space.type] + glazingAdjustment[glass] +
+    const adjustment = glazingAdjustment[glass] +
       solarAdjustment[sun] * windowExposure[glass] + buildingAdjustment[building] +
       wallAdjustment[walls] + (building === 'below' ? 0 : insulationAdjustment[insulation]);
     const ceilingMultiplier = tall.checked ? 1.15 : 1;
-    const roomLoad = rate * space.area * ceilingMultiplier / 1000;
+    const roomLoad = (guideLoad(space.area) + adjustment * space.area / 1000) * ceilingMultiplier;
     const kitchenLoad = hasKitchen ? 0.6 : 0;
     const load = roomLoad + kitchenLoad;
     const sizes = unitSizes[system];
     const roundedLoad = Number(load.toFixed(1));
-    const example = sizes.find(size => size >= roundedLoad);
+    const example = sizes.find(size => size >= load);
 
     const smallSplit = system === 'split' && roundedLoad < sizes[0];
     result.replaceChildren();
     if (smallSplit) {
       addResult('Estimated load through to the smallest split size', roundedLoad.toFixed(1) + '–' + sizes[0] + ' kW', 'strong');
     } else {
-      addResult(system === 'ducted' ? 'All selected rooms' : 'Estimated cooling needed',
+      addResult(system === 'ducted' ? 'Estimated ducted cooling' : 'Estimated cooling needed',
         roundedLoad.toFixed(1) + ' kW', 'strong');
     }
     const areaLabel = previousStep === 'space' ? 'Estimated area: ' : 'Area entered: ';
@@ -813,7 +828,7 @@ fbq('track', 'PageView');
       const zoneValue = kitchenLoad
         ? zoneLoad.toFixed(1) + '–' + (zoneLoad + kitchenLoad).toFixed(1)
         : zoneLoad.toFixed(1);
-      addResult(' for rooms on together', zoneValue + ' kW', 'b');
+      addResult(' for rooms on together (rough estimate)', zoneValue + ' kW', 'b');
     }
     showStep('estimate');
   }
@@ -825,8 +840,7 @@ fbq('track', 'PageView');
   });
   card.querySelectorAll('[data-space]').forEach(button => {
     button.addEventListener('click', () => {
-      const [type, area] = button.dataset.space.split(',');
-      selectSpace(type, Number(area), NaN, 'space');
+      selectSpace(Number(button.dataset.space), NaN, 'space');
     });
   });
   card.querySelectorAll('[data-step-target]').forEach(button => {
@@ -880,7 +894,7 @@ fbq('track', 'PageView');
   roomForm.addEventListener('submit', event => {
     event.preventDefault();
     const area = roomForm.elements.roomLength.valueAsNumber * roomForm.elements.roomWidth.valueAsNumber;
-    selectSpace(event.submitter?.value || 'bedroom', area, NaN, 'measure');
+    selectSpace(area, NaN, 'measure');
   });
   ductedForm.addEventListener('input', () => {
     activeArea.setCustomValidity(activeArea.valueAsNumber > totalArea.valueAsNumber
@@ -888,7 +902,7 @@ fbq('track', 'PageView');
   });
   ductedForm.addEventListener('submit', event => {
     event.preventDefault();
-    selectSpace('ducted', totalArea.valueAsNumber, activeArea.valueAsNumber, 'measure');
+    selectSpace(totalArea.valueAsNumber, activeArea.valueAsNumber, 'measure');
   });
 
   selectSystem('split', false);
