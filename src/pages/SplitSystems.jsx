@@ -1,45 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowUpRight, Check, Ruler, HomeIcon, RefreshCcw } from "lucide-react";
+import { regionalSplitPages } from "../lib/regionalSplitPages.mjs";
 import HomeComfortPage from "./HomeComfortPage";
 import { SectionHeading, Overline } from "../components/sections";
 import Reveal from "../components/Reveal";
 import { IMAGES, SPLIT_BRANDS, SPLIT_FAQS } from "../lib/data";
 
 const CANONICAL = "https://splitspro.com.au/split-systems/";
-
-const REGIONAL_PAGES = {
-  "oran-park": {
-    name: "Oran Park & South-West Growth Area",
-    shortName: "Oran Park & South-West Sydney",
-    canonical: "https://splitspro.com.au/split-systems/oran-park/",
-    areas: "Oran Park, Edmondson Park, Leppington, Austral, Catherine Field, Gregory Hills, Gledswood Hills, Denham Court, Bardia, Prestons, Middleton Grange, Harrington Park, Narellan, Spring Farm, Cobbitty and surrounding South-West Growth Area suburbs",
-  },
-  "willoughby-north-sydney": {
-    name: "Willoughby & North Sydney",
-    shortName: "Willoughby & North Sydney",
-    canonical: "https://splitspro.com.au/split-systems/willoughby-north-sydney/",
-    areas: "Willoughby, Chatswood, Artarmon, Lane Cove, North Sydney, Crows Nest, Neutral Bay and surrounding Lower North Shore suburbs",
-  },
-  "central-coast-newcastle": {
-    name: "Central Coast & Newcastle",
-    shortName: "Central Coast & Newcastle",
-    canonical: "https://splitspro.com.au/split-systems/central-coast-newcastle/",
-    areas: "Gosford, Erina, Terrigal, Wyong, Tuggerah, Morisset, Lake Macquarie, Newcastle and surrounding suburbs",
-  },
-  wollongong: {
-    name: "Wollongong & Illawarra",
-    shortName: "Wollongong",
-    canonical: "https://splitspro.com.au/split-systems/wollongong/",
-    areas: "Wollongong, Corrimal, Figtree, Dapto, Shellharbour, Albion Park, Kiama and surrounding Illawarra suburbs",
-  },
-  "quakers-hill-austral-richmond": {
-    name: "Quakers Hill, Austral & Richmond",
-    shortName: "Quakers Hill, Austral & Richmond",
-    canonical: "https://splitspro.com.au/split-systems/quakers-hill-austral-richmond/",
-    areas: "Quakers Hill, Schofields, Marsden Park, Riverstone, Richmond, Windsor, Austral, Leppington and surrounding suburbs",
-  },
-};
 
 const BrandNav = ({ heading = "View split system prices", overline = "Split System Prices — Supplied & Installed", sub = "Choose a brand or range to see current supplied & installed pricing and book your installation.", className = "" }) => (
   <section className={`bg-[#F5F5F7] py-24 sm:py-32 ${className}`} data-testid="brand-pricing-nav">
@@ -276,31 +244,17 @@ const buildHelmet = (page) => (
 const SplitSystems = () => {
   const { pathname } = useLocation();
   const slug = pathname.split("/").filter(Boolean).pop();
-  const regional = REGIONAL_PAGES[slug];
-
-  const page = regional
-    ? {
-        canonical: regional.canonical,
-        metaTitle: `Split System Air Conditioning ${regional.shortName} | Supply & Install | SplitsPro`,
-        metaDescription: `Split system air conditioning supply and installation across ${regional.areas}. Compare Daikin, Rinnai, Mitsubishi, Fujitsu and Samsung supplied & installed prices.`,
-        ogDescription: `Split system supply and installation across ${regional.areas}. Compare trusted brands and book with SplitsPro.`,
-        heroTitle: `Split System Air Conditioning ${regional.name}`,
-        heroSub: `Compare trusted air conditioning brands, view supplied and installed prices and book professional split system installation across ${regional.areas}.`,
-        introHeading: `Split system installation across ${regional.name}`,
-        introBody: `SplitsPro supplies and installs split systems across ${regional.areas}. We take the time to size the unit correctly, plan neat indoor and outdoor placement and finish the pipework carefully so the installation looks clean and performs properly.`,
-        regionLabel: regional.name,
-      }
-    : {
-        canonical: CANONICAL,
-        metaTitle: "Split System Air Conditioning Supply & Installation | SplitsPro",
-        metaDescription: "Compare split system air conditioners from Daikin, Rinnai, Mitsubishi, Fujitsu and Samsung. View supplied & installed prices, get free sizing advice and book your installation with SplitsPro.",
-        ogDescription: "Compare Daikin, Rinnai, Mitsubishi, Fujitsu and Samsung split systems. Supplied and installed by SplitsPro across Western Sydney.",
-        heroTitle: "Split System Air Conditioning Supply & Installation",
-        heroSub: "Compare trusted air conditioning brands, view supplied and installed prices and find the right split system for your room.",
-        introHeading: "Considered installation. Chosen brands.",
-        introBody: "We take the time to plan every split system installation — positioning the indoor unit for even airflow, keeping pipe runs tidy and choosing from Daikin, Rinnai, Mitsubishi Electric and Mitsubishi Heavy Industries so you get the right fit for the room.",
-        regionLabel: "Western Sydney",
-      };
+  const page = regionalSplitPages[slug] || {
+    canonical: CANONICAL,
+    metaTitle: "Split System Air Conditioning Supply & Installation | SplitsPro",
+    metaDescription: "Compare split system air conditioners from Daikin, Rinnai, Mitsubishi, Fujitsu and Samsung. View supplied & installed prices, get free sizing advice and book your installation with SplitsPro.",
+    ogDescription: "Compare Daikin, Rinnai, Mitsubishi, Fujitsu and Samsung split systems. Supplied and installed by SplitsPro across Western Sydney.",
+    heroTitle: "Split System Air Conditioning Supply & Installation",
+    heroSub: "Compare trusted air conditioning brands, view supplied and installed prices and find the right split system for your room.",
+    introHeading: "Considered installation. Chosen brands.",
+    introBody: "We take the time to plan every split system installation — positioning the indoor unit for even airflow, keeping pipe runs tidy and choosing from Daikin, Rinnai, Mitsubishi Electric and Mitsubishi Heavy Industries so you get the right fit for the room.",
+    regionLabel: "Western Sydney",
+  };
 
   return (
     <HomeComfortPage

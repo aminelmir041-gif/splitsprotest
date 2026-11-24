@@ -2,14 +2,14 @@ import {
   Snowflake, Wind, Wrench, Sparkles, ShieldCheck, HeartHandshake,
   BadgeCheck, Home as HomeIcon, Brush, MessageSquareQuote,
 } from "lucide-react";
-import coraUserImage from "./embedded/cora";
-import aliraXUserImage from "./embedded/aliraX";
-import aliraXAltUserImage from "./embedded/aliraXAlt";
-import daikinInstallIndoorCorner from "./embedded/daikinInstallIndoorCorner";
-import daikinInstallOutdoorBracket from "./embedded/daikinInstallOutdoorBracket";
-import daikinInstallIndoorLabel from "./embedded/daikinInstallIndoorLabel";
-import daikinInstallOutdoorClose from "./embedded/daikinInstallOutdoorClose";
-import daikinInstallIndoorStraight from "./embedded/daikinInstallIndoorStraight";
+import coraUserImage from "./embedded/cora.js";
+import aliraXUserImage from "./embedded/aliraX.js";
+import aliraXAltUserImage from "./embedded/aliraXAlt.js";
+import daikinInstallIndoorCorner from "./embedded/daikinInstallIndoorCorner.js";
+import daikinInstallOutdoorBracket from "./embedded/daikinInstallOutdoorBracket.js";
+import daikinInstallIndoorLabel from "./embedded/daikinInstallIndoorLabel.js";
+import daikinInstallOutdoorClose from "./embedded/daikinInstallOutdoorClose.js";
+import daikinInstallIndoorStraight from "./embedded/daikinInstallIndoorStraight.js";
 
 export const PHONE = "0414 698 435";
 export const PHONE_TEL = "tel:0414698435";

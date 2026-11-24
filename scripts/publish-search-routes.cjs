@@ -2,6 +2,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const pages = require('../src/lib/search-pages.json');
+const { SPLIT_BRANDS, PRICING_DISCLAIMER } = require('../src/lib/data.js');
+const { regionalSplitPages } = require('../src/lib/regionalSplitPages.mjs');
 const origin = 'https://splitspro.com.au';
 const build = path.resolve('build');
 const shell = fs.readFileSync(path.join(build, 'index.html'), 'utf8');
@@ -16,6 +18,40 @@ const primaryLinks = [
   ['/installation-guarantee/', 'Installation guarantee'],
   ['/contact/', 'Contact SplitsPro'],
 ];
+const brandLinks = SPLIT_BRANDS.map(brand => ['/split-systems/' + brand.slug + '/', brand.brand + ' installed prices']);
+const regionLinks = Object.values(regionalSplitPages).map(page => [new URL(page.canonical).pathname, page.regionLabel]);
+const buyerLinks = [
+  ['/split-systems/', 'Compare split system brands'],
+  ['/aircon-installation-guide/', 'Check which size your room needs'],
+  ['/installation-guarantee/', 'Read the installation guarantee'],
+  ['/contact/', 'Contact SplitsPro'],
+];
+
+function brandPricing(brand) {
+  return brand.ranges.map(range => {
+    const name = range.displayName || brand.brand + ' ' + range.name;
+    const rows = range.prices.map(({ kw, price }) =>
+      '<tr><th scope="row">' + escapeHtml(kw) + '</th><td>' + escapeHtml(price) + '</td></tr>'
+    ).join('');
+    return '<table><caption>' + escapeHtml(name) + '</caption><thead><tr><th scope="col">Capacity</th><th scope="col">Supplied and installed</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }).join('') + '<p>' + escapeHtml(PRICING_DISCLAIMER) + '</p>';
+}
+
+const routePages = { ...pages };
+for (const brand of SPLIT_BRANDS) {
+  routePages['/split-systems/' + brand.slug + '/'] = {
+    title: brand.metaTitle, description: brand.metaDesc, heading: brand.h1,
+    content: brandPricing(brand), links: buyerLinks,
+  };
+}
+for (const page of Object.values(regionalSplitPages)) {
+  routePages[new URL(page.canonical).pathname] = {
+    title: page.metaTitle, description: page.metaDescription, heading: page.heroTitle,
+    content: '<p>' + escapeHtml(page.introBody) + '</p>', links: brandLinks,
+  };
+}
+routePages['/split-systems/'] = { ...pages['/split-systems/'], links: [...brandLinks, ...primaryLinks] };
+routePages['/service-areas/'] = { ...pages['/service-areas/'], links: [...primaryLinks, ...regionLinks] };
 const rootElement = /<div\s+id=(?:"root"|'root'|root)\s*>\s*<\/div>/i;
 if (!rootElement.test(shell)) throw new Error('Expected the original React build before generating search routes');
 
@@ -29,15 +65,18 @@ for (const url of locations) {
   // Standalone pages contain their own images, pricing, forms and tracking.
   if (existing && existing !== shell) continue;
   let html = shell;
-  const meta = pages[route];
+  const meta = routePages[route];
   if (meta) {
     html = html.replace(/<title>[^<]*<\/title>/i, '<title>' + escapeHtml(meta.title) + '</title>');
     html = html.replace(/<meta\b[^>]*(?:name=(?:"description"|description)|property=(?:"og:description"|og:description))[^>]*>/gi,
       tag => tag.replace(/content="[^"]*"/i, 'content="' + escapeHtml(meta.description) + '"'));
     html = html.replace(/<meta\b[^>]*property=(?:"og:title"|og:title)[^>]*>/gi,
       tag => tag.replace(/content="[^"]*"/i, 'content="' + escapeHtml(meta.title) + '"'));
-    const links = primaryLinks.filter(([href]) => href !== route).map(([href, name]) => '<li><a href="' + href + '">' + name + '</a></li>').join('');
-    html = html.replace(rootElement, '<div id="root"><main><h1>' + escapeHtml(meta.title.split(' | ')[0]) + '</h1><p>' + escapeHtml(meta.description) + '</p><nav aria-label="SplitsPro services"><ul>' + links + '</ul></nav></main></div>');
+    const links = (meta.links || primaryLinks).filter(([href]) => href !== route)
+      .map(([href, name]) => '<li><a href="' + escapeHtml(href) + '">' + escapeHtml(name) + '</a></li>').join('');
+    const heading = escapeHtml(meta.heading || meta.title.split(' | ')[0]);
+    html = html.replace(rootElement, () => '<div id="root"><main><h1>' + heading + '</h1><p>' + escapeHtml(meta.description) + '</p>' +
+      (meta.content || '') + '<nav aria-label="SplitsPro services"><ul>' + links + '</ul></nav></main></div>');
   }
   html = html.replace('</head>', '<link data-rh="true" rel="canonical" href="' + escapeHtml(urlFor(route)) + '"></head>');
   fs.mkdirSync(path.dirname(file), {recursive: true});

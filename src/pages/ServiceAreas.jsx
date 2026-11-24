@@ -3,6 +3,7 @@ import { PageHero, CTASection, SectionHeading } from "../components/sections";
 import Reveal from "../components/Reveal";
 import ServiceAreasMap from "../components/ServiceAreasMap";
 import { AREAS_REGIONS, PHONE, PHONE_TEL } from "../lib/data";
+import { regionalSplitPages } from "../lib/regionalSplitPages.mjs";
 
 const ServiceAreas = () => (
   <>
@@ -15,7 +16,15 @@ const ServiceAreas = () => (
     <section className="bg-white py-28 pb-40 sm:py-36" data-testid="areas-grid">
       <div className="sp-container">
         <SectionHeading overline="Where We Work" title="Your suburb, expertly covered" />
-        <a className="mt-5 inline-block font-semibold underline" href="/split-systems/bass-hill-bankstown/">Split system installation in Bass Hill and Bankstown</a>
+        <nav aria-label="Split system installation by area" className="mt-5">
+          <h3 className="font-semibold">Split system installation by area</h3>
+          <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm underline">
+            <li><a href="/split-systems/bass-hill-bankstown/">Bass Hill and Bankstown</a></li>
+            {Object.entries(regionalSplitPages).map(([slug, page]) => (
+              <li key={slug}><a href={`/split-systems/${slug}/`}>{page.regionLabel}</a></li>
+            ))}
+          </ul>
+        </nav>
         <div className="mt-12"><ServiceAreasMap /></div>
 
         <div className="mt-16 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
