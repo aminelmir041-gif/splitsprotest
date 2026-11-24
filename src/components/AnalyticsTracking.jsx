@@ -58,7 +58,11 @@ export default function AnalyticsTracking() {
   useEffect(() => {
     const onPhoneClick = (event) => {
       const anchor = event.target?.closest?.('a[href^="tel:"]');
-      if (!anchor) return;
+      if (!anchor || event.defaultPrevented) return;
+      // A single custom event for Google Tag Manager's website-phone-click trigger.
+      // This does not report a connected call and never changes the phone number.
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: "splitspro_phone_click", page_path: window.location.pathname });
       if (validGa && typeof window.gtag === "function") {
         window.gtag("event", "click_to_call", { page_path: window.location.pathname });
       }
