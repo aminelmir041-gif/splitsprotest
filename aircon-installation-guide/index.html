@@ -249,8 +249,11 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 .calculator-progress{display:flex;align-items:center;gap:10px}
 .calculator-progress progress{flex:1;min-width:0;height:6px;accent-color:var(--sp-blue)}
 @media(prefers-reduced-motion:no-preference){
-  .calculator [data-step]:not([hidden]){animation:calculator-step-in .2s ease-out}
-  @keyframes calculator-step-in{from{opacity:.6;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .calculator [data-step]:not([hidden]){animation:calculator-step-in .28s cubic-bezier(.2,.7,.25,1)}
+  .calculator-options button{transition:background-color .15s,border-color .15s,transform .15s}
+  .calculator-options button:active,.calculator-system-picker button:active{transform:scale(.98)}
+  .calculator-progress progress::-webkit-progress-value{transition:width .25s ease}
+  @keyframes calculator-step-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 }
 #sizing-first{padding-top:38px;scroll-margin-top:84px}
 .float-ctas.calculator-in-view{visibility:hidden}
@@ -692,7 +695,6 @@ fbq('track', 'PageView');
   const systemButtons = controls.querySelectorAll('[data-system]');
   const stepBar = document.getElementById('sizing-step-bar');
   const card = document.getElementById('sizing-card');
-  const progress = document.getElementById('sizing-progress');
   const stepLabel = document.getElementById('sizing-step-label');
   const roomForm = document.getElementById('sizing-room-measure');
   const ductedForm = document.getElementById('sizing-ducted-measure');
@@ -730,15 +732,13 @@ fbq('track', 'PageView');
   function showStep(step, moveFocus = true) {
     const next = document.getElementById('sizing-' + step);
     card.querySelectorAll('[data-step]').forEach(panel => { panel.hidden = panel !== next; });
-    progress.hidden = step === 'estimate';
-    if (!progress.hidden) {
-      const skipsCeiling = building === 'below';
-      const totalSteps = skipsCeiling ? 6 : 7;
-      const number = stepNumbers[step] - (skipsCeiling && step === 'kitchen' ? 1 : 0);
-      stepLabel.textContent = 'Step ' + number + ' of ' + totalSteps;
-      stepBar.max = totalSteps;
-      stepBar.value = number;
-    }
+    const skipsCeiling = building === 'below';
+    const totalSteps = skipsCeiling ? 6 : 7;
+    const number = step === 'estimate' ? totalSteps
+      : stepNumbers[step] - (skipsCeiling && step === 'kitchen' ? 1 : 0);
+    stepLabel.textContent = step === 'estimate' ? 'Complete' : 'Step ' + number + ' of ' + totalSteps;
+    stepBar.max = totalSteps;
+    stepBar.value = number;
     if (!moveFocus) return;
     next.querySelector('h2').focus({preventScroll: true});
     const cardBounds = card.getBoundingClientRect();
@@ -794,7 +794,7 @@ fbq('track', 'PageView');
     const smallSplit = system === 'split' && roundedLoad < sizes[0];
     result.replaceChildren();
     if (smallSplit) {
-      addResult('Estimated cooling load to smallest listed split', roundedLoad.toFixed(1) + '–' + sizes[0] + ' kW', 'strong');
+      addResult('Estimated load through to the smallest split size', roundedLoad.toFixed(1) + '–' + sizes[0] + ' kW', 'strong');
     } else {
       addResult(system === 'ducted' ? 'All selected rooms' : 'Estimated cooling needed',
         roundedLoad.toFixed(1) + ' kW', 'strong');
@@ -819,7 +819,9 @@ fbq('track', 'PageView');
   }
 
   systemButtons.forEach(button => {
-    button.addEventListener('click', () => selectSystem(button.dataset.system));
+    button.addEventListener('click', () => {
+      if (button.dataset.system !== system) selectSystem(button.dataset.system);
+    });
   });
   card.querySelectorAll('[data-space]').forEach(button => {
     button.addEventListener('click', () => {
