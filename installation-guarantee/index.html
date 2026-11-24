@@ -956,7 +956,12 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
       form.reset();
       status.textContent='Thank you — we have your request and will contact you about your free consultation.';
       status.dataset.state='success';
-      if(typeof window.gtag==='function')window.gtag('event','generate_lead',{lead_type:'warranty_preview_consultation'});
+      if(typeof window.gtag==='function'){
+        window.gtag('event','generate_lead',{lead_type:'warranty_preview_consultation'});
+        window.gtag('event','installation_guarantee_consultation_submitted',{service:fields.service,page_path:window.location.pathname});
+      }
+      window.dataLayer=window.dataLayer||[];
+      window.dataLayer.push({event:'splitspro_consultation_submitted',service:fields.service,page_path:window.location.pathname});
       if(typeof window.clarity==='function')window.clarity('event','warranty_preview_consultation_submitted');
     }catch(error){
       status.textContent='We could not send your request. Please call 0414 698 435 instead.';
