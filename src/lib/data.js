@@ -17,7 +17,6 @@ export const ABN = "62 137 127 557";
 export const LOGO = `${process.env.PUBLIC_URL || ""}/logo.png`;
 const PUBLIC = process.env.PUBLIC_URL || "";
 const PRODUCT_IMAGES = {
-  rinnaiPb: `${PUBLIC}/products/rinnai-pb-indoor.webp`,
   rinnaiPx: `${PUBLIC}/products/rinnai-px-indoor.webp`,
   mitsubishiAp: `${PUBLIC}/products/mitsubishi-electric-ap-indoor.webp`,
   mhiCiara: `${PUBLIC}/products/mitsubishi-heavy-ciara-indoor.webp`,
@@ -369,7 +368,7 @@ export const SPLIT_BRANDS = [
         slug: "alira-x",
         name: "Alira X",
         blurb: "Daikin's air-quality focused premium split. It combines three-stage filtration, Streamer technology, mould-control functions, smart control and comfortable airflow.",
-        features: ["Streamer", "3-Stage Filtration", "Mould-Proof Operation", "Coanda Airflow", "Intelligent Eye", "Built-In Wi-Fi"],
+        features: ["Sensitive Choice program", "Streamer", "3-Stage Filtration", "Mould-Proof Operation", "Coanda Airflow", "Intelligent Eye", "Built-In Wi-Fi"],
         featureDetails: [
           { title: "Streamer air cleaning", desc: "Streamer uses a high-power plasma discharge to break down unwanted substances captured inside the unit. Daikin laboratory research using a test Streamer generator also showed inactivation of SARS-CoV-2. This is an air-cleaning feature — it is not a medical guarantee and does not mean an installed air conditioner prevents COVID-19." },
           { title: "Three layers of filtration", desc: "A pre-filter catches larger dust, the Enzyme Blue filter helps with odours and particles, and Streamer works on pollutants captured inside the unit." },
@@ -388,13 +387,15 @@ export const SPLIT_BRANDS = [
           { kw: "3.5kW", price: "$2,290" },
           { kw: "5.0kW", price: "$2,890" },
           { kw: "7.1kW", price: "$3,390" },
+          { kw: "8.5kW", price: "$4,250" },
+          { kw: "9.5kW", price: "$5,100" },
         ],
       },
       {
         slug: "zena",
         name: "Zena",
         blurb: "Zena is the designer Daikin. It is only 185 mm deep and comes in White Hair Line or Black Wood, so it sits closer to the wall and looks much less bulky than a typical split system.",
-        features: ["Slimline Design", "White or Black", "Streamer", "Built-In Wi-Fi", "Coanda Airflow", "Intelligent Eye", "Grid Eye", "Saw Edge Fan"],
+        features: ["Sensitive Choice program", "Slimline Design", "White or Black", "Streamer", "Built-In Wi-Fi", "Coanda Airflow", "Intelligent Eye", "Grid Eye", "Saw Edge Fan"],
         featureDetails: [
           { title: "Ultra-slim designer body", desc: "The indoor unit is about 295 mm high, 798 mm wide and only 185 mm deep. In simple terms: it sticks out from the wall less and looks cleaner in modern rooms." },
           { title: "White Hair Line or Black Wood", desc: "Choose the light finish to blend into a white wall, or the dark Black Wood finish when you want the air conditioner to look like part of the room design." },
@@ -425,11 +426,11 @@ export const SPLIT_BRANDS = [
     slug: "rinnai",
     brand: "Rinnai",
     label: "Rinnai",
-    tagline: "Rinnai reverse cycle split systems — PB Series and PX Series.",
+    tagline: "Rinnai PX Series reverse-cycle split systems.",
     metaTitle: "Rinnai Split System Prices & Installation | SplitsPro",
     h1: "Rinnai Split System Air Conditioning",
-    metaDesc: "Compare Rinnai PB Series and Rinnai PX Series supplied & installed prices from SplitsPro. Book your Rinnai split system installation online.",
-    body: "The Rinnai PB Series and PX Series are dependable reverse cycle split systems — a great value choice for bedrooms, living rooms, home offices and granny flats.",
+    metaDesc: "Compare Rinnai PX Series features, sizes and supplied-and-installed prices from SplitsPro. Request a free installation consultation.",
+    body: "The Rinnai PX Series offers reverse-cycle heating and cooling with smart control and HEPA filtration. Compare options for bedrooms, living spaces, home offices and granny flats.",
     image: IMAGES.outdoorRinnai,
     installEditorial: {
       primary: {
@@ -447,24 +448,10 @@ export const SPLIT_BRANDS = [
     },
     ranges: [
       {
-        slug: "pb-series",
-        name: "PB Series",
-        blurb: "Smart, reliable heating and cooling designed for Australian conditions. The PB Series includes Wi-Fi control, quiet inverter operation, self-cleaning, 3D airflow, dehumidifying and sleep functions for comfortable everyday use.",
-        features: ["Wi-Fi Control", "Self-Cleaning", "3D Airflow", "Quiet Operation"],
-        image: PRODUCT_IMAGES.rinnaiPb,
-        prices: [
-          { kw: "2.5kW", price: "$1,700" },
-          { kw: "3.5kW", price: "$1,850" },
-          { kw: "5.0kW", price: "$2,300" },
-          { kw: "7.0kW", price: "$2,600" },
-          { kw: "8.0kW", price: "$3,000" },
-        ],
-      },
-      {
         slug: "px-series",
         name: "PX Series",
-        blurb: "Affordable smart comfort with modern controls. The Rinnai PX Series adds Wi-Fi and voice control, a human presence sensor, 3D airflow, humidity control and high-grade filtration for smarter everyday comfort.",
-        features: ["Wi-Fi + Voice Control", "Human Sensor", "3D Airflow", "Humidity Control"],
+        blurb: "Smart reverse-cycle comfort with HEPA filtration, Wi-Fi and voice control, a human presence sensor, 3D airflow and humidity control.",
+        features: ["HEPA Filter", "Wi-Fi + Voice Control", "Human Sensor", "3D Airflow", "Humidity Control"],
         image: PRODUCT_IMAGES.rinnaiPx,
         prices: [
           { kw: "2.5kW", price: "$1,700" },
