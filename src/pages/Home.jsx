@@ -101,42 +101,34 @@ const Hero = () => {
 };
 
 const TrustBanner = () => (
-  <section aria-label="Why homeowners trust SplitsPro" className="border-b border-[#E5E5EA] bg-white py-5">
-    <div className="sp-container grid grid-cols-2 gap-4 text-center text-sm font-semibold text-[#1D1D1F] sm:grid-cols-4 sm:gap-6">
-      <span>Licensed &amp; Insured</span>
-      <span>Lifetime Installation Guarantee</span>
-      <span>5-Star Google Rated</span>
-      <span>Pay After Installation</span>
+  <section aria-label="Why homeowners trust SplitsPro" className="bg-white py-24 sm:py-32">
+    <div className="sp-container max-w-4xl">
+      <Reveal><Overline>Free Quote &amp; Plan</Overline></Reveal>
+      <Reveal delay={0.05}>
+        <h2 className="mt-5 font-serif text-4xl font-medium leading-[1.08] tracking-tight text-[#1D1D1F] md:text-5xl text-balance">
+          Trusted by homeowners across Western Sydney
+        </h2>
+      </Reveal>
+      <Reveal delay={0.1}><div className="mt-7"><GoogleRating /></div></Reveal>
+      <Reveal delay={0.15}>
+        <figure className="mt-8 border-l-2 border-[#C8A46A] pl-5">
+          <p className="text-[#FBBC04] tracking-widest">{"★".repeat(5)}</p>
+          <blockquote className="mt-3 font-serif text-xl leading-relaxed text-[#1D1D1F]">&ldquo;{TRUST_QUOTE}&rdquo;</blockquote>
+        </figure>
+      </Reveal>
+      <Reveal delay={0.2}>
+        <p className="mt-8 max-w-md leading-relaxed text-[#6E6E73]">
+          Tell us a little about your home. Add a photo of your space or unit and we&apos;ll call you back to arrange a considered consultation and honest quote — no obligation.
+        </p>
+      </Reveal>
+      <BrandStrip />
     </div>
   </section>
 );
 
 const EnquirySection = () => (
   <section id="enquiry" className="scroll-mt-24 bg-white py-24 sm:py-32" data-testid="enquiry-section">
-    <div className="sp-container grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-      <div>
-        <Reveal><Overline>Free Quote &amp; Plan</Overline></Reveal>
-        <Reveal delay={0.05}>
-          <h2 className="mt-5 font-serif text-4xl font-medium leading-[1.08] tracking-tight text-[#1D1D1F] md:text-5xl text-balance">
-            Trusted by homeowners across Western Sydney
-          </h2>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <div className="mt-7"><GoogleRating /></div>
-        </Reveal>
-        <Reveal delay={0.15}>
-          <figure className="mt-8 border-l-2 border-[#C8A46A] pl-5">
-            <p className="text-[#FBBC04] tracking-widest">{"★".repeat(5)}</p>
-            <blockquote className="mt-3 font-serif text-xl leading-relaxed text-[#1D1D1F]">&ldquo;{TRUST_QUOTE}&rdquo;</blockquote>
-          </figure>
-        </Reveal>
-        <Reveal delay={0.2}>
-          <p className="mt-8 max-w-md leading-relaxed text-[#6E6E73]">
-            Tell us a little about your home. Add a photo of your space or unit and we&apos;ll call you back to arrange a considered consultation and honest quote — no obligation.
-          </p>
-        </Reveal>
-        <BrandStrip />
-      </div>
+    <div className="sp-container max-w-3xl">
       <Reveal delay={0.12}>
         <div className="rounded-2xl border border-[#E5E5EA] bg-white p-8 soft-shadow sm:p-10">
           <h3 className="font-serif text-2xl text-[#1D1D1F]">Request your free quote</h3>
@@ -147,7 +139,6 @@ const EnquirySection = () => (
     </div>
   </section>
 );
-
 
 const Philosophy = () => (
   <section className="bg-white py-28 sm:py-36" data-testid="philosophy-section">
