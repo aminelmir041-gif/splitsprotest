@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLenis } from "lenis/react";
 import { motion, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
@@ -146,23 +146,30 @@ const EnquirySection = () => (
 const SizingCalculatorCard = () => (
   <section className="bg-[#F5F5F7] py-12 sm:py-16" aria-labelledby="sizing-calculator-heading">
     <div className="sp-container">
-      <a href="/aircon-installation-guide/" className="group grid items-center gap-6 overflow-hidden rounded-2xl border border-[#E5E5EA] bg-white p-7 transition-colors hover:border-[#C8A46A] sm:grid-cols-[1fr_auto] sm:p-10" data-testid="sizing-calculator-card">
+      <a href="/aircon-installation-guide/" className="group block overflow-hidden rounded-2xl border border-[#E5E5EA] bg-white p-7 transition-colors hover:border-[#C8A46A] sm:p-10" data-testid="sizing-calculator-card">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8B754F]">Free air conditioner sizing guide</p>
           <h2 id="sizing-calculator-heading" className="mt-3 font-serif text-3xl leading-tight text-[#1D1D1F] sm:text-4xl">Not sure what size air conditioner you need?</h2>
           <p className="mt-3 max-w-2xl leading-relaxed text-[#6E6E73]">Explore our air conditioner sizing calculator to estimate the right cooling capacity for your room. Check room size, insulation and sun exposure before comparing split system prices.</p>
           <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#8B754F] group-hover:underline">Calculate your air conditioner size <ArrowUpRight className="h-4 w-4" /></span>
         </div>
-        <div aria-hidden="true" className="flex h-20 w-20 items-center justify-center rounded-2xl border border-[#E5E5EA] bg-[#FAF8F4] font-serif text-3xl text-[#8B754F] sm:h-28 sm:w-28">kW</div>
       </a>
     </div>
   </section>
 );
 
-const CleaningMaintenancePreview = () => (
+const CLEANING_PHOTOS = [
+  { src: "/landing/splitspro-process-filter.png", alt: "SplitsPro cleaning job showing opened split system covers and filters", caption: "Opening the unit to reach hidden dirt" },
+  { src: "/landing/splitspro-process-coil.png", alt: "SplitsPro cleaning job showing the exposed indoor air conditioner coil", caption: "Cleaning beyond the filters" },
+  { src: "/landing/splitspro-process-covers.png", alt: "SplitsPro cleaning job showing cleaned removable air conditioner covers", caption: "Cleaned covers ready for reassembly" },
+];
+
+const CleaningMaintenancePreview = () => {
+  const [photoIndex, setPhotoIndex] = useState(0);
+  return (
   <section className="bg-white py-16 sm:py-20" aria-labelledby="cleaning-maintenance-title">
-    <div className="sp-container grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-      <div>
+    <div className="sp-container">
+      <div className="max-w-3xl">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8B754F]">Air conditioner care</p>
         <h2 id="cleaning-maintenance-title" className="mt-3 font-serif text-3xl text-[#1D1D1F] sm:text-4xl">Air Conditioner Cleaning &amp; Maintenance in Sydney</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[#6E6E73]">A clean air conditioner starts with regular filter care. Check and clean accessible filters according to your manufacturer's instructions, often every few weeks during heavy use. Professional split-system deep cleaning is useful when dust, odours or build-up remain, and routine servicing helps identify drainage and performance issues.</p>
@@ -173,13 +180,23 @@ const CleaningMaintenancePreview = () => (
           <Link to="/ducted-cleaning" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#D9D9D9] px-6 py-3 text-sm font-semibold text-[#1D1D1F] hover:border-[#8B754F]">Ducted cleaning &amp; maintenance <ArrowUpRight className="h-4 w-4" /></Link>
         </div>
       </div>
-      <Link to="/split-system-cleaning" className="group overflow-hidden rounded-2xl border border-[#E5E5EA] bg-[#F5F5F7]">
-        <img src={IMAGES.splitLiving} alt="Wall-mounted split-system air conditioner in a Sydney living room" loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
-        <p className="px-5 py-4 text-sm text-[#6E6E73]">See what a professional split-system clean involves <ArrowUpRight className="ml-1 inline h-4 w-4" /></p>
-      </Link>
+      <div className="mt-10 max-w-3xl" aria-label="Real SplitsPro split-system cleaning photos">
+        <div className="overflow-hidden rounded-2xl border border-[#E5E5EA] bg-[#F5F5F7]">
+          <img src={CLEANING_PHOTOS[photoIndex].src} alt={CLEANING_PHOTOS[photoIndex].alt} loading="lazy" className="aspect-[4/3] w-full object-contain sm:aspect-[16/9]" />
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#E5E5EA] bg-white px-4 py-3">
+            <p className="text-sm text-[#525960]">{CLEANING_PHOTOS[photoIndex].caption}</p>
+            <div className="flex items-center gap-3">
+              <button type="button" aria-label="Previous cleaning photo" onClick={() => setPhotoIndex(i => (i + CLEANING_PHOTOS.length - 1) % CLEANING_PHOTOS.length)} className="min-h-11 min-w-11 rounded-full border border-[#D9D9D9] text-xl text-[#1D1D1F]">‹</button>
+              <span className="text-xs tabular-nums text-[#6E6E73]">{photoIndex + 1} / {CLEANING_PHOTOS.length}</span>
+              <button type="button" aria-label="Next cleaning photo" onClick={() => setPhotoIndex(i => (i + 1) % CLEANING_PHOTOS.length)} className="min-h-11 min-w-11 rounded-full border border-[#D9D9D9] text-xl text-[#1D1D1F]">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
-);
+  );
+};
 
 const BrandAndSmartSEO = () => (
   <>
