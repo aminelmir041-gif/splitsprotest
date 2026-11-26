@@ -199,12 +199,12 @@ export const ProcessTimeline = () => (
 );
 
 export const BrandStrip = () => (
-  <div className="border-y border-[#E5E5EA] bg-white py-14" data-testid="brand-strip">
-    <div className="sp-container">
+  <div className="border-y border-[#E5E5EA] bg-white py-6" data-testid="brand-strip">
+    <div className="mx-auto max-w-4xl px-5">
       <p className="text-center text-xs font-semibold uppercase tracking-[0.24em] text-[#6E6E73]">Trusted premium brands</p>
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 sm:gap-x-7">
         {BRANDS.map((b) => (
-          <span key={b.name} className="cursor-default font-serif text-2xl text-[#1D1D1F]/30 transition-colors duration-300 sm:text-3xl"
+          <span key={b.name} className="cursor-default font-serif text-base text-[#1D1D1F]/50 transition-colors duration-300 sm:text-lg"
             style={{ transition: "color .3s ease" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = b.color)}
             onMouseLeave={(e) => (e.currentTarget.style.color = "")}
