@@ -279,7 +279,6 @@ const Home = () => (
   <>
     <Hero />
     <TrustBanner />
-    <EnquirySection />
     <BrandStrip />
     <Philosophy />
     <Services />
@@ -290,6 +289,7 @@ const Home = () => (
     <ServiceAreas />
     <HomeFAQ />
     <CTASection />
+    <EnquirySection />
   </>
 );
 
