@@ -58,11 +58,11 @@ const Hero = () => {
 
       <motion.div className="sp-container relative z-10 flex h-full flex-col justify-center pt-28 pb-36 sm:pt-24 sm:pb-32" style={{ y: contentY, opacity: fade }}>
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.5 }}>
-          <Overline light>Premium Residential Air Conditioning · South West Sydney</Overline>
+          
         </motion.div>
 
         <h1 className="mt-6 max-w-4xl font-serif text-5xl font-medium leading-[1.0] tracking-tight text-white sm:text-6xl lg:text-8xl">
-          {["Crafted Comfort", "For Every Home"].map((line, i) => (
+          {["Air Conditioning Sydney", "Lifetime Installation Guarantee"].map((line, i) => (
             <span key={line} className="block overflow-hidden py-1">
               <motion.span className="block" initial={{ y: "110%" }} animate={{ y: "0%" }} transition={{ duration: 1, delay: 0.55 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}>
                 {line}
@@ -73,7 +73,7 @@ const Hero = () => {
 
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.9 }}
           className="mt-7 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl">
-          Every home deserves the right solution. We take the time to understand your home, recommend the perfect air conditioning system and install it with precision and care.
+          Sydney’s split-system and ducted air conditioning specialists. From South West Sydney to the Eastern Suburbs, across the Inner West, Western Sydney, North Shore and Northern Beaches. We’ll help you choose the right system for your home and install it with precision and care.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 1.05 }} className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
