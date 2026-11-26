@@ -142,6 +142,45 @@ const EnquirySection = () => (
   </section>
 );
 
+
+const BrandAndSmartSEO = () => (
+  <>
+    <section className="bg-white py-16 sm:py-20" aria-labelledby="home-brands-title">
+      <div className="sp-container">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8B754F]">Systems we install</p>
+        <h2 id="home-brands-title" className="mt-3 font-serif text-3xl text-[#1D1D1F] sm:text-4xl">Air Conditioning Brands We Install in Sydney</h2>
+        <p className="mt-4 max-w-3xl leading-relaxed text-[#6E6E73]">Explore split system and ducted air conditioning options for Sydney homes, from quiet bedroom cooling to multi-zone, whole-home comfort. Available features depend on the model and installation.</p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            ["Daikin", "Energy-efficient split systems and ducted air conditioning.", "/split-systems"],
+            ["Rinnai", "Split system cooling and ducted options for different home sizes.", "/split-systems"],
+            ["Mitsubishi Electric", "Quiet indoor comfort and inverter split system options.", "/split-systems/mitsubishi"],
+            ["Mitsubishi Heavy Industries", "Split system options with Japanese engineering.", "/split-systems/mitsubishi"],
+            ["Fujitsu", "Split system options for bedrooms, living rooms and home offices.", "/split-systems"],
+            ["Samsung", "Selected split systems with smart-control options, depending on model.", "/split-systems"]
+          ].map(([name, description, url]) => (
+            <Link key={name} to={url} className="group rounded-xl border border-[#E5E5EA] bg-[#FAFAF9] p-5 transition-colors hover:border-[#C8A46A]">
+              <h3 className="font-serif text-xl text-[#1D1D1F]">{name}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#6E6E73]">{description}</p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#8B754F]">Explore options <ArrowUpRight className="h-4 w-4" /></span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+    <section className="bg-[#F5F5F7] py-14 sm:py-20" aria-labelledby="smart-controls-title">
+      <div className="sp-container grid items-center gap-7 md:grid-cols-[1.5fr_1fr]">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8B754F]">Control your comfort</p>
+          <h2 id="smart-controls-title" className="mt-3 font-serif text-3xl text-[#1D1D1F] sm:text-4xl">Smart Air Conditioning Controls &amp; Upgrades</h2>
+          <p className="mt-4 leading-relaxed text-[#6E6E73]">Looking for Wi-Fi air conditioner control, smartphone app access or ducted multi-zone control? We can discuss compatible smart wall controllers, zoning options and smart-home features for your system. Compatibility varies by brand and model.</p>
+        </div>
+        <Link to="/contact" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1D1D1F] px-7 py-4 text-center font-semibold text-white hover:bg-[#383838]">Ask about smart controls <ArrowUpRight className="h-4 w-4" /></Link>
+      </div>
+    </section>
+  </>
+);
+
 const Philosophy = () => (
   <section className="bg-white py-28 sm:py-36" data-testid="philosophy-section">
     <div className="sp-container">
@@ -275,6 +314,7 @@ const Home = () => (
     <TrustBanner />
     <DuctedPricingCarousel />
     <SplitPricingCarousel />
+    <BrandAndSmartSEO />
     <Philosophy />
     <Services />
     <WhySplitsPro />
