@@ -2,14 +2,28 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { RINNAI_LOCAL_OFFER_RANGES } from "../pages/BrandPage";
+import { SPLIT_BRANDS } from "../lib/data";
+
+// Keep the current advertised offers and extend them with the existing product catalogue.
+const extraRanges = SPLIT_BRANDS.flatMap(brand => brand.ranges
+  .filter(item => !(brand.slug === "rinnai" && item.slug === "px-series") && !(brand.slug === "daikin" && item.slug === "cora"))
+  .filter(item => item.prices?.length)
+  .map(item => ({
+    ...item,
+    slug: `${brand.slug}-${item.slug}`,
+    displayName: item.displayName || `${brand.brand} ${item.name}`,
+    tabLabel: item.displayName || `${brand.brand} ${item.name}`,
+  })));
+const allRanges = [...RINNAI_LOCAL_OFFER_RANGES, ...extraRanges];
 
 export default function SplitPricingCarousel() {
-  const ranges = RINNAI_LOCAL_OFFER_RANGES;
+  const ranges = allRanges;
   const [brandIndex, setBrandIndex] = useState(0);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const reducedMotion = useReducedMotion();
   const touch = useRef(null);
+  const brandStrip = useRef(null);
   const range = ranges[brandIndex];
   const count = range.prices.length;
 
@@ -19,15 +33,20 @@ export default function SplitPricingCarousel() {
     return () => window.clearInterval(timer);
   }, [brandIndex, count, paused, reducedMotion]);
 
-  const choose = i => { setBrandIndex(i); setIndex(0); };
+  const choose = i => { setBrandIndex(i); setIndex(0); setPaused(false); };
+  const scrollBrands = direction => brandStrip.current?.scrollBy({left: direction * 190, behavior: reducedMotion ? "auto" : "smooth"});
   const move = direction => { setIndex(i => (i + direction + count) % count); setPaused(true); };
 
   return (
     <section aria-labelledby="home-split-prices-heading" className="bg-white py-8 sm:py-12" data-testid="home-split-pricing">
       <div className="sp-container">
         <h2 id="home-split-prices-heading" className="font-serif text-[28px] leading-[1.12] tracking-tight text-[#1D1D1F] sm:text-4xl">Split system air conditioner prices</h2>
-        <div className="mt-4 grid grid-cols-2 gap-2" aria-label="Choose split system brand">
-          {ranges.map((item,i) => <button type="button" key={item.slug} onClick={() => choose(i)} aria-pressed={i===brandIndex} className={`min-h-[44px] rounded-full border px-3 py-2 text-xs font-medium sm:text-sm ${i===brandIndex ? "border-[#1D1D1F] bg-[#1D1D1F] text-white" : "border-[#D8C6A8] bg-white text-[#1D1D1F] hover:border-[#C8A46A]"}`}>{item.tabLabel || item.displayName}</button>)}
+        <div className="mt-4 flex items-center gap-1.5">
+          <button type="button" onClick={()=>scrollBrands(-1)} aria-label="Scroll to previous brands" className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full border border-[#D8C6A8] text-[#956C35]"><ArrowLeft className="h-4 w-4"/></button>
+          <div ref={brandStrip} className="flex min-w-0 flex-1 snap-x gap-2 overflow-x-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Swipe to choose split system brand or range">
+          {ranges.map((item,i) => <button type="button" key={item.slug} onClick={() => choose(i)} aria-pressed={i===brandIndex} className={`min-h-[44px] shrink-0 snap-start whitespace-nowrap rounded-full border px-4 py-2 text-xs font-medium sm:text-sm ${i===brandIndex ? "border-[#1D1D1F] bg-[#1D1D1F] text-white" : "border-[#D8C6A8] bg-white text-[#1D1D1F] hover:border-[#C8A46A]"}`}>{item.tabLabel || item.displayName}</button>)}
+          </div>
+          <button type="button" onClick={()=>scrollBrands(1)} aria-label="Scroll to more brands" className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full border border-[#D8C6A8] text-[#956C35]"><ArrowRight className="h-4 w-4"/></button>
         </div>
         <div className="mt-3 overflow-hidden rounded-2xl border border-[#B98C4F] bg-[#F7F5F1] p-3 sm:p-6"
           onTouchStart={e => {touch.current=[e.touches[0].clientX,e.touches[0].clientY];}}
@@ -54,10 +73,10 @@ export default function SplitPricingCarousel() {
           </div>)}
         </div>
         <div className="mt-2 flex items-center justify-between gap-3">
-          <div className="flex items-center" aria-label="Choose system capacity">
+          <div className="flex min-w-0 flex-wrap items-center" aria-label="Choose system capacity">
             {range.prices.map((unit,i)=><button key={unit.kw} type="button" onClick={()=>{setIndex(i);setPaused(true);}} aria-label={`Show ${unit.kw} split system`} aria-current={i===index?"true":undefined} className="flex h-10 w-6 items-center justify-center"><span className={`h-2 rounded-full ${i===index?"w-4 bg-[#956C35]":"w-2 bg-[#D1D1D6]"}`}/></button>)}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             {!reducedMotion&&<button type="button" onClick={()=>setPaused(v=>!v)} className="min-h-[44px] px-1 text-xs text-[#6E6E73]">{paused?"Play":"Pause"}</button>}
             <button type="button" onClick={()=>move(-1)} aria-label="Previous split system" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#956C35] bg-white text-[#956C35]"><ArrowLeft className="h-5 w-5"/></button>
             <button type="button" onClick={()=>move(1)} aria-label="Next split system" className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#956C35] text-white"><ArrowRight className="h-5 w-5"/></button>
