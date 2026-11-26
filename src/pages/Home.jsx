@@ -10,6 +10,7 @@ import {
 } from "../components/sections";
 import ServiceAreasMap from "../components/ServiceAreasMap";
 import QuoteForm from "../components/QuoteForm";
+import DuctedPricingCarousel from "../components/DuctedPricingCarousel";
 import {
   IMAGES, FEATURED_SERVICES, FAQS, PHONE, PHONE_TEL, FEATURED_REVIEW, TRUST_QUOTE,
 } from "../lib/data";
@@ -271,6 +272,7 @@ const Home = () => (
   <>
     <Hero />
     <TrustBanner />
+    <DuctedPricingCarousel />
     <Philosophy />
     <Services />
     <WhySplitsPro />
