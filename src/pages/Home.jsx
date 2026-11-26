@@ -135,6 +135,7 @@ const EnquirySection = () => (
             Tell us a little about your home. Add a photo of your space or unit and we&apos;ll call you back to arrange a considered consultation and honest quote — no obligation.
           </p>
         </Reveal>
+        <BrandStrip />
       </div>
       <Reveal delay={0.12}>
         <div className="rounded-2xl border border-[#E5E5EA] bg-white p-8 soft-shadow sm:p-10">
@@ -279,7 +280,6 @@ const Home = () => (
   <>
     <Hero />
     <TrustBanner />
-    <BrandStrip />
     <Philosophy />
     <Services />
     <WhySplitsPro />
