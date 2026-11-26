@@ -214,20 +214,23 @@ const BrandAndSmartSEO = () => (
             { name: "Fujitsu", description: "Compare split system cooling for bedrooms, living spaces and home offices.", split: "/split-systems/fujitsu" },
             { name: "Samsung", description: "Explore split system options and compatible smart-home control features.", split: "/split-systems/samsung" }
           ].map(({ name, description, split, ducted }) => (
-            <div key={name} className="rounded-xl border border-[#E5E5EA] bg-[#FAFAF9] p-5">
-              <h3 className="font-serif text-xl text-[#1D1D1F]">{name}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#6E6E73]">{description}</p>
-              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3">
-                <Link to={split} className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-[#8B754F] hover:underline">
+            <article key={name} className="group relative isolate flex min-h-[255px] flex-col overflow-hidden rounded-2xl border border-white/20 bg-[#090A0D] p-6 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_12px_28px_rgba(0,0,0,0.16)] transition-transform duration-300 hover:-translate-y-1 sm:p-7">
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(145deg,rgba(255,255,255,0.23)_0%,rgba(255,255,255,0.055)_17%,transparent_40%),radial-gradient(ellipse_at_85%_95%,rgba(177,184,201,0.13),transparent_55%),linear-gradient(165deg,#25272D_0%,#0B0C10_40%,#030405_100%)]" />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-x-5 top-px h-px bg-gradient-to-r from-transparent via-white/65 to-transparent" />
+              <div className="mb-5 flex min-h-[52px] items-center">
+                <h3 className="max-w-full break-words text-[clamp(1.3rem,2vw,1.75rem)] font-black leading-tight tracking-tight text-[#F8F9FC] [text-shadow:0_1px_0_rgba(255,255,255,0.4),0_3px_8px_rgba(0,0,0,0.9)]">{name}</h3>
+              </div>
+              <p className="mb-5 text-sm leading-relaxed text-[#E2E4EA]">{description}</p>
+              <div className="mt-auto flex flex-wrap gap-x-5 gap-y-1 border-t border-white/20 pt-4">
+                <Link to={split} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[#F4D7A3] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                   View split pricing &amp; specs <ArrowUpRight className="h-4 w-4" />
                 </Link>
-                {ducted && <Link to={ducted} className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-[#8B754F] hover:underline">
+                {ducted && <Link to={ducted} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[#F4D7A3] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                   View ducted options <ArrowUpRight className="h-4 w-4" />
                 </Link>}
               </div>
-            </div>
-          ))}
-        </div>
+            </article>
+          ))}        </div>
       </div>
     </section>
     <section className="bg-[#F5F5F7] py-14 sm:py-20" aria-labelledby="smart-controls-title">
