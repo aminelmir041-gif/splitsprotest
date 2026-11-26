@@ -100,6 +100,17 @@ const Hero = () => {
   );
 };
 
+const TrustBanner = () => (
+  <section aria-label="Why homeowners trust SplitsPro" className="border-b border-[#E5E5EA] bg-white py-5">
+    <div className="sp-container grid grid-cols-2 gap-4 text-center text-sm font-semibold text-[#1D1D1F] sm:grid-cols-4 sm:gap-6">
+      <span>Licensed &amp; Insured</span>
+      <span>Lifetime Installation Guarantee</span>
+      <span>5-Star Google Rated</span>
+      <span>Pay After Installation</span>
+    </div>
+  </section>
+);
+
 const EnquirySection = () => (
   <section id="enquiry" className="scroll-mt-24 bg-white py-24 sm:py-32" data-testid="enquiry-section">
     <div className="sp-container grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
@@ -267,6 +278,7 @@ const HomeFAQ = () => (
 const Home = () => (
   <>
     <Hero />
+    <TrustBanner />
     <EnquirySection />
     <BrandStrip />
     <Philosophy />
