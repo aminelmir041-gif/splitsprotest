@@ -1,65 +1,12 @@
-name: Deploy SplitsPro website to GitHub Pages
-# Automatic publishes are handled by publish-splitspro.yml on every main push.
+name: Legacy Pages workflow (disabled)
+# Deployment is owned exclusively by publish-splitspro.yml.
+# This workflow intentionally has no deployment jobs or Pages artifacts.
 on:
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
-  id-token: write
-concurrency:
-  group: pages
-  cancel-in-progress: true
 jobs:
-  build:
+  notice:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
-        env:
-          CI: 'false'
-          PUBLIC_URL: ''
-      - name: Include workmanship campaign photos and completion certificate
-        run: |
-          mkdir -p build/workmanship
-          cp workmanship/splitspro-installation-certificate.png build/workmanship/
-          cp -R workmanship/photo-gallery build/workmanship/photo-gallery
-          test -s build/workmanship/index.html
-          test -s build/workmanship/photo-gallery/01-100144.jpg
-      - name: Publish standalone quote and sizing guides
-        run: |
-          cp -R aircon-quote-guide build/aircon-quote-guide
-          cp -R aircon-installation-guide build/aircon-installation-guide
-          test -s build/aircon-quote-guide/index.html
-          test -s build/aircon-installation-guide/index.html
-      - name: Publish standalone Our Approach page
-        run: |
-          mkdir -p build/our-approach
-          cp our-approach/index.html build/our-approach/index.html
-          cp -R workmanship/photo-gallery build/workmanship/photo-gallery
-          test -s build/our-approach/index.html
-      - name: Publish Ducted page at its direct URL
-        run: |
-          mkdir -p build/ducted
-          cp build/index.html build/ducted/index.html
-          test -s build/ducted/index.html
-      - run: echo 'splitspro.com.au' > build/CNAME
-      - name: Publish crawlable service and suburb URLs
-        run: node scripts/publish-search-routes.cjs
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: build
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - run: echo "Use Build and deploy SplitsPro (publish-splitspro.yml) to publish the website."
