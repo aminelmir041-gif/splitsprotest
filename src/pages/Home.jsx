@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLenis } from "lenis/react";
-import { motion, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
-import { ArrowUpRight, Phone } from "lucide-react";
+import { motion, useMotionValue, useSpring, useTransform, useScroll, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, Phone, ChevronLeft, ChevronRight } from "lucide-react";
 import Reveal from "../components/Reveal";
 import {
   SectionHeading, Overline, CTASection, ProcessTimeline, BrandStrip, WhyGrid, Airflow,
@@ -166,6 +166,16 @@ const CLEANING_PHOTOS = [
 
 const CleaningMaintenancePreview = () => {
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const touch = useRef(null);
+  const count = CLEANING_PHOTOS.length;
+  useEffect(() => {
+    if (paused || reducedMotion) return;
+    const timer = window.setInterval(() => setPhotoIndex(i => (i + 1) % count), 5000);
+    return () => window.clearInterval(timer);
+  }, [paused, reducedMotion, count]);
+  const move = direction => setPhotoIndex(i => (i + direction + count) % count);
   return (
   <section className="bg-white py-16 sm:py-20" aria-labelledby="cleaning-maintenance-title">
     <div className="sp-container">
@@ -180,16 +190,38 @@ const CleaningMaintenancePreview = () => {
           <Link to="/ducted-cleaning" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#D9D9D9] px-6 py-3 text-sm font-semibold text-[#1D1D1F] hover:border-[#8B754F]">Ducted cleaning &amp; maintenance <ArrowUpRight className="h-4 w-4" /></Link>
         </div>
       </div>
-      <div className="mt-10 max-w-3xl" aria-label="Real SplitsPro split-system cleaning photos">
-        <div className="overflow-hidden rounded-2xl border border-[#E5E5EA] bg-[#F5F5F7]">
-          <img src={CLEANING_PHOTOS[photoIndex].src} alt={CLEANING_PHOTOS[photoIndex].alt} loading="lazy" className="aspect-[4/3] w-full object-contain sm:aspect-[16/9]" />
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#E5E5EA] bg-white px-4 py-3">
-            <p className="text-sm text-[#525960]">{CLEANING_PHOTOS[photoIndex].caption}</p>
-            <div className="flex items-center gap-3">
-              <button type="button" aria-label="Previous cleaning photo" onClick={() => setPhotoIndex(i => (i + CLEANING_PHOTOS.length - 1) % CLEANING_PHOTOS.length)} className="min-h-11 min-w-11 rounded-full border border-[#D9D9D9] text-xl text-[#1D1D1F]">‹</button>
-              <span className="text-xs tabular-nums text-[#6E6E73]">{photoIndex + 1} / {CLEANING_PHOTOS.length}</span>
-              <button type="button" aria-label="Next cleaning photo" onClick={() => setPhotoIndex(i => (i + 1) % CLEANING_PHOTOS.length)} className="min-h-11 min-w-11 rounded-full border border-[#D9D9D9] text-xl text-[#1D1D1F]">›</button>
-            </div>
+      <div className="mt-8 max-w-3xl" role="region" aria-label="Real SplitsPro split-system cleaning photos" aria-roledescription="carousel">
+        <div className="overflow-hidden touch-pan-y"
+          onTouchStart={e => { touch.current = [e.touches[0].clientX, e.touches[0].clientY]; }}
+          onTouchEnd={e => {
+            if (!touch.current) return;
+            const dx = e.changedTouches[0].clientX - touch.current[0];
+            const dy = e.changedTouches[0].clientY - touch.current[1];
+            touch.current = null;
+            if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) move(dx < 0 ? 1 : -1);
+          }}
+          onTouchCancel={() => { touch.current = null; }}>
+          <motion.div className="flex" initial={false} animate={{ x: `-${photoIndex * 100}%` }} transition={{ duration: reducedMotion ? 0 : 0.45, ease: "easeInOut" }}>
+            {CLEANING_PHOTOS.map((photo, i) => (
+              <figure key={photo.src} aria-hidden={i !== photoIndex} className="w-full shrink-0">
+                <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-2xl object-cover sm:aspect-[16/10]" />
+                <figcaption className="mt-3 text-sm text-[#6E6E73]">{photo.caption}</figcaption>
+              </figure>
+            ))}
+          </motion.div>
+        </div>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <div className="flex items-center" aria-label="Choose cleaning photo">
+            {CLEANING_PHOTOS.map((photo, i) => (
+              <button key={photo.src} type="button" onClick={() => setPhotoIndex(i)} aria-label={`Show cleaning photo ${i + 1}`} aria-current={i === photoIndex ? "true" : undefined} className="flex h-10 w-6 items-center justify-center">
+                <span className={`h-2 rounded-full transition-all ${i === photoIndex ? "w-4 bg-[#1D1D1F]" : "w-2 bg-[#D1D1D6]"}`} />
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-1">
+            {!reducedMotion && <button type="button" onClick={() => setPaused(v => !v)} className="min-h-[44px] px-2 text-xs text-[#6E6E73]">{paused ? "Play" : "Pause"}</button>}
+            <button type="button" onClick={() => move(-1)} aria-label="Previous cleaning photo" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D8C6A8] text-[#1D1D1F]"><ChevronLeft size={18} /></button>
+            <button type="button" onClick={() => move(1)} aria-label="Next cleaning photo" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D8C6A8] text-[#1D1D1F]"><ChevronRight size={18} /></button>
           </div>
         </div>
       </div>
