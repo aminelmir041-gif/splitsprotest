@@ -13,7 +13,7 @@ import QuoteForm from "../components/QuoteForm";
 import DuctedPricingCarousel from "../components/DuctedPricingCarousel";
 import SplitPricingCarousel from "../components/SplitPricingCarousel";
 import {
-  IMAGES, FEATURED_SERVICES, FAQS, PHONE, PHONE_TEL, FEATURED_REVIEW, TRUST_QUOTE,
+  IMAGES, FEATURED_SERVICES, PHONE, PHONE_TEL, FEATURED_REVIEW, TRUST_QUOTE,
 } from "../lib/data";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
@@ -297,13 +297,52 @@ const ServiceAreas = () => (
   </section>
 );
 
+const WORKMANSHIP_HOME_FAQS = [
+  {
+    "q": "What do I actually get from the free expert consultation?",
+    "a": "We talk through the problem room, your home's layout and how you use the space. We discuss whether a split system is right, what size may suit, and where the indoor and outdoor units could go. We also talk about pipe routes, wall penetrations, drain lines and the colour of visible pipe covers. You leave knowing your options and what needs checking before we set a final plan."
+  },
+  {
+    "q": "Do I need to have floor plans ready?",
+    "a": "No. If you have a floor plan or photos of the room and outside walls, they can help us give more useful advice. If not, we'll start with a few simple questions. We can arrange an on-site check where one is needed."
+  },
+  {
+    "q": "How do I know I'm choosing the right-sized system?",
+    "a": "We look at more than the room's floor area. We ask about windows, sun, insulation, ceiling height and how you use the space. We'll explain the likely size and options in plain English. The final choice is checked against your home and the manufacturer's requirements."
+  },
+  {
+    "q": "Will the installation look good in my home?",
+    "a": "Before drilling, we discuss where the units, pipes and covers may go. We measure and plan the visible runs, including trunking colour and where wall penetrations are needed. You can raise concerns about your paint, brickwork or the look of the room before we agree on the layout."
+  },
+  {
+    "q": "Will I have to take a day off and wait around?",
+    "a": "We agree on an arrival time and confirm the job details with the installer. We aim to arrive ready, with the right materials and a clear plan. If something changes or we expect a delay, we'll contact you as early as possible so you can plan your day."
+  },
+  {
+    "q": "What if the quote changes halfway through the job?",
+    "a": "We explain what is included in your written quote before you book. If access, wiring or pipe runs need extra work, we aim to identify that early. If something unexpected comes up during the install, we explain it and get your approval before doing extra paid work."
+  },
+  {
+    "q": "Who will be working inside my home?",
+    "a": "Our installers are licensed and insured for the work they undertake. We confirm who is coming and brief them on the agreed plan, including the areas of your home that need care. You shouldn't have to explain the whole job again when they arrive."
+  },
+  {
+    "q": "What happens if the finished work doesn't match the plan?",
+    "a": "We check the visible finish and installation against what we agreed with you. If our workmanship falls short of that agreed plan and our standards, we'll come back and put our work right at no extra cost. We'll also explain the manufacturer's warranty for your chosen system."
+  },
+  {
+    "q": "Will I be pressured to book after the consultation?",
+    "a": "No. The consultation is there to help you make a clear decision. You can ask questions, compare the options and take time to think. If SplitsPro is the right fit, we'll explain the next step. If another solution makes more sense, we'll tell you."
+  }
+];
+
 const HomeFAQ = () => (
   <section className="bg-white py-28 sm:py-36" data-testid="faq-section">
     <div className="sp-container grid gap-14 lg:grid-cols-[0.7fr_1.3fr]">
       <SectionHeading overline="FAQ" title="Answers, before you ask" />
       <Reveal delay={0.1}>
         <Accordion type="single" collapsible className="w-full">
-          {FAQS.map((f, i) => (
+          {WORKMANSHIP_HOME_FAQS.map((f, i) => (
             <AccordionItem key={i} value={`item-${i}`} data-testid={`faq-item-${i}`} className="border-b border-[#E5E5EA]">
               <AccordionTrigger className="py-6 text-left font-serif text-xl font-normal text-[#1D1D1F] hover:no-underline">{f.q}</AccordionTrigger>
               <AccordionContent className="pb-6 text-base leading-relaxed text-[#6E6E73]">{f.a}</AccordionContent>
