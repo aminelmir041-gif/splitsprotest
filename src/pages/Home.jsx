@@ -159,6 +159,28 @@ const SizingCalculatorCard = () => (
   </section>
 );
 
+const CleaningMaintenancePreview = () => (
+  <section className="bg-white py-16 sm:py-20" aria-labelledby="cleaning-maintenance-title">
+    <div className="sp-container grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8B754F]">Air conditioner care</p>
+        <h2 id="cleaning-maintenance-title" className="mt-3 font-serif text-3xl text-[#1D1D1F] sm:text-4xl">Air Conditioner Cleaning &amp; Maintenance in Sydney</h2>
+        <p className="mt-4 max-w-2xl leading-relaxed text-[#6E6E73]">A clean air conditioner starts with regular filter care. Check and clean accessible filters according to your manufacturer's instructions, often every few weeks during heavy use. Professional split-system deep cleaning is useful when dust, odours or build-up remain, and routine servicing helps identify drainage and performance issues.</p>
+        <p className="mt-4 text-sm leading-relaxed text-[#6E6E73]">For coastal Sydney homes, inspect outdoor units for salt build-up and corrosion. Cleaning intervals depend on usage, pets, dust, humidity and your manufacturer's guidance.</p>
+        <p className="mt-5 font-serif text-2xl text-[#1D1D1F]">Split-system deep clean — $220 per unit</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link to="/split-system-cleaning" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#1D1D1F] px-6 py-3 text-sm font-semibold text-white hover:bg-[#383838]">Explore split-system cleaning <ArrowUpRight className="h-4 w-4" /></Link>
+          <Link to="/ducted-cleaning" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#D9D9D9] px-6 py-3 text-sm font-semibold text-[#1D1D1F] hover:border-[#8B754F]">Ducted cleaning &amp; maintenance <ArrowUpRight className="h-4 w-4" /></Link>
+        </div>
+      </div>
+      <Link to="/split-system-cleaning" className="group overflow-hidden rounded-2xl border border-[#E5E5EA] bg-[#F5F5F7]">
+        <img src={IMAGES.splitLiving} alt="Wall-mounted split-system air conditioner in a Sydney living room" loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
+        <p className="px-5 py-4 text-sm text-[#6E6E73]">See what a professional split-system clean involves <ArrowUpRight className="ml-1 inline h-4 w-4" /></p>
+      </Link>
+    </div>
+  </section>
+);
+
 const BrandAndSmartSEO = () => (
   <>
     <section className="bg-white py-16 sm:py-20" aria-labelledby="home-brands-title">
@@ -377,6 +399,7 @@ const Home = () => (
     <DuctedPricingCarousel />
     <SplitPricingCarousel />
     <SizingCalculatorCard />
+    <CleaningMaintenancePreview />
     <BrandAndSmartSEO />
     <Philosophy />
     <Services />
