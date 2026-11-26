@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import AnalyticsTracking from "@/components/AnalyticsTracking";
 import Footer from "@/components/Footer";
 import AfterHoursCallback from "@/components/AfterHoursCallback";
+import FloatingCTA from "@/components/FloatingCTA";
 import CustomCursor from "@/components/CustomCursor";
 import { LOGO } from "@/lib/data";
 
@@ -136,6 +137,7 @@ const SiteShell = () => {
       </main>
       {!isDealsPage && <Footer />}
       <AfterHoursCallback />
+      <FloatingCTA />
       <Toaster position="top-center" richColors />
     </>
   );
