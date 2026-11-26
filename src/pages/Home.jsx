@@ -152,18 +152,25 @@ const BrandAndSmartSEO = () => (
         <p className="mt-4 max-w-3xl leading-relaxed text-[#6E6E73]">Explore split system and ducted air conditioning options for Sydney homes, from quiet bedroom cooling to multi-zone, whole-home comfort. Available features depend on the model and installation.</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            ["Daikin", "Energy-efficient split systems and ducted air conditioning.", "/split-systems"],
-            ["Rinnai", "Split system cooling and ducted options for different home sizes.", "/split-systems"],
-            ["Mitsubishi Electric", "Quiet indoor comfort and inverter split system options.", "/split-systems/mitsubishi"],
-            ["Mitsubishi Heavy Industries", "Split system options with Japanese engineering.", "/split-systems/mitsubishi"],
-            ["Fujitsu", "Split system options for bedrooms, living rooms and home offices.", "/split-systems"],
-            ["Samsung", "Selected split systems with smart-control options, depending on model.", "/split-systems"]
-          ].map(([name, description, url]) => (
-            <Link key={name} to={url} className="group rounded-xl border border-[#E5E5EA] bg-[#FAFAF9] p-5 transition-colors hover:border-[#C8A46A]">
+            { name: "Daikin", description: "Compare Cora, Alira X and Zena split systems, plus ducted options for whole-home comfort.", split: "/split-systems/daikin", ducted: "/ducted/daikin-rinnai" },
+            { name: "Rinnai", description: "Explore Rinnai split system models, installed pricing and ducted air conditioning options.", split: "/split-systems/rinnai", ducted: "/ducted/daikin-rinnai" },
+            { name: "Mitsubishi Electric", description: "Discover inverter split system options and quiet indoor cooling for Sydney homes.", split: "/split-systems/mitsubishi" },
+            { name: "Mitsubishi Heavy Industries", description: "Explore split system features and Japanese-engineered comfort options.", split: "/split-systems/mitsubishi" },
+            { name: "Fujitsu", description: "Compare split system cooling for bedrooms, living spaces and home offices.", split: "/split-systems/fujitsu" },
+            { name: "Samsung", description: "Explore split system options and compatible smart-home control features.", split: "/split-systems/samsung" }
+          ].map(({ name, description, split, ducted }) => (
+            <div key={name} className="rounded-xl border border-[#E5E5EA] bg-[#FAFAF9] p-5">
               <h3 className="font-serif text-xl text-[#1D1D1F]">{name}</h3>
               <p className="mt-2 text-sm leading-relaxed text-[#6E6E73]">{description}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#8B754F]">Explore options <ArrowUpRight className="h-4 w-4" /></span>
-            </Link>
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3">
+                <Link to={split} className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-[#8B754F] hover:underline">
+                  View split pricing &amp; specs <ArrowUpRight className="h-4 w-4" />
+                </Link>
+                {ducted && <Link to={ducted} className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-[#8B754F] hover:underline">
+                  View ducted options <ArrowUpRight className="h-4 w-4" />
+                </Link>}
+              </div>
+            </div>
           ))}
         </div>
       </div>
