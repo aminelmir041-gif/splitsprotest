@@ -143,6 +143,22 @@ const EnquirySection = () => (
 );
 
 
+const SizingCalculatorCard = () => (
+  <section className="bg-[#F5F5F7] py-12 sm:py-16" aria-labelledby="sizing-calculator-heading">
+    <div className="sp-container">
+      <a href="/aircon-installation-guide/" className="group grid items-center gap-6 overflow-hidden rounded-2xl border border-[#E5E5EA] bg-white p-7 transition-colors hover:border-[#C8A46A] sm:grid-cols-[1fr_auto] sm:p-10" data-testid="sizing-calculator-card">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8B754F]">Free air conditioner sizing guide</p>
+          <h2 id="sizing-calculator-heading" className="mt-3 font-serif text-3xl leading-tight text-[#1D1D1F] sm:text-4xl">Not sure what size air conditioner you need?</h2>
+          <p className="mt-3 max-w-2xl leading-relaxed text-[#6E6E73]">Explore our air conditioner sizing calculator to estimate the right cooling capacity for your room. Check room size, insulation and sun exposure before comparing split system prices.</p>
+          <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#8B754F] group-hover:underline">Calculate your air conditioner size <ArrowUpRight className="h-4 w-4" /></span>
+        </div>
+        <div aria-hidden="true" className="flex h-20 w-20 items-center justify-center rounded-2xl border border-[#E5E5EA] bg-[#FAF8F4] font-serif text-3xl text-[#8B754F] sm:h-28 sm:w-28">kW</div>
+      </a>
+    </div>
+  </section>
+);
+
 const BrandAndSmartSEO = () => (
   <>
     <section className="bg-white py-16 sm:py-20" aria-labelledby="home-brands-title">
@@ -360,6 +376,7 @@ const Home = () => (
     <TrustBanner />
     <DuctedPricingCarousel />
     <SplitPricingCarousel />
+    <SizingCalculatorCard />
     <BrandAndSmartSEO />
     <Philosophy />
     <Services />
