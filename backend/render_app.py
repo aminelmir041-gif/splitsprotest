@@ -1,7 +1,7 @@
 from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File, Header, Request
 from fastapi.responses import FileResponse, Response, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 from typing import Optional, Literal
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -72,7 +72,7 @@ def now_iso() -> str:
 
 class QuoteCreate(BaseModel):
     name: str
-    phone: str
+    phone: str = ""
     service: str
     suburb: str
     email: Optional[str] = ""
@@ -91,7 +91,7 @@ class QuoteCreate(BaseModel):
     gclid: Optional[str] = ""
     fbclid: Optional[str] = ""
 
-    @field_validator("name", "phone", "service", "suburb")
+    @field_validator("name", "service", "suburb")
     @classmethod
     def not_blank(cls, value):
         if not value or not value.strip():
@@ -101,13 +101,30 @@ class QuoteCreate(BaseModel):
     @field_validator("phone")
     @classmethod
     def valid_phone(cls, value):
-        if len(re.sub(r"\D", "", value)) < 8:
+        value = value.strip()
+        if value and len(re.sub(r"\D", "", value)) < 8:
             raise ValueError("Please enter a valid phone number")
-        return value.strip()
+        return value
+
+    @model_validator(mode="after")
+    def require_contact_method(self):
+        self.email = (self.email or "").strip()
+        if not self.phone and not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", self.email):
+            raise ValueError("Please provide a mobile number or a valid email address")
+        return self
 
 
 
 class BookingCreate(QuoteCreate):
+    phone: str
+
+    @field_validator("phone")
+    @classmethod
+    def booking_phone_required(cls, value):
+        if not value.strip():
+            raise ValueError("Please enter a valid phone number")
+        return value
+
     booking_date: str
     booking_window: str
     product_key: str = ""
