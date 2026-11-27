@@ -456,8 +456,9 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 <option value="Split System Installation">Split-system installation</option>
 <option value="Ducted Air Conditioning">Ducted air conditioning</option>
 </select></label>
-<label class="consult-wide">Message <small>(optional)</small><textarea name="message" rows="2" maxlength="1500" placeholder="Anything else you'd like us to know?"></textarea></label>
+
 </div>
+<input type="hidden" name="message" value="">
 <button class="consult-submit" type="submit">Request My Free Consultation ↗</button>
 <p class="consult-result" role="status" aria-live="polite"></p>
 <p class="consult-privacy">Your details are used to respond to this enquiry. Prefer to talk? <a href="tel:+61414698435">Call 0414 698 435</a>.</p>
@@ -473,7 +474,7 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 <details><summary>Who will be working inside my home?</summary><p>Our installers are licensed and insured for the work they undertake. We confirm who is coming and brief them on the agreed plan, including the areas of your home that need care. You shouldn't have to explain the whole job again when they arrive.</p></details>
 <details><summary>What happens if the finished work doesn't match the plan?</summary><p>We check the visible finish and installation against what we agreed with you. If our workmanship falls short of that agreed plan and our standards, we'll come back and put our work right at no extra cost. We'll also explain the manufacturer's warranty for your chosen system.</p></details>
 <details><summary>Will I be pressured to book after the consultation?</summary><p>No. The consultation is there to help you make a clear decision. You can ask questions, compare the options and take time to think. If SplitsPro is the right fit, we'll explain the next step. If another solution makes more sense, we'll tell you.</p></details>
-</div></div></section></main><footer class="footer"><div class="wrap"><div class="footergrid"><div class="footerbrand"><a href="https://splitspro.com.au/" class="logo" aria-label="SplitsPro website"></a><p class="brandcopy">Good planning. Neat work. Home air conditioning across Sydney.</p></div><div><h3>Explore</h3><a class="footlink" href="https://splitspro.com.au/">Home</a><a class="footlink" href="https://splitspro.com.au/split-systems/">Split Systems</a><a class="footlink" href="https://splitspro.com.au/gallery/">Our Work</a><a class="footlink" href="https://splitspro.com.au/contact/">Contact</a></div><div><h3>Get in touch</h3><a class="footlink" href="tel:+61414698435">0414 698 435</a><a class="footlink" href="#consult">Free consultation</a><p>South Western Sydney</p></div></div><div class="footend"><span>© 2026 SplitsPro · ABN 62 137 127 557</span><span>A more comfortable home.</span></div></div></footer><a class="sp-google-review-card sp-google-review-floating" href="#review-slider" aria-label="Jump to SplitsPro customer reviews" aria-hidden="true" tabindex="-1"><img src="https://www.gstatic.com/images/branding/product/1x/googleg_48dp.png" alt="" width="25" height="25" loading="lazy"><span class="sp-google-review-info"><span class="sp-google-review-line"><strong data-sp-google-rating>5.0 / 5</strong><span class="sp-google-review-stars" data-sp-google-stars aria-hidden="true">★★★★★</span></span><span class="sp-google-review-total" data-sp-google-count aria-live="polite">34 Google reviews</span></span></a><div class="sticky" aria-hidden="true"><a class="sticky-call" href="tel:+61414698435" tabindex="-1">Call SplitsPro <span aria-hidden="true">↗</span></a><a class="sticky-book" href="#consult-form" tabindex="-1">Book a Consultation <span aria-hidden="true">↗</span></a></div><style>
+</div></div></section></main><footer class="footer"><div class="wrap"><div class="footergrid"><div class="footerbrand"><a href="https://splitspro.com.au/" class="logo" aria-label="SplitsPro website"></a><p class="brandcopy">Good planning. Neat work. Home air conditioning across Sydney.</p></div><div><h3>Explore</h3><a class="footlink" href="https://splitspro.com.au/">Home</a><a class="footlink" href="https://splitspro.com.au/split-systems/">Split Systems</a><a class="footlink" href="https://splitspro.com.au/gallery/">Our Work</a><a class="footlink" href="https://splitspro.com.au/contact/">Contact</a></div><div><h3>Get in touch</h3><a class="footlink" href="tel:+61414698435">0414 698 435</a><a class="footlink" href="#consult-form">Free consultation</a><p>South Western Sydney</p></div></div><div class="footend"><span>© 2026 SplitsPro · ABN 62 137 127 557</span><span>A more comfortable home.</span></div></div></footer><a class="sp-google-review-card sp-google-review-floating" href="#review-slider" aria-label="Jump to SplitsPro customer reviews" aria-hidden="true" tabindex="-1"><img src="https://www.gstatic.com/images/branding/product/1x/googleg_48dp.png" alt="" width="25" height="25" loading="lazy"><span class="sp-google-review-info"><span class="sp-google-review-line"><strong data-sp-google-rating>5.0 / 5</strong><span class="sp-google-review-stars" data-sp-google-stars aria-hidden="true">★★★★★</span></span><span class="sp-google-review-total" data-sp-google-count aria-live="polite">34 Google reviews</span></span></a><div class="sticky" aria-hidden="true"><a class="sticky-call" href="tel:+61414698435" tabindex="-1">Call SplitsPro <span aria-hidden="true">↗</span></a><a class="sticky-book" href="#consult-form" tabindex="-1">Book a Consultation <span aria-hidden="true">↗</span></a></div><style>
 .photo-stage.upright{display:flex;align-items:center;justify-content:center;background:#f8f7f3}
 .photo-stage.upright img{position:static!important;top:auto;left:auto;width:100%!important;height:100%!important;max-width:100%;transform:none!important;object-fit:contain;object-position:center;background:#f8f7f3}
 .swipe-next{display:flex;align-items:center;justify-content:center;gap:28px;width:min(100%,420px);margin:16px auto 17px;padding:11px 22px;background:#171717;color:#fff;border:1.5px solid #c9a56f;border-radius:999px;box-shadow:0 7px 24px #0002;cursor:pointer;transition:background .2s ease,transform .2s ease}
@@ -622,7 +623,7 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 .guarantee-value p{font:800 clamp(19px,2.1vw,27px)/1.5 Manrope,Arial,sans-serif;color:#102d35;margin:0}
 .guarantee-value a{display:inline-block;margin-top:18px;font:800 13px/1.4 Manrope,Arial,sans-serif;text-decoration:none;color:#071721;border-bottom:2px solid #a67b42;padding:4px 0}
 .consult-callout{grid-template-columns:minmax(0,1fr) minmax(300px,0.95fr);gap:30px;align-items:start}
-.consult-lead-panel{background:#fff;color:#182930;border-radius:13px;border:1px solid #dfd2bf;padding:25px;box-shadow:0 8px 25px #0002;max-width:100%}
+.consult-lead-panel{scroll-margin-top:18px;background:#fff;color:#182930;border-radius:13px;border:1px solid #dfd2bf;padding:25px;box-shadow:0 8px 25px #0002;max-width:100%}
 .consult-lead-panel h3{font:800 24px/1.2 Manrope,Arial,sans-serif;color:#17262b;margin:6px 0 8px}
 .consult-lead-panel .consult-eyebrow{font:800 10px Manrope,Arial,sans-serif;letter-spacing:.13em;color:#97703b}
 .consult-callout .consult-lead-panel .consult-note{color:#506169;font-size:14px;line-height:1.6;margin:0 0 18px}
@@ -882,7 +883,7 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
       '<p class="sp-product-warranty">✓ '+enc(range.warranty)+'*</p>'+
       '<div class="sp-product-prices"><div><span class="sp-price-label">Fully installed</span><strong>'+money(price)+'</strong><small>standard installation</small></div>'+
       '<div class="sp-replacement-price"><span class="sp-price-label">Eligible replacement*</span><strong>'+money(replacing)+'</strong><small>15% saving</small></div></div>'+
-      '<a class="sp-product-cta" href="#consult" data-sp-product="'+productTitle+'" data-sp-capacity="'+enc(kw)+'" data-sp-price="'+price+'" data-sp-replacement="'+replacing+'">Get a free consultation ↗</a></div></article>';
+      '<a class="sp-product-cta" href="#consult-form" data-sp-product="'+productTitle+'" data-sp-capacity="'+enc(kw)+'" data-sp-price="'+price+'" data-sp-replacement="'+replacing+'">Get a free consultation ↗</a></div></article>';
   }
   function update(){
     const children=Array.from(track.children);
@@ -917,7 +918,7 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
     const form=document.getElementById('consult-form');
     if(!form)return;
     const service=form.querySelector('select[name="service"]');
-    const message=form.querySelector('textarea[name="message"]');
+    const message=form.querySelector('input[name="message"]');
     if(service)service.value='Split System Installation';
     if(message)message.value='Please contact me about '+link.dataset.spProduct+'. Standard installed price '+money(Number(link.dataset.spPrice))+'. Eligible replacement offer '+money(Number(link.dataset.spReplacement))+' (subject to site and existing electrical suitability).';
   });
