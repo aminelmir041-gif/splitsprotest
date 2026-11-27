@@ -444,12 +444,12 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 <section class="section" style="padding-top:0"><div class="wrap callout consult-callout" id="consult"><div><div class="kicker">A FREE CALL TO HELP YOU PLAN</div><h2>Know where it all goes.<br>Before we drill a hole.</h2><p>Is your home office too hot in the afternoon? Does your bedroom stay warm at night? Tell us about the room. We'll help you work out what size unit may suit it, where it should go and how the air can reach the spots you want cool. We can also plan a spot that won't blow right at your bed or desk.</p><p>We'll show you where the pipes may run and how the covers on your wall could look. We'll talk about ways to keep it neat. So you know what to expect before you spend money or take time off work.</p><strong>One free call. A clear plan. No need to book.</strong></div><form id="consult-form" class="consult-lead-panel" data-clarity-mask="true" aria-label="Request a free consultation">
 <span class="consult-eyebrow">FREE · NO OBLIGATION</span>
 <h3>Book a free consultation</h3>
-<p class="consult-note">Leave your details and we’ll call to arrange a time. No online calendar or payment needed.</p>
+<p class="consult-note">Leave your mobile number or email and we’ll get in touch. You only need to provide one. No online calendar or payment needed.</p>
 <div class="consult-fields">
 <label>Your name <span aria-hidden="true">*</span><input name="name" type="text" autocomplete="name" required maxlength="100" placeholder="Your name"></label>
-<label>Phone number <span aria-hidden="true">*</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="04xx xxx xxx"></label>
+<label>Mobile number <small>(optional if email provided)</small><input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="04xx xxx xxx"></label>
 <label>Suburb <span aria-hidden="true">*</span><input name="suburb" type="text" autocomplete="address-level2" required maxlength="100" placeholder="Your suburb"></label>
-<label>Email <small>(optional)</small><input name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com"></label>
+<label>Email <small>(optional if mobile provided)</small><input name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com"></label>
 <label class="consult-wide">What can we help with?
 <select name="service" required>
 <option value="Air Conditioning Consultation">Not sure yet — need advice</option>
@@ -919,7 +919,7 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
     const service=form.querySelector('select[name="service"]');
     const message=form.querySelector('textarea[name="message"]');
     if(service)service.value='Split System Installation';
-    if(message)message.value='Please call me about '+link.dataset.spProduct+'. Standard installed price '+money(Number(link.dataset.spPrice))+'. Eligible replacement offer '+money(Number(link.dataset.spReplacement))+' (subject to site and existing electrical suitability).';
+    if(message)message.value='Please contact me about '+link.dataset.spProduct+'. Standard installed price '+money(Number(link.dataset.spPrice))+'. Eligible replacement offer '+money(Number(link.dataset.spReplacement))+' (subject to site and existing electrical suitability).';
   });
   render(current);
 })();
@@ -935,14 +935,21 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
     if(!form.reportValidity())return;
     const data=new FormData(form);
     const phone=String(data.get('phone')||'').trim();
-    if(phone.replace(/\D/g,'').length<8){
+    const email=String(data.get('email')||'').trim();
+    if(!phone&&!email){
+      status.textContent='Please enter a mobile number or email address.';
+      status.dataset.state='error';
+      form.querySelector('[name="phone"]').focus();
+      return;
+    }
+    if(phone&&phone.replace(/\D/g,'').length<8){
       status.textContent='Please enter a valid phone number.';
       status.dataset.state='error';
       form.querySelector('[name="phone"]').focus();
       return;
     }
     const fields={name:String(data.get('name')||'').trim(),phone,suburb:String(data.get('suburb')||'').trim(),
-       email:String(data.get('email')||'').trim(),service:String(data.get('service')||'Air Conditioning Consultation'),
+       email,service:String(data.get('service')||'Air Conditioning Consultation'),
        message:'Warranty preview free consultation request. '+String(data.get('message')||'').trim()};
     button.disabled=true;button.textContent='Sending request…';
     status.textContent='';status.dataset.state='';
