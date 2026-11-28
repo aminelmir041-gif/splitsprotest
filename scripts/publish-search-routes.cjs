@@ -17,6 +17,9 @@ const primaryLinks = [
   ['/ducted/daikin-rinnai/', 'Ducted air conditioning packages'],
   ['/installation-guarantee/', 'Installation guarantee'],
   ['/contact/', 'Contact SplitsPro'],
+  ['/ducted-vs-split-system/', 'Compare ducted and split system air conditioning'],
+  ['/aircon-installation-guide/', 'Air conditioner sizing calculator'],
+  ['/ducted-air-conditioning-cost-sydney/', 'Ducted installation cost guide'],
 ];
 const brandLinks = SPLIT_BRANDS.map(brand => ['/split-systems/' + brand.slug + '/', brand.brand + ' installed prices']);
 const regionLinks = Object.values(regionalSplitPages).map(page => [new URL(page.canonical).pathname, page.regionLabel]);

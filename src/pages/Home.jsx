@@ -451,6 +451,21 @@ const Home = () => (
     <DuctedPricingCarousel />
     <SplitPricingCarousel />
     <SizingCalculatorCard />
+    <section className="bg-white py-12 sm:py-16" aria-labelledby="home-guides-heading">
+      <div className="sp-container">
+        <h2 id="home-guides-heading" className="font-serif text-3xl text-[#1D1D1F]">Plan your air conditioning installation</h2>
+        <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            ["/ducted-vs-split-system/", "Compare ducted vs split system air conditioning"],
+            ["/ducted-air-conditioning-cost-sydney/", "Calculate ducted installation costs"],
+            ["/split-system-installation-sydney/", "Compare installed split system prices"],
+            ["/best-air-conditioning-brands/", "Compare air conditioning brands"],
+            ["/reverse-cycle-air-conditioning/", "Understand reverse cycle heating and cooling"],
+            ["/air-conditioning-maintenance/", "Air conditioner maintenance guide"],
+          ].map(([href, label]) => <li key={href}><a className="block rounded-xl border border-[#E5E5EA] p-4 text-[#1D1D1F] underline underline-offset-4 hover:border-[#C8A46A]" href={href}>{label}</a></li>)}
+        </ul>
+      </div>
+    </section>
     <CleaningMaintenancePreview />
     <BrandAndSmartSEO />
     <Philosophy />

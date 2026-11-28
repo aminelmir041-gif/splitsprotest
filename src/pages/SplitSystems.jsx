@@ -142,6 +142,7 @@ const SplitSystemsSeo = ({ regionLabel = "Western Sydney" }) => (
             </span>
             <h3 className="mt-5 font-serif text-2xl text-[#1D1D1F]">Not sure what size you need?</h3>
             <p className="mt-3 leading-relaxed text-[#6E6E73]">Send us your room details and we&apos;ll help you choose the right system — no obligation.</p>
+            <p className="mt-4 text-sm leading-relaxed"><a className="underline" href="/aircon-installation-guide/">Use our sizing calculator</a> or <a className="underline" href="/ducted-vs-split-system/">compare split and ducted systems</a> before requesting a quote.</p>
             <Link to="/contact" data-testid="sizing-advice-btn"
               className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#0B0B0B] border border-[#C8A46A]/60 px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-[#F8F7F5] transition-all hover:border-[#C8A46A] hover:-translate-y-[2px]">
               Get free sizing advice <ArrowUpRight className="h-4 w-4" />

@@ -115,6 +115,10 @@ const Ducted = () => (
           </div>
         </section>
         <DuctedPricingSelector />
+        <section className="sp-container py-8">
+          <h2 className="font-serif text-2xl">Planning a whole-home system?</h2>
+          <p className="mt-3 text-[#6E6E73]">Read our <a className="underline" href="/ducted-vs-split-system/">ducted vs split system comparison</a> and estimate your <a className="underline" href="/ducted-air-conditioning-cost-sydney/">ducted air conditioning installation costs</a>.</p>
+        </section>
       </>
     )}
     intro={{
