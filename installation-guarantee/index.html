@@ -373,7 +373,45 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 <p class="sp-pricing-swipe">← Swipe left or right to compare capacities →</p>
 <div class="sp-install-inclusions"><div class="sp-inclusions-top"><h3>Standard installation · 120–140 m²</h3><span>DUCTED PACKAGES</span></div><div class="sp-inclusions-grid"><span>✓ Single-storey homes</span><span>✓ 4 zones</span><span>✓ Up to 6 outlets</span><span>✓ Suitable roof space and safe, clear access required</span></div><p><strong>Larger homes:</strong> 140–200 m² · Custom quote. Extra outlets and duct layout tailored to your home.</p><p><strong>Double-storey homes:</strong> Up to 200 m² · Custom quote. Roof and between-floor access assessed individually.</p></div>
 <p class="sp-pricing-terms">Home sizes and prices are indicative, subject to equipment availability, suitable airflow and a confirmed written quote. Lifetime installation guarantee. Pay after installation.</p>
-</div></section><style id="ducted-modern-style">
+</div></section>
+<section id="quick-sizing-guide" class="sp-sizing-guide" aria-labelledby="quick-sizing-heading">
+  <div class="wrap">
+    <div class="kicker">SIZING GUIDE</div>
+    <h2 id="quick-sizing-heading">Find the right air conditioner for your space.</h2>
+    <p>Cooling capacity is measured in kilowatts (kW). Use these approximate room sizes and starting prices to compare systems. Ceiling height, insulation, windows and sun exposure affect the capacity you need. We confirm sizing before installation.</p>
+    <div class="sp-sizing-table-wrap" tabindex="0" role="region" aria-label="Air conditioner sizing and installed price guide">
+      <table class="sp-sizing-table">
+        <thead><tr><th scope="col">Capacity</th><th scope="col">Approx. room size</th><th scope="col">Typical space</th><th scope="col">Installed from</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">2.5 kW</th><td>12–25 m²</td><td>Bedroom</td><td>$1,700</td></tr>
+          <tr><th scope="row">3.5 kW</th><td>20–35 m²</td><td>Large bedroom or small living area</td><td>$1,850</td></tr>
+          <tr><th scope="row">5 kW</th><td>30–50 m²</td><td>Lounge room</td><td>$2,300</td></tr>
+          <tr><th scope="row">7.1 kW</th><td>45–70 m²</td><td>Large lounge or open-plan area</td><td>$2,600</td></tr>
+          <tr><th scope="row">9–11 kW ducted</th><td>Site assessment</td><td>Smaller whole-home layout</td><td>$8,660</td></tr>
+          <tr><th scope="row">13–16 kW ducted</th><td>Site assessment</td><td>Larger or higher-load home</td><td>$9,470</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sp-sizing-note">Prices include GST and reflect standard installation. Eligible split-system replacements receive a 15% saving. Ducted sizing depends on floor area, heat load and zoning. Final prices are subject to site assessment.</p>
+    <a class="sp-sizing-link" href="/aircon-installation-guide/">Calculate the size you need ↗</a>
+  </div>
+</section>
+<style>
+.sp-sizing-guide{background:#f8f6f2;padding:48px 0;color:#171717}
+.sp-sizing-guide h2{font:800 clamp(25px,4vw,38px)/1.18 Manrope,Arial,sans-serif;letter-spacing:-.035em;margin:8px 0 12px}
+.sp-sizing-guide p{max-width:780px;margin:0 0 20px}
+.sp-sizing-table-wrap{overflow-x:auto;background:#fff;border:1px solid #e2d9ca;border-radius:12px}
+.sp-sizing-table{border-collapse:collapse;width:100%;min-width:540px;text-align:left;font-size:14px}
+.sp-sizing-table th,.sp-sizing-table td{padding:14px 16px;border-bottom:1px solid #e9e3d9}
+.sp-sizing-table thead{background:#202020;color:#fff}
+.sp-sizing-table tbody th{color:#72552b;font-weight:800;white-space:nowrap}
+.sp-sizing-table td:last-child{font-weight:800;white-space:nowrap}
+.sp-sizing-table tbody tr:last-child>*{border-bottom:0}
+.sp-sizing-guide .sp-sizing-note{font-size:13px;color:#625b50;margin:14px 0 18px}
+.sp-sizing-link{display:inline-block;background:#202020;color:white;border-radius:7px;padding:12px 20px;text-decoration:none;font-weight:750}
+@media(max-width:600px){.sp-sizing-guide{padding:32px 0}.sp-sizing-table{min-width:0;font-size:12px}.sp-sizing-table th,.sp-sizing-table td{padding:10px 7px}.sp-sizing-table tbody th{white-space:normal}.sp-sizing-table td:last-child{white-space:nowrap}}
+</style>
+<style id="ducted-modern-style">
 #ducted-system-prices{background:linear-gradient(145deg,#f6f9fc,#fff 52%,#edf5fc);padding-block:clamp(36px,6vw,76px)}
 #ducted-system-prices .sp-brand-tabs{gap:10px;padding:8px 2px 18px}
 #ducted-system-prices .sp-brand-tab{border:0;border-radius:14px;background:#fff;color:#183448;box-shadow:0 3px 14px #17305212;font-size:14px;padding:13px 22px}
