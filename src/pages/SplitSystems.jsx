@@ -97,7 +97,8 @@ const SplitSystemsSeo = ({ regionLabel = "Western Sydney" }) => (
           </ul>
           <Reveal delay={0.15}>
             <p className="mt-6 leading-relaxed text-[#6E6E73]">
-              We&apos;ll help you choose the correct kW capacity for your room and confirm the best position for the indoor and outdoor unit before you commit.
+              We&apos;ll help you choose the correct kW capacity for your room and confirm the best position for the indoor and outdoor unit before you commit.{" "}
+              <a href="/split-system-installation-sydney/" className="font-semibold text-[#725528] underline underline-offset-4">Compare split system features and installed prices.</a>
             </p>
           </Reveal>
         </div>

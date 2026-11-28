@@ -51,6 +51,14 @@ const ScrollToTop = () => {
   return null;
 };
 
+const SplitInstallationPage = () => {
+  const { search, hash } = useLocation();
+  useEffect(() => {
+    window.location.replace(`/split-system-installation-sydney/${search}${hash}`);
+  }, [search, hash]);
+  return <a href={`/split-system-installation-sydney/${search}${hash}`}>Open split system installation prices</a>;
+};
+
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
@@ -82,7 +90,7 @@ const AnimatedRoutes = () => {
           <Route path="/split-systems/rinnai-local-offer" element={<Navigate to="/aircon-deals?brand=rinnai" replace />} />
           <Route path="/book-installation" element={<Navigate to="/split-system-installation-sydney" replace />} />
           <Route path="/secure-installation" element={<Navigate to="/split-system-installation-sydney" replace />} />
-          <Route path="/split-system-installation-sydney" element={<Navigate to="/aircon-deals" replace />} />
+          <Route path="/split-system-installation-sydney" element={<SplitInstallationPage />} />
           <Route path="/aircon-deals" element={<AirconDeals />} />
           <Route path="/daikin-zena-special" element={<ZenaSpecial />} />
           <Route path="/split-systems/:slug" element={<BrandPage />} />
