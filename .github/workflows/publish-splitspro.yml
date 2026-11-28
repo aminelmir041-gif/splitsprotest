@@ -32,6 +32,14 @@ jobs:
         run: npm install --no-save --legacy-peer-deps ajv@8.17.1 ajv-keywords@5.1.0
       - name: Build React site
         run: CI=false npm run build
+      - name: Publish optimised guarantee assets
+        run: |
+          mkdir -p build/landing/guarantee-media
+          cp -R public/landing/guarantee-media/. build/landing/guarantee-media/
+          test -s build/landing/guarantee-media/manrope.woff2
+          test -s build/landing/guarantee-media/dm-sans.woff2
+          test -s build/landing/guarantee-media/01-100144.webp
+          test -s build/landing/guarantee-media/image-2.webp
       - name: Include original workmanship certificate and installation photos
         run: |
           mkdir -p build/workmanship
