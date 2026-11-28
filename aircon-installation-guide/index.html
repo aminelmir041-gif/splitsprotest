@@ -229,6 +229,21 @@ footer{padding:34px 0;border-top:1px solid #272727;background:#0B0B0B;color:#aaa
 fbq('init', '959174835702817');
 fbq('track', 'PageView');
 </script>
+<script>
+if (new URLSearchParams(location.search).get('embed') === 'calculator' && window.parent !== window) {
+  document.documentElement.classList.add('calculator-embed');
+}
+</script>
+<style>
+.calculator-embed body > header,
+.calculator-embed body > footer,
+.calculator-embed body > .float-ctas,
+.calculator-embed main > :not(#size-calculator),
+.calculator-embed .calculator-guide-link{display:none!important}
+.calculator-embed #size-calculator{padding:18px 0 26px;min-height:100dvh}
+.calculator-embed #size-calculator .wrap{width:min(660px,calc(100% - 28px))}
+.calculator-embed input{font-size:16px!important}
+</style>
 </head>
 <body>
 <header class="top scrolled" id="siteTop">

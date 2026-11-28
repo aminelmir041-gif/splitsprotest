@@ -393,7 +393,11 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
       </table>
     </div>
     <p class="sp-sizing-note">Prices include GST and reflect standard installation. Eligible split-system replacements receive a 15% saving. Ducted sizing depends on floor area, heat load and zoning. Final prices are subject to site assessment.</p>
-    <a class="sp-sizing-link" href="/aircon-installation-guide/">Calculate the size you need ↗</a>
+    <a class="sp-sizing-link" id="open-sizing-calculator" href="/aircon-installation-guide/" aria-haspopup="dialog">Calculate the size you need ↗</a>
+    <dialog id="sizing-calculator-dialog" class="sp-sizing-dialog" aria-labelledby="sizing-dialog-title">
+      <div class="sp-sizing-dialog-head"><strong id="sizing-dialog-title">Air conditioner sizing calculator</strong><button type="button" id="close-sizing-calculator" aria-label="Close sizing calculator">×</button></div>
+      <iframe title="SplitsPro air conditioner sizing calculator" data-src="/aircon-installation-guide/?embed=calculator"></iframe>
+    </dialog>
   </div>
 </section>
 <style>
@@ -411,6 +415,65 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
 .sp-sizing-link{display:inline-block;background:#202020;color:white;border-radius:7px;padding:12px 20px;text-decoration:none;font-weight:750}
 @media(max-width:600px){.sp-sizing-guide{padding:32px 0}.sp-sizing-table{min-width:0;font-size:12px}.sp-sizing-table th,.sp-sizing-table td{padding:10px 7px}.sp-sizing-table tbody th{white-space:normal}.sp-sizing-table td:last-child{white-space:nowrap}}
 </style>
+<section class="sp-how-it-works" aria-labelledby="sp-how-heading">
+  <div class="wrap">
+    <div class="kicker">OUR PROCESS</div>
+    <h2 id="sp-how-heading">From consultation to a comfortable home.</h2>
+    <ol class="sp-how-steps">
+      <li><span>01</span><h3>Free consultation</h3><p>Tell us which rooms need cooling and how you use them. We discuss your options and answer your questions.</p></li>
+      <li><span>02</span><h3>Plan your installation</h3><p>Check the size, unit positions, airflow, pipe routes and access. We consider how the finished installation will look.</p></li>
+      <li><span>03</span><h3>Agree on the quote</h3><p>Confirm your system, inclusions and written price before booking. Any extra paid work needs your approval.</p></li>
+      <li><span>04</span><h3>Install with care</h3><p>We protect your home with drop sheets, follow the agreed plan and photograph our workmanship.</p></li>
+      <li><span>05</span><h3>Test and hand over</h3><p>We test your system, show you the controls and provide a written installation certificate. Pay after installation.</p></li>
+    </ol>
+  </div>
+</section>
+<style>
+.sp-sizing-dialog{padding:0;border:1px solid #d5b682;border-radius:14px;width:min(720px,calc(100% - 24px));max-width:100%;height:min(740px,90dvh);max-height:90dvh;background:#f8f7f5;color:#171717;overflow:hidden}
+.sp-sizing-dialog[open]{display:flex;flex-direction:column}
+.sp-sizing-dialog::backdrop{background:#000b}
+.sp-sizing-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#171717;color:#fff;padding:10px 16px;flex:none}
+.sp-sizing-dialog-head button{min-width:44px;min-height:44px;border:1px solid #a68b5b;background:transparent;color:#fff;border-radius:8px;font-size:30px;line-height:1;cursor:pointer}
+.sp-sizing-dialog iframe{display:block;width:100%;border:0;flex:1;min-height:0;background:#f8f7f5}
+.sp-how-it-works{background:#181818;color:#fff;padding:48px 0}
+.sp-how-it-works .kicker{color:#e9c780}
+.sp-how-it-works h2{font:800 clamp(26px,4vw,38px)/1.2 Manrope,Arial,sans-serif;letter-spacing:-.035em;margin:8px 0 26px}
+.sp-how-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0}
+.sp-how-steps li{padding:20px 16px;border:1px solid #5f503a;border-radius:10px;background:#242424}
+.sp-how-steps li>span{display:inline-block;color:#e9c780;font:800 26px/1 Manrope,Arial,sans-serif;margin-bottom:12px}
+.sp-how-steps h3{font:800 17px/1.3 Manrope,Arial,sans-serif;margin:0 0 8px;color:#fff}
+.sp-how-steps p{font-size:14px;line-height:1.55;color:#ded9d0;margin:0}
+@media(max-width:900px){.sp-how-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.sp-sizing-dialog{width:100%;height:100dvh;max-width:100%;max-height:100dvh;border:0;border-radius:0;margin:0;inset:0}.sp-sizing-dialog-head{padding-top:max(8px,env(safe-area-inset-top))}.sp-how-it-works{padding:32px 0}.sp-how-steps{grid-template-columns:1fr;gap:10px}.sp-how-steps li{display:grid;grid-template-columns:40px 1fr;column-gap:12px;padding:14px}.sp-how-steps li>span{grid-row:span 2;margin:2px 0 0}.sp-how-steps h3{margin-bottom:5px}}
+</style>
+<script>
+(function(){
+  const trigger=document.getElementById('open-sizing-calculator');
+  const dialog=document.getElementById('sizing-calculator-dialog');
+  const close=document.getElementById('close-sizing-calculator');
+  const frame=dialog.querySelector('iframe');
+  let previousOverflow='';
+  trigger.addEventListener('click',function(event){
+    if(typeof dialog.showModal!=='function')return;
+    event.preventDefault();
+    if(!frame.getAttribute('src'))frame.src=frame.dataset.src;
+    previousOverflow=document.documentElement.style.overflow;
+    document.documentElement.style.overflow='hidden';
+    dialog.showModal();
+    close.focus({preventScroll:true});
+  });
+  close.addEventListener('click',()=>dialog.close());
+  dialog.addEventListener('close',function(){
+    document.documentElement.style.overflow=previousOverflow;
+    trigger.focus({preventScroll:true});
+  });
+  frame.addEventListener('load',function(){
+    frame.contentDocument?.addEventListener('keydown',function(event){
+      if(event.key==='Escape'){event.preventDefault();dialog.close();}
+    });
+  });
+})();
+</script>
 <style id="ducted-modern-style">
 #ducted-system-prices{background:linear-gradient(145deg,#f6f9fc,#fff 52%,#edf5fc);padding-block:clamp(36px,6vw,76px)}
 #ducted-system-prices .sp-brand-tabs{gap:10px;padding:8px 2px 18px}
