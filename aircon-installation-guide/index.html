@@ -48,7 +48,7 @@ h1,h2,h3,h4,.font-serif{font-family:'Playfair Display',Georgia,serif;letter-spac
 .top.scrolled .menu{border-color:var(--sp-border);background:#fff;color:var(--sp-text)}
 .mobile-nav{display:none;position:absolute;left:0;right:0;top:100%;background:#fff;border-top:1px solid var(--sp-border);box-shadow:0 18px 40px rgba(11,11,11,.12);padding:10px 24px 20px}
 .top-actions{display:flex;align-items:center;gap:12px}
-.nav-deals{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;border:1px solid var(--sp-gold);border-radius:999px;background:#fff;color:#765521;text-decoration:none;font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+
 .mobile-nav.open{display:grid;max-height:calc(100dvh - 75px);overflow-y:auto;overscroll-behavior:contain}
 @media(min-width:1101px){.topin{gap:20px}.mobile-nav.open{display:none}}
 .mobile-nav a{padding:14px 0;border-bottom:1px solid var(--sp-grey);text-decoration:none;font-family:'Playfair Display',Georgia,serif;font-size:18px;color:var(--sp-text)}
@@ -264,7 +264,7 @@ if (new URLSearchParams(location.search).get('embed') === 'calculator' && window
       <a href="/contact/">Contact</a>
     </nav>
     <div class="top-actions">
-      <a class="nav-deals" href="/aircon-deals/">Deals</a>
+
       <a class="topcall" href="tel:+61414698435">0414 698 435</a>
       <button class="menu" id="menuBtn" type="button" aria-label="Open menu" aria-controls="mobileNav" aria-expanded="false">☰</button>
     </div>
@@ -286,7 +286,7 @@ if (new URLSearchParams(location.search).get('embed') === 'calculator' && window
 
 <section class="calculator" id="size-calculator">
   <div class="wrap">
-    <h1>Find your aircon size</h1>
+    <h1>Air conditioner size calculator</h1><p>See how your windows, afternoon sun and insulation change the capacity your room needs.</p>
     <div id="sizing-controls" hidden>
       <div class="calculator-system-picker" role="group" aria-label="Air conditioning system">
         <button type="button" data-system="split" aria-pressed="true">Split</button>

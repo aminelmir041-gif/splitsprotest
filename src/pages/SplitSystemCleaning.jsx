@@ -126,7 +126,7 @@ export default function SplitSystemCleaning() {
   return (
     <div className="bg-[#FBFAF8] text-[#18232F]" style={{ paddingTop: "max(0px, calc(var(--sp-site-header-height, 96px) - 24px))" }} data-testid="split-cleaning-landing">
       <Helmet>
-        <title>Gold Standard Split-System Deep Clean Sydney | SplitsPro</title>
+        <title>Air Conditioner Cleaning in Sydney for Split Systems | SplitsPro</title>
         <meta name="description" content="For Sydney parents and carers: learn how our Gold Standard Deep Clean tackles hidden dust, oily buildup and damp grime inside split air conditioners. Careful cleaning, protective treatment and no-pressure advice." />
         <link rel="canonical" href="https://splitspro.com.au/split-system-cleaning/" />
         <meta property="og:title" content="Fresher Air Where Your Family Eats, Plays & Sleeps | SplitsPro" />
@@ -143,8 +143,8 @@ export default function SplitSystemCleaning() {
               <div className="mx-auto grid max-w-6xl overflow-hidden rounded-2xl bg-[#052137] shadow-[0_16px_40px_rgba(5,33,55,0.12)] md:grid-cols-[1.12fr_0.88fr]" data-testid="cleaning-baby-hero-overlay">
                 <div className="relative z-10 flex flex-col justify-center px-5 py-7 text-white sm:px-8 sm:py-10 md:px-10 md:py-12" data-testid="cleaning-hero-title-over-photo">
                   <p className="max-w-md text-[0.7rem] font-black uppercase leading-5 tracking-[0.12em] text-[#F4C620] sm:text-xs">For Sydney mums, parents &amp; everyone who looks after family</p>
-                  <h1 className="mt-3 max-w-2xl font-sans text-[clamp(2rem,7.6vw,3rem)] font-black uppercase leading-[1.06] tracking-tight text-white md:text-[clamp(2.35rem,3.5vw,3.6rem)]">FRESHER AIR WHERE YOUR FAMILY <span className="text-[#F4C620]">EATS, PLAYS &amp; SLEEPS.</span></h1>
-                  <p className="mt-4 max-w-xl text-base font-semibold leading-7 text-[#E8F2F7] sm:text-lg">Your home can look spotless. But something you can't see may still be affecting the air your family lives in.</p>
+                  <h1 className="mt-3 max-w-2xl font-sans text-[clamp(2rem,7.6vw,3rem)] font-black uppercase leading-[1.06] tracking-tight text-white md:text-[clamp(2.35rem,3.5vw,3.6rem)]">Air conditioner cleaning in Sydney <span className="text-[#F4C620]">for split systems</span></h1>
+                  <p className="mt-4 max-w-xl text-base font-semibold leading-7 text-[#E8F2F7] sm:text-lg">Washed the filters and still getting a musty smell? See how we clean the indoor coil, blower and drain.</p>
                 </div>
                 <div className="relative h-[290px] overflow-hidden bg-[#E6F3FA] sm:h-[340px] md:h-auto md:min-h-[480px]" data-testid="cleaning-baby-photo-crop">
                   <img src="/landing/splitspro-cleaning-baby-approved.png" alt="Baby smiling and playing at home" width={409} height={487} loading="eager" decoding="async" fetchPriority="high" className="absolute inset-0 block h-full w-full object-contain object-center md:object-cover" />

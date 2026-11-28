@@ -89,3 +89,25 @@ for (const alias of ['mitsubishi-electric', 'mitsubishi-heavy-industries']) {
   fs.writeFileSync(path.join(directory, 'index.html'), '<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><title>Mitsubishi split systems | SplitsPro</title><link rel="canonical" href="' + origin + '/split-systems/mitsubishi/"><meta http-equiv="refresh" content="0;url=/split-systems/mitsubishi/"></head><body><a href="/split-systems/mitsubishi/">View Mitsubishi split systems</a></body></html>');
 }
 console.log('Published ' + locations.length + ' sitemap routes.');
+
+// Put the guide and coverage links in the HTML so they also work before React starts.
+const splitPage = fs.readFileSync(path.join(build, 'split-system-installation-sydney/index.html'), 'utf8');
+const guides = splitPage.match(/<div class="footer-guides">[\s\S]*?<\/div>/)?.[0];
+if (!guides) throw new Error('Missing Sydney guides navigation');
+const areas = regionLinks.concat([[localRoute, 'Bass Hill & Bankstown'], ['/service-areas/', 'All Sydney service areas']]);
+const areaLinks = areas.map(([href, label]) => '<a href="' + escapeHtml(href) + '">' + escapeHtml(label) + '</a>').join('\n');
+const directory = `<footer class="sp-local-directory" aria-label="Sydney areas and expert guides"><div class="sp-local-columns">
+<div><h3>Air conditioning across Sydney</h3><iframe title="SplitsPro service area map" loading="lazy" width="420" height="220" src="https://www.google.com/maps?q=Bass+Hill+NSW+Australia&amp;z=10&amp;output=embed"></iframe></div>
+<nav aria-label="Installation areas"><h3>Service areas</h3>${areaLinks}</nav>${guides}</div></footer>`;
+function addDirectory(dir) {
+  for (const entry of fs.readdirSync(dir, {withFileTypes:true})) {
+    const file = path.join(dir, entry.name);
+    if (entry.isDirectory()) { addDirectory(file); continue; }
+    if (entry.name !== 'index.html' && entry.name !== '404.html') continue;
+    const html = fs.readFileSync(file, 'utf8');
+    if (/http-equiv=["']?refresh/i.test(html) || html.includes('class="footer-guides"')) continue;
+    fs.writeFileSync(file, html.replace(/<\/head>/i, '<link rel="stylesheet" href="/local-directory.css"></head>')
+      .replace(/<\/body>/i, () => directory + '</body>'));
+  }
+}
+addDirectory(build);

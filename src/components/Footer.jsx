@@ -3,8 +3,6 @@ import { Phone, MapPin } from "lucide-react";
 import { NAV, AREAS, HOURS, PHONE, PHONE_TEL, ABN } from "../lib/data";
 import Logo from "./Logo";
 
-const MAPS_SRC =
-  "https://www.google.com/maps?q=Bass+Hill+NSW+Australia&z=11&output=embed";
 
 export const Footer = () => (
   <footer data-testid="footer" className="bg-[#0B0B0B] text-white">
@@ -53,18 +51,6 @@ export const Footer = () => (
         <p className="mt-4 flex items-center gap-2 text-sm text-white/55">
           <MapPin className="h-4 w-4" /> Western Sydney, NSW
         </p>
-        <div className="mt-5 overflow-hidden rounded-sm border border-white/10">
-          <iframe
-            title="SplitsPro service area map"
-            src={MAPS_SRC}
-            width="100%"
-            height="180"
-            style={{ border: 0, filter: "grayscale(1) invert(0.92) contrast(0.9)" }}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            data-testid="footer-map"
-          />
-        </div>
       </div>
     </div>
 
