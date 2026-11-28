@@ -230,11 +230,15 @@ fbq('init', '959174835702817');
 fbq('track', 'PageView');
 </script>
 <script>
+if (new URLSearchParams(location.search).get('system') === 'split') {
+  document.documentElement.classList.add('split-only');
+}
 if (new URLSearchParams(location.search).get('embed') === 'calculator' && window.parent !== window) {
   document.documentElement.classList.add('calculator-embed');
 }
 </script>
 <style>
+.split-only .calculator-system-picker{display:none}
 .calculator-embed body > header,
 .calculator-embed body > footer,
 .calculator-embed body > .float-ctas,

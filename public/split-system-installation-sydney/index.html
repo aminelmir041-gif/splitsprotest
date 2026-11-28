@@ -484,10 +484,10 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
       </table>
     </div>
     <p class="sp-sizing-note">Prices include GST and reflect standard installation. Eligible split-system replacements receive a 15% saving. Final prices are subject to site assessment.</p>
-    <a class="sp-sizing-link" id="open-sizing-calculator" href="/aircon-installation-guide/" aria-haspopup="dialog">Calculate the size you need ↗</a>
+    <a class="sp-sizing-link" id="open-sizing-calculator" href="/aircon-installation-guide/?system=split" aria-haspopup="dialog">Calculate the size you need ↗</a>
     <dialog id="sizing-calculator-dialog" class="sp-sizing-dialog" aria-labelledby="sizing-dialog-title">
       <div class="sp-sizing-dialog-head"><strong id="sizing-dialog-title">Air conditioner sizing calculator</strong><button type="button" id="close-sizing-calculator" aria-label="Close sizing calculator">×</button></div>
-      <iframe title="SplitsPro air conditioner sizing calculator" data-src="/aircon-installation-guide/?embed=calculator"></iframe>
+      <iframe title="SplitsPro air conditioner sizing calculator" data-src="/aircon-installation-guide/?embed=calculator&amp;system=split"></iframe>
     </dialog>
   </div>
 </section>
@@ -559,7 +559,6 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&
     trigger.focus({preventScroll:true});
   });
   frame.addEventListener('load',function(){
-    frame.contentDocument?.querySelector('[data-system="ducted"]')?.remove();
     frame.contentDocument?.addEventListener('keydown',function(event){
       if(event.key==='Escape'){event.preventDefault();dialog.close();}
     });
